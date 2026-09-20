@@ -1,5 +1,6 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES } from "../generator/data.mjs";
+import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 
 function localize(key) {
@@ -17,22 +18,26 @@ function helpContent() {
   const tierStyleText = tierStyle === TIER_STYLES.CR
     ? localize("help.tierStyleCr")
     : localize("help.tierStyleNamed");
-  const namingRows = Object.values(NAME_STYLES).map((style) => `
+  const namingStyles = getNamingStyles();
+  const races = getRaces();
+  const habitats = getHabitats();
+  const groupTypes = getGroupTypes();
+  const namingRows = Object.values(namingStyles).map((style) => `
     <tr>
       <th scope="row">${escapeAttribute(localize(style.labelKey))}</th>
       <td>${escapeAttribute(localize(style.descriptionKey))}</td>
       <td>${escapeAttribute(namingExamples(style))}</td>
     </tr>
   `).join("");
-  const raceNames = Object.entries(RACES)
+  const raceNames = Object.entries(races)
     .filter(([id]) => id !== "custom")
     .map(([, race]) => localize(race.labelKey))
     .join(", ");
   const habitatExamples = ["forestVillage", "desertOasis", "riverlands", "coast", "island", "mountains", "tundra", "underground"]
-    .map((id) => localize(HABITATS[id].labelKey))
+    .map((id) => localize((habitats[id] ?? HABITATS[id]).labelKey))
     .join(", ");
   const groupExamples = ["family", "guardPatrol", "orcRaiders", "caravan", "shipCrew", "templeHousehold", "villageCouncil", "expedition"]
-    .map((id) => localize(GROUP_TYPES[id].labelKey))
+    .map((id) => localize((groupTypes[id] ?? GROUP_TYPES[id]).labelKey))
     .join(", ");
 
   return `
@@ -80,6 +85,14 @@ function helpContent() {
       <section>
         <h2>${escapeAttribute(localize("help.actorReviewTitle"))}</h2>
         <p>${escapeAttribute(localize("help.actorReviewBody"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.portraitPromptTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.portraitPromptBody"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.filterTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.filterBody"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.aiTitle"))}</h2>

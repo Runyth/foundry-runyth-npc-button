@@ -2,7 +2,7 @@
   "id": "runyth-npc-button",
   "title": "Runyth NPC Button",
   "description": "Advanced D&D 5e NPC and group generation for Foundry VTT with habitats, mixed-Race composition, deterministic local generation, and a validated AI clipboard workflow.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "authors": [
     {
       "name": "Akito"

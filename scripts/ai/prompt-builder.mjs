@@ -24,7 +24,7 @@ export function buildAiPrompt(options = {}) {
 
   return [
     "Create table-ready D&D 5e (2024 rules) NPC data for import into Foundry Virtual Tabletop v13 with dnd5e 5.x using the exact JSON contract below.",
-    "Your entire response MUST be valid JSON only. Do not use Markdown, code fences, commentary, headings outside JSON, trailing commas, or JSON comments.",
+    "Your entire response MUST be a single markdown code block labeled json containing valid JSON. Do not include commentary, headings, trailing commas, or JSON comments.",
     `Return ${payloadShape}.`,
     `Generate exactly ${count} NPC${count === 1 ? "" : "s"}.`,
     "Every Actor must have type \"npc\". Do not include _id, folder, ownership, sort, _stats, effects, prototypeToken, or flags.",
@@ -52,7 +52,9 @@ export function buildAiPrompt(options = {}) {
     "Represent carried money as a believable purse, pouch, strongbox, wallet, or similar roleplay item whose description states the coins or valuables. Scale it to Wealth and circumstances rather than giving every NPC the same money.",
     "Do not overload inventories. Usually 3–8 entries is enough unless the role strongly calls for more.",
     "Do not invent additional top-level Actor keys.",
-    "Do not include prose before or after the JSON value.",
+    "Do not include commentary before or after the fenced JSON code block.",
+    "Wrap the entire reply in exactly one markdown code block labeled json.",
+    "Inside the code block, indent nested JSON with 2 spaces.",
     "",
     "NAMING REQUIREMENTS:",
     `- Naming style: ${clean(options.namingStyleLabel, clean(options.namingStyle, "Central"))}`,
@@ -139,7 +141,7 @@ export function buildAiPrompt(options = {}) {
     "- description: short roleplay context. It may be empty for obvious canonical equipment.",
     "- Do not put raw Foundry Item system data in items; the importer resolves canonical items and safely creates fallback roleplay items.",
     "",
-    `Final validation before replying: JSON.parse must succeed; the root JSON value must be ${singleObject ? "an object" : "an array"}; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections, including Quirk, Rumours, Secrets, and Relationships.`,
-    "Output only the JSON value."
+    `Final validation before replying: JSON.parse must succeed; the root JSON value inside the code block must be ${singleObject ? "an object" : "an array"}; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections, including Quirk, Rumours, Secrets, and Relationships.`,
+    "Output only one markdown code block labeled json, with no prose outside it."
   ].filter(Boolean).join("\n");
 }

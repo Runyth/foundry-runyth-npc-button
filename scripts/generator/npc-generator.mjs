@@ -21,6 +21,7 @@ import {
   formatChallengeRating
 } from "./data.mjs";
 import { DEFAULT_OPTIONS, TIER_STYLES } from "../constants.mjs";
+import { getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 
@@ -82,7 +83,8 @@ export function escapeHtml(value) {
 }
 
 function resolveRace(raceKey, customRace) {
-  const configured = RACES[raceKey] ?? RACES.human;
+  const races = getRaces();
+  const configured = races[raceKey] ?? races.human ?? RACES.human;
   if (raceKey !== "custom") return configured;
 
   const label = titleCase(customRace) || "Humanoid";
@@ -94,7 +96,8 @@ function raceSelectionFromId(id) {
   if (value.startsWith("custom:")) {
     return { species: "custom", customSpecies: value.slice(7).trim() || "Humanoid" };
   }
-  if (RACES[value] && value !== "custom") return { species: value, customSpecies: "" };
+  const races = getRaces();
+  if (races[value] && value !== "custom") return { species: value, customSpecies: "" };
   return null;
 }
 
@@ -111,7 +114,7 @@ export function normalizeGroupRaceIds(options = {}) {
 
   const primary = options.species === "custom"
     ? `custom:${String(options.customSpecies ?? "Humanoid").trim() || "Humanoid"}`
-    : (RACES[options.species] ? options.species : "human");
+    : ((getRaces()[options.species] ? options.species : "human"));
   if (!seen.has(primary)) normalized.unshift(primary);
   return normalized.length ? normalized : ["human"];
 }
@@ -141,7 +144,7 @@ export function buildRaceAssignments(options = {}, count = 1, random = Math.rand
   const total = clamp(Math.trunc(Number(count) || 1), 1, 100);
   if (options.raceComposition !== "mixed") {
     return Array.from({ length: total }, () => ({
-      species: RACES[options.species] ? options.species : "human",
+      species: getRaces()[options.species] ? options.species : "human",
       customSpecies: options.species === "custom" ? String(options.customSpecies ?? "Humanoid") : ""
     }));
   }
@@ -267,7 +270,8 @@ function generatedName(style, random, forcedFamilyName = "") {
 
 function habitatLabel(options) {
   if (String(options.habitat ?? "").startsWith("custom:")) return titleCase(String(options.habitat).slice(7));
-  return HABITATS[options.habitat]?.label ?? HABITATS.forestVillage.label;
+  const habitats = getHabitats();
+  return habitats[options.habitat]?.label ?? habitats.forestVillage?.label ?? HABITATS.forestVillage.label;
 }
 
 function buildBiography(blueprint) {
@@ -299,10 +303,12 @@ function buildBiography(blueprint) {
 }
 
 export function generateNpcBlueprint(options = {}, random = Math.random) {
-  const role = ROLES[options.role] ?? ROLES.guard;
+  const roles = getRoles();
+  const role = roles[options.role] ?? roles.guard ?? ROLES.guard;
   const tier = resolveTierProfile(options);
   const race = resolveRace(options.species ?? "human", options.customSpecies ?? "");
-  const style = NAME_STYLES[options.namingStyle] ?? NAME_STYLES.central;
+  const styles = getNamingStyles();
+  const style = styles[options.namingStyle] ?? styles.central ?? NAME_STYLES.central;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
   const scores = buildAbilityScores(role, tier, random);
   const hitDie = race.size === "sm" ? 6 : 8;
@@ -344,7 +350,8 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
 
 function practicalRoleForIndex(options, groupType, index) {
   if (!groupType || groupType === GROUP_TYPES.independent || !groupType.roleCycle.length) return options.role;
-  if (index === 0) return ROLES[options.role] ? options.role : DEFAULT_OPTIONS.role;
+  const roles = getRoles();
+  if (index === 0) return roles[options.role] ? options.role : DEFAULT_OPTIONS.role;
   return groupType.roleCycle[(index - 1) % groupType.roleCycle.length] ?? options.role;
 }
 
@@ -469,9 +476,11 @@ export function generateNpcBatch(options = {}) {
   const baseSeed = String(options.seed ?? "").trim();
   const random = baseSeed ? createSeededRandom(baseSeed) : Math.random;
   const customName = String(options.customName ?? "").trim();
-  const groupType = GROUP_TYPES[options.groupType] ?? GROUP_TYPES.independent;
+  const groupTypes = getGroupTypes();
+  const groupType = groupTypes[options.groupType] ?? groupTypes.independent ?? GROUP_TYPES.independent;
   const family = options.groupType === "family";
-  const style = NAME_STYLES[options.namingStyle] ?? NAME_STYLES.central;
+  const styles = getNamingStyles();
+  const style = styles[options.namingStyle] ?? styles.central ?? NAME_STYLES.central;
   const forcedFamilyName = family ? pick(style.family, random) : "";
   const raceAssignments = buildRaceAssignments(options, count, random);
   const sharedRumour = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_RUMOURS, random);

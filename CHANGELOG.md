@@ -2,6 +2,20 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.1.4 - 2026-09-20
+
+### Added
+
+- Actor-sheet header action for generated and AI-imported NPCs that copies a concise single-NPC portrait prompt for one full-body adult-anime image.
+- Advanced world-level string-filter settings menu with allow/deny exact, contains, prefix, suffix, and regex rules for major picker-based dashboard catalogs.
+- Initial extension API so complementary Foundry modules can register additional Races, Roles, Naming styles, Habitats, and Group types through `game.modules.get("runyth-npc-button").api`.
+
+### Changed
+
+- Updated the copied AI prompt contract so AI replies must be delivered as exactly one `json` fenced Markdown code block with 2-space indentation and no surrounding commentary.
+- Picker-based dashboard catalogs now honor the configured string filters, including Actor-folder destinations.
+- Help documentation now covers portrait-prompt copying and the new filter settings.
+
 ## 0.1.3 - 2026-09-20
 
 ### Added

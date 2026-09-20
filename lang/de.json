@@ -20,6 +20,15 @@
           "named": "Benannte Stufen",
           "cr": "Challenge Rating (CR)"
         }
+      },
+      "filters": {
+        "name": "Dashboard-String-Filter",
+        "hint": "Öffnet erweiterte Erlauben-/Verbieten-Filter für pickerbasierte Dashboard-Felder wie Rollen, Völker, Habitate, Gruppentypen, Namensstile und Actor-Ordner.",
+        "label": "Filter konfigurieren"
+      },
+      "filtersStorage": {
+        "name": "Speicher für Dashboard-String-Filter",
+        "hint": "Interner JSON-Speicher für erweiterte Dashboard-String-Filter."
       }
     },
     "ui": {
@@ -104,7 +113,8 @@
       "groupBrief": "Zusätzliche Gruppenvorgabe",
       "groupBriefPlaceholder": "Optional: lokale Fehde, Familienbetrieb, Auftraggeber, Krise, Tabu, Ziel, gemeinsames Vorhaben…",
       "groupBriefHint": "Wird als gemeinsamer Kontext an den KI-Prompt übergeben. Auf Fakten beschränken, die mehrere NSCs betreffen sollen.",
-      "done": "Fertig"
+      "done": "Fertig",
+      "copyPortraitPrompt": "Porträt-Prompt kopieren"
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -141,7 +151,11 @@
       "habitatsBody": "Eingebaute Umgebungen decken gewöhnliche Siedlungen und spezialisierte Regionen ab, darunter {habitats}. Andere Lebensräume können frei eingegeben werden.",
       "groupsTitle": "Familien und Gruppen",
       "groupsBody": "Gruppenvorlagen umfassen {groups} sowie weitere Sicherheits-, Gesetzlosen-, Reise-, Arbeits-, Glaubens- und Gemeinschaftsstrukturen. Die Anzahl bleibt editierbar; jede Vorlage bietet sinnvolle Größen-Schnellwahl.",
-      "groupsAdvanced": "Erweiterte Einstellungen steuern Familienstruktur, Zusammenhalt, Hierarchie, Beziehungsdichte, internen Konflikt, erlaubte Völker, deren Verteilung, eigene Gewichte und eine optionale gemeinsame Gruppenvorgabe."
+      "groupsAdvanced": "Erweiterte Einstellungen steuern Familienstruktur, Zusammenhalt, Hierarchie, Beziehungsdichte, internen Konflikt, erlaubte Völker, deren Verteilung, eigene Gewichte und eine optionale gemeinsame Gruppenvorgabe.",
+      "portraitPromptTitle": "Porträt-Prompts",
+      "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert.",
+      "filterTitle": "Dashboard-Filtereinstellungen",
+      "filterBody": "In den Configure Settings gibt es jetzt ein eigenes Filter-Menü mit Erlauben-/Verbieten-Regeln für exakte Treffer, Enthält-, Präfix-, Suffix- und Regex-Muster für wichtige pickerbasierte Dashboard-Felder."
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -151,7 +165,9 @@
       "promptCopied": "KI-NSC-Prompt wurde in die Zwischenablage kopiert.",
       "imported": "{count} NSC-Actor(s) importiert.",
       "noneImported": "Keine NSC-Actors wurden importiert.",
-      "importFailed": "NSC-Import fehlgeschlagen: {message}"
+      "importFailed": "NSC-Import fehlgeschlagen: {message}",
+      "portraitPromptCopied": "Porträt-Prompt in die Zwischenablage kopiert.",
+      "filtersSaved": "Dashboard-String-Filter gespeichert."
     },
     "errors": {
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
@@ -335,6 +351,41 @@
       "primary": "Primäres Volk",
       "dominant": "Starke Mehrheit",
       "weighted": "Eigene Gewichte"
+    },
+    "filters": {
+      "title": "NPC-Button-String-Filter",
+      "intro": "Verwende Erlauben- und Verbieten-Regeln, um die sichtbaren Picker-Kataloge zu kuratieren. Mehrere Werte können per Komma, Semikolon oder Zeilenumbruch getrennt werden. Sobald für eine Kategorie mindestens eine Erlauben-Regel gesetzt ist, müssen Einträge mindestens eine Erlauben-Regel erfüllen und dürfen keine Verbieten-Regel treffen.",
+      "categories": {
+        "roles": "Rollen",
+        "races": "Völker",
+        "namingStyles": "Namensstile",
+        "habitats": "Habitate",
+        "groupTypes": "Gruppentypen",
+        "folders": "Actor-Ordner"
+      },
+      "placeholders": {
+        "roles": "Filtert sichtbare Rolleneinträge nach ID, Bezeichnung, Beschreibung oder Suchtext.",
+        "races": "Filtert sichtbare Völker, einschließlich Erweiterungs-Völker und benutzerdefinierter Picker-Vorschläge.",
+        "namingStyles": "Legt fest, welche Namenspaletten im Dashboard ausgewählt werden dürfen.",
+        "habitats": "Beschränkt oder fokussiert die Umgebungs-Presets im Habitat-Picker.",
+        "groupTypes": "Erlaubt oder verbirgt bestimmte Gruppen-Archetypen wie Familien oder Wachpatrouillen.",
+        "folders": "Legt fest, welche Actor-Ordner-Ziele im Ziel-Picker erscheinen."
+      },
+      "fields": {
+        "exactAllow": "Exakte Treffer erlauben",
+        "exactDeny": "Exakte Treffer verbieten",
+        "containsAllow": "Erlauben, wenn enthält",
+        "containsDeny": "Verbieten, wenn enthält",
+        "prefixAllow": "Erlauben, wenn beginnt mit",
+        "prefixDeny": "Verbieten, wenn beginnt mit",
+        "suffixAllow": "Erlauben, wenn endet mit",
+        "suffixDeny": "Verbieten, wenn endet mit",
+        "regexAllow": "Regex erlauben",
+        "regexDeny": "Regex verbieten",
+        "caseSensitive": "Groß-/Kleinschreibung beachten",
+        "normalizeDiacritics": "Akzente / Diakritika normalisieren",
+        "trimWhitespace": "Umgebende Leerzeichen trimmen"
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "./constants.mjs";
+import { FilterSettingsForm, defaultFilterConfiguration } from "./filters.mjs";
 
 export function registerSettings() {
   game.settings.register(MODULE_ID, SETTINGS.DEBUG, {
@@ -47,6 +48,26 @@ export function registerSettings() {
       [TIER_STYLES.CR]: game.i18n.localize(`${MODULE_ID}.settings.tierStyle.choices.cr`)
     },
     default: TIER_STYLES.NAMED
+  });
+
+
+  game.settings.registerMenu(MODULE_ID, "filterSettingsMenu", {
+    name: `${MODULE_ID}.settings.filters.name`,
+    hint: `${MODULE_ID}.settings.filters.hint`,
+    label: `${MODULE_ID}.settings.filters.label`,
+    icon: "fa-solid fa-filter",
+    type: FilterSettingsForm,
+    restricted: true
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.FILTERS, {
+    name: `${MODULE_ID}.settings.filtersStorage.name`,
+    hint: `${MODULE_ID}.settings.filtersStorage.hint`,
+    scope: "world",
+    config: false,
+    restricted: true,
+    type: String,
+    default: JSON.stringify(defaultFilterConfiguration())
   });
 
   game.settings.register(MODULE_ID, SETTINGS.LAST_OPTIONS, {

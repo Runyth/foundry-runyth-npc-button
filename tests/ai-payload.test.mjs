@@ -55,13 +55,15 @@ function actorSource(name = "Mara Reed") {
 test("AI prompt requests an array by default, including for one NPC", () => {
   const prompt = buildAiPrompt({ count: 1, singleAiObject: false });
   assert.match(prompt, /exactly one JSON array containing 1 Actor object/);
-  assert.match(prompt, /root JSON value must be an array/);
+  assert.match(prompt, /root JSON value inside the code block must be an array/);
+  assert.match(prompt, /single markdown code block labeled json/);
 });
 
 test("AI prompt requests a single object only when explicitly enabled", () => {
   const prompt = buildAiPrompt({ count: 1, singleAiObject: true });
   assert.match(prompt, /exactly one JSON object, not an array/);
-  assert.match(prompt, /root JSON value must be an object/);
+  assert.match(prompt, /root JSON value inside the code block must be an object/);
+  assert.match(prompt, /indent nested JSON with 2 spaces/);
 });
 
 test("AI prompt requires role-fitting inventory, rumours, secrets, relationships, and wealth", () => {

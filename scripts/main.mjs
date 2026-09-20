@@ -1,10 +1,30 @@
 import { MODULE_ID, MODULE_TITLE, MODULE_VERSION } from "./constants.mjs";
+import { buildPortraitPromptFromActor } from "./ai/portrait-prompt-builder.mjs";
 import { generateNpcBatch, generateNpcBlueprint } from "./generator/npc-generator.mjs";
 import { logger } from "./logger.mjs";
 import { registerSettings } from "./settings.mjs";
 import { createNpcActors } from "./services/actor-service.mjs";
 import { injectActorDirectoryButton } from "./ui/actor-directory.mjs";
+import { injectPortraitPromptButton } from "./ui/actor-portrait-button.mjs";
 import { openNpcDashboard, openNpcDialog } from "./ui/npc-dialog.mjs";
+import {
+  getCatalogGroups,
+  getGroupTypes,
+  getHabitats,
+  getNamingStyles,
+  getRaces,
+  getRoles,
+  registerGroupType,
+  registerHabitat,
+  registerNamingStyle,
+  registerRace,
+  registerRole,
+  unregisterGroupType,
+  unregisterHabitat,
+  unregisterNamingStyle,
+  unregisterRace,
+  unregisterRole
+} from "./extensions/registry.mjs";
 
 // Foundry hook lifecycle documentation:
 // https://foundryvtt.com/api/v13/modules/hookEvents.html
@@ -18,7 +38,24 @@ Hooks.once("init", () => {
       generateNpcBatch,
       generateNpcBlueprint,
       openNpcDashboard,
-      openNpcDialog
+      openNpcDialog,
+      buildPortraitPromptFromActor,
+      registerRace,
+      unregisterRace,
+      registerRole,
+      unregisterRole,
+      registerNamingStyle,
+      unregisterNamingStyle,
+      registerHabitat,
+      unregisterHabitat,
+      registerGroupType,
+      unregisterGroupType,
+      getRaces,
+      getRoles,
+      getNamingStyles,
+      getHabitats,
+      getGroupTypes,
+      getCatalogGroups
     });
   }
 
@@ -35,4 +72,9 @@ Hooks.once("ready", () => {
   if (game.system?.id !== "dnd5e") {
     logger.warn("The active system is not dnd5e; the module will remain inactive.");
   }
+});
+
+
+Hooks.on("renderActorSheet", (app) => {
+  injectPortraitPromptButton(app);
 });

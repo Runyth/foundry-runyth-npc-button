@@ -25,6 +25,8 @@ import {
   formatChallengeRating
 } from "../generator/data.mjs";
 import { normalizeGroupRaceIds, resolveTierProfile } from "../generator/npc-generator.mjs";
+import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
+import { applyStringFilters } from "../filters.mjs";
 import { logger } from "../logger.mjs";
 import { loadLastOptions, loadWindowState, saveLastOptions, saveWindowState } from "../settings.mjs";
 import { createImportedNpcActors, createNpcActors } from "../services/actor-service.mjs";
@@ -74,24 +76,29 @@ function groupedConfigItems(entries, groups, groupKeyPrefix) {
 }
 
 function rolePickerItems() {
-  return groupedConfigItems(ROLES, ROLE_GROUPS, "roleGroups");
+  const roles = getRoles();
+  return applyStringFilters("roles", groupedConfigItems(roles, getCatalogGroups(roles, ROLE_GROUPS), "roleGroups"));
 }
 
 function racePickerItems() {
-  const entries = Object.fromEntries(Object.entries(RACES).filter(([key]) => key !== "custom"));
-  return groupedConfigItems(entries, RACE_GROUPS, "raceGroups");
+  const races = getRaces();
+  const entries = Object.fromEntries(Object.entries(races).filter(([key]) => key !== "custom"));
+  return applyStringFilters("races", groupedConfigItems(entries, getCatalogGroups(entries, RACE_GROUPS), "raceGroups"));
 }
 
 function namingPickerItems() {
-  return groupedConfigItems(NAME_STYLES, NAMING_GROUPS, "namingGroups");
+  const namingStyles = getNamingStyles();
+  return applyStringFilters("namingStyles", groupedConfigItems(namingStyles, getCatalogGroups(namingStyles, NAMING_GROUPS), "namingGroups"));
 }
 
 function habitatPickerItems() {
-  return groupedConfigItems(HABITATS, HABITAT_GROUPS, "habitatGroups");
+  const habitats = getHabitats();
+  return applyStringFilters("habitats", groupedConfigItems(habitats, getCatalogGroups(habitats, HABITAT_GROUPS), "habitatGroups"));
 }
 
 function groupTypePickerItems() {
-  return groupedConfigItems(GROUP_TYPES, GROUP_TYPE_GROUPS, "groupTypeGroups");
+  const groupTypes = getGroupTypes();
+  return applyStringFilters("groupTypes", groupedConfigItems(groupTypes, getCatalogGroups(groupTypes, GROUP_TYPE_GROUPS), "groupTypeGroups"));
 }
 
 function namedTierPickerItems() {
@@ -182,7 +189,7 @@ function actorFolderPickerItems() {
 
   for (const root of byParent.get(null) ?? []) walk(root, 1, []);
   for (const folder of folders) if (!visited.has(folder.id)) walk(folder, 1, []);
-  return items;
+  return applyStringFilters("folders", items);
 }
 
 function raceSelectionValue(options) {
@@ -190,8 +197,9 @@ function raceSelectionValue(options) {
 }
 
 function raceSelectionDisplay(options) {
+  const races = getRaces();
   if (options.species === "custom") return String(options.customSpecies ?? "") || localize("ui.customRace");
-  return configuredLabel(RACES[options.species] ?? RACES.human);
+  return configuredLabel(races[options.species] ?? races.human ?? RACES.human);
 }
 
 function resolveRaceSelection(value) {
@@ -200,24 +208,28 @@ function resolveRaceSelection(value) {
     const customSpecies = selected.slice("custom:".length).trim() || "Humanoid";
     return { species: "custom", customSpecies };
   }
-  return { species: RACES[selected] ? selected : "human", customSpecies: "" };
+  const races = getRaces();
+  return { species: races[selected] ? selected : "human", customSpecies: "" };
 }
 
 function raceLabelFromSelectionId(value) {
   const selected = String(value ?? "human");
   if (selected.startsWith("custom:")) return selected.slice(7).trim() || localize("ui.customRace");
-  return configuredLabel(RACES[selected] ?? RACES.human);
+  const races = getRaces();
+  return configuredLabel(races[selected] ?? races.human ?? RACES.human);
 }
 
 function habitatSelectionValue(options) {
   const habitat = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
-  return HABITATS[habitat] || habitat.startsWith("custom:") ? habitat : DEFAULT_OPTIONS.habitat;
+  const habitats = getHabitats();
+  return habitats[habitat] || habitat.startsWith("custom:") ? habitat : DEFAULT_OPTIONS.habitat;
 }
 
 function habitatSelectionDisplay(options) {
   const value = habitatSelectionValue(options);
-  if (value.startsWith("custom:")) return value.slice(7).trim() || configuredLabel(HABITATS.forestVillage);
-  return configuredLabel(HABITATS[value] ?? HABITATS.forestVillage);
+  const habitats = getHabitats();
+  if (value.startsWith("custom:")) return value.slice(7).trim() || configuredLabel(habitats.forestVillage ?? HABITATS.forestVillage);
+  return configuredLabel(habitats[value] ?? habitats.forestVillage ?? HABITATS.forestVillage);
 }
 
 function destinationSelectionValue(options) {
@@ -271,7 +283,8 @@ function tierPicker(options, tierStyle) {
 }
 
 function suggestedSizesMarkup(groupType, maxBatch) {
-  const config = GROUP_TYPES[groupType] ?? GROUP_TYPES.independent;
+  const groupTypes = getGroupTypes();
+  const config = groupTypes[groupType] ?? groupTypes.independent ?? GROUP_TYPES.independent;
   return config.suggestedSizes
     .filter((value) => value <= maxBatch)
     .map((value) => `<button type="button" data-group-count="${value}">${value}</button>`)
@@ -281,7 +294,8 @@ function suggestedSizesMarkup(groupType, maxBatch) {
 function dashboardContent(options, tierStyle) {
   const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
   const quickCounts = [1, 3, 5, 10].filter((value) => value <= maxBatch);
-  const groupType = GROUP_TYPES[options.groupType] ? options.groupType : DEFAULT_OPTIONS.groupType;
+  const groupTypes = getGroupTypes();
+  const groupType = groupTypes[options.groupType] ? options.groupType : DEFAULT_OPTIONS.groupType;
   const groupRaces = normalizeGroupRaceIds({ ...options, groupRaces: options.groupRaces ?? DEFAULT_OPTIONS.groupRaces });
 
   return `
@@ -314,8 +328,8 @@ function dashboardContent(options, tierStyle) {
             label: localize("ui.groupType"),
             hint: localize("ui.groupTypeHint"),
             value: groupType,
-            display: configuredLabel(GROUP_TYPES[groupType]),
-            placeholder: configuredLabel(GROUP_TYPES.independent)
+            display: configuredLabel((getGroupTypes()[groupType] ?? GROUP_TYPES[groupType])),
+            placeholder: configuredLabel((getGroupTypes().independent ?? GROUP_TYPES.independent))
           })}
           ${hierarchicalPickerMarkup({
             id: "runyth-npc-button-habitat-picker",
@@ -324,7 +338,7 @@ function dashboardContent(options, tierStyle) {
             hint: localize("ui.habitatHint"),
             value: habitatSelectionValue(options),
             display: habitatSelectionDisplay(options),
-            placeholder: configuredLabel(HABITATS.forestVillage)
+            placeholder: configuredLabel(getHabitats().forestVillage ?? HABITATS.forestVillage)
           })}
         </div>
 
@@ -333,9 +347,9 @@ function dashboardContent(options, tierStyle) {
           name: "role",
           label: localize("ui.role"),
           hint: localize("ui.roleHint"),
-          value: ROLES[options.role] ? options.role : DEFAULT_OPTIONS.role,
-          display: configuredLabel(ROLES[options.role] ?? ROLES[DEFAULT_OPTIONS.role]),
-          placeholder: configuredLabel(ROLES[DEFAULT_OPTIONS.role])
+          value: (getRoles()[options.role] ? options.role : DEFAULT_OPTIONS.role),
+          display: configuredLabel(getRoles()[options.role] ?? getRoles()[DEFAULT_OPTIONS.role] ?? ROLES[DEFAULT_OPTIONS.role]),
+          placeholder: configuredLabel(getRoles()[DEFAULT_OPTIONS.role] ?? ROLES[DEFAULT_OPTIONS.role])
         })}
 
         ${tierPicker(options, tierStyle)}
@@ -348,16 +362,16 @@ function dashboardContent(options, tierStyle) {
             hint: localize("ui.raceHint"),
             value: raceSelectionValue(options),
             display: raceSelectionDisplay(options),
-            placeholder: configuredLabel(RACES.human)
+            placeholder: configuredLabel(getRaces().human ?? RACES.human)
           })}
           ${hierarchicalPickerMarkup({
             id: "runyth-npc-button-naming-picker",
             name: "namingStyle",
             label: localize("ui.namingStyle"),
             hint: localize("ui.namingStyleHint"),
-            value: NAME_STYLES[options.namingStyle] ? options.namingStyle : DEFAULT_OPTIONS.namingStyle,
-            display: configuredLabel(NAME_STYLES[options.namingStyle] ?? NAME_STYLES[DEFAULT_OPTIONS.namingStyle]),
-            placeholder: configuredLabel(NAME_STYLES[DEFAULT_OPTIONS.namingStyle])
+            value: (getNamingStyles()[options.namingStyle] ? options.namingStyle : DEFAULT_OPTIONS.namingStyle),
+            display: configuredLabel(getNamingStyles()[options.namingStyle] ?? getNamingStyles()[DEFAULT_OPTIONS.namingStyle] ?? NAME_STYLES[DEFAULT_OPTIONS.namingStyle]),
+            placeholder: configuredLabel(getNamingStyles()[DEFAULT_OPTIONS.namingStyle] ?? NAME_STYLES[DEFAULT_OPTIONS.namingStyle])
           })}
         </div>
 
@@ -580,18 +594,18 @@ function readForm(form) {
 }
 
 function promptOptions(options) {
-  const style = NAME_STYLES[options.namingStyle] ?? NAME_STYLES.central;
+  const style = getNamingStyles()[options.namingStyle] ?? getNamingStyles().central ?? NAME_STYLES.central;
   const race = options.species === "custom"
     ? options.customSpecies
-    : configuredLabel(RACES[options.species] ?? RACES.human);
-  const role = ROLES[options.role] ?? ROLES.guard;
+    : configuredLabel(getRaces()[options.species] ?? getRaces().human ?? RACES.human);
+  const role = getRoles()[options.role] ?? getRoles().guard ?? ROLES.guard;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
   const tierProfile = resolveTierProfile(options);
   const habitatValue = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
   const habitat = habitatValue.startsWith("custom:")
-    ? { label: habitatValue.slice(7).trim() || configuredLabel(HABITATS.forestVillage), prompt: "use the custom habitat literally and adapt daily life, possessions, travel, and social assumptions to it" }
-    : (HABITATS[habitatValue] ?? HABITATS.forestVillage);
-  const groupType = GROUP_TYPES[options.groupType] ?? GROUP_TYPES.independent;
+    ? { label: habitatValue.slice(7).trim() || configuredLabel(getHabitats().forestVillage ?? HABITATS.forestVillage), prompt: "use the custom habitat literally and adapt daily life, possessions, travel, and social assumptions to it" }
+    : (getHabitats()[habitatValue] ?? getHabitats().forestVillage ?? HABITATS.forestVillage);
+  const groupType = getGroupTypes()[options.groupType] ?? getGroupTypes().independent ?? GROUP_TYPES.independent;
   const groupRaceIds = normalizeGroupRaceIds(options);
   const groupRaceLabels = groupRaceIds.map(raceLabelFromSelectionId);
   const weightSummary = groupRaceIds.map((id) => `${raceLabelFromSelectionId(id)}=${Number(options.raceWeights?.[id]) || 0}`).join(", ");
@@ -867,7 +881,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
 
   #syncGroupControls(form, { adjustCount = false } = {}) {
     const typeId = String(form.elements.groupType.value || DEFAULT_OPTIONS.groupType);
-    const type = GROUP_TYPES[typeId] ?? GROUP_TYPES.independent;
+    const type = getGroupTypes()[typeId] ?? getGroupTypes().independent ?? GROUP_TYPES.independent;
     const groupSection = form.querySelector("[data-group-config]");
     groupSection.hidden = typeId === "independent";
     form.querySelector("[data-family-settings]").hidden = typeId !== "family";
@@ -882,7 +896,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         form.elements.count.value = String(Math.min(target, maxBatch));
       }
       if (typeId === "orcRaiders" && form.elements.raceSelection.value === "human") {
-        this.#racePickerController?.setValue("orc", configuredLabel(RACES.orc));
+        this.#racePickerController?.setValue("orc", configuredLabel(getRaces().orc ?? RACES.orc));
       }
     }
     this.#syncCountControls(form);

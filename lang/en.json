@@ -20,6 +20,15 @@
           "named": "Named tiers",
           "cr": "Challenge Rating (CR)"
         }
+      },
+      "filters": {
+        "name": "Dashboard string filters",
+        "hint": "Open advanced allow/deny filters for picker-driven dashboard fields such as Roles, Races, Habitats, Group types, Naming styles, and Actor folders.",
+        "label": "Configure filters"
+      },
+      "filtersStorage": {
+        "name": "Dashboard string filters storage",
+        "hint": "Internal JSON storage for advanced dashboard string filters."
       }
     },
     "ui": {
@@ -104,7 +113,8 @@
       "groupBrief": "Additional group brief",
       "groupBriefPlaceholder": "Optional: local feud, family business, employer, current crisis, taboo, destination, shared objective…",
       "groupBriefHint": "Passed into the AI prompt as additional context. Keep it focused on facts that should affect multiple NPCs.",
-      "done": "Done"
+      "done": "Done",
+      "copyPortraitPrompt": "Copy portrait prompt"
     },
     "help": {
       "title": "NPC Button Help",
@@ -141,7 +151,11 @@
       "habitatsBody": "Built-in environments cover ordinary settlements and more specialized regions, including {habitats}. Any other habitat can be typed as a custom entry.",
       "groupsTitle": "Families and groups",
       "groupsBody": "Group presets include {groups}, plus further security, outlaw, travel, work, faith, and community structures. Count stays editable, while each preset exposes sensible size shortcuts.",
-      "groupsAdvanced": "Advanced settings control family structure, cohesion, hierarchy, relationship density, internal conflict, allowed races, race distribution, custom weights, and an optional shared group brief."
+      "groupsAdvanced": "Advanced settings control family structure, cohesion, hierarchy, relationship density, internal conflict, allowed races, race distribution, custom weights, and an optional shared group brief.",
+      "portraitPromptTitle": "Portrait prompts",
+      "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC.",
+      "filterTitle": "Dashboard filter settings",
+      "filterBody": "Configure Settings now provides a dedicated filter menu with allow/deny exact, contains, prefix, suffix, and regex rules for major picker-based dashboard fields."
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -151,7 +165,9 @@
       "promptCopied": "AI NPC prompt copied to the clipboard.",
       "imported": "Imported {count} NPC Actor(s).",
       "noneImported": "No NPC Actors were imported.",
-      "importFailed": "NPC import failed: {message}"
+      "importFailed": "NPC import failed: {message}",
+      "portraitPromptCopied": "Portrait prompt copied to the clipboard.",
+      "filtersSaved": "Dashboard string filters saved."
     },
     "errors": {
       "clipboardWrite": "Clipboard writing is not available in this client.",
@@ -335,6 +351,41 @@
       "primary": "Primary race",
       "dominant": "Strong majority",
       "weighted": "Custom weights"
+    },
+    "filters": {
+      "title": "NPC Button string filters",
+      "intro": "Use allow and deny rules to curate the visible picker catalogs. Enter multiple values separated by commas, semicolons, or new lines. If any allow rule is configured for a category, entries must match at least one allow rule and must not match any deny rule.",
+      "categories": {
+        "roles": "Roles",
+        "races": "Races",
+        "namingStyles": "Naming styles",
+        "habitats": "Habitats",
+        "groupTypes": "Group types",
+        "folders": "Actor folders"
+      },
+      "placeholders": {
+        "roles": "Filter visible role entries by id, label, description, or search text.",
+        "races": "Filter visible race entries, including extension races and custom picker suggestions.",
+        "namingStyles": "Curate which naming palettes may be selected in the dashboard.",
+        "habitats": "Restrict or focus the environment presets shown in the habitat picker.",
+        "groupTypes": "Allow or hide specific group archetypes such as families or guard patrols.",
+        "folders": "Curate which Actor-folder targets appear in the destination picker."
+      },
+      "fields": {
+        "exactAllow": "Allow exact matches",
+        "exactDeny": "Deny exact matches",
+        "containsAllow": "Allow if contains",
+        "containsDeny": "Deny if contains",
+        "prefixAllow": "Allow if starts with",
+        "prefixDeny": "Deny if starts with",
+        "suffixAllow": "Allow if ends with",
+        "suffixDeny": "Deny if ends with",
+        "regexAllow": "Allow regex",
+        "regexDeny": "Deny regex",
+        "caseSensitive": "Case-sensitive matching",
+        "normalizeDiacritics": "Normalize accents / diacritics",
+        "trimWhitespace": "Trim surrounding whitespace"
+      }
     }
   }
 }
