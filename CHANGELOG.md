@@ -2,6 +2,22 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.1.8 - 2026-09-20
+
+### Added
+
+- Scalable searchable multi-select item filtering for every filter-settings category: Roles, Races, Naming styles, Habitats, Group types, and Actor folders.
+- All current catalog items are selected by default; deselecting an item excludes it from the matching dashboard picker.
+- Select-all and clear-all controls inside scalable multi-select filter pickers.
+- Regression coverage for default inclusion, individual exclusions, extension-provided catalog entries, form persistence, and portable filter-profile round trips.
+
+### Changed
+
+- Item exclusions are stored as stable catalog IDs so newly installed extension entries remain included by default unless their IDs were explicitly excluded.
+- Existing exact/contains/prefix/suffix/regex filters remain available under a collapsed advanced-rules section instead of being the primary filtering UX.
+- Remembered dashboard selections that are no longer visible under the configured filters now fall back to a visible valid option where possible.
+- Filter import/export continues to use the existing versioned profile format and now preserves item-level exclusions.
+
 ## 0.1.7 - 2026-09-20
 
 ### Added

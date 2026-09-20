@@ -14,7 +14,10 @@ export function hierarchicalMultiPickerMarkup({
   label,
   hint = "",
   values = [],
-  placeholder = "Choose…"
+  placeholder = "Choose…",
+  showBulkActions = false,
+  selectAllText = "Select all",
+  clearText = "Clear"
 }) {
   const hintId = hint ? `${id}-hint` : "";
   return `
@@ -44,6 +47,7 @@ export function hierarchicalMultiPickerMarkup({
         </div>
         <div class="runyth-npc-button__picker-empty" data-multi-picker-empty hidden></div>
         <div class="runyth-npc-button__picker-footer">
+          ${showBulkActions ? `<div class="runyth-npc-button__picker-bulk"><button type="button" data-multi-picker-select-all>${escapeAttribute(selectAllText)}</button><button type="button" data-multi-picker-clear>${escapeAttribute(clearText)}</button></div>` : ""}
           <button type="button" data-multi-picker-done>${escapeAttribute("Done")}</button>
         </div>
       </div>
@@ -83,6 +87,8 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
   const windowElement = root.querySelector("[data-multi-picker-window]");
   const empty = root.querySelector("[data-multi-picker-empty]");
   const done = root.querySelector("[data-multi-picker-done]");
+  const selectAll = root.querySelector("[data-multi-picker-select-all]");
+  const clear = root.querySelector("[data-multi-picker-clear]");
   if (!trigger || !input || !display || !count || !panel || !search || !viewport || !spacer || !windowElement || !empty || !done) return null;
 
   const baseRows = prepareRows(Array.isArray(config.items) ? config.items : []);
@@ -246,6 +252,19 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
   }
 
   trigger.addEventListener("click", () => setOpen(!open), { signal });
+  selectAll?.addEventListener("click", () => {
+    selected = new Set(baseRows.filter((row) => row.kind !== "group").map((row) => String(row.id)));
+    updateSummary();
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    updateActiveRows();
+  }, { signal });
+  clear?.addEventListener("click", () => {
+    selected.clear();
+    if (config.requireOne) selected.add(config.fallbackValue ?? baseRows.find((item) => item.kind !== "group")?.id);
+    updateSummary();
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    updateActiveRows();
+  }, { signal });
   done.addEventListener("click", () => setOpen(false), { signal });
   search.addEventListener("input", () => {
     if (searchFrame !== null) window.cancelAnimationFrame(searchFrame);

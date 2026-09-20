@@ -171,7 +171,7 @@
       "portraitPromptTitle": "Portrait prompts",
       "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC.",
       "filterTitle": "Dashboard filter settings",
-      "filterBody": "Configure Settings provides a dedicated filter menu with allow/deny exact, contains, prefix, suffix, and regex rules for major picker-based dashboard fields. Filter profiles can be exported/imported as versioned JSON files or copied through the clipboard.",
+      "filterBody": "Configure Settings provides a dedicated filter menu. Each major dashboard catalog has a scalable searchable multi-select list with every current item included by default; deselect entries to hide them. Advanced allow/deny string and regex rules remain available, and filter profiles can be exported/imported as versioned JSON files or through the clipboard.",
       "compositionTitle": "Race and Role composition",
       "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Roles can stay uniform, rotate through distinct subtypes such as merchant specialties, follow the group preset, or use the same proportional mixing model.",
       "combatReadinessTitle": "Combat readiness",
@@ -389,7 +389,7 @@
     },
     "filters": {
       "title": "NPC Button string filters",
-      "intro": "Use allow and deny rules to curate the visible picker catalogs. Enter multiple values separated by commas, semicolons, or new lines. If any allow rule is configured for a category, entries must match at least one allow rule and must not match any deny rule.",
+      "intro": "Use the selected-item lists for ordinary filtering. Every current item is selected by default; deselect an item to hide it from the corresponding dashboard picker. Advanced allow/deny string and regex rules remain available below each list.",
       "categories": {
         "roles": "Roles",
         "races": "Races",
@@ -426,7 +426,15 @@
         "copyJson": "Copy JSON",
         "importFile": "Import JSON",
         "importClipboard": "Import clipboard"
-      }
+      },
+      "itemPicker": {
+        "label": "Included items",
+        "hint": "All available items are selected by default. Deselect individual entries to exclude them from the dashboard. The list is searchable, hierarchical, scrollable, and virtualized for large catalogs.",
+        "placeholder": "No items selected",
+        "selectAll": "Select all",
+        "clear": "Clear all"
+      },
+      "advancedRules": "Advanced string and regex rules"
     },
     "combatReadiness": {
       "weaponless": "Weaponless",

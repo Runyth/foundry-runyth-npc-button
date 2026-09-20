@@ -100,7 +100,7 @@ Combat readiness is independent from CR and Role. The generator first applies a 
 
 ## Filter profiles
 
-`filters.mjs` stores world-level picker filters and serializes them as a versioned portable profile (`runyth-npc-button-filter-profile`, version 1). Import validates the format/version before replacing world filter settings. File and clipboard workflows use the same schema.
+`filters.mjs` stores world-level picker filters and serializes them as a versioned portable profile (`runyth-npc-button-filter-profile`, version 1). Each category stores explicit `excludedIds` rather than a frozen allow-list, so the default state naturally includes every current catalog item and extension-provided entries appear automatically unless explicitly excluded. The filter UI uses the same virtualized hierarchical multi-picker infrastructure as the dashboard. Import validates the format/version before replacing world filter settings. File and clipboard workflows use the same schema.
 
 ## v0.1.7 generation metadata and preview
 

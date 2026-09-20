@@ -569,8 +569,15 @@
 }
 
 .runyth-npc-button__picker-footer {
+  align-items: center;
   display: flex;
-  justify-content: flex-end;
+  gap: 0.45rem;
+  justify-content: space-between;
+}
+
+.runyth-npc-button__picker-bulk {
+  display: flex;
+  gap: 0.35rem;
 }
 
 .runyth-npc-button__picker-footer button {
@@ -787,4 +794,19 @@
   .runyth-npc-button__preview-numbers {
     grid-template-columns: repeat(2, minmax(5rem, 1fr));
   }
+}
+
+.runyth-npc-button__filter-advanced {
+  border-top: 1px solid var(--color-border-light-primary, rgb(128 128 128 / 35%));
+  margin-top: 0.65rem;
+  padding-top: 0.55rem;
+}
+
+.runyth-npc-button__filter-advanced > summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.runyth-npc-button__filter-advanced > .runyth-npc-button__filters-grid {
+  margin-top: 0.65rem;
 }

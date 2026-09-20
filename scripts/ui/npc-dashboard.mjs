@@ -31,7 +31,7 @@ import {
 } from "../generator/data.mjs";
 import { normalizeGroupRaceIds, normalizeGroupRoleIds, resolveTierProfile } from "../generator/npc-generator.mjs";
 import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
-import { applyStringFilters } from "../filters.mjs";
+import { applyStringFilters, loadFilterSettings, visibleFilterCatalogIds } from "../filters.mjs";
 import { logger } from "../logger.mjs";
 import { loadLastOptions, loadWindowState, saveLastOptions, saveWindowState } from "../settings.mjs";
 import { createImportedNpcActors, createNpcActors } from "../services/actor-service.mjs";
@@ -309,6 +309,50 @@ function effectiveRaceComposition(options) {
 function effectiveRoleComposition(options) {
   const value = String(options.roleComposition ?? DEFAULT_OPTIONS.roleComposition);
   return ROLE_COMPOSITION_MODES[value] ? value : DEFAULT_OPTIONS.roleComposition;
+}
+
+
+function firstVisibleId(ids, preferred, fallback) {
+  if (ids.includes(String(preferred ?? ""))) return String(preferred);
+  if (ids.includes(String(fallback ?? ""))) return String(fallback);
+  return ids[0] ?? String(preferred ?? fallback ?? "");
+}
+
+function optionsWithVisibleFilters(options) {
+  const settings = loadFilterSettings();
+  const next = { ...options };
+  const visibleRoles = visibleFilterCatalogIds("roles", settings);
+  const visibleRaces = visibleFilterCatalogIds("races", settings);
+  const visibleNaming = visibleFilterCatalogIds("namingStyles", settings);
+  const visibleHabitats = visibleFilterCatalogIds("habitats", settings);
+  const visibleGroups = visibleFilterCatalogIds("groupTypes", settings);
+  const visibleFolders = visibleFilterCatalogIds("folders", settings);
+
+  next.role = firstVisibleId(visibleRoles, next.role, DEFAULT_OPTIONS.role);
+  if (next.species !== "custom") next.species = firstVisibleId(visibleRaces, next.species, DEFAULT_OPTIONS.species);
+  next.namingStyle = firstVisibleId(visibleNaming, next.namingStyle, DEFAULT_OPTIONS.namingStyle);
+  if (!String(next.habitat ?? "").startsWith("custom:")) next.habitat = firstVisibleId(visibleHabitats, next.habitat, DEFAULT_OPTIONS.habitat);
+  next.groupType = firstVisibleId(visibleGroups, next.groupType, DEFAULT_OPTIONS.groupType);
+
+  const allowedRaceSet = new Set(visibleRaces);
+  next.groupRaces = (Array.isArray(next.groupRaces) ? next.groupRaces : [])
+    .map(String)
+    .filter((id) => id.startsWith("custom:") || allowedRaceSet.has(id));
+  if (!next.groupRaces.length) next.groupRaces = [next.species === "custom" ? `custom:${next.customSpecies || "Humanoid"}` : next.species];
+
+  const allowedRoleSet = new Set(visibleRoles);
+  next.groupRoles = (Array.isArray(next.groupRoles) ? next.groupRoles : [])
+    .map(String)
+    .filter((id) => allowedRoleSet.has(id));
+  if (!next.groupRoles.length) next.groupRoles = [next.role];
+
+  const destination = next.useActorRoot ? "@root" : next.folderId ? `folder:${next.folderId}` : "@default";
+  if (destination !== "@default" && !visibleFolders.includes(destination)) {
+    next.folderId = "";
+    next.newFolderName = "";
+    next.useActorRoot = false;
+  }
+  return next;
 }
 
 function dashboardContent(options, tierStyle) {
@@ -804,7 +848,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
 
   async _renderHTML() {
     const remembered = loadLastOptions();
-    const options = { ...DEFAULT_OPTIONS, ...remembered };
+    const options = optionsWithVisibleFilters({ ...DEFAULT_OPTIONS, ...remembered });
     const tierStyle = game.settings.get(MODULE_ID, SETTINGS.TIER_STYLE) || TIER_STYLES.NAMED;
     const template = document.createElement("template");
     template.innerHTML = dashboardContent(options, tierStyle);

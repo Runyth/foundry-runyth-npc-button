@@ -171,7 +171,7 @@
       "portraitPromptTitle": "Porträt-Prompts",
       "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert.",
       "filterTitle": "Dashboard-Filtereinstellungen",
-      "filterBody": "Configure Settings bietet ein eigenes Filter-Menü mit Erlauben-/Verbieten-Regeln für exakte Treffer, Enthält-, Präfix-, Suffix- und Regex-Muster. Filterprofile können als versionierte JSON-Dateien exportiert/importiert oder über die Zwischenablage kopiert werden.",
+      "filterBody": "Configure Settings bietet ein eigenes Filter-Menü. Jeder wichtige Dashboard-Katalog besitzt eine skalierbare, durchsuchbare Mehrfachauswahlliste, in der standardmäßig alle aktuellen Einträge enthalten sind; entferne Auswahlen, um Einträge auszublenden. Erweiterte String-/Regex-Erlauben- und Verbieten-Regeln bleiben verfügbar, und Filterprofile können als versionierte JSON-Dateien oder über die Zwischenablage exportiert/importiert werden.",
       "compositionTitle": "Volks- und Rollenzusammensetzung",
       "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert (z. B. ungefähr 8/1/1 bei zehn NPCs und drei Völkern), mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Rollen können einheitlich bleiben, unterschiedliche Untertypen wie Händlerspezialisierungen durchlaufen, den Gruppen-Preset verwenden oder ebenso anteilig gemischt werden.",
       "combatReadinessTitle": "Kampfbereitschaft",
@@ -389,7 +389,7 @@
     },
     "filters": {
       "title": "NPC-Button-String-Filter",
-      "intro": "Verwende Erlauben- und Verbieten-Regeln, um die sichtbaren Picker-Kataloge zu kuratieren. Mehrere Werte können per Komma, Semikolon oder Zeilenumbruch getrennt werden. Sobald für eine Kategorie mindestens eine Erlauben-Regel gesetzt ist, müssen Einträge mindestens eine Erlauben-Regel erfüllen und dürfen keine Verbieten-Regel treffen.",
+      "intro": "Verwende die Auswahllisten für gewöhnliche Filterung. Standardmäßig sind alle aktuellen Einträge ausgewählt; entferne die Auswahl eines Eintrags, um ihn aus dem entsprechenden Dashboard-Picker auszublenden. Erweiterte Erlauben-/Verbieten-String- und Regex-Regeln bleiben unter jeder Liste verfügbar.",
       "categories": {
         "roles": "Rollen",
         "races": "Völker",
@@ -426,7 +426,15 @@
         "copyJson": "JSON kopieren",
         "importFile": "JSON importieren",
         "importClipboard": "Zwischenablage importieren"
-      }
+      },
+      "itemPicker": {
+        "label": "Enthaltene Einträge",
+        "hint": "Standardmäßig sind alle verfügbaren Einträge ausgewählt. Entferne einzelne Auswahlen, um sie aus dem Dashboard auszuschließen. Die Liste ist durchsuchbar, hierarchisch, scrollbar und für große Kataloge virtualisiert.",
+        "placeholder": "Keine Einträge ausgewählt",
+        "selectAll": "Alle auswählen",
+        "clear": "Alle abwählen"
+      },
+      "advancedRules": "Erweiterte String- und Regex-Regeln"
     },
     "combatReadiness": {
       "weaponless": "Waffenlos",

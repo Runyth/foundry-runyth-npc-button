@@ -31,7 +31,7 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
   - **Import NPC** validates the copied JSON and creates Actors in the currently selected destination.
   - Manual paste is available when browser clipboard reading is unavailable.
 - Strict AI payload validation and HTML sanitization before any Actor is created.
-- Portable world-level dashboard filter profiles: export/import versioned JSON files or copy/import the same profile through the clipboard.
+- Portable world-level dashboard filter profiles: each major picker catalog has a scalable searchable multi-select list with all items included by default; deselect individual entries to exclude them. Advanced string/regex rules remain available, and profiles can be exported/imported as versioned JSON files or through the clipboard.
 - Modular English and German localization.
 - Optional concise debug logging, disabled by default.
 - Public API for macros and future integrations.
@@ -82,7 +82,7 @@ Every NPC remains mechanically combatable, but carried combat gear is role-relat
 
 ### Filter profiles
 
-Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard string filters**. Filter configuration supports allow/deny exact, contains, prefix, suffix, and regular-expression rules. The filter window can export/import a versioned JSON profile as a file, copy it to the clipboard, or import one from the clipboard.
+Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard string filters**. Each filter category first presents a searchable, scrollable, virtualized multi-select list. All available entries are selected by default; simply deselect individual Roles, Races, Naming styles, Habitats, Group types, or Actor folders to remove them from the matching dashboard picker. The older allow/deny exact, contains, prefix, suffix, and regular-expression rules remain available under **Advanced string and regex rules**. The filter window can export/import a versioned JSON profile as a file, copy it to the clipboard, or import one from the clipboard.
 
 ### AI payload shape
 

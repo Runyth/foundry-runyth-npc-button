@@ -4,7 +4,8 @@ import test from "node:test";
 import { buildPortraitPromptFromActor } from "../scripts/ai/portrait-prompt-builder.mjs";
 import { registerPortraitPromptHooks } from "../scripts/ui/actor-portrait-button.mjs";
 import { clearExtensionRegistry, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
-import { FilterSettingsForm, applyStringFilters, buildFilterProfile, defaultFilterConfiguration, parseFilterProfile, parseFilterSettings, settingsFromForm } from "../scripts/filters.mjs";
+import { FilterSettingsForm, applyStringFilters, buildFilterProfile, defaultFilterConfiguration, filterCatalogItems, parseFilterProfile, parseFilterSettings, selectedFilterIds, settingsFromForm } from "../scripts/filters.mjs";
+import { hierarchicalMultiPickerMarkup } from "../scripts/ui/hierarchical-multi-picker.mjs";
 
 test("portrait prompt builder creates a terse single-image prompt", () => {
   const actor = {
@@ -110,6 +111,9 @@ function fakeFilterForm(overrides = {}) {
       if (typeof value === "boolean") map.set(`filters.${category}.${key}`, new FilterControl("on", override ?? value));
       else map.set(`filters.${category}.${key}`, new FilterControl(override ?? value, false));
     }
+    if (overrides?.[category]?.selectedIds !== undefined) {
+      map.set(`filters.${category}.selectedIds`, new FilterControl(JSON.stringify(overrides[category].selectedIds), false));
+    }
   }
   return {
     querySelector(selector) {
@@ -166,4 +170,99 @@ test("portrait prompt integration registers ApplicationV2 and legacy Actor-sheet
     "renderActorSheet"
   ]);
   assert.ok(registered.every((entry) => typeof entry.callback === "function"));
+});
+
+test("item-selection filters default to every built-in Race being included", () => {
+  globalThis.game = {
+    i18n: { localize: (key) => key },
+    folders: [],
+    settings: { get: () => "" }
+  };
+  clearExtensionRegistry();
+  const defaults = defaultFilterConfiguration();
+  const selected = selectedFilterIds("races", defaults.races);
+  assert.equal(selected.length, 10);
+  assert.ok(selected.includes("human"));
+  assert.ok(selected.includes("tiefling"));
+});
+
+test("deselecting catalog items persists as ID exclusions and removes them from dashboard catalogs", async () => {
+  globalThis.game = {
+    i18n: { localize: (key) => key },
+    folders: [],
+    settings: { get: () => "" }
+  };
+  clearExtensionRegistry();
+  const settings = parseFilterSettings({ races: { excludedIds: ["elf", "tiefling"] } });
+  const selected = selectedFilterIds("races", settings.races);
+  assert.equal(selected.includes("elf"), false);
+  assert.equal(selected.includes("tiefling"), false);
+  assert.equal(selected.includes("human"), true);
+
+  const visible = applyStringFilters("races", filterCatalogItems("races"), settings)
+    .filter((entry) => entry.kind !== "group")
+    .map((entry) => entry.id);
+  assert.equal(visible.includes("elf"), false);
+  assert.equal(visible.includes("tiefling"), false);
+  assert.equal(visible.includes("human"), true);
+});
+
+test("new extension catalog items are selected by default unless their IDs were explicitly excluded", async () => {
+  globalThis.game = {
+    i18n: { localize: (key) => key },
+    folders: [],
+    settings: { get: () => "" }
+  };
+  clearExtensionRegistry();
+  registerRace("hobgoblin", {
+    label: "Hobgoblin",
+    group: "supplemental",
+    size: "med",
+    speed: 30
+  });
+  const defaults = defaultFilterConfiguration();
+  assert.ok(selectedFilterIds("races", defaults.races).includes("hobgoblin"));
+  const excluded = parseFilterSettings({ races: { excludedIds: ["hobgoblin"] } });
+  assert.equal(selectedFilterIds("races", excluded.races).includes("hobgoblin"), false);
+  clearExtensionRegistry();
+});
+
+test("portable filter profiles preserve individual item exclusions", () => {
+  const settings = parseFilterSettings({
+    races: { excludedIds: ["elf", "gnome"] },
+    roles: { excludedIds: ["noble"] }
+  });
+  const restored = parseFilterProfile(JSON.stringify(buildFilterProfile(settings)));
+  assert.deepEqual(restored.races.excludedIds, ["elf", "gnome"]);
+  assert.deepEqual(restored.roles.excludedIds, ["noble"]);
+});
+
+
+test("filter settings form converts unchecked catalog entries into persistent exclusions", () => {
+  globalThis.game = {
+    i18n: { localize: (key) => key },
+    folders: [],
+    settings: { get: () => "" }
+  };
+  clearExtensionRegistry();
+  const allRaces = selectedFilterIds("races", defaultFilterConfiguration().races);
+  const form = fakeFilterForm({ races: { selectedIds: allRaces.filter((id) => id !== "elf") } });
+  const parsed = settingsFromForm(form, defaultFilterConfiguration());
+  assert.deepEqual(parsed.races.excludedIds, ["elf"]);
+});
+
+
+test("scalable multi-picker can expose select-all and clear-all actions for filter UX", () => {
+  const html = hierarchicalMultiPickerMarkup({
+    id: "filter-races",
+    name: "filters.races.selectedIds",
+    label: "Included items",
+    values: ["human", "elf"],
+    showBulkActions: true,
+    selectAllText: "Select all",
+    clearText: "Clear all"
+  });
+  assert.match(html, /data-multi-picker-select-all/);
+  assert.match(html, /data-multi-picker-clear/);
+  assert.match(html, /filters\.races\.selectedIds/);
 });

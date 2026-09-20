@@ -1,6 +1,15 @@
 import { MODULE_ID, SETTINGS } from "./constants.mjs";
 import { logger } from "./logger.mjs";
 import { readClipboardText, writeClipboardText } from "./utils/clipboard.mjs";
+import {
+  GROUP_TYPE_GROUPS,
+  HABITAT_GROUPS,
+  NAMING_GROUPS,
+  RACE_GROUPS,
+  ROLE_GROUPS
+} from "./generator/data.mjs";
+import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "./extensions/registry.mjs";
+import { hierarchicalMultiPickerMarkup, mountHierarchicalMultiPicker } from "./ui/hierarchical-multi-picker.mjs";
 
 export const FILTER_CATEGORIES = Object.freeze({
   roles: { labelKey: "filters.categories.roles", placeholderKey: "filters.placeholders.roles" },
@@ -28,7 +37,8 @@ export function defaultFilterConfiguration() {
     regexDeny: "",
     caseSensitive: false,
     normalizeDiacritics: true,
-    trimWhitespace: true
+    trimWhitespace: true,
+    excludedIds: []
   }]));
 }
 
@@ -106,7 +116,11 @@ export function parseFilterSettings(raw) {
     if (!parsed || typeof parsed !== "object") return defaults;
     const merged = defaultFilterConfiguration();
     for (const key of Object.keys(FILTER_CATEGORIES)) {
-      if (parsed[key] && typeof parsed[key] === "object") merged[key] = { ...merged[key], ...parsed[key] };
+      if (parsed[key] && typeof parsed[key] === "object") {
+        merged[key] = { ...merged[key], ...parsed[key] };
+        const excluded = Array.isArray(parsed[key].excludedIds) ? parsed[key].excludedIds : [];
+        merged[key].excludedIds = [...new Set(excluded.map((value) => String(value).trim()).filter(Boolean))].slice(0, 10000);
+      }
     }
     return merged;
   } catch {
@@ -122,9 +136,146 @@ export async function saveFilterSettings(settings) {
   await game.settings.set(MODULE_ID, SETTINGS.FILTERS, JSON.stringify(parseFilterSettings(settings)));
 }
 
+
+function titleFromId(value) {
+  return String(value ?? "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function localizedConfigLabel(config, fallback = "") {
+  if (!config) return fallback;
+  if (config.labelKey && globalThis.game?.i18n) {
+    const key = `${MODULE_ID}.${config.labelKey}`;
+    const localized = game.i18n.localize(key);
+    if (localized && localized !== key) return localized;
+  }
+  return String(config.label ?? fallback);
+}
+
+function localizedGroupLabel(prefix, group) {
+  if (globalThis.game?.i18n) {
+    const key = `${MODULE_ID}.${prefix}.${group}`;
+    const localized = game.i18n.localize(key);
+    if (localized && localized !== key) return localized;
+  }
+  return titleFromId(group);
+}
+
+function groupedCatalogItems(entries, baseGroups, groupPrefix, { excludeIds = [] } = {}) {
+  const excluded = new Set(excludeIds);
+  const items = [];
+  for (const group of getCatalogGroups(entries, baseGroups)) {
+    const members = Object.entries(entries)
+      .filter(([id, config]) => !excluded.has(id) && config?.group === group)
+      .sort((left, right) => localizedConfigLabel(left[1], left[0]).localeCompare(localizedConfigLabel(right[1], right[0])));
+    if (!members.length) continue;
+    items.push({ kind: "group", id: `group:${group}`, label: localizedGroupLabel(groupPrefix, group), depth: 0 });
+    for (const [id, config] of members) {
+      const label = localizedConfigLabel(config, titleFromId(id));
+      items.push({ kind: "option", id, label, display: label, description: "", depth: 1 });
+    }
+  }
+  return items;
+}
+
+function actorFolderCatalogItems() {
+  const folders = Array.from(globalThis.game?.folders ?? []).filter((folder) => folder.type === "Actor");
+  const byParent = new Map();
+  for (const folder of folders) {
+    const parentId = !folder.folder ? null : (typeof folder.folder === "object" ? folder.folder.id : folder.folder);
+    const siblings = byParent.get(parentId) ?? [];
+    siblings.push(folder);
+    byParent.set(parentId, siblings);
+  }
+  for (const siblings of byParent.values()) siblings.sort((left, right) => left.name.localeCompare(right.name));
+
+  const localize = (key, fallback) => {
+    if (!globalThis.game?.i18n) return fallback;
+    const full = `${MODULE_ID}.${key}`;
+    const result = game.i18n.localize(full);
+    return result && result !== full ? result : fallback;
+  };
+  const items = [
+    { kind: "group", id: "group:destination", label: localize("folderGroups.destination", "Destination"), depth: 0 },
+    { kind: "option", id: "@default", label: localize("ui.configuredDefault", "Configured default"), display: localize("ui.configuredDefault", "Configured default"), depth: 1 },
+    { kind: "option", id: "@root", label: localize("ui.actorsRoot", "Actors root"), display: localize("ui.actorsRoot", "Actors root"), depth: 1 }
+  ];
+  if (!folders.length) return items;
+  items.push({ kind: "group", id: "group:folders", label: localize("folderGroups.existing", "Existing Actor folders"), depth: 0 });
+
+  const visited = new Set();
+  function walk(folder, depth, path) {
+    if (!folder || visited.has(folder.id)) return;
+    visited.add(folder.id);
+    const fullPath = [...path, folder.name];
+    items.push({
+      kind: "option",
+      id: `folder:${folder.id}`,
+      label: folder.name,
+      display: fullPath.join(" / "),
+      description: fullPath.join(" / "),
+      searchText: fullPath.join(" "),
+      depth
+    });
+    for (const child of byParent.get(folder.id) ?? []) walk(child, depth + 1, fullPath);
+  }
+  for (const root of byParent.get(null) ?? []) walk(root, 1, []);
+  for (const folder of folders) if (!visited.has(folder.id)) walk(folder, 1, []);
+  return items;
+}
+
+export function filterCatalogItems(category) {
+  switch (category) {
+    case "roles": {
+      const entries = getRoles();
+      return groupedCatalogItems(entries, ROLE_GROUPS, "roleGroups");
+    }
+    case "races": {
+      const entries = Object.fromEntries(Object.entries(getRaces()).filter(([id]) => id !== "custom"));
+      return groupedCatalogItems(entries, RACE_GROUPS, "raceGroups");
+    }
+    case "namingStyles": {
+      const entries = getNamingStyles();
+      return groupedCatalogItems(entries, NAMING_GROUPS, "namingGroups");
+    }
+    case "habitats": {
+      const entries = getHabitats();
+      return groupedCatalogItems(entries, HABITAT_GROUPS, "habitatGroups");
+    }
+    case "groupTypes": {
+      const entries = getGroupTypes();
+      return groupedCatalogItems(entries, GROUP_TYPE_GROUPS, "groupTypeGroups");
+    }
+    case "folders":
+      return actorFolderCatalogItems();
+    default:
+      return [];
+  }
+}
+
+export function selectableFilterIds(category) {
+  return filterCatalogItems(category)
+    .filter((item) => item?.kind !== "group")
+    .map((item) => String(item.id));
+}
+
+export function selectedFilterIds(category, config) {
+  const excluded = new Set(Array.isArray(config?.excludedIds) ? config.excludedIds.map(String) : []);
+  return selectableFilterIds(category).filter((id) => !excluded.has(id));
+}
+
+export function visibleFilterCatalogIds(category, settings = loadFilterSettings()) {
+  return applyStringFilters(category, filterCatalogItems(category), settings)
+    .filter((item) => item?.kind !== "group")
+    .map((item) => String(item.id));
+}
+
 export function applyStringFilters(category, items = [], settings = loadFilterSettings()) {
   const config = settings?.[category] ?? defaultFilterConfiguration()[category];
   const visible = [];
+  const excludedIds = new Set(Array.isArray(config?.excludedIds) ? config.excludedIds.map(String) : []);
   let pendingGroup = null;
   let groupHasEntries = false;
 
@@ -140,6 +291,7 @@ export function applyStringFilters(category, items = [], settings = loadFilterSe
       pendingGroup = item;
       continue;
     }
+    if (excludedIds.has(String(item?.id ?? ""))) continue;
     if (String(item?.id ?? "").startsWith("@")) {
       if (pendingGroup && !groupHasEntries) {
         visible.push(pendingGroup);
@@ -199,13 +351,15 @@ function downloadTextFile(filename, text) {
 
 export function filterSummary(config) {
   const parts = [];
+  if (Array.isArray(config?.excludedIds) && config.excludedIds.length) parts.push(`${config.excludedIds.length} item exclusion${config.excludedIds.length === 1 ? "" : "s"}`);
   for (const [label, key] of [["allow exact", "exactAllow"], ["deny exact", "exactDeny"], ["allow contains", "containsAllow"], ["deny contains", "containsDeny"], ["allow prefix", "prefixAllow"], ["deny prefix", "prefixDeny"], ["allow suffix", "suffixAllow"], ["deny suffix", "suffixDeny"], ["allow regex", "regexAllow"], ["deny regex", "regexDeny"]]) {
     if (String(config?.[key] ?? "").trim()) parts.push(label);
   }
   return parts.join(", ");
 }
 
-export function settingsFromForm(form) {
+export function settingsFromForm(form, previous = null) {
+  const prior = previous ?? (typeof globalThis.game?.settings?.get === "function" ? loadFilterSettings() : defaultFilterConfiguration());
   const next = defaultFilterConfiguration();
   const stringKeys = ["exactAllow", "exactDeny", "containsAllow", "containsDeny", "prefixAllow", "prefixDeny", "suffixAllow", "suffixDeny", "regexAllow", "regexDeny"];
   for (const category of Object.keys(FILTER_CATEGORIES)) {
@@ -217,6 +371,26 @@ export function settingsFromForm(form) {
       const control = form?.querySelector?.(`[name="filters.${category}.${key}"]`);
       next[category][key] = Boolean(control?.checked);
     }
+
+    const currentIds = selectableFilterIds(category);
+    const currentSet = new Set(currentIds);
+    const selectedControl = form?.querySelector?.(`[name="filters.${category}.selectedIds"]`);
+    let selected = new Set(currentIds);
+    if (selectedControl) {
+      try {
+        const parsed = JSON.parse(selectedControl.value || "[]");
+        if (Array.isArray(parsed)) selected = new Set(parsed.map(String));
+      } catch {
+        selected = new Set(currentIds);
+      }
+    }
+    const preservedUnknown = (Array.isArray(prior?.[category]?.excludedIds) ? prior[category].excludedIds : [])
+      .map(String)
+      .filter((id) => !currentSet.has(id));
+    next[category].excludedIds = [...new Set([
+      ...preservedUnknown,
+      ...currentIds.filter((id) => !selected.has(id))
+    ])];
   }
   return next;
 }
@@ -254,7 +428,9 @@ export class FilterSettingsForm extends BaseApplicationV2 {
       id,
       label: game.i18n.localize(`${MODULE_ID}.${meta.labelKey}`),
       placeholder: game.i18n.localize(`${MODULE_ID}.${meta.placeholderKey}`),
-      value: settings[id]
+      value: settings[id],
+      items: filterCatalogItems(id),
+      selectedIds: selectedFilterIds(id, settings[id])
     }));
     const template = document.createElement("template");
     template.innerHTML = `
@@ -271,19 +447,33 @@ export class FilterSettingsForm extends BaseApplicationV2 {
           <fieldset class="runyth-npc-button__filters-fieldset">
             <legend>${category.label}</legend>
             <p class="notes">${category.placeholder}</p>
-            <div class="runyth-npc-button__filters-grid">
-              ${["exactAllow","exactDeny","containsAllow","containsDeny","prefixAllow","prefixDeny","suffixAllow","suffixDeny","regexAllow","regexDeny"].map((key) => `
-                <label>
-                  <span>${game.i18n.localize(`${MODULE_ID}.filters.fields.${key}`)}</span>
-                  <textarea name="filters.${category.id}.${key}" rows="2">${foundry.utils.escapeHTML(String(category.value[key] ?? ""))}</textarea>
-                </label>
-              `).join("")}
-            </div>
-            <div class="form-group">
-              <label><input type="checkbox" name="filters.${category.id}.caseSensitive" ${category.value.caseSensitive ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.caseSensitive`)}</label>
-              <label><input type="checkbox" name="filters.${category.id}.normalizeDiacritics" ${category.value.normalizeDiacritics ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.normalizeDiacritics`)}</label>
-              <label><input type="checkbox" name="filters.${category.id}.trimWhitespace" ${category.value.trimWhitespace ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.trimWhitespace`)}</label>
-            </div>
+            ${hierarchicalMultiPickerMarkup({
+              id: `runyth-npc-button-filter-${category.id}-items`,
+              name: `filters.${category.id}.selectedIds`,
+              label: game.i18n.localize(`${MODULE_ID}.filters.itemPicker.label`),
+              hint: game.i18n.localize(`${MODULE_ID}.filters.itemPicker.hint`),
+              values: category.selectedIds,
+              placeholder: game.i18n.localize(`${MODULE_ID}.filters.itemPicker.placeholder`),
+              showBulkActions: true,
+              selectAllText: game.i18n.localize(`${MODULE_ID}.filters.itemPicker.selectAll`),
+              clearText: game.i18n.localize(`${MODULE_ID}.filters.itemPicker.clear`)
+            })}
+            <details class="runyth-npc-button__filter-advanced">
+              <summary>${game.i18n.localize(`${MODULE_ID}.filters.advancedRules`)}</summary>
+              <div class="runyth-npc-button__filters-grid">
+                ${["exactAllow","exactDeny","containsAllow","containsDeny","prefixAllow","prefixDeny","suffixAllow","suffixDeny","regexAllow","regexDeny"].map((key) => `
+                  <label>
+                    <span>${game.i18n.localize(`${MODULE_ID}.filters.fields.${key}`)}</span>
+                    <textarea name="filters.${category.id}.${key}" rows="2">${foundry.utils.escapeHTML(String(category.value[key] ?? ""))}</textarea>
+                  </label>
+                `).join("")}
+              </div>
+              <div class="form-group">
+                <label><input type="checkbox" name="filters.${category.id}.caseSensitive" ${category.value.caseSensitive ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.caseSensitive`)}</label>
+                <label><input type="checkbox" name="filters.${category.id}.normalizeDiacritics" ${category.value.normalizeDiacritics ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.normalizeDiacritics`)}</label>
+                <label><input type="checkbox" name="filters.${category.id}.trimWhitespace" ${category.value.trimWhitespace ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.trimWhitespace`)}</label>
+              </div>
+            </details>
           </fieldset>
         `).join("")}
         <footer class="sheet-footer flexrow">
@@ -305,6 +495,18 @@ export class FilterSettingsForm extends BaseApplicationV2 {
     const { signal } = this.#abortController;
     const form = this.form ?? (this.element?.tagName === "FORM" ? this.element : null);
     if (!form) return;
+
+    for (const category of Object.keys(FILTER_CATEGORIES)) {
+      const root = form.querySelector(`[data-hierarchical-multi-picker="runyth-npc-button-filter-${category}-items"]`);
+      mountHierarchicalMultiPicker(root, {
+        items: filterCatalogItems(category),
+        doneText: game.i18n.localize(`${MODULE_ID}.ui.done`),
+        searchPlaceholder: game.i18n.localize(`${MODULE_ID}.ui.searchOptions`),
+        emptyText: game.i18n.localize(`${MODULE_ID}.ui.noMatchingOptions`),
+        placeholder: game.i18n.localize(`${MODULE_ID}.filters.itemPicker.placeholder`),
+        requireOne: false
+      }, signal);
+    }
 
     form.querySelector('[data-action="export-filter-file"]')?.addEventListener("click", () => {
       const profile = JSON.stringify(buildFilterProfile(settingsFromForm(form)), null, 2);
