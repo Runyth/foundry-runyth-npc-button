@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { buildPortraitPromptFromActor } from "../scripts/ai/portrait-prompt-builder.mjs";
 import { clearExtensionRegistry, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
-import { applyStringFilters, parseFilterSettings } from "../scripts/filters.mjs";
+import { applyStringFilters, buildFilterProfile, parseFilterProfile, parseFilterSettings } from "../scripts/filters.mjs";
 
 test("portrait prompt builder creates a terse single-image prompt", () => {
   const actor = {
@@ -76,4 +76,18 @@ test("string filters combine allow and deny rules", () => {
     { kind: "option", id: "merchant", label: "Merchant", display: "Merchant" }
   ], settings);
   assert.deepEqual(visible.map((entry) => entry.id), ["guard"]);
+});
+
+
+test("filter profiles export and import as versioned portable JSON", () => {
+  const settings = parseFilterSettings({
+    races: { exactDeny: "Tiefling" },
+    roles: { regexAllow: "^(Guard|Scout)$" }
+  });
+  const profile = buildFilterProfile(settings);
+  const restored = parseFilterProfile(JSON.stringify(profile));
+  assert.equal(profile.format, "runyth-npc-button-filter-profile");
+  assert.equal(profile.version, 1);
+  assert.equal(restored.races.exactDeny, "Tiefling");
+  assert.equal(restored.roles.regexAllow, "^(Guard|Scout)$");
 });

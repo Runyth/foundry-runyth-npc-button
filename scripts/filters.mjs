@@ -11,7 +11,7 @@ export const FILTER_CATEGORIES = Object.freeze({
 });
 
 const MATCH_FIELDS = ["id", "label", "display", "description", "searchText"];
-const BaseFormApplication = globalThis.FormApplication ?? class {};
+const BaseApplicationV2 = globalThis.foundry?.applications?.api?.ApplicationV2 ?? class {};
 
 export function defaultFilterConfiguration() {
   return Object.fromEntries(Object.keys(FILTER_CATEGORIES).map((key) => [key, {
@@ -162,6 +162,51 @@ export function applyStringFilters(category, items = [], settings = loadFilterSe
   return visible;
 }
 
+
+export const FILTER_PROFILE_FORMAT = "runyth-npc-button-filter-profile";
+export const FILTER_PROFILE_VERSION = 1;
+
+export function buildFilterProfile(settings = loadFilterSettings()) {
+  return {
+    format: FILTER_PROFILE_FORMAT,
+    version: FILTER_PROFILE_VERSION,
+    filters: parseFilterSettings(settings)
+  };
+}
+
+export function parseFilterProfile(raw) {
+  if (typeof raw === "string" && raw.length > 1_000_000) throw new Error("Filter profile is too large.");
+  const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Filter profile must be a JSON object.");
+  if (parsed.format !== FILTER_PROFILE_FORMAT) throw new Error("This is not a Runyth NPC Button filter profile.");
+  if (Number(parsed.version) !== FILTER_PROFILE_VERSION) throw new Error(`Unsupported filter profile version: ${parsed.version}.`);
+  if (!parsed.filters || typeof parsed.filters !== "object" || Array.isArray(parsed.filters)) throw new Error("Filter profile is missing its filters object.");
+  return parseFilterSettings(parsed.filters);
+}
+
+function downloadTextFile(filename, text) {
+  const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+async function copyText(text) {
+  if (game.clipboard?.copyPlainText) return game.clipboard.copyPlainText(text);
+  if (!navigator.clipboard?.writeText) throw new Error("Clipboard writing is not available in this client.");
+  return navigator.clipboard.writeText(text);
+}
+
+async function readClipboardText() {
+  if (!navigator.clipboard?.readText) throw new Error("Clipboard reading is not available in this client.");
+  return navigator.clipboard.readText();
+}
+
 export function filterSummary(config) {
   const parts = [];
   for (const [label, key] of [["allow exact", "exactAllow"], ["deny exact", "exactDeny"], ["allow contains", "containsAllow"], ["deny contains", "containsDeny"], ["allow prefix", "prefixAllow"], ["deny prefix", "prefixDeny"], ["allow suffix", "suffixAllow"], ["deny suffix", "suffixDeny"], ["allow regex", "regexAllow"], ["deny regex", "regexDeny"]]) {
@@ -170,80 +215,153 @@ export function filterSummary(config) {
   return parts.join(", ");
 }
 
-export class FilterSettingsForm extends BaseFormApplication {
-  static get defaultOptions() {
-    if (!globalThis.foundry?.utils?.mergeObject) return {};
-    return foundry.utils.mergeObject(super.defaultOptions ?? {}, {
-      id: "runyth-npc-button-filter-settings",
-      title: game.i18n.localize(`${MODULE_ID}.filters.title`),
-      classes: ["runyth-npc-button", "runyth-npc-button--filters"],
-      width: 920,
-      height: 800,
-      resizable: true,
-      closeOnSubmit: true
-    });
-  }
-
-  getData() {
-    const settings = loadFilterSettings();
-    return {
-      categories: Object.entries(FILTER_CATEGORIES).map(([id, meta]) => ({
-        id,
-        label: game.i18n.localize(`${MODULE_ID}.${meta.labelKey}`),
-        placeholder: game.i18n.localize(`${MODULE_ID}.${meta.placeholderKey}`),
-        value: settings[id]
-      }))
-    };
-  }
-
-  async _updateObject(_event, formData) {
-    const expanded = foundry.utils.expandObject(formData);
-    const next = defaultFilterConfiguration();
-    for (const category of Object.keys(FILTER_CATEGORIES)) {
-      next[category] = { ...next[category], ...(expanded.filters?.[category] ?? {}) };
+function settingsFromForm(form) {
+  const formData = new FormDataExtended(form).object;
+  const expanded = foundry.utils.expandObject(formData);
+  const next = defaultFilterConfiguration();
+  for (const category of Object.keys(FILTER_CATEGORIES)) {
+    next[category] = { ...next[category], ...(expanded.filters?.[category] ?? {}) };
+    for (const booleanKey of ["caseSensitive", "normalizeDiacritics", "trimWhitespace"]) {
+      const control = form.elements[`filters.${category}.${booleanKey}`];
+      next[category][booleanKey] = Boolean(control?.checked);
     }
-    await saveFilterSettings(next);
-    ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersSaved`));
   }
+  return next;
+}
 
-  async _renderInner() {
-    const { categories } = this.getData();
-    const wrapper = document.createElement("form");
-    wrapper.className = "runyth-npc-button__filters-form";
-    wrapper.innerHTML = `
-      <p class="notes">${game.i18n.localize(`${MODULE_ID}.filters.intro`)}</p>
-      ${categories.map((category) => `
-        <fieldset class="runyth-npc-button__filters-fieldset">
-          <legend>${category.label}</legend>
-          <p class="notes">${category.placeholder}</p>
-          <div class="runyth-npc-button__filters-grid">
-            ${["exactAllow","exactDeny","containsAllow","containsDeny","prefixAllow","prefixDeny","suffixAllow","suffixDeny","regexAllow","regexDeny"].map((key) => `
-              <label>
-                <span>${game.i18n.localize(`${MODULE_ID}.filters.fields.${key}`)}</span>
-                <textarea name="filters.${category.id}.${key}" rows="2">${foundry.utils.escapeHTML(String(category.value[key] ?? ""))}</textarea>
-              </label>
-            `).join("")}
-          </div>
-          <div class="form-group">
-            <label><input type="checkbox" name="filters.${category.id}.caseSensitive" ${category.value.caseSensitive ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.caseSensitive`)}</label>
-            <label><input type="checkbox" name="filters.${category.id}.normalizeDiacritics" ${category.value.normalizeDiacritics ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.normalizeDiacritics`)}</label>
-            <label><input type="checkbox" name="filters.${category.id}.trimWhitespace" ${category.value.trimWhitespace ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.trimWhitespace`)}</label>
-          </div>
-        </fieldset>
-      `).join("")}
-      <footer class="sheet-footer flexrow">
-        <button type="submit"><i class="fa-solid fa-floppy-disk"></i> ${game.i18n.localize("SETTINGS.Save")}</button>
-      </footer>
+export class FilterSettingsForm extends BaseApplicationV2 {
+  static DEFAULT_OPTIONS = {
+    id: "runyth-npc-button-filter-settings",
+    classes: ["runyth-npc-button", "runyth-npc-button--filters"],
+    tag: "form",
+    window: {
+      title: `${MODULE_ID}.filters.title`,
+      icon: "fa-solid fa-filter",
+      resizable: true,
+      minimizable: true
+    },
+    position: {
+      width: 920,
+      height: 800
+    }
+  };
+
+  #abortController = null;
+
+  async _renderHTML() {
+    const settings = loadFilterSettings();
+    const categories = Object.entries(FILTER_CATEGORIES).map(([id, meta]) => ({
+      id,
+      label: game.i18n.localize(`${MODULE_ID}.${meta.labelKey}`),
+      placeholder: game.i18n.localize(`${MODULE_ID}.${meta.placeholderKey}`),
+      value: settings[id]
+    }));
+    const template = document.createElement("template");
+    template.innerHTML = `
+      <div class="runyth-npc-button__filters-form">
+        <p class="notes">${game.i18n.localize(`${MODULE_ID}.filters.intro`)}</p>
+        <div class="runyth-npc-button__filter-profile-toolbar">
+          <button type="button" data-action="export-filter-file"><i class="fa-solid fa-file-export"></i> ${game.i18n.localize(`${MODULE_ID}.filters.actions.exportFile`)}</button>
+          <button type="button" data-action="copy-filter-json"><i class="fa-regular fa-copy"></i> ${game.i18n.localize(`${MODULE_ID}.filters.actions.copyJson`)}</button>
+          <button type="button" data-action="import-filter-file"><i class="fa-solid fa-file-import"></i> ${game.i18n.localize(`${MODULE_ID}.filters.actions.importFile`)}</button>
+          <button type="button" data-action="import-filter-clipboard"><i class="fa-solid fa-clipboard"></i> ${game.i18n.localize(`${MODULE_ID}.filters.actions.importClipboard`)}</button>
+          <input type="file" accept="application/json,.json" data-filter-profile-file hidden>
+        </div>
+        ${categories.map((category) => `
+          <fieldset class="runyth-npc-button__filters-fieldset">
+            <legend>${category.label}</legend>
+            <p class="notes">${category.placeholder}</p>
+            <div class="runyth-npc-button__filters-grid">
+              ${["exactAllow","exactDeny","containsAllow","containsDeny","prefixAllow","prefixDeny","suffixAllow","suffixDeny","regexAllow","regexDeny"].map((key) => `
+                <label>
+                  <span>${game.i18n.localize(`${MODULE_ID}.filters.fields.${key}`)}</span>
+                  <textarea name="filters.${category.id}.${key}" rows="2">${foundry.utils.escapeHTML(String(category.value[key] ?? ""))}</textarea>
+                </label>
+              `).join("")}
+            </div>
+            <div class="form-group">
+              <label><input type="checkbox" name="filters.${category.id}.caseSensitive" ${category.value.caseSensitive ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.caseSensitive`)}</label>
+              <label><input type="checkbox" name="filters.${category.id}.normalizeDiacritics" ${category.value.normalizeDiacritics ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.normalizeDiacritics`)}</label>
+              <label><input type="checkbox" name="filters.${category.id}.trimWhitespace" ${category.value.trimWhitespace ? "checked" : ""}> ${game.i18n.localize(`${MODULE_ID}.filters.fields.trimWhitespace`)}</label>
+            </div>
+          </fieldset>
+        `).join("")}
+        <footer class="sheet-footer flexrow">
+          <button type="submit"><i class="fa-solid fa-floppy-disk"></i> ${game.i18n.localize("SETTINGS.Save")}</button>
+        </footer>
+      </div>
     `;
-    return wrapper;
+    return template.content;
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.on("submit", (event) => {
+  _replaceHTML(result, content) {
+    content.replaceChildren(result);
+  }
+
+  async _onRender(context, options) {
+    await super._onRender?.(context, options);
+    this.#abortController?.abort();
+    this.#abortController = new AbortController();
+    const { signal } = this.#abortController;
+    const form = this.element;
+    if (!(form instanceof HTMLFormElement)) return;
+
+    form.addEventListener("submit", (event) => {
       event.preventDefault();
-      const formData = new FormDataExtended(html[0]).object;
-      void this._updateObject(event, formData).then(() => this.close());
-    });
+      void saveFilterSettings(settingsFromForm(form))
+        .then(() => ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersSaved`)))
+        .then(() => this.close())
+        .catch((error) => ui.notifications.error(error?.message ?? String(error)));
+    }, { signal });
+
+    form.querySelector('[data-action="export-filter-file"]')?.addEventListener("click", () => {
+      const profile = JSON.stringify(buildFilterProfile(settingsFromForm(form)), null, 2);
+      downloadTextFile("runyth-npc-button-filters.json", `${profile}\n`);
+      ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersExported`));
+    }, { signal });
+
+    form.querySelector('[data-action="copy-filter-json"]')?.addEventListener("click", () => {
+      const profile = `${JSON.stringify(buildFilterProfile(settingsFromForm(form)), null, 2)}\n`;
+      void copyText(profile)
+        .then(() => ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersCopied`)))
+        .catch((error) => ui.notifications.error(error?.message ?? String(error)));
+    }, { signal });
+
+    const fileInput = form.querySelector("[data-filter-profile-file]");
+    form.querySelector('[data-action="import-filter-file"]')?.addEventListener("click", () => fileInput?.click(), { signal });
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      if (file.size > 1_000_000) {
+        ui.notifications.error(game.i18n.localize(`${MODULE_ID}.notifications.filterProfileTooLarge`));
+        fileInput.value = "";
+        return;
+      }
+      void file.text()
+        .then((raw) => parseFilterProfile(raw))
+        .then((settings) => saveFilterSettings(settings))
+        .then(() => {
+          ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersImported`));
+          return this.render({ force: true });
+        })
+        .catch((error) => ui.notifications.error(`${game.i18n.localize(`${MODULE_ID}.notifications.filterImportFailed`)}: ${error?.message ?? String(error)}`))
+        .finally(() => { fileInput.value = ""; });
+    }, { signal });
+
+    form.querySelector('[data-action="import-filter-clipboard"]')?.addEventListener("click", () => {
+      void readClipboardText()
+        .then((raw) => parseFilterProfile(raw))
+        .then((settings) => saveFilterSettings(settings))
+        .then(() => {
+          ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersImported`));
+          return this.render({ force: true });
+        })
+        .catch((error) => ui.notifications.error(`${game.i18n.localize(`${MODULE_ID}.notifications.filterImportFailed`)}: ${error?.message ?? String(error)}`));
+    }, { signal });
+  }
+
+  async _preClose(options) {
+    this.#abortController?.abort();
+    await super._preClose?.(options);
   }
 }

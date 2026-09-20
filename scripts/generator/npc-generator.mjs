@@ -8,6 +8,10 @@ import {
   GROUP_SECRETS,
   GROUP_TYPES,
   INTERNAL_CONFLICT,
+  COMBAT_READINESS,
+  ROLE_COMBAT_PROFILES,
+  ROLE_COMPOSITION_MODES,
+  ROLE_VARIANTS,
   HABITATS,
   IMPRESSIONS,
   NAME_STYLES,
@@ -142,7 +146,9 @@ function proportionalCounts(ids, count, weights) {
  */
 export function buildRaceAssignments(options = {}, count = 1, random = Math.random) {
   const total = clamp(Math.trunc(Number(count) || 1), 1, 100);
-  if (options.raceComposition !== "mixed") {
+  let composition = String(options.raceComposition ?? "single");
+  if (composition === "mixed") composition = String(options.raceDistribution ?? "balanced");
+  if (composition === "single") {
     return Array.from({ length: total }, () => ({
       species: getRaces()[options.species] ? options.species : "human",
       customSpecies: options.species === "custom" ? String(options.customSpecies ?? "Humanoid") : ""
@@ -156,13 +162,12 @@ export function buildRaceAssignments(options = {}, count = 1, random = Math.rand
   }
 
   const primaryId = ids.includes(options.primaryRace) ? options.primaryRace : ids[0];
-  const distribution = String(options.raceDistribution ?? "balanced");
   const weights = {};
-  if (distribution === "primary" || distribution === "dominant") {
-    const primaryShare = distribution === "dominant" ? 0.85 : 0.70;
+  if (composition === "primary" || composition === "dominant") {
+    const primaryShare = composition === "dominant" ? 0.85 : 0.70;
     const minorityShare = (1 - primaryShare) / Math.max(1, ids.length - 1);
     for (const id of ids) weights[id] = id === primaryId ? primaryShare : minorityShare;
-  } else if (distribution === "weighted") {
+  } else if (composition === "weighted") {
     const configured = options.raceWeights && typeof options.raceWeights === "object" ? options.raceWeights : {};
     for (const id of ids) weights[id] = Math.max(0, Number(configured[id]) || 0);
     if (!Object.values(weights).some((value) => value > 0)) {
@@ -179,6 +184,135 @@ export function buildRaceAssignments(options = {}, count = 1, random = Math.rand
     for (let item = 0; item < quotas[index]; item += 1) assignments.push({ ...selection });
   });
   return shuffle(assignments, random);
+}
+
+export function normalizeGroupRoleIds(options = {}) {
+  const roles = getRoles();
+  const raw = Array.isArray(options.groupRoles) ? options.groupRoles : [];
+  const normalized = [];
+  const seen = new Set();
+  for (const entry of raw) {
+    const value = String(entry ?? "").trim();
+    if (!roles[value] || seen.has(value)) continue;
+    seen.add(value);
+    normalized.push(value);
+  }
+  const primary = roles[options.role] ? options.role : DEFAULT_OPTIONS.role;
+  if (!seen.has(primary)) normalized.unshift(primary);
+  return normalized.length ? normalized : [DEFAULT_OPTIONS.role];
+}
+
+export function buildRoleAssignments(options = {}, count = 1, random = Math.random, groupType = GROUP_TYPES.independent) {
+  const total = clamp(Math.trunc(Number(count) || 1), 1, 100);
+  const roles = getRoles();
+  const composition = String(options.roleComposition ?? "groupPreset");
+  const primary = roles[options.role] ? options.role : DEFAULT_OPTIONS.role;
+
+  if (composition === "single" || composition === "variants") {
+    return Array.from({ length: total }, (_, index) => ({
+      role: primary,
+      variant: composition === "variants" ? roleVariantForIndex(primary, index) : ""
+    }));
+  }
+
+  if (composition === "groupPreset") {
+    return Array.from({ length: total }, (_, index) => ({
+      role: practicalRoleForIndex({ ...options, role: primary }, groupType, index),
+      variant: ""
+    }));
+  }
+
+  const ids = normalizeGroupRoleIds(options);
+  if (ids.length === 1) return Array.from({ length: total }, () => ({ role: ids[0], variant: "" }));
+  const primaryId = ids.includes(options.primaryRole) ? options.primaryRole : primary;
+  const weights = {};
+  if (composition === "primary" || composition === "dominant") {
+    const primaryShare = composition === "dominant" ? 0.85 : 0.70;
+    const minorityShare = (1 - primaryShare) / Math.max(1, ids.length - 1);
+    for (const id of ids) weights[id] = id === primaryId ? primaryShare : minorityShare;
+  } else if (composition === "weighted") {
+    const configured = options.roleWeights && typeof options.roleWeights === "object" ? options.roleWeights : {};
+    for (const id of ids) weights[id] = Math.max(0, Number(configured[id]) || 0);
+    if (!Object.values(weights).some((value) => value > 0)) {
+      for (const id of ids) weights[id] = 1;
+    }
+  } else {
+    for (const id of ids) weights[id] = 1;
+  }
+  const quotas = proportionalCounts(ids, total, weights);
+  const assignments = [];
+  ids.forEach((id, index) => {
+    for (let item = 0; item < quotas[index]; item += 1) assignments.push({ role: id, variant: "" });
+  });
+  return shuffle(assignments, random);
+}
+
+function roleVariantForIndex(roleId, index) {
+  const roleConfig = getRoles()[roleId] ?? {};
+  const variants = Array.isArray(roleConfig.variants) && roleConfig.variants.length
+    ? roleConfig.variants
+    : (ROLE_VARIANTS[roleId] ?? []);
+  return variants.length ? variants[index % variants.length] : "";
+}
+
+function combatLoadout(roleId, options, cr = 0) {
+  const readiness = COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard;
+  if (readiness.level === 0) return [];
+  const roleConfig = getRoles()[roleId] ?? {};
+  const baseProfile = roleConfig.combatProfile ?? ROLE_COMBAT_PROFILES[roleId] ?? { weaponAt: 4, armorAt: 99, weapons: ["Dagger"], armor: [], guidance: "keep combat gear minimal and occupation-appropriate" };
+  const variant = String(options.roleVariant ?? "");
+  let profile = baseProfile;
+  if (roleId === "scholar" && ["Jurist", "Scribe", "Tutor", "Archivist", "Accountant", "Historian"].includes(variant)) {
+    profile = { ...baseProfile, weapons: ["Dagger"], armor: [], armorAt: 99 };
+  } else if (roleId === "artisan" && ["Baker", "Tailor", "Cobbler"].includes(variant)) {
+    profile = { ...baseProfile, weapons: ["Dagger"], armor: [], armorAt: 99 };
+  }
+  const violentGroup = ["guardPatrol", "watchShift", "militia", "mercenaryBand", "orcRaiders", "banditCrew"].includes(String(options.groupType ?? ""));
+  const weaponAt = violentGroup ? Math.min(profile.weaponAt, 1) : profile.weaponAt;
+  const items = [];
+  if (readiness.level >= weaponAt && profile.weapons.length) {
+    const qualityIndex = Math.min(profile.weapons.length - 1, Math.floor(Math.max(0, Number(cr) || 0) / 5), Math.max(0, readiness.level - weaponAt));
+    items.push({ name: profile.weapons[qualityIndex], lookup: profile.weapons[qualityIndex], kind: "weapon" });
+    if (readiness.level >= 3 && profile.weapons.length > 1) {
+      const backup = profile.weapons[Math.max(0, qualityIndex - 1)];
+      if (backup !== items[0].name) items.push({ name: backup, lookup: backup, kind: "weapon" });
+    }
+    if (readiness.level >= 4 && profile.weapons.length > 2) {
+      for (const weapon of profile.weapons) {
+        if (items.some((entry) => entry.name === weapon)) continue;
+        items.push({ name: weapon, lookup: weapon, kind: "weapon" });
+        if (items.filter((entry) => entry.kind === "weapon").length >= 3) break;
+      }
+    }
+  }
+  if (readiness.level >= profile.armorAt && profile.armor.length) {
+    const armorOptions = profile.armor.filter((name) => name !== "Shield");
+    const hasShield = profile.armor.includes("Shield");
+    if (armorOptions.length) {
+      const crStep = Math.floor(Math.max(0, Number(cr) || 0) / 8);
+      const armorIndex = Math.min(armorOptions.length - 1, Math.max(0, readiness.level - profile.armorAt), crStep);
+      const armor = armorOptions[armorIndex];
+      items.push({ name: armor, lookup: armor, kind: "armor" });
+    }
+    if (hasShield && readiness.level >= Math.max(3, profile.armorAt)) {
+      items.push({ name: "Shield", lookup: "Shield", kind: "shield" });
+    }
+  }
+  return items;
+}
+
+function armorClassFromLoadout(dexScore, combatItems, tier) {
+  const dex = abilityModifier(dexScore);
+  const names = new Set((combatItems ?? []).map((item) => item.name));
+  let ac = 10 + dex;
+  if (names.has("Leather Armor")) ac = 11 + dex;
+  if (names.has("Hide Armor")) ac = 12 + Math.min(2, dex);
+  if (names.has("Chain Shirt")) ac = 13 + Math.min(2, dex);
+  if (names.has("Scale Mail")) ac = 14 + Math.min(2, dex);
+  if (names.has("Chain Mail")) ac = 16;
+  if (names.has("Shield")) ac += 2;
+  const trainingBonus = Math.min(2, Math.max(0, Math.floor((Number(tier?.abilityBonus) || 0) / 3)));
+  return clamp(ac + trainingBonus, 8, 30);
 }
 
 function interpolate(left, right, ratio) {
@@ -276,9 +410,10 @@ function habitatLabel(options) {
 
 function buildBiography(blueprint) {
   const rows = [
-    `<p><strong>Role:</strong> ${escapeHtml(blueprint.role)} (${escapeHtml(blueprint.tier)})</p>`,
+    `<p><strong>Role:</strong> ${escapeHtml(blueprint.role)}${blueprint.roleVariant ? ` — ${escapeHtml(blueprint.roleVariant)}` : ""} (${escapeHtml(blueprint.tier)})</p>`,
     `<p><strong>Race:</strong> ${escapeHtml(blueprint.race)}</p>`,
     `<p><strong>Wealth:</strong> ${escapeHtml(blueprint.wealth)}</p>`,
+    `<p><strong>Combat readiness:</strong> ${escapeHtml(blueprint.combatReadiness)}</p>`,
     `<p><strong>Habitat:</strong> ${escapeHtml(blueprint.habitat)}</p>`
   ];
   if (blueprint.groupType && blueprint.groupType !== GROUP_TYPES.independent.label) {
@@ -316,17 +451,22 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
   const generated = generatedName(style, random, options.forcedFamilyName ?? "");
   const suppliedName = titleCase(options.customName ?? "");
   const name = suppliedName || generated;
+  const combatItems = combatLoadout(options.role ?? DEFAULT_OPTIONS.role, options, tier.cr);
 
   return {
     name,
+    roleId: options.role ?? DEFAULT_OPTIONS.role,
     role: role.label,
+    roleVariant: String(options.roleVariant ?? ""),
     tier: tier.label,
     race: race.label,
     species: race.label,
     wealth: wealth.label,
+    combatReadiness: (COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard).label,
+    combatItems,
     habitat: habitatLabel(options),
     cr: tier.cr,
-    ac: clamp(role.ac + tier.acBonus, 8, 30),
+    ac: armorClassFromLoadout(scores.dex, combatItems, tier),
     hp,
     speed: race.speed,
     size: race.size,
@@ -349,10 +489,11 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
 }
 
 function practicalRoleForIndex(options, groupType, index) {
-  if (!groupType || groupType === GROUP_TYPES.independent || !groupType.roleCycle.length) return options.role;
+  const roleCycle = Array.isArray(groupType?.roleCycle) ? groupType.roleCycle : [];
+  if (!groupType || groupType === GROUP_TYPES.independent || !roleCycle.length) return options.role;
   const roles = getRoles();
   if (index === 0) return roles[options.role] ? options.role : DEFAULT_OPTIONS.role;
-  return groupType.roleCycle[(index - 1) % groupType.roleCycle.length] ?? options.role;
+  return roleCycle[(index - 1) % roleCycle.length] ?? options.role;
 }
 
 function relationshipFor(index, blueprints, options, isFamily) {
@@ -452,12 +593,32 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         size: blueprint.size
       }
     },
+    items: (blueprint.combatItems ?? []).map((item) => ({
+      name: item.name,
+      type: "loot",
+      img: "icons/svg/item-bag.svg",
+      system: {
+        quantity: 1,
+        description: {
+          value: `<p>${escapeHtml(`Role-appropriate ${item.kind} generated for ${blueprint.combatReadiness} combat readiness.`)}</p>`,
+          chat: ""
+        }
+      },
+      flags: {
+        "runyth-npc-button": {
+          generated: true,
+          canonicalLookup: item.lookup ?? ""
+        }
+      }
+    })),
     flags: {
       "runyth-npc-button": {
         generated: true,
         role: blueprint.role,
+        roleVariant: blueprint.roleVariant,
         tier: blueprint.tier,
         wealth: blueprint.wealth,
+        combatReadiness: blueprint.combatReadiness,
         habitat: blueprint.habitat,
         groupType: blueprint.groupType,
         groupMemberRole: blueprint.groupMemberRole,
@@ -483,6 +644,7 @@ export function generateNpcBatch(options = {}) {
   const style = styles[options.namingStyle] ?? styles.central ?? NAME_STYLES.central;
   const forcedFamilyName = family ? pick(style.family, random) : "";
   const raceAssignments = buildRaceAssignments(options, count, random);
+  const roleAssignments = buildRoleAssignments(options, count, random, groupType);
   const sharedRumour = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_RUMOURS, random);
   const sharedSecret = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_SECRETS, random);
   const blueprints = [];
@@ -492,10 +654,12 @@ export function generateNpcBatch(options = {}) {
     let blueprint;
     for (let attempt = 0; attempt < 30; attempt += 1) {
       const race = raceAssignments[index] ?? { species: options.species, customSpecies: options.customSpecies };
+      const roleAssignment = roleAssignments[index] ?? { role: options.role, variant: "" };
       const perNpcOptions = {
         ...options,
         ...race,
-        role: practicalRoleForIndex(options, groupType, index),
+        role: roleAssignment.role,
+        roleVariant: roleAssignment.variant,
         forcedFamilyName,
         customName: customName && count > 1 ? `${customName} ${index + 1}` : customName
       };
@@ -503,8 +667,9 @@ export function generateNpcBatch(options = {}) {
       if (!usedNames.has(blueprint.name)) break;
     }
     usedNames.add(blueprint.name);
-    blueprint.groupType = groupType.label;
-    blueprint.groupMemberRole = groupType.memberRoles[index % groupType.memberRoles.length] ?? "Member";
+    blueprint.groupType = groupType.label ?? "Group";
+    const memberRoles = Array.isArray(groupType.memberRoles) && groupType.memberRoles.length ? groupType.memberRoles : ["Member"];
+    blueprint.groupMemberRole = memberRoles[index % memberRoles.length] ?? "Member";
     blueprint.familyStructure = family
       ? (FAMILY_STRUCTURES[options.familyStructure] ?? FAMILY_STRUCTURES.household).label
       : "";

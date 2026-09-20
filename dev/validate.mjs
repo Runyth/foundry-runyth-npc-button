@@ -38,6 +38,7 @@ for (const file of files) {
   const text = await readFile(file, "utf8");
   assert.equal(text.includes("globalThis.hasProperty"), false, `${file} uses removed globalThis.hasProperty`);
   assert.equal(/\bnew\s+Dialog\s*\(/.test(text), false, `${file} uses legacy Dialog`);
+  assert.equal(/\bextends\s+FormApplication\b/.test(text), false, `${file} uses deprecated FormApplication`);
 }
 
 console.log("Validation passed.");

@@ -68,9 +68,10 @@ async function resolveCanonicalItem(item) {
       source.system.quantity = quantity;
     }
     source.flags ??= {};
+    const originalFlags = item?.flags?.[MODULE_ID] ?? {};
     source.flags[MODULE_ID] = {
       ...(source.flags[MODULE_ID] ?? {}),
-      aiImported: true,
+      ...originalFlags,
       canonicalLookup: lookup,
       canonicalPack: match.packId
     };

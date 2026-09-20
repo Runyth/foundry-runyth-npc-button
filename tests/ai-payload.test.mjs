@@ -106,6 +106,33 @@ test("AI prompt requires role-fitting inventory, rumours, secrets, relationships
   assert.match(prompt, /Creative idiomatic examples: Aldren Voss; Mira Halden; Elian Mercer/);
   assert.match(prompt, /Habitat: Forest Village/);
   assert.match(prompt, /Allowed races: Human, Elf/);
+  assert.match(prompt, /Every NPC remains mechanically combatable/);
+});
+
+test("AI prompt carries combat readiness and role composition constraints", () => {
+  const prompt = buildAiPrompt({
+    count: 5,
+    role: "merchant",
+    roleLabel: "Merchant",
+    roleComposition: "variants",
+    roleCompositionLabel: "Role variants",
+    roleCompositionPrompt: "distribute distinct merchant subtypes",
+    roleVariants: ["Market trader", "Traveling peddler", "Cloth merchant", "Grain factor", "Money changer"],
+    combatReadiness: "armed",
+    combatReadinessLabel: "Highly Prepared",
+    combatReadinessPrompt: "maximum realistic preparedness for the role",
+    roleCombatGuidance: "merchants remain lightly and discreetly armed at most",
+    raceComposition: "dominant",
+    raceCompositionLabel: "Strong primary-race majority",
+    raceCompositionPrompt: "about 80–90% primary race",
+    groupRaceLabels: ["Human", "Elf", "Dwarf"],
+    primaryRaceLabel: "Human"
+  });
+  assert.match(prompt, /Role composition: Role variants/);
+  assert.match(prompt, /Available primary-role variants: Market trader, Traveling peddler/);
+  assert.match(prompt, /Combat readiness: Highly Prepared/);
+  assert.match(prompt, /never justify absurd occupational gear/);
+  assert.match(prompt, /8\/1\/1/);
 });
 
 test("default import contract rejects a lone object", () => {

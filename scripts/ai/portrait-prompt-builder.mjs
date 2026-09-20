@@ -32,7 +32,10 @@ function summarizeItems(actor) {
 }
 
 function roleFromActor(actor) {
-  return cleanPart(actor?.flags?.[MODULE_ID]?.role) || cleanPart(extractSection(actor?.system?.details?.biography?.value, "Role").split("(")[0]);
+  const flags = actor?.flags?.[MODULE_ID] ?? {};
+  const base = cleanPart(flags.role) || cleanPart(extractSection(actor?.system?.details?.biography?.value, "Role").split("(")[0]);
+  const variant = cleanPart(flags.roleVariant);
+  return variant ? `${variant} ${base}` : base;
 }
 
 function raceFromActor(actor) {

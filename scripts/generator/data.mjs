@@ -466,9 +466,63 @@ export const INTERNAL_CONFLICT = Object.freeze({
   high: { label: "High", labelKey: "internalConflict.high", prompt: "high internal conflict with serious competing interests, but avoid making every member openly hostile" }
 });
 
+
+
+export const ROLE_VARIANTS = Object.freeze({
+  civilian: ["Farmer", "Laborer", "Servant", "Fisher", "Carter", "Tenant", "Inn regular", "Townsperson"],
+  artisan: ["Baker", "Blacksmith", "Carpenter", "Mason", "Tailor", "Cobbler", "Cooper", "Potter"],
+  merchant: ["Market trader", "Traveling peddler", "Cloth merchant", "Grain factor", "Spice seller", "Livestock dealer", "Money changer", "Wholesaler", "Broker"],
+  acolyte: ["Shrine attendant", "Temple novice", "Almoner", "Cantor", "Sacristan", "Pilgrim guide", "Healer-acolyte", "Archive novice"],
+  scholar: ["Historian", "Jurist", "Scribe", "Natural philosopher", "Tutor", "Cartographer", "Archivist", "Accountant"],
+  specialist: ["Apothecary", "Engineer", "Locksmith", "Surgeon", "Translator", "Surveyor", "Courier", "Investigator"],
+  guard: ["Gate guard", "Street patrol", "Watchman", "Jailer", "Caravan guard", "Warehouse guard", "Bodyguard", "Tower sentry"],
+  scout: ["Tracker", "Outrider", "Wilderness guide", "Skirmisher", "Pathfinder", "Hunter", "Messenger", "Lookout"],
+  bruiser: ["Bouncer", "Dock enforcer", "Pit fighter", "Caravan muscle", "Gang heavy", "Labor foreman", "Wrestler", "Debt collector"],
+  soldier: ["Spearman", "Swordsman", "Crossbowman", "Pikeman", "Infantry veteran", "Sergeant", "Sapper", "Cavalryman"],
+  leader: ["Watch captain", "Foreman", "Caravan master", "Village head", "Guild officer", "Militia captain", "Ship officer", "Household steward"],
+  noble: ["Landed knight", "Courtier", "Minor lord", "Heir", "Estate holder", "Envoy", "Patron", "House retainer"]
+});
+
+export const ROLE_COMPOSITION_MODES = Object.freeze({
+  single: { label: "Single role", labelKey: "roleComposition.single", prompt: "use the selected primary role for every NPC" },
+  variants: { label: "Role variants", labelKey: "roleComposition.variants", prompt: "keep the selected primary role, but distribute distinct practical subtypes or professions as evenly as possible" },
+  groupPreset: { label: "Group-appropriate roles", labelKey: "roleComposition.groupPreset", prompt: "use the selected group archetype's natural internal division of responsibilities" },
+  balanced: { label: "Balanced mixed roles", labelKey: "roleComposition.balanced", prompt: "distribute the allowed roles roughly evenly" },
+  primary: { label: "Primary-role majority", labelKey: "roleComposition.primary", prompt: "use about 65–75% primary role and spread the remainder across the other allowed roles" },
+  dominant: { label: "Strong primary-role majority", labelKey: "roleComposition.dominant", prompt: "use about 80–90% primary role and only a small minority of the other allowed roles" },
+  weighted: { label: "Custom role weights", labelKey: "roleComposition.weighted", prompt: "follow the supplied relative role weights as closely as the exact group size allows" }
+});
+
+export const COMBAT_READINESS = Object.freeze({
+  weaponless: { label: "Weaponless", labelKey: "combatReadiness.weaponless", level: 0, prompt: "always weaponless: no weapons or armor; ordinary clothing and occupational tools only" },
+  minimal: { label: "Minimal", labelKey: "combatReadiness.minimal", level: 1, prompt: "minimal role-relative readiness: noncombatants remain effectively unarmed except natural work tools; guards, raiders, soldiers, and similarly violent roles carry at least one simple role-appropriate weapon" },
+  standard: { label: "Standard", labelKey: "combatReadiness.standard", level: 2, prompt: "normal role-appropriate readiness: use only weapons and armor a person in this exact role would plausibly carry during ordinary duties" },
+  prepared: { label: "Prepared", labelKey: "combatReadiness.prepared", level: 3, prompt: "above-normal but believable preparedness: add a backup weapon, protective gear, or better equipment only when the role plausibly permits it" },
+  armed: { label: "Highly Prepared", labelKey: "combatReadiness.armed", level: 4, prompt: "maximum realistic preparedness for the role: several sensible combat options for martial roles, but strict occupational ceilings for civilians and professionals; never turn a noncombatant profession into a fantasy warrior" }
+});
+
+export const ROLE_COMBAT_PROFILES = Object.freeze({
+  civilian: { weaponAt: 3, armorAt: 99, weapons: ["Dagger"], armor: [], guidance: "ordinary civilians rarely carry dedicated weapons; at high readiness a small knife or similarly discreet self-defense implement is the ceiling" },
+  artisan: { weaponAt: 1, armorAt: 99, weapons: ["Dagger", "Light Hammer"], armor: [], guidance: "work tools may double as emergency weapons; a baker, carpenter, or smith should look like their trade first and a combatant second" },
+  merchant: { weaponAt: 3, armorAt: 99, weapons: ["Dagger", "Light Crossbow"], armor: [], guidance: "merchants normally avoid obvious weapons; richer or travel-exposed merchants may carry a dagger or compact defensive weapon, but heavy martial gear is inappropriate" },
+  acolyte: { weaponAt: 1, armorAt: 3, weapons: ["Quarterstaff", "Mace"], armor: ["Leather Armor"], guidance: "devotional staff, mace, or similarly traditional simple weapon may be appropriate; armor should remain modest unless the faith or duty explicitly justifies it" },
+  scholar: { weaponAt: 3, armorAt: 99, weapons: ["Dagger", "Quarterstaff"], armor: [], guidance: "scholars, jurists, scribes, and tutors should normally be unarmed; even at maximum readiness keep weapons discreet and plausible, such as a long knife or walking staff" },
+  specialist: { weaponAt: 2, armorAt: 4, weapons: ["Dagger", "Light Crossbow"], armor: ["Leather Armor"], guidance: "specialists may carry compact defensive gear when their work exposes them to danger, but tools remain more important than weapons" },
+  guard: { weaponAt: 1, armorAt: 2, weapons: ["Spear", "Light Crossbow", "Longsword"], armor: ["Leather Armor", "Chain Shirt", "Shield"], guidance: "guards are expected to be armed; readiness changes backup weapons, armor quality, and duty equipment rather than whether they are combatants at all" },
+  scout: { weaponAt: 1, armorAt: 2, weapons: ["Shortbow", "Shortsword", "Dagger"], armor: ["Leather Armor"], guidance: "scouts favor light, portable weapons and armor that preserve mobility and stealth" },
+  bruiser: { weaponAt: 1, armorAt: 3, weapons: ["Club", "Greatclub", "Handaxe"], armor: ["Hide Armor"], guidance: "bruisers favor simple, intimidating close-combat tools; heavy military equipment is inappropriate unless another role explicitly supports it" },
+  soldier: { weaponAt: 1, armorAt: 2, weapons: ["Spear", "Longsword", "Light Crossbow"], armor: ["Scale Mail", "Chain Mail", "Shield"], guidance: "soldiers are professionally armed and armored; readiness controls quality, backups, and breadth of loadout" },
+  leader: { weaponAt: 1, armorAt: 2, weapons: ["Longsword", "Dagger", "Light Crossbow"], armor: ["Chain Shirt", "Shield"], guidance: "martial or security leaders carry equipment suited to their command context, while civic leaders should stay near the lower end unless danger is explicit" },
+  noble: { weaponAt: 2, armorAt: 4, weapons: ["Dagger", "Rapier"], armor: ["Leather Armor"], guidance: "nobles may carry socially acceptable sidearms; even at high readiness avoid battlefield gear unless the NPC is explicitly a martial noble" }
+});
+
 export const RACE_COMPOSITION_MODES = Object.freeze({
-  single: { label: "Single race", labelKey: "raceComposition.single" },
-  mixed: { label: "Mixed races", labelKey: "raceComposition.mixed" }
+  single: { label: "Single race", labelKey: "raceComposition.single", prompt: "all NPCs use the selected primary race" },
+  dominant: { label: "Strong primary-race majority", labelKey: "raceComposition.dominant", prompt: "about 80–90% primary race; for a group of ten this typically means roughly eight or nine primary-race members and one or two minorities" },
+  primary: { label: "Primary-race majority", labelKey: "raceComposition.primary", prompt: "about 65–75% primary race with the remainder spread among the other allowed races" },
+  balanced: { label: "Broadly mixed", labelKey: "raceComposition.balanced", prompt: "roughly equal representation among the allowed races, subject to the exact group size" },
+  weighted: { label: "Custom race weights", labelKey: "raceComposition.weighted", prompt: "follow the supplied relative race weights as closely as the exact group size allows" },
+  mixed: { label: "Mixed races (legacy)", labelKey: "raceComposition.mixed", prompt: "legacy mixed-race mode retained for saved configurations" }
 });
 
 export const RACE_DISTRIBUTIONS = Object.freeze({

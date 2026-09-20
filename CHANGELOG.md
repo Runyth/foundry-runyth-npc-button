@@ -2,6 +2,25 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.1.5 - 2026-09-20
+
+### Added
+
+- Portable filter profiles with versioned JSON export/import by file, plus clipboard copy/import from the global filter settings window.
+- Explicit Race-composition modes for single Race, strong primary-Race majority, primary-Race majority, broadly mixed, and custom weights. Strong-majority ten-person three-Race batches naturally resolve to distributions such as 8/1/1 when appropriate.
+- Role composition for single Role, distinct Role variants, group-appropriate jobs, balanced mixed Roles, primary-Role majority, strong primary-Role majority, and custom Role weights.
+- Built-in practical Role variants, including merchant specializations, artisan trades, scholar professions, guard assignments, and other occupational subtypes.
+- Combat readiness row with Weaponless, Minimal, Standard, Prepared, and Highly Prepared levels.
+- Role-relative combat profiles and local canonical weapon/armor resolution so generated NPC equipment remains coherent with occupation, group context, CR, and readiness.
+
+### Changed
+
+- Race and Role composition now work for any multi-NPC batch rather than only intentional groups.
+- The AI prompt now requires explainable role-relative weapon/armor logic and exact integer approximation of requested Race/Role proportions.
+- Local AC now reflects generated armor/shield loadout and Dexterity instead of implying armor that is not actually carried.
+- Local generation now resolves generated canonical combat equipment through the same D&D 5e item resolver used by AI imports.
+- Documentation and Help now explain composition, combat readiness, and portable filter profiles.
+
 ## 0.1.4 - 2026-09-20
 
 ### Added

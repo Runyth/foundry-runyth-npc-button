@@ -114,7 +114,18 @@
       "groupBriefPlaceholder": "Optional: lokale Fehde, Familienbetrieb, Auftraggeber, Krise, Tabu, Ziel, gemeinsames Vorhaben…",
       "groupBriefHint": "Wird als gemeinsamer Kontext an den KI-Prompt übergeben. Auf Fakten beschränken, die mehrere NSCs betreffen sollen.",
       "done": "Fertig",
-      "copyPortraitPrompt": "Porträt-Prompt kopieren"
+      "copyPortraitPrompt": "Porträt-Prompt kopieren",
+      "combatReadiness": "Kampfbereitschaft",
+      "combatReadinessHint": "Steuert, wie stark der NPC relativ zu seiner Rolle bewaffnet ist. Waffenlos bedeutet immer keine Waffen und keine Rüstung; höhere Stufen bleiben auf das beschränkt, was Beruf und Situation realistisch rechtfertigen.",
+      "compositionTitle": "Zusammensetzung des Stapels",
+      "compositionIntro": "Steuert die Verteilung von Volk und Rolle über beliebige Mehrfach-Erzeugungen, unabhängig davon, ob die NPCs eine bewusste Gruppe bilden.",
+      "roleComposition": "Rollenzusammensetzung",
+      "roleCompositionHint": "Eine Rolle beibehalten, unterschiedliche Varianten dieser Rolle verteilen, die natürlichen Aufgaben des Gruppenarchetyps verwenden oder mehrere Rollen ungefähr anteilig mischen.",
+      "possibleRoles": "Mögliche Rollen",
+      "possibleRolesHint": "Durchsuche und wähle Rollen, die in einer gemischten Rollengruppe vorkommen dürfen. Die primäre Rollenwahl bleibt die Hauptrolle.",
+      "choosePossibleRoles": "Mögliche Rollen wählen…",
+      "roleWeights": "Benutzerdefinierte Rollengewichte",
+      "roleWeightsHint": "Relative Gewichte; sie müssen zusammen nicht 100 ergeben."
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -155,7 +166,11 @@
       "portraitPromptTitle": "Porträt-Prompts",
       "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert.",
       "filterTitle": "Dashboard-Filtereinstellungen",
-      "filterBody": "In den Configure Settings gibt es jetzt ein eigenes Filter-Menü mit Erlauben-/Verbieten-Regeln für exakte Treffer, Enthält-, Präfix-, Suffix- und Regex-Muster für wichtige pickerbasierte Dashboard-Felder."
+      "filterBody": "Configure Settings bietet ein eigenes Filter-Menü mit Erlauben-/Verbieten-Regeln für exakte Treffer, Enthält-, Präfix-, Suffix- und Regex-Muster. Filterprofile können als versionierte JSON-Dateien exportiert/importiert oder über die Zwischenablage kopiert werden.",
+      "compositionTitle": "Volks- und Rollenzusammensetzung",
+      "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert (z. B. ungefähr 8/1/1 bei zehn NPCs und drei Völkern), mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Rollen können einheitlich bleiben, unterschiedliche Untertypen wie Händlerspezialisierungen durchlaufen, den Gruppen-Preset verwenden oder ebenso anteilig gemischt werden.",
+      "combatReadinessTitle": "Kampfbereitschaft",
+      "combatReadinessBody": "Jeder NPC besitzt weiterhin kampffähige Werte. Die Einstellung steuert getragene Waffen und Rüstung. Waffenlos erzwingt keine davon; höhere Stufen bleiben streng rollenbezogen, sodass ein Gelehrter oder Jurist nicht plötzlich zum schwer bewaffneten Krieger wird, während Wachen, Soldaten und Plünderer natürlich skalieren."
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -167,7 +182,12 @@
       "noneImported": "Keine NSC-Actors wurden importiert.",
       "importFailed": "NSC-Import fehlgeschlagen: {message}",
       "portraitPromptCopied": "Porträt-Prompt in die Zwischenablage kopiert.",
-      "filtersSaved": "Dashboard-String-Filter gespeichert."
+      "filtersSaved": "Dashboard-String-Filter gespeichert.",
+      "filtersExported": "Filterprofil exportiert.",
+      "filtersCopied": "JSON des Filterprofils in die Zwischenablage kopiert.",
+      "filtersImported": "Filterprofil importiert und angewendet.",
+      "filterImportFailed": "Import des Filterprofils fehlgeschlagen",
+      "filterProfileTooLarge": "Das Filterprofil ist zu groß zum Importieren."
     },
     "errors": {
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
@@ -344,7 +364,11 @@
     },
     "raceComposition": {
       "single": "Ein Volk",
-      "mixed": "Gemischte Völker"
+      "mixed": "Gemischte Völker (Legacy)",
+      "dominant": "Starke Mehrheit des Hauptvolks",
+      "primary": "Mehrheit des Hauptvolks",
+      "balanced": "Breit gemischt",
+      "weighted": "Benutzerdefinierte Volksgewichte"
     },
     "raceDistribution": {
       "balanced": "Etwa gleich",
@@ -385,7 +409,29 @@
         "caseSensitive": "Groß-/Kleinschreibung beachten",
         "normalizeDiacritics": "Akzente / Diakritika normalisieren",
         "trimWhitespace": "Umgebende Leerzeichen trimmen"
+      },
+      "actions": {
+        "exportFile": "JSON exportieren",
+        "copyJson": "JSON kopieren",
+        "importFile": "JSON importieren",
+        "importClipboard": "Zwischenablage importieren"
       }
+    },
+    "combatReadiness": {
+      "weaponless": "Waffenlos",
+      "minimal": "Minimal",
+      "standard": "Standard",
+      "prepared": "Vorbereitet",
+      "armed": "Stark vorbereitet"
+    },
+    "roleComposition": {
+      "single": "Einzelne Rolle",
+      "variants": "Rollenvarianten",
+      "groupPreset": "Gruppengerechte Rollen",
+      "balanced": "Ausgewogen gemischte Rollen",
+      "primary": "Mehrheit der Hauptrolle",
+      "dominant": "Starke Mehrheit der Hauptrolle",
+      "weighted": "Benutzerdefinierte Rollengewichte"
     }
   }
 }

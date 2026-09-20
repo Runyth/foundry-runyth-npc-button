@@ -6,6 +6,7 @@ import { CR_VALUES, HABITATS, NAME_STYLES, RACES, formatChallengeRating } from "
 import {
   buildActorSource,
   buildRaceAssignments,
+  buildRoleAssignments,
   createSeededRandom,
   escapeHtml,
   generateNpcBatch,
@@ -201,4 +202,89 @@ test("advanced group controls alter local relationship lore and Actor flags", ()
   assert.equal(actor.flags["runyth-npc-button"].groupCohesion, "Fractured");
   assert.equal(actor.flags["runyth-npc-button"].groupHierarchy, "Rigid hierarchy");
   assert.match(actor.system.details.biography.value, /<strong>Internal conflict:<\/strong> High/);
+});
+
+
+test("strong primary-race composition produces an 8/1/1-style ten-person mix", () => {
+  const assignments = buildRaceAssignments({
+    raceComposition: "dominant",
+    species: "human",
+    groupRaces: ["human", "elf", "dwarf"],
+    primaryRace: "human"
+  }, 10, createSeededRandom("dominant-races"));
+  const counts = assignments.reduce((map, entry) => {
+    map[entry.species] = (map[entry.species] ?? 0) + 1;
+    return map;
+  }, {});
+  assert.deepEqual(counts, { human: 8, elf: 1, dwarf: 1 });
+});
+
+test("merchant role variants distribute distinct merchant specializations before repeating", () => {
+  const batch = generateNpcBatch({
+    count: 5,
+    role: "merchant",
+    roleComposition: "variants",
+    groupType: "independent",
+    seed: "merchant-variants"
+  });
+  assert.equal(new Set(batch.map((npc) => npc.roleVariant)).size, 5);
+  assert.ok(batch.every((npc) => npc.role === "Merchant"));
+});
+
+test("balanced mixed roles use exact quotas", () => {
+  const assignments = buildRoleAssignments({
+    role: "merchant",
+    roleComposition: "balanced",
+    groupRoles: ["merchant", "guard", "scholar"],
+    primaryRole: "merchant"
+  }, 9, createSeededRandom("balanced-roles"));
+  const counts = assignments.reduce((map, entry) => {
+    map[entry.role] = (map[entry.role] ?? 0) + 1;
+    return map;
+  }, {});
+  assert.deepEqual(counts, { merchant: 3, guard: 3, scholar: 3 });
+});
+
+test("weaponless readiness removes all generated combat gear", () => {
+  const npc = generateNpcBlueprint({
+    role: "soldier",
+    combatReadiness: "weaponless",
+    tier: "veteran"
+  }, createSeededRandom("weaponless"));
+  assert.deepEqual(npc.combatItems, []);
+  assert.equal(npc.combatReadiness, "Weaponless");
+});
+
+test("jurist combat ceiling stays discreet even at maximum readiness and high CR", () => {
+  const npc = generateNpcBlueprint({
+    role: "scholar",
+    roleVariant: "Jurist",
+    combatReadiness: "armed",
+    tierStyle: TIER_STYLES.CR,
+    cr: 10
+  }, createSeededRandom("armed-jurist"));
+  assert.deepEqual(npc.combatItems.map((item) => item.name), ["Dagger"]);
+});
+
+test("minimal readiness still arms an orc-raider civilian with a simple plausible weapon", () => {
+  const npc = generateNpcBlueprint({
+    role: "civilian",
+    groupType: "orcRaiders",
+    combatReadiness: "minimal",
+    tier: "trained"
+  }, createSeededRandom("minimal-raider"));
+  assert.deepEqual(npc.combatItems.map((item) => item.name), ["Dagger"]);
+});
+
+test("highly prepared soldiers carry armor plus shield instead of a shield-only loadout", () => {
+  const npc = generateNpcBlueprint({
+    role: "soldier",
+    combatReadiness: "armed",
+    tierStyle: TIER_STYLES.CR,
+    cr: 10
+  }, createSeededRandom("armed-soldier"));
+  const names = npc.combatItems.map((item) => item.name);
+  assert.ok(names.includes("Chain Mail"));
+  assert.ok(names.includes("Shield"));
+  assert.ok(names.some((name) => ["Spear", "Longsword", "Light Crossbow"].includes(name)));
 });

@@ -3,6 +3,7 @@ import { parseAndNormalizeNpcJson } from "../ai/npc-json.mjs";
 import { DEFAULT_OPTIONS, MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import {
   CR_VALUES,
+  COMBAT_READINESS,
   FAMILY_STRUCTURES,
   GROUP_COHESION,
   GROUP_HIERARCHY,
@@ -19,12 +20,15 @@ import {
   RACE_GROUPS,
   RELATIONSHIP_DENSITY,
   ROLES,
+  ROLE_COMBAT_PROFILES,
+  ROLE_COMPOSITION_MODES,
   ROLE_GROUPS,
+  ROLE_VARIANTS,
   TIERS,
   WEALTH_LEVELS,
   formatChallengeRating
 } from "../generator/data.mjs";
-import { normalizeGroupRaceIds, resolveTierProfile } from "../generator/npc-generator.mjs";
+import { normalizeGroupRaceIds, normalizeGroupRoleIds, resolveTierProfile } from "../generator/npc-generator.mjs";
 import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 import { applyStringFilters } from "../filters.mjs";
 import { logger } from "../logger.mjs";
@@ -291,12 +295,26 @@ function suggestedSizesMarkup(groupType, maxBatch) {
     .join("");
 }
 
+function effectiveRaceComposition(options) {
+  const value = String(options.raceComposition ?? DEFAULT_OPTIONS.raceComposition);
+  if (value === "mixed") return String(options.raceDistribution ?? "balanced");
+  return RACE_COMPOSITION_MODES[value] ? value : DEFAULT_OPTIONS.raceComposition;
+}
+
+function effectiveRoleComposition(options) {
+  const value = String(options.roleComposition ?? DEFAULT_OPTIONS.roleComposition);
+  return ROLE_COMPOSITION_MODES[value] ? value : DEFAULT_OPTIONS.roleComposition;
+}
+
 function dashboardContent(options, tierStyle) {
   const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
   const quickCounts = [1, 3, 5, 10].filter((value) => value <= maxBatch);
   const groupTypes = getGroupTypes();
   const groupType = groupTypes[options.groupType] ? options.groupType : DEFAULT_OPTIONS.groupType;
-  const groupRaces = normalizeGroupRaceIds({ ...options, groupRaces: options.groupRaces ?? DEFAULT_OPTIONS.groupRaces });
+  const raceComposition = effectiveRaceComposition(options);
+  const groupRaces = normalizeGroupRaceIds({ ...options, raceComposition, groupRaces: options.groupRaces ?? DEFAULT_OPTIONS.groupRaces });
+  const roleComposition = effectiveRoleComposition(options);
+  const groupRoles = normalizeGroupRoleIds({ ...options, groupRoles: options.groupRoles ?? [options.role ?? DEFAULT_OPTIONS.role] });
 
   return `
     <form class="runyth-npc-button__dashboard" autocomplete="off">
@@ -381,6 +399,12 @@ function dashboardContent(options, tierStyle) {
           <div class="runyth-npc-button__choices runyth-npc-button__choices--wealth">${choiceChips("wealth", WEALTH_LEVELS, options.wealth)}</div>
         </fieldset>
 
+        <fieldset class="runyth-npc-button__field runyth-npc-button__field--full">
+          <legend>${escapeAttribute(localize("ui.combatReadiness"))}</legend>
+          <small>${escapeAttribute(localize("ui.combatReadinessHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("combatReadiness", COMBAT_READINESS, options.combatReadiness ?? DEFAULT_OPTIONS.combatReadiness)}</div>
+        </fieldset>
+
         <div class="runyth-npc-button__grid">
           <div class="runyth-npc-button__field">
             <label for="runyth-npc-button-name">${escapeAttribute(localize("ui.customName"))}</label>
@@ -390,6 +414,57 @@ function dashboardContent(options, tierStyle) {
             <label for="runyth-npc-button-seed">${escapeAttribute(localize("ui.seed"))}</label>
             <input id="runyth-npc-button-seed" type="text" name="seed" maxlength="120" aria-describedby="runyth-npc-button-seed-hint" value="" placeholder="${escapeAttribute(localize("ui.seedPlaceholder"))}">
             <small id="runyth-npc-button-seed-hint">${escapeAttribute(localize("ui.seedHint"))}</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="runyth-npc-button__section runyth-npc-button__section--composition">
+        <div class="runyth-npc-button__section-heading">
+          <div>
+            <h2><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> ${escapeAttribute(localize("ui.compositionTitle"))}</h2>
+            <p>${escapeAttribute(localize("ui.compositionIntro"))}</p>
+          </div>
+        </div>
+
+        <fieldset class="runyth-npc-button__field">
+          <legend>${escapeAttribute(localize("ui.raceComposition"))}</legend>
+          <small>${escapeAttribute(localize("ui.raceCompositionHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("raceComposition", Object.fromEntries(Object.entries(RACE_COMPOSITION_MODES).filter(([id]) => id !== "mixed")), raceComposition)}</div>
+        </fieldset>
+
+        <div data-mixed-race-settings${raceComposition === "single" ? " hidden" : ""}>
+          ${hierarchicalMultiPickerMarkup({
+            id: "runyth-npc-button-group-races-picker",
+            name: "groupRaces",
+            label: localize("ui.possibleRaces"),
+            hint: localize("ui.possibleRacesHint"),
+            values: groupRaces,
+            placeholder: localize("ui.choosePossibleRaces")
+          })}
+          <div class="runyth-npc-button__weights" data-race-weights${raceComposition === "weighted" ? "" : " hidden"}>
+            <div class="runyth-npc-button__label-row"><strong>${escapeAttribute(localize("ui.raceWeights"))}</strong><small>${escapeAttribute(localize("ui.raceWeightsHint"))}</small></div>
+            <div data-race-weight-list></div>
+          </div>
+        </div>
+
+        <fieldset class="runyth-npc-button__field">
+          <legend>${escapeAttribute(localize("ui.roleComposition"))}</legend>
+          <small>${escapeAttribute(localize("ui.roleCompositionHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("roleComposition", ROLE_COMPOSITION_MODES, roleComposition)}</div>
+        </fieldset>
+
+        <div data-mixed-role-settings${["balanced", "primary", "dominant", "weighted"].includes(roleComposition) ? "" : " hidden"}>
+          ${hierarchicalMultiPickerMarkup({
+            id: "runyth-npc-button-group-roles-picker",
+            name: "groupRoles",
+            label: localize("ui.possibleRoles"),
+            hint: localize("ui.possibleRolesHint"),
+            values: groupRoles,
+            placeholder: localize("ui.choosePossibleRoles")
+          })}
+          <div class="runyth-npc-button__weights" data-role-weights${roleComposition === "weighted" ? "" : " hidden"}>
+            <div class="runyth-npc-button__label-row"><strong>${escapeAttribute(localize("ui.roleWeights"))}</strong><small>${escapeAttribute(localize("ui.roleWeightsHint"))}</small></div>
+            <div data-role-weight-list></div>
           </div>
         </div>
       </section>
@@ -434,34 +509,6 @@ function dashboardContent(options, tierStyle) {
               <legend>${escapeAttribute(localize("ui.internalConflict"))}</legend>
               <div class="runyth-npc-button__choices">${choiceChips("internalConflict", INTERNAL_CONFLICT, options.internalConflict ?? DEFAULT_OPTIONS.internalConflict)}</div>
             </fieldset>
-
-            <fieldset class="runyth-npc-button__field">
-              <legend>${escapeAttribute(localize("ui.raceComposition"))}</legend>
-              <small>${escapeAttribute(localize("ui.raceCompositionHint"))}</small>
-              <div class="runyth-npc-button__choices runyth-npc-button__choices--two">${choiceChips("raceComposition", RACE_COMPOSITION_MODES, options.raceComposition ?? DEFAULT_OPTIONS.raceComposition)}</div>
-            </fieldset>
-
-            <div data-mixed-race-settings${options.raceComposition === "mixed" ? "" : " hidden"}>
-              ${hierarchicalMultiPickerMarkup({
-                id: "runyth-npc-button-group-races-picker",
-                name: "groupRaces",
-                label: localize("ui.possibleRaces"),
-                hint: localize("ui.possibleRacesHint"),
-                values: groupRaces,
-                placeholder: localize("ui.choosePossibleRaces")
-              })}
-
-              <fieldset class="runyth-npc-button__field">
-                <legend>${escapeAttribute(localize("ui.raceDistribution"))}</legend>
-                <small>${escapeAttribute(localize("ui.raceDistributionHint"))}</small>
-                <div class="runyth-npc-button__choices">${choiceChips("raceDistribution", RACE_DISTRIBUTIONS, options.raceDistribution ?? DEFAULT_OPTIONS.raceDistribution)}</div>
-              </fieldset>
-
-              <div class="runyth-npc-button__weights" data-race-weights${options.raceDistribution === "weighted" ? "" : " hidden"}>
-                <div class="runyth-npc-button__label-row"><strong>${escapeAttribute(localize("ui.raceWeights"))}</strong><small>${escapeAttribute(localize("ui.raceWeightsHint"))}</small></div>
-                <div data-race-weight-list></div>
-              </div>
-            </div>
 
             <div class="runyth-npc-button__field">
               <label for="runyth-npc-button-group-brief">${escapeAttribute(localize("ui.groupBrief"))}</label>
@@ -544,6 +591,17 @@ function readRaceWeights(form, groupRaces) {
   return weights;
 }
 
+function readRoleWeights(form, groupRoles) {
+  const weights = {};
+  for (const roleId of groupRoles) weights[roleId] = 1;
+  for (const input of form.querySelectorAll("[data-role-weight]")) {
+    const id = input.dataset.roleId;
+    if (!id || !groupRoles.includes(id)) continue;
+    weights[id] = Math.max(0, Math.min(1000, Number(input.value) || 0));
+  }
+  return weights;
+}
+
 function readForm(form) {
   const elements = form.elements;
   const remembered = loadLastOptions();
@@ -556,8 +614,12 @@ function readForm(form) {
   const destination = resolveDestinationSelection(elements.destinationSelection.value);
   const tier = tierStyle === TIER_STYLES.NAMED ? elements.tier.value : (remembered.tier ?? DEFAULT_OPTIONS.tier);
   const cr = tierStyle === TIER_STYLES.CR ? Number(elements.cr.value) : Number(remembered.cr ?? DEFAULT_OPTIONS.cr);
-  const groupRaces = parseJsonArray(elements.groupRaces?.value, [raceSelectionValue(race)]);
+  const rawGroupRaces = parseJsonArray(elements.groupRaces?.value, [raceSelectionValue(race)]);
   const primaryRace = race.species === "custom" ? `custom:${race.customSpecies}` : race.species;
+  const groupRaces = normalizeGroupRaceIds({ species: race.species, customSpecies: race.customSpecies, groupRaces: rawGroupRaces });
+  const rawGroupRoles = parseJsonArray(elements.groupRoles?.value, [elements.role.value]);
+  const groupRoles = normalizeGroupRoleIds({ role: elements.role.value, groupRoles: rawGroupRoles });
+  const primaryRole = elements.role.value;
 
   return {
     count,
@@ -568,6 +630,7 @@ function readForm(form) {
     species: race.species,
     namingStyle: elements.namingStyle.value,
     wealth: elements.wealth.value,
+    combatReadiness: elements.combatReadiness?.value ?? DEFAULT_OPTIONS.combatReadiness,
     habitat: elements.habitat.value,
     groupType: elements.groupType.value,
     familyStructure: elements.familyStructure?.value ?? DEFAULT_OPTIONS.familyStructure,
@@ -578,8 +641,12 @@ function readForm(form) {
     raceComposition: elements.raceComposition?.value ?? DEFAULT_OPTIONS.raceComposition,
     groupRaces,
     primaryRace,
-    raceDistribution: elements.raceDistribution?.value ?? DEFAULT_OPTIONS.raceDistribution,
+    raceDistribution: elements.raceComposition?.value ?? DEFAULT_OPTIONS.raceDistribution,
     raceWeights: readRaceWeights(form, groupRaces),
+    roleComposition: elements.roleComposition?.value ?? DEFAULT_OPTIONS.roleComposition,
+    groupRoles,
+    primaryRole,
+    roleWeights: readRoleWeights(form, groupRoles),
     groupBrief: elements.groupBrief?.value.trim() ?? "",
     customName: elements.customName.value.trim(),
     customSpecies: race.customSpecies,
@@ -599,6 +666,9 @@ function promptOptions(options) {
     ? options.customSpecies
     : configuredLabel(getRaces()[options.species] ?? getRaces().human ?? RACES.human);
   const role = getRoles()[options.role] ?? getRoles().guard ?? ROLES.guard;
+  const roleComposition = ROLE_COMPOSITION_MODES[options.roleComposition] ?? ROLE_COMPOSITION_MODES.groupPreset;
+  const combatReadiness = COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard;
+  const combatProfile = role.combatProfile ?? ROLE_COMBAT_PROFILES[options.role] ?? ROLE_COMBAT_PROFILES.civilian;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
   const tierProfile = resolveTierProfile(options);
   const habitatValue = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
@@ -609,11 +679,22 @@ function promptOptions(options) {
   const groupRaceIds = normalizeGroupRaceIds(options);
   const groupRaceLabels = groupRaceIds.map(raceLabelFromSelectionId);
   const weightSummary = groupRaceIds.map((id) => `${raceLabelFromSelectionId(id)}=${Number(options.raceWeights?.[id]) || 0}`).join(", ");
+  const groupRoleIds = normalizeGroupRoleIds(options);
+  const groupRoleLabels = groupRoleIds.map((id) => configuredLabel(getRoles()[id] ?? { label: id }));
+  const roleWeightSummary = groupRoleIds.map((id) => `${configuredLabel(getRoles()[id] ?? { label: id })}=${Number(options.roleWeights?.[id]) || 0}`).join(", ");
 
   return {
     ...options,
     roleLabel: configuredLabel(role),
     roleEquipmentHint: role.aiEquipmentHint,
+    roleVariants: role.variants ?? ROLE_VARIANTS[options.role] ?? [],
+    roleCompositionLabel: configuredLabel(roleComposition),
+    roleCompositionPrompt: roleComposition.prompt,
+    groupRoleLabels,
+    roleWeightSummary,
+    combatReadinessLabel: configuredLabel(combatReadiness),
+    combatReadinessPrompt: combatReadiness.prompt,
+    roleCombatGuidance: combatProfile.guidance,
     tierLabel: options.tierStyle === TIER_STYLES.CR ? tierProfile.label : configuredLabel(TIERS[options.tier] ?? TIERS.trained),
     raceLabel: race,
     wealthLabel: configuredLabel(wealth),
@@ -635,6 +716,7 @@ function promptOptions(options) {
     internalConflictLabel: configuredLabel(INTERNAL_CONFLICT[options.internalConflict] ?? INTERNAL_CONFLICT.low),
     internalConflictPrompt: (INTERNAL_CONFLICT[options.internalConflict] ?? INTERNAL_CONFLICT.low).prompt,
     raceCompositionLabel: configuredLabel(RACE_COMPOSITION_MODES[options.raceComposition] ?? RACE_COMPOSITION_MODES.single),
+    raceCompositionPrompt: (RACE_COMPOSITION_MODES[options.raceComposition] ?? RACE_COMPOSITION_MODES.single).prompt,
     groupRaceLabels,
     primaryRaceLabel: race,
     raceDistributionLabel: configuredLabel(RACE_DISTRIBUTIONS[options.raceDistribution] ?? RACE_DISTRIBUTIONS.balanced),
@@ -694,6 +776,8 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   #abortController = null;
   #savePositionTimer = null;
   #racePickerController = null;
+  #groupRacePickerController = null;
+  #groupRolePickerController = null;
 
   constructor(options = {}) {
     const rememberedPosition = safeWindowState(loadWindowState());
@@ -754,9 +838,22 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     }, { signal });
 
     form.elements.groupType.addEventListener("change", () => this.#syncGroupControls(form, { adjustCount: true }), { signal });
+    form.elements.raceSelection.addEventListener("change", () => {
+      const primary = String(form.elements.raceSelection.value || "human");
+      const values = this.#groupRacePickerController?.getValues() ?? [];
+      if (!values.includes(primary)) this.#groupRacePickerController?.setValues([primary, ...values]);
+      this.#renderRaceWeights(form);
+    }, { signal });
+    form.elements.role.addEventListener("change", () => {
+      const primary = String(form.elements.role.value || DEFAULT_OPTIONS.role);
+      const values = this.#groupRolePickerController?.getValues() ?? [];
+      if (!values.includes(primary)) this.#groupRolePickerController?.setValues([primary, ...values]);
+      this.#renderRoleWeights(form);
+    }, { signal });
     form.elements.raceComposition.addEventListener("change", () => this.#syncRaceComposition(form), { signal });
-    form.elements.raceDistribution.addEventListener("change", () => this.#syncRaceComposition(form), { signal });
     form.elements.groupRaces.addEventListener("change", () => this.#renderRaceWeights(form), { signal });
+    form.elements.roleComposition.addEventListener("change", () => this.#syncRoleComposition(form), { signal });
+    form.elements.groupRoles.addEventListener("change", () => this.#renderRoleWeights(form), { signal });
 
     form.querySelector("[data-group-size-presets]").addEventListener("click", (event) => {
       const button = event.target.closest("[data-group-count]");
@@ -768,6 +865,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     this.#syncCountControls(form);
     this.#syncGroupControls(form);
     this.#syncRaceComposition(form);
+    this.#syncRoleComposition(form);
 
     form.querySelector('[data-action="create-local"]').addEventListener("click", () => {
       void this.#createLocal(form);
@@ -826,7 +924,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       items: namingPickerItems()
     }, signal);
 
-    mountHierarchicalMultiPicker(form.querySelector('[data-hierarchical-multi-picker="runyth-npc-button-group-races-picker"]'), {
+    this.#groupRacePickerController = mountHierarchicalMultiPicker(form.querySelector('[data-hierarchical-multi-picker="runyth-npc-button-group-races-picker"]'), {
       ...common,
       items: racePickerItems(),
       allowCustom: true,
@@ -837,6 +935,15 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       requireOne: true,
       fallbackValue: "human",
       placeholder: localize("ui.choosePossibleRaces")
+    }, signal);
+
+    this.#groupRolePickerController = mountHierarchicalMultiPicker(form.querySelector('[data-hierarchical-multi-picker="runyth-npc-button-group-roles-picker"]'), {
+      ...common,
+      items: rolePickerItems(),
+      doneText: localize("ui.done"),
+      requireOne: true,
+      fallbackValue: DEFAULT_OPTIONS.role,
+      placeholder: localize("ui.choosePossibleRoles")
     }, signal);
 
     mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-folder-picker"]'), {
@@ -903,11 +1010,19 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   }
 
   #syncRaceComposition(form) {
-    const mixed = form.elements.raceComposition.value === "mixed";
+    const composition = form.elements.raceComposition.value;
+    const mixed = composition !== "single";
     form.querySelector("[data-mixed-race-settings]").hidden = !mixed;
-    const weighted = mixed && form.elements.raceDistribution.value === "weighted";
-    form.querySelector("[data-race-weights]").hidden = !weighted;
+    form.querySelector("[data-race-weights]").hidden = composition !== "weighted";
     if (mixed) this.#renderRaceWeights(form);
+  }
+
+  #syncRoleComposition(form) {
+    const composition = form.elements.roleComposition.value;
+    const mixed = ["balanced", "primary", "dominant", "weighted"].includes(composition);
+    form.querySelector("[data-mixed-role-settings]").hidden = !mixed;
+    form.querySelector("[data-role-weights]").hidden = composition !== "weighted";
+    if (mixed) this.#renderRoleWeights(form);
   }
 
   #renderRaceWeights(form) {
@@ -926,6 +1041,22 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     `).join("");
   }
 
+  #renderRoleWeights(form) {
+    const container = form.querySelector("[data-role-weight-list]");
+    if (!container) return;
+    const selected = parseJsonArray(form.elements.groupRoles.value, [DEFAULT_OPTIONS.role]);
+    const remembered = loadLastOptions();
+    const current = {};
+    for (const input of container.querySelectorAll("[data-role-weight]")) current[input.dataset.roleId] = Number(input.value) || 0;
+    const configured = { ...(remembered.roleWeights ?? {}), ...current };
+    container.innerHTML = selected.map((roleId) => `
+      <label class="runyth-npc-button__weight-row">
+        <span>${escapeAttribute(configuredLabel(getRoles()[roleId] ?? { label: roleId }))}</span>
+        <input type="number" min="0" max="1000" step="1" inputmode="numeric" value="${escapeAttribute(configured[roleId] ?? 1)}" data-role-weight data-role-id="${escapeAttribute(roleId)}">
+      </label>
+    `).join("");
+  }
+
   #setBusy(form, busy, message = "") {
     for (const control of form.querySelectorAll("button, input, textarea")) {
       if (busy) {
@@ -940,6 +1071,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     if (!busy) {
       this.#syncCountControls(form);
       this.#syncRaceComposition(form);
+      this.#syncRoleComposition(form);
     }
   }
 

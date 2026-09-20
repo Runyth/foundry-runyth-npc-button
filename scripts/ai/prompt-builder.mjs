@@ -21,6 +21,10 @@ export function buildAiPrompt(options = {}) {
     ? options.namingExamples.join("; ")
     : "use names consistent with the requested naming style";
   const groupRaces = list(options.groupRaceLabels, clean(options.raceLabel, "Human"));
+  const groupRoles = list(options.groupRoleLabels, clean(options.roleLabel, "Guard"));
+  const raceMixed = clean(options.raceComposition, "single") !== "single";
+  const roleMixed = ["balanced", "primary", "dominant", "weighted"].includes(clean(options.roleComposition, "groupPreset"));
+  const roleVariants = list(options.roleVariants, "none supplied");
 
   return [
     "Create table-ready D&D 5e (2024 rules) NPC data for import into Foundry Virtual Tabletop v13 with dnd5e 5.x using the exact JSON contract below.",
@@ -46,6 +50,12 @@ export function buildAiPrompt(options = {}) {
       : "",
     "Use sensible D&D 5e numbers for the requested role and tier/CR. Ability values must be integers from 1 to 30. HP value/max must be non-negative numbers. AC flat must be numeric. CR must be numeric and match the requested CR exactly when a CR is explicitly requested.",
     "Use movement.units = \"ft\" and a standard dnd5e size key: tiny, sm, med, lg, huge, or grg.",
+    "Every NPC remains mechanically combatable even when combat is not their narrative focus. Combat readiness controls carried weapons and armor, not whether the Actor has usable combat statistics.",
+    `Combat readiness: ${clean(options.combatReadinessLabel, "Standard")} — ${clean(options.combatReadinessPrompt, "use realistic role-appropriate equipment")}.`,
+    `Primary-role combat guidance: ${clean(options.roleCombatGuidance, "weapons and armor must remain realistic for the exact occupation and circumstances")}.`,
+    "Weapon and armor logic must be explainable from Role, role subtype, CR, Habitat, Wealth, group function, and Combat readiness. Higher CR may justify better training, quality, or a broader practical loadout, but it must never justify absurd occupational gear.",
+    roleMixed ? "For each mixed Role, derive its own realistic combat ceiling from that exact occupation; do not apply the primary Role combat guidance blindly to every NPC." : "",
+    "At Weaponless readiness, do not include any weapon or armor. Occupational tools and ordinary clothing are still allowed. At higher readiness, stay within the role's realistic ceiling: a jurist or scholar may top out at a discreet knife or walking staff, while a professional raider or soldier may carry several proper weapons and armor.",
     "Inventory is important. Give each NPC a short, plausible inventory appropriate to Role, Wealth, Habitat, group function, and immediate circumstances, not a generic adventurer loadout.",
     "Prefer standard D&D 5e equipment when it fits. For a standard item, set lookup to its exact English canonical equipment name so the importer can resolve it from the D&D 5e compendium. For an invented roleplay-only possession, set lookup to null.",
     "Invented possessions are encouraged when mundane specificity improves roleplay: purses, letters, receipts, toys, keys, work scraps, devotional keepsakes, food, personal mementos, local tokens, family objects, duty rosters, travel papers, trade samples, repair parts, and similar items.",
@@ -67,7 +77,13 @@ export function buildAiPrompt(options = {}) {
     "Requested NPC profile:",
     `- Count: ${count}`,
     `- Role / primary role: ${clean(options.roleLabel, clean(options.role, "Guard"))}`,
+    `- Role composition: ${clean(options.roleCompositionLabel, "Group-appropriate roles")} — ${clean(options.roleCompositionPrompt, "use a coherent role distribution")}`,
+    clean(options.roleComposition, "") === "variants" ? `- Available primary-role variants: ${roleVariants}` : "",
+    roleMixed ? `- Allowed roles: ${groupRoles}` : "",
+    roleMixed ? `- Primary role: ${clean(options.roleLabel, clean(options.role, "Guard"))}` : "",
+    clean(options.roleComposition, "") === "weighted" ? `- Relative role weights: ${clean(options.roleWeightSummary, "equal weights")}` : "",
     `- Role equipment guidance: ${clean(options.roleEquipmentHint, "choose practical possessions that directly support the role")}`,
+    `- Combat readiness: ${clean(options.combatReadinessLabel, "Standard")}`,
     `- Tier / CR: ${clean(options.tierLabel, clean(options.tier, "Trained"))}`,
     `- Race / primary race: ${clean(options.raceLabel, clean(options.race, "Human"))}`,
     `- Wealth: ${clean(options.wealthLabel, clean(options.wealth, "Average"))}`,
@@ -81,11 +97,10 @@ export function buildAiPrompt(options = {}) {
     grouped ? `- Group hierarchy: ${clean(options.groupHierarchyLabel, "Informal leader")} — ${clean(options.groupHierarchyPrompt)}` : "",
     grouped ? `- Relationship density: ${clean(options.relationshipDensityLabel, "Rich")} — ${clean(options.relationshipDensityPrompt)}` : "",
     grouped ? `- Internal conflict: ${clean(options.internalConflictLabel, "Low")} — ${clean(options.internalConflictPrompt)}` : "",
-    grouped ? `- Race composition: ${clean(options.raceCompositionLabel, "Single race")}` : "",
-    grouped && options.raceComposition === "mixed" ? `- Allowed races: ${groupRaces}` : "",
-    grouped && options.raceComposition === "mixed" ? `- Primary race: ${clean(options.primaryRaceLabel, clean(options.raceLabel, "Human"))}` : "",
-    grouped && options.raceComposition === "mixed" ? `- Race distribution: ${clean(options.raceDistributionLabel, "Roughly equal")} — ${clean(options.raceDistributionPrompt)}` : "",
-    grouped && options.raceComposition === "mixed" && options.raceDistribution === "weighted" ? `- Relative race weights: ${clean(options.raceWeightSummary, "equal weights")}` : "",
+    `- Race composition: ${clean(options.raceCompositionLabel, "Single race")} — ${clean(options.raceCompositionPrompt, "use the selected primary race")}`,
+    raceMixed ? `- Allowed races: ${groupRaces}` : "",
+    raceMixed ? `- Primary race: ${clean(options.primaryRaceLabel, clean(options.raceLabel, "Human"))}` : "",
+    clean(options.raceComposition, "") === "weighted" ? `- Relative race weights: ${clean(options.raceWeightSummary, "equal weights")}` : "",
     grouped && clean(options.groupBrief) ? `- Additional group brief: ${clean(options.groupBrief)}` : "",
     `- Requested name or batch prefix: ${clean(options.customName, "none; generate natural names")}`,
     "",
@@ -95,6 +110,9 @@ export function buildAiPrompt(options = {}) {
     grouped ? "- At least half the NPCs should explicitly name another generated NPC in Relationships, Rumours, or Secrets; for families, every NPC must do so." : "",
     grouped ? "- Shared secrets and rumours may appear from different perspectives, but do not paste identical biography text into every Actor." : "",
     grouped ? "- Vary equipment by responsibility: leaders, scouts, caretakers, artisans, guards, dependents, specialists, and wealthy members should carry different things." : "",
+    clean(options.roleComposition, "") === "variants" ? "- For Role variants, keep the same broad Role statistics but assign distinct practical subtypes as evenly as possible; when enough variants exist, avoid duplicates before reusing one." : "",
+    roleMixed ? "- For mixed-role composition, satisfy the requested approximate proportions across the exact NPC count. Use integer counts that best approximate the requested shares; do not randomize away small minorities." : "",
+    raceMixed ? "- For mixed-Race composition, satisfy the requested approximate proportions using exact integer member counts. Strong-majority composition should preserve small minorities when group size permits; e.g. a ten-person three-Race group may reasonably become 8/1/1." : "",
     "",
     "Required Actor object shape:",
     "{",

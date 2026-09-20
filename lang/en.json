@@ -114,7 +114,18 @@
       "groupBriefPlaceholder": "Optional: local feud, family business, employer, current crisis, taboo, destination, shared objective…",
       "groupBriefHint": "Passed into the AI prompt as additional context. Keep it focused on facts that should affect multiple NPCs.",
       "done": "Done",
-      "copyPortraitPrompt": "Copy portrait prompt"
+      "copyPortraitPrompt": "Copy portrait prompt",
+      "combatReadiness": "Combat readiness",
+      "combatReadinessHint": "Controls how heavily armed the NPC is relative to the Role. Weaponless always means no weapons or armor; higher levels remain constrained by what the occupation and situation can realistically justify.",
+      "compositionTitle": "Batch composition",
+      "compositionIntro": "Control how Race and Role are distributed across any multi-NPC batch, whether or not the NPCs form an intentional group.",
+      "roleComposition": "Role composition",
+      "roleCompositionHint": "Keep one Role, distribute distinct variants of that Role, use the group archetype’s natural jobs, or mix several Roles with approximate proportions.",
+      "possibleRoles": "Possible roles",
+      "possibleRolesHint": "Search and select the Roles allowed in a mixed-role batch. The selected main Role remains the primary Role.",
+      "choosePossibleRoles": "Choose possible roles…",
+      "roleWeights": "Custom role weights",
+      "roleWeightsHint": "Relative weights; they do not need to add up to 100."
     },
     "help": {
       "title": "NPC Button Help",
@@ -155,7 +166,11 @@
       "portraitPromptTitle": "Portrait prompts",
       "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC.",
       "filterTitle": "Dashboard filter settings",
-      "filterBody": "Configure Settings now provides a dedicated filter menu with allow/deny exact, contains, prefix, suffix, and regex rules for major picker-based dashboard fields."
+      "filterBody": "Configure Settings provides a dedicated filter menu with allow/deny exact, contains, prefix, suffix, and regex rules for major picker-based dashboard fields. Filter profiles can be exported/imported as versioned JSON files or copied through the clipboard.",
+      "compositionTitle": "Race and Role composition",
+      "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Roles can stay uniform, rotate through distinct subtypes such as merchant specialties, follow the group preset, or use the same proportional mixing model.",
+      "combatReadinessTitle": "Combat readiness",
+      "combatReadinessBody": "Every NPC still has combat-capable statistics. The readiness setting controls carried weapons and armor. Weaponless forces none; higher settings are strictly role-relative, so a scholar or jurist never turns into a heavily armed warrior while guards, soldiers, and raiders scale naturally."
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -167,7 +182,12 @@
       "noneImported": "No NPC Actors were imported.",
       "importFailed": "NPC import failed: {message}",
       "portraitPromptCopied": "Portrait prompt copied to the clipboard.",
-      "filtersSaved": "Dashboard string filters saved."
+      "filtersSaved": "Dashboard string filters saved.",
+      "filtersExported": "Filter profile exported.",
+      "filtersCopied": "Filter profile JSON copied to the clipboard.",
+      "filtersImported": "Filter profile imported and applied.",
+      "filterImportFailed": "Filter profile import failed",
+      "filterProfileTooLarge": "Filter profile is too large to import."
     },
     "errors": {
       "clipboardWrite": "Clipboard writing is not available in this client.",
@@ -344,7 +364,11 @@
     },
     "raceComposition": {
       "single": "Single race",
-      "mixed": "Mixed races"
+      "mixed": "Mixed races (legacy)",
+      "dominant": "Strong primary-race majority",
+      "primary": "Primary-race majority",
+      "balanced": "Broadly mixed",
+      "weighted": "Custom race weights"
     },
     "raceDistribution": {
       "balanced": "Roughly equal",
@@ -385,7 +409,29 @@
         "caseSensitive": "Case-sensitive matching",
         "normalizeDiacritics": "Normalize accents / diacritics",
         "trimWhitespace": "Trim surrounding whitespace"
+      },
+      "actions": {
+        "exportFile": "Export JSON",
+        "copyJson": "Copy JSON",
+        "importFile": "Import JSON",
+        "importClipboard": "Import clipboard"
       }
+    },
+    "combatReadiness": {
+      "weaponless": "Weaponless",
+      "minimal": "Minimal",
+      "standard": "Standard",
+      "prepared": "Prepared",
+      "armed": "Highly Prepared"
+    },
+    "roleComposition": {
+      "single": "Single role",
+      "variants": "Role variants",
+      "groupPreset": "Group-appropriate roles",
+      "balanced": "Balanced mixed roles",
+      "primary": "Primary-role majority",
+      "dominant": "Strong primary-role majority",
+      "weighted": "Custom role weights"
     }
   }
 }

@@ -10,7 +10,7 @@ This executes repository validation and Node's built-in unit tests.
 
 ## Automated coverage
 
-Tests cover seeded reproducibility; ability/AC/HP bounds; exact CR support; Actor-source structure; HTML escaping; the complete built-in 2024 Race catalog; the Forest Village default and broad habitat catalog; rich naming example sets; balanced and primary mixed-Race quota allocation; family surname/quirk/relationship/secret behavior; advanced local cohesion/hierarchy/relationship/conflict effects and flags; AI root-shape/count enforcement; required biography sections including Quirk; mandatory non-empty inventory; sanitization; canonical item resolution; invented-item fallback; and fenced-JSON tolerance.
+Tests cover seeded reproducibility; ability/AC/HP bounds; role-relative combat loadouts and armor-derived AC; exact CR support; Actor-source structure; HTML escaping; the complete built-in 2024 Race catalog; the Forest Village default and broad habitat catalog; rich naming example sets; balanced, primary, and strong-majority mixed-Race quota allocation; balanced mixed-Role quotas; Role-variant distribution; family surname/quirk/relationship/secret behavior; advanced local cohesion/hierarchy/relationship/conflict effects and flags; AI root-shape/count enforcement; required biography sections including Quirk; mandatory non-empty inventory; sanitization; portable filter-profile round trips; canonical item resolution and local-generation flag preservation; invented-item fallback; and fenced-JSON tolerance.
 
 Repository validation checks the manifest, referenced runtime files, version consistency, and selected deprecated/removed API patterns.
 
@@ -40,3 +40,8 @@ Repository validation checks the manifest, referenced runtime files, version con
 22. Block clipboard-read permission and verify manual-paste fallback.
 23. Switch Foundry between English and German and inspect the new group/habitat/mixed-Race UI.
 24. Enable/disable debug logging and confirm normal operation stays quiet when disabled.
+25. Open Dashboard string filters, configure several rules, export a JSON profile, change the rules, then import the file and verify the exported configuration is restored. Repeat with Copy JSON / Import clipboard.
+26. Generate ten NPCs with three allowed Races and Strong primary-Race majority; verify the result is approximately 8/1/1 and preserves exact Count.
+27. Generate five Merchants with Role variants; verify five distinct merchant specializations are used before any repeats. Test balanced, primary-majority, strong-majority, and weighted mixed Roles.
+28. Exercise every Combat readiness level on civilians, artisans, scholars/Jurists, guards, soldiers, and Orc Raider groups. Weaponless must produce no weapon/armor; occupational ceilings must remain plausible at Highly Prepared; professional combatants must retain sensible minimum arms at Minimal.
+29. Confirm local generated canonical weapons/armor resolve to functional D&D 5e Items where the system compendium contains them, and that AC matches the generated armor/shield loadout.

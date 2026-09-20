@@ -83,6 +83,14 @@ function helpContent() {
         </table>
       </section>
       <section>
+        <h2>${escapeAttribute(localize("help.compositionTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.compositionBody"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.combatReadinessTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.combatReadinessBody"))}</p>
+      </section>
+      <section>
         <h2>${escapeAttribute(localize("help.actorReviewTitle"))}</h2>
         <p>${escapeAttribute(localize("help.actorReviewBody"))}</p>
       </section>

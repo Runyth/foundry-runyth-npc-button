@@ -11,9 +11,9 @@ Runyth NPC Button separates deterministic generation, group composition, AI payl
 | Entry point | `scripts/main.mjs` | Hooks, settings registration, public API |
 | UI | `scripts/ui/` | Actor-directory integration, dashboard, help window, single/multi virtualized hierarchical pickers, Actor review layout |
 | AI contract | `scripts/ai/` | Prompt construction, JSON parsing, validation, normalization, HTML sanitization |
-| Generator | `scripts/generator/` | Pure deterministic NPC/group blueprints, Race allocation, habitat/group lore, exact CR profile mapping, Actor source construction |
+| Generator | `scripts/generator/` | Pure deterministic NPC/group blueprints, Race/Role allocation, combat-readiness loadouts, habitat/group lore, exact CR profile mapping, Actor source construction |
 | Foundry services | `scripts/services/` | Folder resolution, canonical item resolution, batched Actor creation/import |
-| Infrastructure | `scripts/settings.mjs`, `scripts/logger.mjs` | Configuration, persisted dashboard state, diagnostics |
+| Infrastructure | `scripts/settings.mjs`, `scripts/filters.mjs`, `scripts/logger.mjs` | Configuration, portable filter profiles, persisted dashboard state, diagnostics |
 
 ## Tier styles
 
@@ -40,14 +40,14 @@ Race, Habitat, and Actor-folder workflows support custom entries without a separ
 
 1. determine group archetype and exact Count;
 2. allocate Race quotas for the full batch;
-3. deterministically shuffle those allocations when a seed is supplied;
-4. assign practical member roles from the group archetype;
+3. allocate Role quotas, Role variants, or group-preset jobs;
+4. deterministically shuffle proportional allocations when a seed is supplied;
 5. apply family surname behavior when applicable;
 6. generate per-NPC stats, habitat, quirk, and personal details;
 7. add group-wide rumour/secret context;
 8. construct relationship text reflecting cohesion, hierarchy, relationship density, and internal conflict.
 
-Balanced and weighted mixed groups use integer quotas before shuffling rather than independent random draws. This guarantees the requested exact Count and makes distribution intent meaningful even for small groups.
+Balanced, majority, dominant, and weighted Race/Role compositions use integer quotas before shuffling rather than independent random draws. This guarantees the requested exact Count and makes distribution intent meaningful even for small groups.
 
 ## Naming data
 
@@ -59,9 +59,9 @@ When Actor review opening is enabled, at most the first ten created Actors are o
 
 ## AI boundary
 
-The module does not call an AI service. `Copy prompt` produces a portable strict JSON-only request; the user manually pastes that prompt into any AI conversation and copies the JSON response back.
+The module does not call an AI service. `Copy prompt` produces a portable strict request whose reply must be exactly one fenced `json` Markdown code block containing 2-space-indented JSON; the user manually pastes that prompt into any AI conversation and copies the JSON response back.
 
-The prompt carries the same configuration model as local generation: exact Count, Tier/CR, Role, Race composition, wealth, habitat, naming guidance/examples, group archetype, family structure, cohesion, hierarchy, relationship density, internal conflict, and group brief. It additionally requires coherent inventory, quirks, rumours, secrets, relationships, and cross-NPC references for groups.
+The prompt carries the same configuration model as local generation: exact Count, Tier/CR, Role and Role composition, Race composition, wealth, combat readiness, habitat, naming guidance/examples, group archetype, family structure, cohesion, hierarchy, relationship density, internal conflict, and group brief. It additionally requires coherent inventory, quirks, rumours, secrets, relationships, and cross-NPC references for groups.
 
 AI output is treated as untrusted input. The importer:
 
@@ -84,3 +84,11 @@ The default root shape is always an array. A single object is valid only when Co
 The manifest restricts activation to D&D 5e and records the supported system range. Runtime code uses public Foundry APIs where available, including ApplicationV2 rendering/positioning and `Actor.implementation.createDocuments`.
 
 The Actor-directory integration uses the public render hook and only a small DOM insertion adapter. A future directory-markup change can therefore be isolated from generation, AI validation, picker logic, and persistence.
+
+## Combat readiness
+
+Combat readiness is independent from CR and Role. The generator first applies a strict Role/variant equipment ceiling, then readiness selects how much of that plausible equipment is carried. Weaponless always wins. Local generated equipment uses canonical lookup names and is resolved through the D&D 5e compendium resolver; Actor AC is derived from Dexterity and the actually generated armor/shield loadout.
+
+## Filter profiles
+
+`filters.mjs` stores world-level picker filters and serializes them as a versioned portable profile (`runyth-npc-button-filter-profile`, version 1). Import validates the format/version before replacing world filter settings. File and clipboard workflows use the same schema.

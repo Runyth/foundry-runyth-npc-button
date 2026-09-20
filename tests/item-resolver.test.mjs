@@ -80,3 +80,30 @@ test("unresolved or invented AI possessions remain safe fallback items", async (
 
   assert.deepEqual(actor.items[0], invented);
 });
+
+test("canonical resolution preserves local-generation flags", async () => {
+  const canonicalSource = {
+    _id: "canonical-id",
+    name: "Mace",
+    type: "weapon",
+    system: { quantity: 1 },
+    flags: {}
+  };
+  const pack = {
+    documentName: "Item",
+    async getIndex() { return [{ _id: "canonical-id", name: "Mace" }]; },
+    async getDocument() { return { toObject: () => structuredClone(canonicalSource) }; }
+  };
+  globalThis.game = { packs: new Map([["dnd5e.equipment24", pack]]) };
+  globalThis.foundry = { utils: { deepClone: structuredClone } };
+
+  const localItem = {
+    name: "Mace",
+    type: "loot",
+    system: { quantity: 1 },
+    flags: { [MODULE_ID]: { generated: true, canonicalLookup: "Mace" } }
+  };
+  const [actor] = await resolveCanonicalItemsForActors([{ name: "Guard", items: [localItem] }]);
+  assert.equal(actor.items[0].flags[MODULE_ID].generated, true);
+  assert.equal(actor.items[0].flags[MODULE_ID].canonicalPack, "dnd5e.equipment24");
+});

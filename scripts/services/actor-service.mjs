@@ -61,8 +61,9 @@ export async function createNpcActors(options) {
   const folder = await resolveNpcFolder(normalized);
   const blueprints = generateNpcBatch(normalized);
   const actorSources = blueprints.map((blueprint) => buildActorSource(blueprint, { folderId: folder?.id }));
+  const resolvedItems = await resolveCanonicalItemsForActors(actorSources);
 
-  return createSources(actorSources, normalized);
+  return createSources(resolvedItems, normalized);
 }
 
 export async function createImportedNpcActors(actorSources, options = {}) {
