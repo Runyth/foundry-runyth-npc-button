@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Runyth NPC Button UI visual harness</title>
+<link rel="stylesheet" href="../styles/runyth-npc-button.css">
+<style>
+:root { --color-bg:#171a1e; --color-bg-option:#242930; --color-border-light-primary:#626a74; --color-text-secondary:#aeb5bd; color:#e4e7ea; font:14px system-ui,sans-serif; background:#0f1114; }
+body { margin:0; padding:24px; }
+button,input,textarea { color:inherit; font:inherit; }
+button { background:#252a30; border:1px solid #555e67; padding:.35rem .6rem; }
+input,textarea { background:#15191d; border:1px solid #555e67; }
+.demo-shell { height:900px; margin:auto; max-width:900px; }
+</style>
+</head>
+<body>
+<div class="runyth-npc-button runyth-npc-button--dashboard demo-shell">
+<form class="runyth-npc-button__dashboard">
+<section class="runyth-npc-button__section runyth-npc-button__section--generation">
+  <div class="runyth-npc-button__section-heading"><div><h2><i class="fa-solid">◆</i> NPC generation</h2><p>Configure the practical identity and capability of generated NPCs.</p></div></div>
+  <div class="runyth-npc-button__field runyth-npc-button__field--count"><div class="runyth-npc-button__label-row"><label>Count</label><small>1–25</small></div><div class="runyth-npc-button__count-control"><input type="number" value="5"><div class="runyth-npc-button__quick-counts"><button>1</button><button>3</button><button class="active">5</button><button>10</button></div></div></div>
+  <div class="runyth-npc-button__grid"><div class="runyth-npc-button__field"><label>Group type</label><button class="runyth-npc-button__picker-trigger"><span>Guard Patrol</span><span>⌄</span></button><small>Intentional group archetype.</small></div><div class="runyth-npc-button__field"><label>Habitat</label><button class="runyth-npc-button__picker-trigger"><span>Forest Village</span><span>⌄</span></button><small>Environment and settlement context.</small></div></div>
+  <fieldset class="runyth-npc-button__field"><legend>Combat readiness</legend><small>Role-relative preparation.</small><div class="runyth-npc-button__choices runyth-npc-button__choices--five"><label class="runyth-npc-button__choice"><input type="radio"><span>Weaponless</span></label><label class="runyth-npc-button__choice"><input type="radio"><span>Minimal</span></label><label class="runyth-npc-button__choice"><input type="radio" checked><span>Standard</span></label><label class="runyth-npc-button__choice"><input type="radio"><span>Prepared</span></label><label class="runyth-npc-button__choice"><input type="radio"><span>Highly Prepared</span></label></div></fieldset>
+</section>
+<section class="runyth-npc-button__section runyth-npc-button__section--composition"><div class="runyth-npc-button__section-heading"><div><h2><i>◆</i> Batch composition</h2><p>Control Race and Role distribution without losing exact Count.</p></div></div><fieldset class="runyth-npc-button__field"><legend>Race composition</legend><div class="runyth-npc-button__choices runyth-npc-button__choices--composition"><label class="runyth-npc-button__choice"><input type="radio"><span>Single Race</span></label><label class="runyth-npc-button__choice"><input type="radio" checked><span>Strong majority</span></label><label class="runyth-npc-button__choice"><input type="radio"><span>Balanced mix</span></label></div></fieldset></section>
+<section class="runyth-npc-button__section runyth-npc-button__section--ai"><div class="runyth-npc-button__section-heading"><div><h2><i>✦</i> AI workflow</h2><p>Copy a strict prompt or import a validated JSON result.</p></div></div><label class="runyth-npc-button__toggle"><input type="checkbox" checked><span><strong>Preview before import</strong><small>Review and edit simple Actor fields before creation.</small></span></label><div class="runyth-npc-button__button-row"><button>Copy prompt</button><button>Import NPC</button></div></section>
+<footer class="runyth-npc-button__footer"><span class="runyth-npc-button__status">Ready.</span><button class="runyth-npc-button__primary">Create locally</button></footer>
+</form>
+</div>
+</body>
+</html>

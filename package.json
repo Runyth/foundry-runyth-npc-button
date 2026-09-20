@@ -1,12 +1,13 @@
 {
   "name": "runyth-npc-button",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test",
     "validate": "node dev/validate.mjs",
-    "check": "npm run validate && npm test"
+    "check": "npm run validate && npm run audit:ui && npm test",
+    "audit:ui": "node dev/ui-performance-audit.mjs"
   },
   "engines": {
     "node": ">=20"

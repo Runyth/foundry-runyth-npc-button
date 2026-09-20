@@ -109,3 +109,14 @@ Local generation always resolves a concrete batch seed before the seeded PRNG is
 The Actor portrait control is attached from both `renderActorSheetV2`/`renderApplicationV2` and the legacy `renderActorSheet` fallback. Injection is idempotent, so overlapping Foundry hooks cannot duplicate the control.
 
 AI import preview edits the original validated AI contract rather than already-normalized Foundry Item sources. Only simple whitelisted Actor fields are exposed. The raw payload is validated before preview, on preview confirmation, and once again in the dashboard immediately before Actor creation.
+
+
+## v0.2 visual architecture
+
+The visual system is a CSS-only enhancement layer scoped to the module namespace. Runtime state and document-generation logic are not coupled to decoration. Dashboard sections expose stable semantic modifiers (`--generation`, `--composition`, `--group`, `--destination`, `--ai`) so the stylesheet can provide fast visual scanning without branching JavaScript or rerendering extra presentation models.
+
+The palette is defined through module-scoped CSS custom properties and Foundry theme variables. Surfaces use static gradients and bounded shadows only. There are no keyframe animations, backdrop filters, blur/drop-shadow CSS filters, or `transition: all`. Short transitions are limited to state colors/opacity and reduced-motion users receive near-zero durations.
+
+Large lists continue to use the existing fixed-row virtual window. The picker viewport adds CSS containment so row painting/layout stays local. Search work remains requestAnimationFrame-coalesced, scroll listeners remain passive, and visible rows plus overscan are replaced atomically. The design layer does not add observers, timers, images, canvases, or broad document hooks.
+
+Scrollable dashboard/help/filter/preview regions use stable scrollbar gutters and contained overscroll. Footer/action bars are sticky within their existing scroll contexts rather than fixed to the viewport, preserving window geometry behavior and avoiding extra layout coordination.

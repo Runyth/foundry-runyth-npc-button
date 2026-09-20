@@ -810,3 +810,793 @@
 .runyth-npc-button__filter-advanced > .runyth-npc-button__filters-grid {
   margin-top: 0.65rem;
 }
+
+/* -------------------------------------------------------------------------
+ * v0.2 visual system
+ *
+ * Cosmetic-only layer shared by dashboard, filters, help, and import preview.
+ * The design intentionally avoids backdrop-filter, animated shadows, keyframe
+ * animation, and layout transitions. The only transitions are short paint-only
+ * color/opacity changes and the picker chevron transform.
+ * ---------------------------------------------------------------------- */
+
+.runyth-npc-button,
+.runyth-npc-button__directory-button,
+.runyth-npc-button__portrait-prompt-control {
+  --rnb-accent: #c39b63;
+  --rnb-accent-strong: #ddb77e;
+  --rnb-accent-soft: rgb(195 155 99 / 14%);
+  --rnb-good: #82a77b;
+  --rnb-warning: #c5a263;
+  --rnb-danger: #b87970;
+  --rnb-surface-0: color-mix(in srgb, var(--color-bg, #1c2024) 96%, black 4%);
+  --rnb-surface-1: color-mix(in srgb, var(--color-bg-option, #25292e) 92%, var(--rnb-accent) 8%);
+  --rnb-surface-2: color-mix(in srgb, var(--color-bg-option, #25292e) 84%, var(--rnb-accent) 16%);
+  --rnb-surface-hover: color-mix(in srgb, var(--color-bg-option, #25292e) 76%, var(--rnb-accent) 24%);
+  --rnb-border: color-mix(in srgb, var(--color-border-light-primary, #777) 72%, var(--rnb-accent) 28%);
+  --rnb-border-soft: color-mix(in srgb, var(--color-border-light-primary, #777) 62%, transparent 38%);
+  --rnb-text-muted: color-mix(in srgb, currentColor 68%, transparent 32%);
+  --rnb-shadow-card: 0 2px 9px rgb(0 0 0 / 18%);
+  --rnb-shadow-popover: 0 8px 24px rgb(0 0 0 / 28%);
+  --rnb-radius-sm: 0.32rem;
+  --rnb-radius-md: 0.5rem;
+  --rnb-radius-lg: 0.7rem;
+  --rnb-control-height: 2.25rem;
+  --rnb-fast: 90ms;
+  --rnb-section-accent: var(--rnb-accent);
+  isolation: isolate;
+}
+
+.runyth-npc-button--dashboard .window-content,
+.runyth-npc-button--help .window-content,
+.runyth-npc-button--filters .window-content,
+.runyth-npc-button--preview .window-content {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 2%), transparent 5rem),
+    var(--rnb-surface-0);
+}
+
+.runyth-npc-button__dashboard,
+.runyth-npc-button__help,
+.runyth-npc-button__filters-form,
+.runyth-npc-button__preview-main,
+.runyth-npc-button__preview-list {
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+}
+
+.runyth-npc-button__dashboard {
+  gap: 0.95rem;
+  padding: 1rem;
+}
+
+.runyth-npc-button__section {
+  --rnb-section-accent: var(--rnb-accent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--rnb-section-accent) 7%, transparent), transparent 4.5rem),
+    var(--rnb-surface-1);
+  border: 1px solid var(--rnb-border-soft);
+  border-top-color: color-mix(in srgb, var(--rnb-section-accent) 50%, var(--rnb-border) 50%);
+  border-radius: var(--rnb-radius-lg);
+  box-shadow: var(--rnb-shadow-card);
+  gap: 0.82rem;
+  padding: 0.9rem 0.95rem 0.95rem;
+  position: relative;
+}
+
+.runyth-npc-button__section::before {
+  background: var(--rnb-section-accent);
+  border-radius: var(--rnb-radius-lg) var(--rnb-radius-lg) 0 0;
+  content: "";
+  height: 2px;
+  inset: -1px -1px auto;
+  opacity: 0.72;
+  pointer-events: none;
+  position: absolute;
+}
+
+.runyth-npc-button__section--generation {
+  --rnb-section-accent: #c39b63;
+}
+
+.runyth-npc-button__section--composition {
+  --rnb-section-accent: #7f9fb1;
+}
+
+.runyth-npc-button__section--group {
+  --rnb-section-accent: #8fa274;
+}
+
+.runyth-npc-button__section--destination {
+  --rnb-section-accent: #9985ad;
+}
+
+.runyth-npc-button__section--ai {
+  --rnb-section-accent: #b77e9a;
+  border-style: solid;
+}
+
+.runyth-npc-button__section-heading {
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.runyth-npc-button__section-heading > div {
+  min-width: 0;
+}
+
+.runyth-npc-button__section-heading h2 {
+  color: color-mix(in srgb, currentColor 90%, var(--rnb-section-accent) 10%);
+  font-size: 1.02rem;
+  letter-spacing: 0.012em;
+  line-height: 1.2;
+}
+
+.runyth-npc-button__section-heading h2 > i {
+  align-items: center;
+  background: color-mix(in srgb, var(--rnb-section-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rnb-section-accent) 42%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, currentColor 60%, var(--rnb-section-accent) 40%);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  height: 1.55rem;
+  justify-content: center;
+  width: 1.55rem;
+}
+
+.runyth-npc-button__section-heading p,
+.runyth-npc-button__field > small,
+.runyth-npc-button__label-row > small,
+.runyth-npc-button__toggle small,
+.runyth-npc-button__note,
+.runyth-npc-button .notes {
+  color: var(--rnb-text-muted);
+}
+
+.runyth-npc-button__grid {
+  gap: 0.72rem;
+}
+
+.runyth-npc-button__field {
+  gap: 0.34rem;
+}
+
+.runyth-npc-button__field > label,
+.runyth-npc-button__field > legend,
+.runyth-npc-button__label-row > label,
+.runyth-npc-button__label-row > strong {
+  letter-spacing: 0.008em;
+}
+
+.runyth-npc-button__dashboard input[type="text"],
+.runyth-npc-button__dashboard input[type="number"],
+.runyth-npc-button__dashboard input[type="search"],
+.runyth-npc-button__dashboard textarea,
+.runyth-npc-button__filters-form input[type="text"],
+.runyth-npc-button__filters-form input[type="number"],
+.runyth-npc-button__filters-form input[type="search"],
+.runyth-npc-button__filters-form textarea,
+.runyth-npc-button__preview-main input[type="text"],
+.runyth-npc-button__preview-main input[type="number"],
+.runyth-npc-button__preview-main input[type="search"],
+.runyth-npc-button__preview-main textarea {
+  background: color-mix(in srgb, var(--rnb-surface-0) 88%, transparent 12%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-sm);
+  min-height: var(--rnb-control-height);
+  transition: border-color var(--rnb-fast) linear, background-color var(--rnb-fast) linear;
+}
+
+.runyth-npc-button__dashboard input:focus,
+.runyth-npc-button__dashboard textarea:focus,
+.runyth-npc-button__filters-form input:focus,
+.runyth-npc-button__filters-form textarea:focus,
+.runyth-npc-button__preview-main input:focus,
+.runyth-npc-button__preview-main textarea:focus {
+  background: color-mix(in srgb, var(--rnb-surface-0) 80%, var(--rnb-accent) 20%);
+  border-color: var(--rnb-accent);
+  outline: 2px solid rgb(195 155 99 / 18%);
+  outline-offset: 1px;
+}
+
+.runyth-npc-button button {
+  border-radius: var(--rnb-radius-sm);
+  transition: background-color var(--rnb-fast) linear, border-color var(--rnb-fast) linear, color var(--rnb-fast) linear, opacity var(--rnb-fast) linear;
+}
+
+.runyth-npc-button button:focus-visible,
+.runyth-npc-button summary:focus-visible,
+.runyth-npc-button input:focus-visible,
+.runyth-npc-button textarea:focus-visible {
+  outline: 2px solid var(--rnb-accent-strong);
+  outline-offset: 2px;
+}
+
+.runyth-npc-button__count-control {
+  align-items: stretch;
+}
+
+.runyth-npc-button__count-control input[type="number"] {
+  background: var(--rnb-surface-0);
+  border-color: var(--rnb-border);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.runyth-npc-button__quick-counts button,
+.runyth-npc-button__button-row button,
+.runyth-npc-button__filter-profile-toolbar button,
+.runyth-npc-button__picker-footer button,
+.runyth-npc-button__preview-footer button {
+  background: var(--rnb-surface-2);
+  border: 1px solid var(--rnb-border-soft);
+  min-height: var(--rnb-control-height);
+}
+
+.runyth-npc-button__quick-counts button:hover,
+.runyth-npc-button__button-row button:hover,
+.runyth-npc-button__filter-profile-toolbar button:hover,
+.runyth-npc-button__picker-footer button:hover,
+.runyth-npc-button__preview-footer button:hover {
+  background: var(--rnb-surface-hover);
+  border-color: var(--rnb-border);
+}
+
+.runyth-npc-button__quick-counts button.active {
+  background: var(--rnb-accent-soft);
+  border-color: var(--rnb-accent);
+  box-shadow: inset 0 0 0 1px rgb(195 155 99 / 24%);
+  color: var(--rnb-accent-strong);
+}
+
+.runyth-npc-button__choices {
+  gap: 0.42rem;
+}
+
+.runyth-npc-button__choice span {
+  background: color-mix(in srgb, var(--rnb-surface-0) 80%, transparent 20%);
+  border-color: var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  line-height: 1.15;
+  min-height: 2.35rem;
+  padding: 0.42rem 0.52rem;
+  transition: background-color var(--rnb-fast) linear, border-color var(--rnb-fast) linear, color var(--rnb-fast) linear;
+}
+
+.runyth-npc-button__choice:hover span {
+  background: var(--rnb-surface-2);
+  border-color: var(--rnb-border);
+}
+
+.runyth-npc-button__choice input:checked + span {
+  background: linear-gradient(180deg, rgb(195 155 99 / 20%), rgb(195 155 99 / 10%));
+  border-color: var(--rnb-accent);
+  box-shadow: inset 0 0 0 1px rgb(195 155 99 / 20%);
+  color: color-mix(in srgb, currentColor 76%, var(--rnb-accent-strong) 24%);
+}
+
+.runyth-npc-button__choice input:focus-visible + span {
+  outline-color: var(--rnb-accent-strong);
+}
+
+.runyth-npc-button__toggle {
+  align-items: center;
+  background: color-mix(in srgb, var(--rnb-surface-0) 70%, transparent 30%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  gap: 0.62rem;
+  padding: 0.55rem 0.65rem;
+  transition: background-color var(--rnb-fast) linear, border-color var(--rnb-fast) linear;
+}
+
+.runyth-npc-button__toggle:hover {
+  background: var(--rnb-surface-2);
+  border-color: var(--rnb-border);
+}
+
+.runyth-npc-button__toggle > input {
+  accent-color: var(--rnb-accent);
+  margin-top: 0;
+}
+
+.runyth-npc-button__picker-trigger {
+  background: color-mix(in srgb, var(--rnb-surface-0) 84%, transparent 16%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-sm);
+  min-height: var(--rnb-control-height);
+}
+
+.runyth-npc-button__picker-trigger:hover,
+.runyth-npc-button__picker-trigger[aria-expanded="true"] {
+  background: var(--rnb-surface-2);
+  border-color: var(--rnb-border);
+}
+
+.runyth-npc-button__picker-trigger[aria-expanded="true"] {
+  box-shadow: inset 0 0 0 1px rgb(195 155 99 / 18%);
+}
+
+.runyth-npc-button__picker-trigger > i {
+  color: var(--rnb-text-muted);
+  transition: color var(--rnb-fast) linear, transform var(--rnb-fast) ease-out;
+}
+
+.runyth-npc-button__picker-trigger[aria-expanded="true"] > i {
+  color: var(--rnb-accent-strong);
+}
+
+.runyth-npc-button__picker-panel {
+  background: var(--rnb-surface-0);
+  border-color: var(--rnb-border);
+  border-radius: var(--rnb-radius-md);
+  box-shadow: var(--rnb-shadow-popover);
+  gap: 0.4rem;
+  padding: 0.48rem;
+}
+
+.runyth-npc-button__picker-search-row {
+  background: var(--rnb-surface-1);
+  border-radius: var(--rnb-radius-sm);
+  padding: 0.25rem 0.4rem;
+}
+
+.runyth-npc-button__picker-search-row > i {
+  color: var(--rnb-accent-strong);
+  opacity: 0.84;
+}
+
+.runyth-npc-button__picker-search-row input[type="search"] {
+  background: transparent;
+  border: 0;
+  min-height: 2rem;
+  outline: 0;
+}
+
+.runyth-npc-button__picker-viewport {
+  background: color-mix(in srgb, var(--rnb-surface-0) 94%, black 6%);
+  border-color: var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-sm);
+  contain: layout paint style;
+}
+
+.runyth-npc-button__picker-group {
+  background: color-mix(in srgb, var(--rnb-surface-1) 84%, transparent 16%);
+  border-bottom: 1px solid var(--rnb-border-soft);
+  color: var(--rnb-text-muted);
+  letter-spacing: 0.055em;
+}
+
+.runyth-npc-button__picker-option {
+  border-left: 2px solid transparent;
+  padding-right: 0.6rem;
+}
+
+.runyth-npc-button__picker-option:hover,
+.runyth-npc-button__picker-option:focus-visible {
+  background: var(--rnb-surface-2);
+}
+
+.runyth-npc-button__picker-option.is-selected {
+  background: var(--rnb-accent-soft);
+  border-left-color: var(--rnb-accent);
+  box-shadow: none;
+  color: color-mix(in srgb, currentColor 76%, var(--rnb-accent-strong) 24%);
+}
+
+.runyth-npc-button__multi-count {
+  background: var(--rnb-accent-soft);
+  border: 1px solid rgb(195 155 99 / 30%);
+  color: var(--rnb-accent-strong);
+}
+
+.runyth-npc-button__weights {
+  background: color-mix(in srgb, var(--rnb-surface-0) 72%, transparent 28%);
+  border-color: var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  padding: 0.65rem;
+}
+
+.runyth-npc-button__weight-row {
+  border-bottom: 1px solid color-mix(in srgb, var(--rnb-border-soft) 50%, transparent 50%);
+  padding-block: 0.28rem;
+}
+
+.runyth-npc-button__weight-row:last-child {
+  border-bottom: 0;
+}
+
+.runyth-npc-button__advanced,
+.runyth-npc-button__fallback,
+.runyth-npc-button__filter-advanced {
+  background: color-mix(in srgb, var(--rnb-surface-0) 58%, transparent 42%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  padding: 0;
+}
+
+.runyth-npc-button__advanced > summary,
+.runyth-npc-button__fallback > summary,
+.runyth-npc-button__filter-advanced > summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  gap: 0.45rem;
+  min-height: 2.45rem;
+  padding: 0.52rem 0.65rem;
+  user-select: none;
+}
+
+.runyth-npc-button__advanced > summary:hover,
+.runyth-npc-button__fallback > summary:hover,
+.runyth-npc-button__filter-advanced > summary:hover {
+  background: var(--rnb-surface-2);
+}
+
+.runyth-npc-button__advanced-body {
+  border-top: 1px solid var(--rnb-border-soft);
+  padding: 0.78rem;
+}
+
+.runyth-npc-button__fallback[open] {
+  gap: 0.45rem;
+  padding: 0 0.65rem 0.65rem;
+}
+
+.runyth-npc-button__fallback[open] > summary {
+  margin-inline: -0.65rem;
+}
+
+.runyth-npc-button__footer {
+  background: color-mix(in srgb, var(--rnb-surface-0) 94%, var(--rnb-accent) 6%);
+  border-top-color: var(--rnb-border);
+  box-shadow: 0 -6px 16px rgb(0 0 0 / 14%);
+  gap: 0.7rem;
+  margin-top: 0.1rem;
+  padding-block: 0.72rem;
+}
+
+.runyth-npc-button__primary {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rnb-accent) 80%, white 20%), var(--rnb-accent));
+  border: 1px solid color-mix(in srgb, var(--rnb-accent) 72%, black 28%);
+  color: #17130d;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  min-height: 2.4rem;
+}
+
+.runyth-npc-button__primary:hover,
+.runyth-npc-button__primary:focus-visible {
+  background: linear-gradient(180deg, var(--rnb-accent-strong), var(--rnb-accent));
+  color: #17130d;
+}
+
+.runyth-npc-button__status:not(:empty) {
+  background: var(--rnb-surface-1);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-sm);
+  padding: 0.42rem 0.55rem;
+}
+
+/* Help: information cards instead of an undifferentiated long page. */
+.runyth-npc-button__help {
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.runyth-npc-button__help section {
+  background: var(--rnb-surface-1);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-lg);
+  box-shadow: var(--rnb-shadow-card);
+  gap: 0.55rem;
+  padding: 0.85rem 0.9rem;
+}
+
+.runyth-npc-button__help h2 {
+  border-bottom: 1px solid var(--rnb-border-soft);
+  color: color-mix(in srgb, currentColor 78%, var(--rnb-accent-strong) 22%);
+  font-size: 1rem;
+  padding-bottom: 0.4rem;
+}
+
+.runyth-npc-button__help-list {
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+}
+
+.runyth-npc-button__help-list dt,
+.runyth-npc-button__help-list dd {
+  border-bottom: 1px solid var(--rnb-border-soft);
+  padding: 0.45rem 0.55rem;
+}
+
+.runyth-npc-button__help-list dt {
+  background: color-mix(in srgb, var(--rnb-surface-2) 70%, transparent 30%);
+}
+
+.runyth-npc-button__help-table {
+  border: 1px solid var(--rnb-border-soft);
+  border-collapse: separate;
+  border-radius: var(--rnb-radius-md);
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+.runyth-npc-button__help-table thead th {
+  background: var(--rnb-surface-2);
+  border-bottom-color: var(--rnb-border);
+  color: color-mix(in srgb, currentColor 80%, var(--rnb-accent-strong) 20%);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.runyth-npc-button__help-table tbody tr:nth-child(even) {
+  background: rgb(255 255 255 / 2%);
+}
+
+/* Filter settings: operational toolbar + compact, bounded category cards. */
+.runyth-npc-button--filters .window-content {
+  overflow: hidden;
+  padding: 0;
+}
+
+.runyth-npc-button__filters-form {
+  box-sizing: border-box;
+  gap: 0.85rem;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.runyth-npc-button__filters-form > .notes:first-child {
+  background: var(--rnb-accent-soft);
+  border: 1px solid rgb(195 155 99 / 26%);
+  border-radius: var(--rnb-radius-md);
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+}
+
+.runyth-npc-button__filter-profile-toolbar {
+  background: var(--rnb-surface-1);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-lg);
+  box-shadow: var(--rnb-shadow-card);
+  gap: 0.5rem;
+  padding: 0.6rem;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.runyth-npc-button__filters-fieldset {
+  background: var(--rnb-surface-1);
+  border-color: var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-lg);
+  box-shadow: var(--rnb-shadow-card);
+  padding: 0.82rem;
+}
+
+.runyth-npc-button__filters-fieldset > legend {
+  color: color-mix(in srgb, currentColor 80%, var(--rnb-accent-strong) 20%);
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding-inline: 0.35rem;
+}
+
+.runyth-npc-button__filters-fieldset > .notes {
+  margin: 0 0 0.55rem;
+}
+
+.runyth-npc-button__filter-advanced {
+  margin-top: 0.7rem;
+}
+
+.runyth-npc-button__filter-advanced > .runyth-npc-button__filters-grid {
+  border-top: 1px solid var(--rnb-border-soft);
+  margin: 0;
+  padding: 0.72rem;
+}
+
+.runyth-npc-button__filters-form > .sheet-footer {
+  background: color-mix(in srgb, var(--rnb-surface-0) 94%, var(--rnb-accent) 6%);
+  border-top: 1px solid var(--rnb-border);
+  bottom: -1rem;
+  box-shadow: 0 -6px 16px rgb(0 0 0 / 14%);
+  margin: 0 -1rem -1rem;
+  padding: 0.72rem 1rem;
+  position: sticky;
+  z-index: 6;
+}
+
+.runyth-npc-button__filters-form > .sheet-footer button[type="submit"] {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rnb-accent) 80%, white 20%), var(--rnb-accent));
+  border-color: color-mix(in srgb, var(--rnb-accent) 72%, black 28%);
+  color: #17130d;
+  font-weight: 800;
+}
+
+/* Import preview: clear master/detail layout with stable action footer. */
+.runyth-npc-button__preview-layout {
+  background: var(--rnb-surface-0);
+}
+
+.runyth-npc-button__preview-list {
+  background: color-mix(in srgb, var(--rnb-surface-1) 90%, black 10%);
+  border-right-color: var(--rnb-border);
+  gap: 0.38rem;
+  padding: 0.72rem;
+}
+
+.runyth-npc-button__preview-entry {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--rnb-radius-md);
+  min-height: 3rem;
+  padding: 0.48rem 0.6rem;
+  transition: background-color var(--rnb-fast) linear, border-color var(--rnb-fast) linear, color var(--rnb-fast) linear;
+}
+
+.runyth-npc-button__preview-entry:hover {
+  background: var(--rnb-surface-2);
+  border-color: var(--rnb-border-soft);
+}
+
+.runyth-npc-button__preview-entry.active {
+  background: var(--rnb-accent-soft);
+  border-color: var(--rnb-accent);
+  box-shadow: inset 3px 0 0 var(--rnb-accent);
+  outline: 0;
+}
+
+.runyth-npc-button__preview-entry > span {
+  font-weight: 700;
+}
+
+.runyth-npc-button__preview-entry > small {
+  color: var(--rnb-text-muted);
+}
+
+.runyth-npc-button__preview-main {
+  background: linear-gradient(180deg, rgb(255 255 255 / 2%), transparent 4rem);
+  gap: 0.82rem;
+  padding: 0.95rem;
+}
+
+.runyth-npc-button__preview-editor {
+  background: var(--rnb-surface-1);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-lg);
+  box-shadow: var(--rnb-shadow-card);
+  padding: 0.88rem;
+}
+
+.runyth-npc-button__preview-numbers label {
+  background: color-mix(in srgb, var(--rnb-surface-0) 68%, transparent 32%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  padding: 0.45rem;
+}
+
+.runyth-npc-button__preview-numbers label > span {
+  color: var(--rnb-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.runyth-npc-button__preview-status:not(:empty) {
+  background: var(--rnb-accent-soft);
+  border: 1px solid rgb(195 155 99 / 28%);
+  border-radius: var(--rnb-radius-md);
+  padding: 0.5rem 0.6rem;
+}
+
+.runyth-npc-button__preview-footer {
+  background: color-mix(in srgb, var(--rnb-surface-0) 94%, var(--rnb-accent) 6%);
+  border-top: 1px solid var(--rnb-border);
+  bottom: -0.95rem;
+  box-shadow: 0 -6px 16px rgb(0 0 0 / 14%);
+  margin: 0 -0.95rem -0.95rem;
+  padding: 0.7rem 0.95rem;
+  z-index: 4;
+}
+
+/* Actor-sheet utility controls use the same understated accent language. */
+.runyth-npc-button__header-help,
+.runyth-npc-button__portrait-prompt-control {
+  border: 1px solid transparent;
+  border-radius: var(--rnb-radius-sm);
+}
+
+.runyth-npc-button__header-help:hover,
+.runyth-npc-button__header-help:focus-visible,
+.runyth-npc-button__portrait-prompt-control:hover,
+.runyth-npc-button__portrait-prompt-control:focus-visible {
+  background: var(--rnb-accent-soft);
+  border-color: rgb(195 155 99 / 28%);
+  color: var(--rnb-accent-strong);
+  outline: 0;
+}
+
+/* Narrow layouts preserve density without horizontal overflow. */
+@media (max-width: 780px) {
+  .runyth-npc-button__dashboard,
+  .runyth-npc-button__filters-form,
+  .runyth-npc-button__help {
+    padding: 0.75rem;
+  }
+
+  .runyth-npc-button__section {
+    padding: 0.78rem;
+  }
+
+  .runyth-npc-button__filters-form > .sheet-footer {
+    bottom: -0.75rem;
+    margin: 0 -0.75rem -0.75rem;
+    padding-inline: 0.75rem;
+  }
+
+  .runyth-npc-button__filter-profile-toolbar {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .runyth-npc-button__section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .runyth-npc-button__help-list {
+    grid-template-columns: 1fr;
+  }
+
+  .runyth-npc-button__help-list dt {
+    border-bottom: 0;
+    padding-bottom: 0.16rem;
+  }
+
+  .runyth-npc-button__help-list dd {
+    padding-top: 0.16rem;
+  }
+
+  .runyth-npc-button__filter-profile-toolbar button {
+    flex-basis: 100%;
+  }
+}
+
+/* Accessibility/performance: motion is optional and never required for state. */
+@media (prefers-reduced-motion: reduce) {
+  .runyth-npc-button *,
+  .runyth-npc-button *::before,
+  .runyth-npc-button *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.runyth-npc-button__directory-button {
+  background: var(--rnb-surface-1);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-sm);
+  min-height: 1.9rem;
+  padding-inline: 0.55rem;
+  transition: background-color var(--rnb-fast) linear, border-color var(--rnb-fast) linear, color var(--rnb-fast) linear;
+}
+
+.runyth-npc-button__directory-button:hover,
+.runyth-npc-button__directory-button:focus-visible {
+  background: var(--rnb-accent-soft);
+  border-color: var(--rnb-accent);
+  color: var(--rnb-accent-strong);
+  outline: 2px solid rgb(195 155 99 / 18%);
+  outline-offset: 1px;
+}

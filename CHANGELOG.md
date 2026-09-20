@@ -2,6 +2,27 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.2.0 - 2026-09-21
+
+### Added
+
+- Cohesive high-performance visual system across the NPC dashboard, Help, filter settings, import preview, Actors-directory action, and per-Actor portrait-prompt control.
+- Distinct but restrained visual identities for Generation, Batch composition, Group composition, Destination, and AI workflow sections to improve scanning without adding new interaction cost.
+- Dedicated UI performance audit (`npm run audit:ui`) with a stylesheet-size budget and regression checks for virtualization, passive scrolling, frame-coalesced picker work, reduced-motion support, and prohibited expensive animation/effect patterns.
+- Repeatable static UI visual harness under `dev/` for cosmetic review without coupling runtime code to test/demo markup.
+- Automated visual-system regression tests covering theme tokens, responsive/focus states, sticky actions, containment, and animation-performance invariants.
+
+### Changed
+
+- Redesigned choice chips, toggles, pickers, advanced sections, weight controls, buttons, status surfaces, sticky action bars, Help cards/tables, filter-profile controls, and import-preview master/detail layout.
+- Improved narrow-window behavior, safe wrapping, visible focus, scrollbar stability, and high-density readability while retaining the existing ApplicationV2 lifecycle and event-binding model.
+- Picker viewports now explicitly isolate layout/paint/style work while retaining the existing bounded virtualization and passive scroll handling.
+- Cosmetic transitions are restricted to short paint-only state changes; keyframe animations, backdrop filters, blur/drop-shadow filters, and `transition: all` are intentionally prohibited.
+
+### Preserved
+
+- All NPC generation, AI prompt/import, preview validation, portrait prompting, filter profile, extension API, composition, combat-readiness, weapon-variety, folder targeting, localization, and persistence contracts remain unchanged.
+
 ## 0.1.8 - 2026-09-20
 
 ### Added

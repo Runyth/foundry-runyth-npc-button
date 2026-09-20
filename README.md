@@ -6,6 +6,7 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 
 - GM-only **NPC Button** action in the Actors directory.
 - Resizable dashboard with client-side size and placement persistence.
+- Cohesive high-performance field-journal visual system shared across dashboard, Help, filter settings, import preview, directory controls, and portrait-prompt actions, with restrained section accents, stable sticky actions, visible focus states, and responsive narrow-window layouts.
 - Ergonomic Count control with arbitrary numeric input plus 1, 3, 5, and 10 shortcuts.
 - World-level **Tier style** setting with named competence tiers or exact Challenge Rating selection covering CR 0, 1/8, 1/4, 1/2, and 1–30.
 - Searchable, scrollable, virtualized hierarchical pickers for Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection.
@@ -35,6 +36,12 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 - Modular English and German localization.
 - Optional concise debug logging, disabled by default.
 - Public API for macros and future integrations.
+
+### Interface and performance
+
+The v0.2 interface follows the same bounded, responsive ApplicationV2 conventions used across the wider module family: content-driven cards, stable sticky action areas, searchable virtualized lists, safe wrapping, explicit focus states, and no dependency on decorative animation. The visual layer intentionally avoids keyframe animation, backdrop blur, animated shadows, `transition: all`, and layout-moving effects. Short state transitions are limited to color/opacity, while `prefers-reduced-motion` disables even those durations.
+
+`npm run check` now includes `npm run audit:ui`, which enforces a stylesheet size budget and confirms that the large picker surfaces retain bounded overscan virtualization, requestAnimationFrame-coalesced updates, passive scroll listeners, and layout/paint containment.
 
 ## Compatibility
 

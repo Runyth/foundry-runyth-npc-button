@@ -6,13 +6,13 @@ Run:
 npm run check
 ```
 
-This executes repository validation and Node's built-in unit tests.
+This executes repository validation, the dedicated UI-performance audit, and Node's built-in unit tests.
 
 ## Automated coverage
 
 Tests cover dashboard render/binding regressions (single controls, RadioNodeList-style grouped controls, missing conditional fields, rerender listener cleanup, action-button delivery, and keyboard-style change events); clipboard Foundry/browser fallback; ApplicationV2 filter form persistence; malformed/portable filter profiles; seeded reproducibility; ability/AC/HP bounds; role-relative combat loadouts and armor-derived AC; exact CR support; Actor-source structure; HTML escaping; the complete built-in 2024 Race catalog; the Forest Village default and broad habitat catalog; rich naming example sets; balanced, primary, and strong-majority mixed-Race quota allocation; balanced mixed-Role quotas; Role-variant distribution; family surname/quirk/relationship/secret behavior; advanced local cohesion/hierarchy/relationship/conflict effects and flags; AI root-shape/count enforcement; required biography sections including Quirk; mandatory non-empty inventory; sanitization; portable filter-profile round trips including item-level exclusions and extension entries; canonical item resolution and local-generation flag preservation; invented-item fallback; and fenced-JSON tolerance.
 
-Repository validation checks the manifest, referenced runtime files, version consistency, and selected deprecated/removed API patterns.
+Repository validation checks the manifest, referenced runtime files, version consistency, and selected deprecated/removed API patterns. The UI-performance audit additionally enforces the stylesheet size budget, reduced-motion support, absence of expensive animation/filter patterns, picker containment, bounded overscan virtualization, requestAnimationFrame-coalesced picker work, passive scroll listeners, and atomic visible-window replacement.
 
 ## Foundry smoke-test checklist
 
@@ -54,3 +54,13 @@ Repository validation checks the manifest, referenced runtime files, version con
 ## v0.1.7 regressions
 
 Automated coverage includes automatically materialized and explicitly reused generation seeds, seed persistence to biography/flags, melee/ranged hard weapon constraints, occupation-safe ranged-only fallback, ApplicationV2 Actor-sheet portrait hook registration, preview whitelisting, non-mutating preview edits, and rejection of invalid post-edit payloads.
+
+
+## v0.2 visual regression checklist
+
+34. Inspect the dashboard at wide, medium, and narrow widths. Confirm card spacing, choice wrapping, section accents, text truncation, sticky footer behavior, and no horizontal overflow.
+35. Open every hierarchical picker and multi-picker, rapidly search/clear/scroll, and confirm the redesigned surfaces do not change row height, virtualization behavior, keyboard focus, or outside-click closing.
+36. Open Help, filter settings, and import preview at their default sizes and after aggressive resizing. Confirm independent scrolling remains smooth, sticky toolbars/footers remain bounded to their windows, and no content is hidden behind action bars.
+37. Enable OS/browser reduced-motion preference and confirm all UI state remains understandable without transition timing.
+38. Repeat Create locally, Copy prompt, Import NPC, filter import/export, preview confirmation/cancel, and portrait-prompt copy after the visual overhaul. Confirm the cosmetic release has not changed action delivery or payload contracts.
+39. Run `npm run audit:ui` and confirm the stylesheet stays under the performance budget and all virtualization/animation invariants pass.

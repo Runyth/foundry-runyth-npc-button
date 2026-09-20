@@ -367,10 +367,10 @@ function dashboardContent(options, tierStyle) {
 
   return `
     <form class="runyth-npc-button__dashboard" autocomplete="off">
-      <section class="runyth-npc-button__section">
+      <section class="runyth-npc-button__section runyth-npc-button__section--generation">
         <div class="runyth-npc-button__section-heading">
           <div>
-            <h2>${escapeAttribute(localize("ui.generationTitle"))}</h2>
+            <h2><i class="fa-solid fa-dice-d20" aria-hidden="true"></i> ${escapeAttribute(localize("ui.generationTitle"))}</h2>
             <p>${escapeAttribute(localize("ui.intro"))}</p>
           </div>
         </div>
@@ -476,7 +476,7 @@ function dashboardContent(options, tierStyle) {
       <section class="runyth-npc-button__section runyth-npc-button__section--composition">
         <div class="runyth-npc-button__section-heading">
           <div>
-            <h2><i class="fa-solid fa-chart-pie" aria-hidden="true"></i> ${escapeAttribute(localize("ui.compositionTitle"))}</h2>
+            <h2><i class="fa-solid fa-layer-group" aria-hidden="true"></i> ${escapeAttribute(localize("ui.compositionTitle"))}</h2>
             <p>${escapeAttribute(localize("ui.compositionIntro"))}</p>
           </div>
         </div>
@@ -574,10 +574,10 @@ function dashboardContent(options, tierStyle) {
         </details>
       </section>
 
-      <section class="runyth-npc-button__section">
+      <section class="runyth-npc-button__section runyth-npc-button__section--destination">
         <div class="runyth-npc-button__section-heading">
           <div>
-            <h2>${escapeAttribute(localize("ui.destination"))}</h2>
+            <h2><i class="fa-solid fa-folder-tree" aria-hidden="true"></i> ${escapeAttribute(localize("ui.destination"))}</h2>
             <p>${escapeAttribute(localize("ui.destinationIntro"))}</p>
           </div>
         </div>

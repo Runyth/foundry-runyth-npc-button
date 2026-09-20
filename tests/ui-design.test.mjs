@@ -1,0 +1,62 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+
+const css = await readFile(new URL("../styles/runyth-npc-button.css", import.meta.url), "utf8");
+const dashboard = await readFile(new URL("../scripts/ui/npc-dashboard.mjs", import.meta.url), "utf8");
+
+test("feature visual system provides scoped theme tokens and distinct dashboard surfaces", () => {
+  assert.match(css, /--rnb-accent:/);
+  assert.match(css, /--rnb-surface-1:/);
+  assert.match(css, /--rnb-border:/);
+  assert.match(css, /\.runyth-npc-button__section--generation/);
+  assert.match(css, /\.runyth-npc-button__section--composition/);
+  assert.match(css, /\.runyth-npc-button__section--group/);
+  assert.match(css, /\.runyth-npc-button__section--destination/);
+  assert.match(css, /\.runyth-npc-button__section--ai/);
+  assert.match(dashboard, /runyth-npc-button__section--generation/);
+  assert.match(dashboard, /runyth-npc-button__section--destination/);
+});
+
+test("cosmetic layer avoids expensive or layout-janking animation patterns", () => {
+  assert.doesNotMatch(css, /@keyframes\b/i);
+  assert.doesNotMatch(css, /\banimation\s*:/i);
+  assert.doesNotMatch(css, /backdrop-filter\s*:/i);
+  assert.doesNotMatch(css, /filter\s*:\s*(?:blur|drop-shadow)\b/i);
+  assert.doesNotMatch(css, /transition\s*:\s*all\b/i);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/i);
+});
+
+test("large scrolling and virtualized UI surfaces retain containment and stable scroll ergonomics", () => {
+  assert.match(css, /\.runyth-npc-button__picker-viewport[\s\S]*?contain:\s*layout paint style;/);
+  assert.match(css, /scrollbar-gutter:\s*stable;/);
+  assert.match(css, /overscroll-behavior:\s*contain;/);
+  assert.match(css, /\.runyth-npc-button__filter-profile-toolbar[\s\S]*?position:\s*sticky;/);
+  assert.match(css, /\.runyth-npc-button__footer[\s\S]*?position:\s*sticky;/);
+});
+
+test("visual overhaul preserves responsive and accessibility states", () => {
+  assert.match(css, /button:focus-visible/);
+  assert.match(css, /@media\s*\(max-width:\s*780px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*560px\)/);
+  assert.match(css, /\.runyth-npc-button__preview-layout/);
+  assert.match(css, /\.runyth-npc-button__filters-fieldset/);
+  assert.match(css, /\.runyth-npc-button__help section/);
+});
+
+
+
+test("cosmetic feature release preserves dashboard action and field contracts", () => {
+  for (const action of ["create-local", "copy-prompt", "import-npc"]) {
+    assert.match(dashboard, new RegExp(`data-action=["']${action}["']`));
+  }
+  for (const pickerName of ["groupType", "habitat", "role", "raceSelection", "namingStyle", "groupRaces", "groupRoles", "destinationSelection"]) {
+    assert.ok(dashboard.includes(`name: "${pickerName}"`), `missing picker field contract: ${pickerName}`);
+  }
+  for (const chipName of ["wealth", "combatReadiness", "weaponVariety", "raceComposition", "roleComposition"]) {
+    assert.ok(dashboard.includes(`choiceChips("${chipName}"`), `missing choice field contract: ${chipName}`);
+  }
+  for (const directName of ["count", "openLastActor", "singleAiObject", "previewImport", "aiPayload"]) {
+    assert.ok(dashboard.includes(`name="${directName}"`), `missing direct field contract: ${directName}`);
+  }
+});
