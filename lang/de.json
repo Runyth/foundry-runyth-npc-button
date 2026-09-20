@@ -76,7 +76,35 @@
       "createLocally": "Lokal erstellen",
       "creating": "NSCs werden erstellt…",
       "copyingPrompt": "KI-Prompt wird vorbereitet…",
-      "importing": "Gegenstände werden geprüft und NSCs importiert…"
+      "importing": "Gegenstände werden geprüft und NSCs importiert…",
+      "groupType": "Erstellungsmodus / Gruppentyp",
+      "groupTypeHint": "Unabhängige NSCs oder eine zusammenhängende Familie, Patrouille, Plünderergruppe, Besatzung, Karawane, Rat und weitere Gruppen erstellen.",
+      "habitat": "Lebensraum",
+      "habitatHint": "Umgebung und Siedlungskontext wählen, die Alltag, Besitz, Reisen und soziale Annahmen prägen. Jeder andere Lebensraum kann direkt eingetippt werden.",
+      "useCustomHabitat": "Diesen Text als eigenen Lebensraum verwenden",
+      "groupConfigurationTitle": "Gruppenzusammenstellung",
+      "groupConfigurationIntro": "Erweiterte Optionen für Beziehungen, interne Struktur, gemischte Völker und gemeinsamen Gruppenkontext.",
+      "suggestedGroupSizes": "Empfohlene Größen",
+      "suggestedGroupSizesHint": "Nur Schnellwahl; Anzahl bleibt frei editierbar.",
+      "familyStructure": "Familienstruktur",
+      "advancedGroupSettings": "Erweiterte Gruppeneinstellungen",
+      "groupCohesion": "Zusammenhalt",
+      "groupHierarchy": "Hierarchie",
+      "relationshipDensity": "Beziehungsdichte",
+      "internalConflict": "Interner Konflikt",
+      "raceComposition": "Volkszusammensetzung",
+      "raceCompositionHint": "Das Hauptfeld Volk gilt bei einer einheitlichen Gruppe für alle oder bei Mischung als primäres Volk.",
+      "possibleRaces": "Mögliche Völker",
+      "possibleRacesHint": "Beliebig viele erlaubte Völker durchsuchen und wählen. Eigene Völker können über die Suche hinzugefügt werden.",
+      "choosePossibleRaces": "Mögliche Völker wählen…",
+      "raceDistribution": "Verteilung der Völker",
+      "raceDistributionHint": "Steuert, wie stark das primäre Volk die erzeugte Gruppe dominiert.",
+      "raceWeights": "Eigene Gewichtung",
+      "raceWeightsHint": "Relative Gewichte; sie müssen nicht zusammen 100 ergeben.",
+      "groupBrief": "Zusätzliche Gruppenvorgabe",
+      "groupBriefPlaceholder": "Optional: lokale Fehde, Familienbetrieb, Auftraggeber, Krise, Tabu, Ziel, gemeinsames Vorhaben…",
+      "groupBriefHint": "Wird als gemeinsamer Kontext an den KI-Prompt übergeben. Auf Fakten beschränken, die mehrere NSCs betreffen sollen.",
+      "done": "Fertig"
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -86,25 +114,34 @@
       "role": "Bestimmt die praktische Funktion des NSCs und beeinflusst bei lokaler Erstellung Attribute und Robustheit. Außerdem steuert sie KI-Inventar und Charakterisierung stark.",
       "tierStyleNamed": "Die Welt verwendet derzeit benannte Stufen. Ordinary bis Champion bilden grobe Kompetenzbereiche; unter Einstellungen konfigurieren kann auf exakte CR-Auswahl umgestellt werden.",
       "tierStyleCr": "Die Welt verwendet derzeit CR-Stufen. Jeder Standard-CR von 0 bis 30 ist wählbar und der KI-Prompt fordert exakt diesen CR an.",
-      "race": "Vorgegebene Völker in einer durchsuchbaren Hierarchie wählen. Ein nicht vorhandener Name wird direkt als eigenes Volk angeboten, ohne separaten Custom-Modus.",
+      "race": "Der eingebaute Volkswähler enthält alle Standardvölker des Player’s Handbook 2024. Ein nicht vorhandener Name kann direkt als eigenes Volk gewählt werden; gemischte Gruppen können mehrere Standard- oder eigene Völker auswählen.",
       "wealth": "Poor, Average, Well-Off oder Elite. Die KI skaliert damit mitgeführtes Geld, Ausrüstungsqualität, Komfortgegenstände und sichtbaren Status.",
       "seed": "Beeinflusst nur die deterministische lokale Erstellung und ist für KI-Erstellung absichtlich nicht erforderlich.",
       "destination": "Der Ordnerwähler erhält die Actor-Hierarchie. Er kann beliebige Unterordner, den Actors-Stamm, den konfigurierten Standard oder einen neu benannten Stammordner ansteuern.",
       "pickersTitle": "Skalierbare Auswahlfelder",
-      "pickersBody": "Rolle, Volk, Namensstil, Tier/CR und Actor-Ordner verwenden durchsuchbare hierarchische Listen. Nur sichtbare Zeilen plus kleiner Puffer werden gerendert, sodass sehr große Kataloge und Ordnerbäume keine riesigen DOMs oder Verzögerungen erzeugen.",
+      "pickersBody": "Rolle, Volk, Namensstil, Lebensraum, Gruppentyp, Tier/CR, Actor-Ordner und gemischte Volksauswahl verwenden durchsuchbare hierarchische Listen. Große Listen rendern nur sichtbare Zeilen plus kleinen Puffer und bleiben dadurch auch bei großen Katalogen und Ordnerbäumen reaktionsschnell.",
       "namingTitle": "Namensstile",
-      "namingBody": "Namensstile sind breite fiktionale Klangpaletten und keine historischen oder sprachwissenschaftlichen Aussagen. Die Beispiele sind absichtlich deutlich verschieden.",
+      "namingBody": "Namensstile sind breite fiktionale Klangpaletten und keine historischen oder sprachwissenschaftlichen Aussagen. Jeder Stil enthält nun deutlich mehr kreative, idiomatische Beispiele; dieselben Beispiele und Stilhinweise werden als Klangreferenz in den kopierten KI-Prompt eingebettet.",
       "character": "Charakter",
       "examples": "Deutliche Beispiele",
       "actorReviewTitle": "Actor-Prüfanordnung",
       "actorReviewBody": "Bei aktivierter Prüfung werden höchstens die ersten 10 erstellten Actors geöffnet. Bis zu drei oberste Fenster stehen nebeneinander. Weitere Fenster verwenden dieselben Spaltenpositionen dahinter, sodass beim Schließen eines oberen Fensters der nächste Actor im Stapel sichtbar wird.",
       "aiTitle": "KI-Arbeitsablauf",
-      "aiBody": "Das Modul ruft selbst keinen KI-Dienst auf. Es erzeugt einen strikten portablen Prompt, prüft Actor-Kern und Inventaranfragen, löst kanonische D&D-Ausrüstung nach Möglichkeit aus System-Kompendien auf und fällt sonst sicher auf Rollenspiel-Loot-Items zurück.",
-      "aiStep1": "Anzahl, Rolle, Tier oder CR, Volk, Wohlstand, Namensstil und Ziel konfigurieren.",
+      "aiBody": "Das Modul ruft selbst keinen KI-Dienst auf. Es erzeugt einen strikten portablen Prompt mit Namensreferenzen, Lebensraum, Gruppenstruktur, Volksmischung, Wohlstand, Beziehungsdichte, Geheimnissen, Gerüchten, Eigenheiten und Inventaranforderungen und prüft anschließend Actor-Kern und Inventaranfragen vor dem Import.",
+      "aiStep1": "Anzahl, Gruppentyp, Lebensraum, Rolle, Tier oder CR, Volkszusammensetzung, Wohlstand, Namensstil und Ziel konfigurieren.",
       "aiStep2": "Prompt kopieren anklicken und den Prompt in eine KI-Konversation einfügen.",
       "aiStep3": "Die reine JSON-Antwort der KI in die Zwischenablage kopieren.",
       "aiStep4": "Zu Foundry zurückkehren und NSC importieren anklicken. Das aktuelle Ziel wird lokal angewendet.",
-      "aiValidation": "Der Importer lehnt fehlerhafte oder in der Anzahl unpassende Payloads vor der Actor-Erstellung ab. Kanonische Gegenstände werden gegen D&D-5e-Ausrüstungskompendien aufgelöst; erfundener Rollenspielbesitz bleibt ein sicheres Loot-Item."
+      "aiValidation": "Der Importer lehnt fehlerhafte oder in der Anzahl unpassende Payloads vor der Actor-Erstellung ab. Kanonische Gegenstände werden gegen D&D-5e-Ausrüstungskompendien aufgelöst; erfundener Rollenspielbesitz bleibt ein sicheres Loot-Item.",
+      "groupType": "Unabhängige NSCs oder einen absichtlichen Gruppentyp wählen. Gruppenvorlagen variieren Aufgaben und weisen die KI an, gemeinsame Geschichte und nützliche interne Rollen statt Kopien desselben NSCs zu erstellen.",
+      "habitat": "Standard ist Forest Village. Der Lebensraum verändert erwartbaren Alltag, Besitz, Reisen, Arbeit, Gerüchte und sozialen Kontext.",
+      "standardRacesTitle": "Standardvölker 2024",
+      "standardRacesBody": "Der eingebaute Player’s-Handbook-2024-Katalog ist: {races}. Eigene Völker bleiben über denselben Wähler möglich.",
+      "habitatsTitle": "Lebensräume",
+      "habitatsBody": "Eingebaute Umgebungen decken gewöhnliche Siedlungen und spezialisierte Regionen ab, darunter {habitats}. Andere Lebensräume können frei eingegeben werden.",
+      "groupsTitle": "Familien und Gruppen",
+      "groupsBody": "Gruppenvorlagen umfassen {groups} sowie weitere Sicherheits-, Gesetzlosen-, Reise-, Arbeits-, Glaubens- und Gemeinschaftsstrukturen. Die Anzahl bleibt editierbar; jede Vorlage bietet sinnvolle Größen-Schnellwahl.",
+      "groupsAdvanced": "Erweiterte Einstellungen steuern Familienstruktur, Zusammenhalt, Hierarchie, Beziehungsdichte, internen Konflikt, erlaubte Völker, deren Verteilung, eigene Gewichte und eine optionale gemeinsame Gruppenvorgabe."
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -156,8 +193,8 @@
       "champion": "Champion"
     },
     "raceGroups": {
-      "common": "Häufige Humanoide",
-      "other": "Andere Humanoide"
+      "phb2024": "Player’s Handbook 2024",
+      "custom": "Eigene Völker"
     },
     "races": {
       "human": "Mensch",
@@ -165,8 +202,12 @@
       "dwarf": "Zwerg",
       "halfling": "Halbling",
       "orc": "Ork",
-      "goblin": "Goblin",
-      "custom": "Benutzerdefiniert"
+      "custom": "Benutzerdefiniert",
+      "aasimar": "Aasimar",
+      "dragonborn": "Drachenblütiger",
+      "gnome": "Gnom",
+      "goliath": "Goliath",
+      "tiefling": "Tiefling"
     },
     "namingGroups": {
       "regional": "Regionale Paletten"
@@ -192,6 +233,108 @@
     "folderGroups": {
       "destination": "Zieloptionen",
       "existing": "Bestehende Actor-Ordner"
+    },
+    "habitatGroups": {
+      "settled": "Siedlungen",
+      "wild": "Wildnis",
+      "arid": "Trockengebiete",
+      "water": "Wasser & Küste",
+      "rugged": "Raues Hochland",
+      "cold": "Kalte Regionen",
+      "unusual": "Ungewöhnliche Regionen"
+    },
+    "habitats": {
+      "forestVillage": "Walddorf",
+      "farmingHamlet": "Bauernweiler",
+      "marketTown": "Marktstadt",
+      "cityDistrict": "Stadtviertel",
+      "deepForest": "Tiefer Wald",
+      "plains": "Offene Ebene / Steppe",
+      "jungle": "Dschungelregion",
+      "desertOasis": "Wüstenoase",
+      "desertRoute": "Wüsten-Karawanenroute",
+      "badlands": "Ödland",
+      "riverlands": "Flusslande",
+      "wetlands": "Sumpf / Feuchtgebiet",
+      "lakeside": "Seenregion",
+      "coast": "Küstenregion",
+      "portCity": "Hafenstadt",
+      "island": "Insel",
+      "foothills": "Bergvorland",
+      "mountains": "Bergregion",
+      "highPlateau": "Hochplateau",
+      "tundra": "Tundra / Hoher Norden",
+      "underground": "Unterirdische Siedlung",
+      "ruinedFrontier": "Ruinen-Grenzland"
+    },
+    "groupTypeGroups": {
+      "individual": "Einzelpersonen",
+      "household": "Haushalte & Familien",
+      "security": "Sicherheit & Kampf",
+      "outlaw": "Plünderer & Unterwelt",
+      "travelWork": "Reise & Arbeitsgruppen",
+      "community": "Gemeinschaft & Glaube"
+    },
+    "groupTypes": {
+      "independent": "Unabhängige NSCs",
+      "family": "Familienhaushalt",
+      "nobleHousehold": "Adelshaushalt",
+      "guardPatrol": "Wachpatrouille",
+      "watchShift": "Stadtwachschicht",
+      "militia": "Lokale Miliz",
+      "mercenaryBand": "Söldnertrupp",
+      "orcRaiders": "Ork-Plünderer",
+      "banditCrew": "Banditengruppe",
+      "criminalCell": "Verbrecherzelle",
+      "caravan": "Karawane",
+      "guildCrew": "Gilden-Arbeitsgruppe",
+      "shipCrew": "Schiffsbesatzung",
+      "huntingParty": "Jagdgruppe",
+      "expedition": "Expedition",
+      "templeHousehold": "Tempelhaushalt",
+      "villageCouncil": "Dorfrat",
+      "pilgrims": "Pilgergruppe",
+      "refugeeParty": "Flüchtlingsgruppe"
+    },
+    "familyStructures": {
+      "household": "Ein Haushalt",
+      "multiGeneration": "Mehrgenerationen",
+      "extendedKin": "Erweiterte Verwandtschaft",
+      "siblings": "Geschwister / Cousins",
+      "blended": "Patchwork-Haushalt"
+    },
+    "groupCohesion": {
+      "close": "Eng verbunden",
+      "functional": "Funktional",
+      "strained": "Angespannt",
+      "fractured": "Zerbrochen"
+    },
+    "groupHierarchy": {
+      "egalitarian": "Gleichberechtigt",
+      "informal": "Informeller Anführer",
+      "clear": "Klare Befehlskette",
+      "rigid": "Starre Hierarchie"
+    },
+    "relationshipDensity": {
+      "light": "Leicht",
+      "rich": "Reichhaltig",
+      "tangled": "Verflochten"
+    },
+    "internalConflict": {
+      "none": "Minimal",
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch"
+    },
+    "raceComposition": {
+      "single": "Ein Volk",
+      "mixed": "Gemischte Völker"
+    },
+    "raceDistribution": {
+      "balanced": "Etwa gleich",
+      "primary": "Primäres Volk",
+      "dominant": "Starke Mehrheit",
+      "weighted": "Eigene Gewichte"
     }
   }
 }

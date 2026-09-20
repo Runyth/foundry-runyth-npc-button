@@ -1,6 +1,6 @@
 export const MODULE_ID = "runyth-npc-button";
 export const MODULE_TITLE = "Runyth NPC Button";
-export const MODULE_VERSION = "0.1.2";
+export const MODULE_VERSION = "0.1.3";
 
 export const SETTINGS = Object.freeze({
   DEBUG: "debugLogging",
@@ -24,6 +24,19 @@ export const DEFAULT_OPTIONS = Object.freeze({
   species: "human",
   namingStyle: "central",
   wealth: "average",
+  habitat: "forestVillage",
+  groupType: "independent",
+  familyStructure: "household",
+  groupCohesion: "functional",
+  groupHierarchy: "informal",
+  relationshipDensity: "rich",
+  internalConflict: "low",
+  raceComposition: "single",
+  groupRaces: ["human"],
+  primaryRace: "human",
+  raceDistribution: "balanced",
+  raceWeights: { human: 1 },
+  groupBrief: "",
   customName: "",
   customSpecies: "",
   seed: "",

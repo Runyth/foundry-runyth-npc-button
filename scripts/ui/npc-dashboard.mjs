@@ -3,22 +3,34 @@ import { parseAndNormalizeNpcJson } from "../ai/npc-json.mjs";
 import { DEFAULT_OPTIONS, MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import {
   CR_VALUES,
+  FAMILY_STRUCTURES,
+  GROUP_COHESION,
+  GROUP_HIERARCHY,
+  GROUP_TYPES,
+  GROUP_TYPE_GROUPS,
+  HABITATS,
+  HABITAT_GROUPS,
+  INTERNAL_CONFLICT,
   NAME_STYLES,
   NAMING_GROUPS,
   RACES,
+  RACE_COMPOSITION_MODES,
+  RACE_DISTRIBUTIONS,
   RACE_GROUPS,
+  RELATIONSHIP_DENSITY,
   ROLES,
   ROLE_GROUPS,
   TIERS,
   WEALTH_LEVELS,
   formatChallengeRating
 } from "../generator/data.mjs";
-import { resolveTierProfile } from "../generator/npc-generator.mjs";
+import { normalizeGroupRaceIds, resolveTierProfile } from "../generator/npc-generator.mjs";
 import { logger } from "../logger.mjs";
 import { loadLastOptions, loadWindowState, saveLastOptions, saveWindowState } from "../settings.mjs";
 import { createImportedNpcActors, createNpcActors } from "../services/actor-service.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 import { openActorReviewStack } from "./actor-review.mjs";
+import { hierarchicalMultiPickerMarkup, mountHierarchicalMultiPicker } from "./hierarchical-multi-picker.mjs";
 import { hierarchicalPickerMarkup, mountHierarchicalPicker } from "./hierarchical-picker.mjs";
 import { openNpcHelp } from "./npc-help.mjs";
 
@@ -27,12 +39,12 @@ function localize(key) {
 }
 
 function configuredLabel(config) {
-  return config.labelKey ? localize(config.labelKey) : config.label;
+  return config?.labelKey ? localize(config.labelKey) : (config?.label ?? "");
 }
 
-function choiceChips(name, entries, selected) {
+function choiceChips(name, entries, selected, { className = "" } = {}) {
   return Object.entries(entries).map(([value, config]) => `
-    <label class="runyth-npc-button__choice">
+    <label class="runyth-npc-button__choice ${escapeAttribute(className)}">
       <input type="radio" name="${escapeAttribute(name)}" value="${escapeAttribute(value)}"${value === selected ? " checked" : ""}>
       <span>${escapeAttribute(configuredLabel(config))}</span>
     </label>
@@ -48,7 +60,14 @@ function groupedConfigItems(entries, groups, groupKeyPrefix) {
     if (!members.length) continue;
     items.push({ kind: "group", id: `group:${group}`, label: localize(`${groupKeyPrefix}.${group}`), depth: 0 });
     for (const [id, config] of members) {
-      items.push({ kind: "option", id, label: configuredLabel(config), display: configuredLabel(config), depth: 1 });
+      items.push({
+        kind: "option",
+        id,
+        label: configuredLabel(config),
+        display: configuredLabel(config),
+        description: config.descriptionKey ? localize(config.descriptionKey) : "",
+        depth: 1
+      });
     }
   }
   return items;
@@ -65,6 +84,14 @@ function racePickerItems() {
 
 function namingPickerItems() {
   return groupedConfigItems(NAME_STYLES, NAMING_GROUPS, "namingGroups");
+}
+
+function habitatPickerItems() {
+  return groupedConfigItems(HABITATS, HABITAT_GROUPS, "habitatGroups");
+}
+
+function groupTypePickerItems() {
+  return groupedConfigItems(GROUP_TYPES, GROUP_TYPE_GROUPS, "groupTypeGroups");
 }
 
 function namedTierPickerItems() {
@@ -154,7 +181,6 @@ function actorFolderPickerItems() {
   }
 
   for (const root of byParent.get(null) ?? []) walk(root, 1, []);
-  // Include orphaned/cyclic folders defensively rather than silently hiding them.
   for (const folder of folders) if (!visited.has(folder.id)) walk(folder, 1, []);
   return items;
 }
@@ -175,6 +201,23 @@ function resolveRaceSelection(value) {
     return { species: "custom", customSpecies };
   }
   return { species: RACES[selected] ? selected : "human", customSpecies: "" };
+}
+
+function raceLabelFromSelectionId(value) {
+  const selected = String(value ?? "human");
+  if (selected.startsWith("custom:")) return selected.slice(7).trim() || localize("ui.customRace");
+  return configuredLabel(RACES[selected] ?? RACES.human);
+}
+
+function habitatSelectionValue(options) {
+  const habitat = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
+  return HABITATS[habitat] || habitat.startsWith("custom:") ? habitat : DEFAULT_OPTIONS.habitat;
+}
+
+function habitatSelectionDisplay(options) {
+  const value = habitatSelectionValue(options);
+  if (value.startsWith("custom:")) return value.slice(7).trim() || configuredLabel(HABITATS.forestVillage);
+  return configuredLabel(HABITATS[value] ?? HABITATS.forestVillage);
 }
 
 function destinationSelectionValue(options) {
@@ -227,9 +270,19 @@ function tierPicker(options, tierStyle) {
   });
 }
 
+function suggestedSizesMarkup(groupType, maxBatch) {
+  const config = GROUP_TYPES[groupType] ?? GROUP_TYPES.independent;
+  return config.suggestedSizes
+    .filter((value) => value <= maxBatch)
+    .map((value) => `<button type="button" data-group-count="${value}">${value}</button>`)
+    .join("");
+}
+
 function dashboardContent(options, tierStyle) {
   const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
   const quickCounts = [1, 3, 5, 10].filter((value) => value <= maxBatch);
+  const groupType = GROUP_TYPES[options.groupType] ? options.groupType : DEFAULT_OPTIONS.groupType;
+  const groupRaces = normalizeGroupRaceIds({ ...options, groupRaces: options.groupRaces ?? DEFAULT_OPTIONS.groupRaces });
 
   return `
     <form class="runyth-npc-button__dashboard" autocomplete="off">
@@ -252,6 +305,27 @@ function dashboardContent(options, tierStyle) {
               ${quickCounts.map((value) => `<button type="button" data-count="${value}" aria-pressed="${Number(options.count) === value ? "true" : "false"}"${Number(options.count) === value ? " class=\"active\"" : ""}>${value}</button>`).join("")}
             </div>
           </div>
+        </div>
+
+        <div class="runyth-npc-button__grid">
+          ${hierarchicalPickerMarkup({
+            id: "runyth-npc-button-group-type-picker",
+            name: "groupType",
+            label: localize("ui.groupType"),
+            hint: localize("ui.groupTypeHint"),
+            value: groupType,
+            display: configuredLabel(GROUP_TYPES[groupType]),
+            placeholder: configuredLabel(GROUP_TYPES.independent)
+          })}
+          ${hierarchicalPickerMarkup({
+            id: "runyth-npc-button-habitat-picker",
+            name: "habitat",
+            label: localize("ui.habitat"),
+            hint: localize("ui.habitatHint"),
+            value: habitatSelectionValue(options),
+            display: habitatSelectionDisplay(options),
+            placeholder: configuredLabel(HABITATS.forestVillage)
+          })}
         </div>
 
         ${hierarchicalPickerMarkup({
@@ -306,6 +380,84 @@ function dashboardContent(options, tierStyle) {
         </div>
       </section>
 
+      <section class="runyth-npc-button__section runyth-npc-button__section--group" data-group-config${groupType === "independent" ? " hidden" : ""}>
+        <div class="runyth-npc-button__section-heading">
+          <div>
+            <h2><i class="fa-solid fa-people-group" aria-hidden="true"></i> ${escapeAttribute(localize("ui.groupConfigurationTitle"))}</h2>
+            <p>${escapeAttribute(localize("ui.groupConfigurationIntro"))}</p>
+          </div>
+        </div>
+
+        <div class="runyth-npc-button__field">
+          <div class="runyth-npc-button__label-row">
+            <label>${escapeAttribute(localize("ui.suggestedGroupSizes"))}</label>
+            <small>${escapeAttribute(localize("ui.suggestedGroupSizesHint"))}</small>
+          </div>
+          <div class="runyth-npc-button__quick-counts" data-group-size-presets>${suggestedSizesMarkup(groupType, maxBatch)}</div>
+        </div>
+
+        <fieldset class="runyth-npc-button__field" data-family-settings${groupType === "family" ? "" : " hidden"}>
+          <legend>${escapeAttribute(localize("ui.familyStructure"))}</legend>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("familyStructure", FAMILY_STRUCTURES, options.familyStructure ?? DEFAULT_OPTIONS.familyStructure)}</div>
+        </fieldset>
+
+        <details class="runyth-npc-button__advanced" open>
+          <summary>${escapeAttribute(localize("ui.advancedGroupSettings"))}</summary>
+          <div class="runyth-npc-button__advanced-body">
+            <fieldset class="runyth-npc-button__field">
+              <legend>${escapeAttribute(localize("ui.groupCohesion"))}</legend>
+              <div class="runyth-npc-button__choices">${choiceChips("groupCohesion", GROUP_COHESION, options.groupCohesion ?? DEFAULT_OPTIONS.groupCohesion)}</div>
+            </fieldset>
+            <fieldset class="runyth-npc-button__field">
+              <legend>${escapeAttribute(localize("ui.groupHierarchy"))}</legend>
+              <div class="runyth-npc-button__choices">${choiceChips("groupHierarchy", GROUP_HIERARCHY, options.groupHierarchy ?? DEFAULT_OPTIONS.groupHierarchy)}</div>
+            </fieldset>
+            <fieldset class="runyth-npc-button__field">
+              <legend>${escapeAttribute(localize("ui.relationshipDensity"))}</legend>
+              <div class="runyth-npc-button__choices runyth-npc-button__choices--three">${choiceChips("relationshipDensity", RELATIONSHIP_DENSITY, options.relationshipDensity ?? DEFAULT_OPTIONS.relationshipDensity)}</div>
+            </fieldset>
+            <fieldset class="runyth-npc-button__field">
+              <legend>${escapeAttribute(localize("ui.internalConflict"))}</legend>
+              <div class="runyth-npc-button__choices">${choiceChips("internalConflict", INTERNAL_CONFLICT, options.internalConflict ?? DEFAULT_OPTIONS.internalConflict)}</div>
+            </fieldset>
+
+            <fieldset class="runyth-npc-button__field">
+              <legend>${escapeAttribute(localize("ui.raceComposition"))}</legend>
+              <small>${escapeAttribute(localize("ui.raceCompositionHint"))}</small>
+              <div class="runyth-npc-button__choices runyth-npc-button__choices--two">${choiceChips("raceComposition", RACE_COMPOSITION_MODES, options.raceComposition ?? DEFAULT_OPTIONS.raceComposition)}</div>
+            </fieldset>
+
+            <div data-mixed-race-settings${options.raceComposition === "mixed" ? "" : " hidden"}>
+              ${hierarchicalMultiPickerMarkup({
+                id: "runyth-npc-button-group-races-picker",
+                name: "groupRaces",
+                label: localize("ui.possibleRaces"),
+                hint: localize("ui.possibleRacesHint"),
+                values: groupRaces,
+                placeholder: localize("ui.choosePossibleRaces")
+              })}
+
+              <fieldset class="runyth-npc-button__field">
+                <legend>${escapeAttribute(localize("ui.raceDistribution"))}</legend>
+                <small>${escapeAttribute(localize("ui.raceDistributionHint"))}</small>
+                <div class="runyth-npc-button__choices">${choiceChips("raceDistribution", RACE_DISTRIBUTIONS, options.raceDistribution ?? DEFAULT_OPTIONS.raceDistribution)}</div>
+              </fieldset>
+
+              <div class="runyth-npc-button__weights" data-race-weights${options.raceDistribution === "weighted" ? "" : " hidden"}>
+                <div class="runyth-npc-button__label-row"><strong>${escapeAttribute(localize("ui.raceWeights"))}</strong><small>${escapeAttribute(localize("ui.raceWeightsHint"))}</small></div>
+                <div data-race-weight-list></div>
+              </div>
+            </div>
+
+            <div class="runyth-npc-button__field">
+              <label for="runyth-npc-button-group-brief">${escapeAttribute(localize("ui.groupBrief"))}</label>
+              <textarea id="runyth-npc-button-group-brief" name="groupBrief" rows="3" maxlength="1200" placeholder="${escapeAttribute(localize("ui.groupBriefPlaceholder"))}">${escapeAttribute(options.groupBrief ?? "")}</textarea>
+              <small>${escapeAttribute(localize("ui.groupBriefHint"))}</small>
+            </div>
+          </div>
+        </details>
+      </section>
+
       <section class="runyth-npc-button__section">
         <div class="runyth-npc-button__section-heading">
           <div>
@@ -358,6 +510,26 @@ function dashboardContent(options, tierStyle) {
   `;
 }
 
+function parseJsonArray(value, fallback = []) {
+  try {
+    const parsed = JSON.parse(String(value ?? "[]"));
+    return Array.isArray(parsed) ? parsed.map(String) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function readRaceWeights(form, groupRaces) {
+  const weights = {};
+  for (const raceId of groupRaces) weights[raceId] = 1;
+  for (const input of form.querySelectorAll("[data-race-weight]")) {
+    const id = input.dataset.raceId;
+    if (!id || !groupRaces.includes(id)) continue;
+    weights[id] = Math.max(0, Math.min(1000, Number(input.value) || 0));
+  }
+  return weights;
+}
+
 function readForm(form) {
   const elements = form.elements;
   const remembered = loadLastOptions();
@@ -370,6 +542,8 @@ function readForm(form) {
   const destination = resolveDestinationSelection(elements.destinationSelection.value);
   const tier = tierStyle === TIER_STYLES.NAMED ? elements.tier.value : (remembered.tier ?? DEFAULT_OPTIONS.tier);
   const cr = tierStyle === TIER_STYLES.CR ? Number(elements.cr.value) : Number(remembered.cr ?? DEFAULT_OPTIONS.cr);
+  const groupRaces = parseJsonArray(elements.groupRaces?.value, [raceSelectionValue(race)]);
+  const primaryRace = race.species === "custom" ? `custom:${race.customSpecies}` : race.species;
 
   return {
     count,
@@ -380,6 +554,19 @@ function readForm(form) {
     species: race.species,
     namingStyle: elements.namingStyle.value,
     wealth: elements.wealth.value,
+    habitat: elements.habitat.value,
+    groupType: elements.groupType.value,
+    familyStructure: elements.familyStructure?.value ?? DEFAULT_OPTIONS.familyStructure,
+    groupCohesion: elements.groupCohesion?.value ?? DEFAULT_OPTIONS.groupCohesion,
+    groupHierarchy: elements.groupHierarchy?.value ?? DEFAULT_OPTIONS.groupHierarchy,
+    relationshipDensity: elements.relationshipDensity?.value ?? DEFAULT_OPTIONS.relationshipDensity,
+    internalConflict: elements.internalConflict?.value ?? DEFAULT_OPTIONS.internalConflict,
+    raceComposition: elements.raceComposition?.value ?? DEFAULT_OPTIONS.raceComposition,
+    groupRaces,
+    primaryRace,
+    raceDistribution: elements.raceDistribution?.value ?? DEFAULT_OPTIONS.raceDistribution,
+    raceWeights: readRaceWeights(form, groupRaces),
+    groupBrief: elements.groupBrief?.value.trim() ?? "",
     customName: elements.customName.value.trim(),
     customSpecies: race.customSpecies,
     seed: elements.seed.value.trim(),
@@ -400,9 +587,15 @@ function promptOptions(options) {
   const role = ROLES[options.role] ?? ROLES.guard;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
   const tierProfile = resolveTierProfile(options);
-  const examples = [0, 1, 2, 3].map((index) => (
-    `${style.given[index % style.given.length]} ${style.family[index % style.family.length]}`
-  ));
+  const habitatValue = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
+  const habitat = habitatValue.startsWith("custom:")
+    ? { label: habitatValue.slice(7).trim() || configuredLabel(HABITATS.forestVillage), prompt: "use the custom habitat literally and adapt daily life, possessions, travel, and social assumptions to it" }
+    : (HABITATS[habitatValue] ?? HABITATS.forestVillage);
+  const groupType = GROUP_TYPES[options.groupType] ?? GROUP_TYPES.independent;
+  const groupRaceIds = normalizeGroupRaceIds(options);
+  const groupRaceLabels = groupRaceIds.map(raceLabelFromSelectionId);
+  const weightSummary = groupRaceIds.map((id) => `${raceLabelFromSelectionId(id)}=${Number(options.raceWeights?.[id]) || 0}`).join(", ");
+
   return {
     ...options,
     roleLabel: configuredLabel(role),
@@ -412,7 +605,27 @@ function promptOptions(options) {
     wealthLabel: configuredLabel(wealth),
     wealthPrompt: wealth.prompt,
     namingStyleLabel: configuredLabel(style),
-    namingExamples: examples
+    namingStyleGuidance: style.aiGuidance,
+    namingExamples: style.examples,
+    habitatLabel: configuredLabel(habitat),
+    habitatPrompt: habitat.prompt,
+    groupTypeLabel: configuredLabel(groupType),
+    groupTypePrompt: groupType.prompt,
+    familyStructureLabel: configuredLabel(FAMILY_STRUCTURES[options.familyStructure] ?? FAMILY_STRUCTURES.household),
+    groupCohesionLabel: configuredLabel(GROUP_COHESION[options.groupCohesion] ?? GROUP_COHESION.functional),
+    groupCohesionPrompt: (GROUP_COHESION[options.groupCohesion] ?? GROUP_COHESION.functional).prompt,
+    groupHierarchyLabel: configuredLabel(GROUP_HIERARCHY[options.groupHierarchy] ?? GROUP_HIERARCHY.informal),
+    groupHierarchyPrompt: (GROUP_HIERARCHY[options.groupHierarchy] ?? GROUP_HIERARCHY.informal).prompt,
+    relationshipDensityLabel: configuredLabel(RELATIONSHIP_DENSITY[options.relationshipDensity] ?? RELATIONSHIP_DENSITY.rich),
+    relationshipDensityPrompt: (RELATIONSHIP_DENSITY[options.relationshipDensity] ?? RELATIONSHIP_DENSITY.rich).prompt,
+    internalConflictLabel: configuredLabel(INTERNAL_CONFLICT[options.internalConflict] ?? INTERNAL_CONFLICT.low),
+    internalConflictPrompt: (INTERNAL_CONFLICT[options.internalConflict] ?? INTERNAL_CONFLICT.low).prompt,
+    raceCompositionLabel: configuredLabel(RACE_COMPOSITION_MODES[options.raceComposition] ?? RACE_COMPOSITION_MODES.single),
+    groupRaceLabels,
+    primaryRaceLabel: race,
+    raceDistributionLabel: configuredLabel(RACE_DISTRIBUTIONS[options.raceDistribution] ?? RACE_DISTRIBUTIONS.balanced),
+    raceDistributionPrompt: (RACE_DISTRIBUTIONS[options.raceDistribution] ?? RACE_DISTRIBUTIONS.balanced).prompt,
+    raceWeightSummary: weightSummary
   };
 }
 
@@ -439,8 +652,8 @@ function safeWindowState(state) {
   const viewportHeight = Math.max(320, document.documentElement.clientHeight || window.innerHeight || 720);
   const maxWidth = Math.max(320, viewportWidth - (margin * 2));
   const maxHeight = Math.max(320, viewportHeight - (margin * 2));
-  const width = Math.min(Math.max(520, Number(state.width) || 800), maxWidth);
-  const height = Math.min(Math.max(440, Number(state.height) || 820), maxHeight);
+  const width = Math.min(Math.max(560, Number(state.width) || 860), maxWidth);
+  const height = Math.min(Math.max(440, Number(state.height) || 860), maxHeight);
   const maxLeft = Math.max(margin, viewportWidth - width - margin);
   const maxTop = Math.max(margin, viewportHeight - height - margin);
   const left = Math.min(Math.max(margin, Number(state.left) || margin), maxLeft);
@@ -459,13 +672,14 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       minimizable: true
     },
     position: {
-      width: 800,
-      height: 820
+      width: 860,
+      height: 860
     }
   };
 
   #abortController = null;
   #savePositionTimer = null;
+  #racePickerController = null;
 
   constructor(options = {}) {
     const rememberedPosition = safeWindowState(loadWindowState());
@@ -512,9 +726,8 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
 
     for (const button of form.querySelectorAll("[data-count]")) {
       button.addEventListener("click", () => {
-        const countInput = form.elements.count;
-        countInput.value = button.dataset.count;
-        countInput.dispatchEvent(new Event("input", { bubbles: true }));
+        form.elements.count.value = button.dataset.count;
+        form.elements.count.dispatchEvent(new Event("input", { bubbles: true }));
       }, { signal });
     }
 
@@ -525,7 +738,22 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       form.elements.count.value = String(value);
       this.#syncCountControls(form);
     }, { signal });
+
+    form.elements.groupType.addEventListener("change", () => this.#syncGroupControls(form, { adjustCount: true }), { signal });
+    form.elements.raceComposition.addEventListener("change", () => this.#syncRaceComposition(form), { signal });
+    form.elements.raceDistribution.addEventListener("change", () => this.#syncRaceComposition(form), { signal });
+    form.elements.groupRaces.addEventListener("change", () => this.#renderRaceWeights(form), { signal });
+
+    form.querySelector("[data-group-size-presets]").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-group-count]");
+      if (!button) return;
+      form.elements.count.value = button.dataset.groupCount;
+      form.elements.count.dispatchEvent(new Event("input", { bubbles: true }));
+    }, { signal });
+
     this.#syncCountControls(form);
+    this.#syncGroupControls(form);
+    this.#syncRaceComposition(form);
 
     form.querySelector('[data-action="create-local"]').addEventListener("click", () => {
       void this.#createLocal(form);
@@ -549,6 +777,17 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       searchPlaceholder: localize("ui.searchOptions"),
       emptyText: localize("ui.noMatchingOptions")
     };
+    mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-group-type-picker"]'), {
+      ...common,
+      items: groupTypePickerItems()
+    }, signal);
+    mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-habitat-picker"]'), {
+      ...common,
+      items: habitatPickerItems(),
+      allowCustom: true,
+      customValueBuilder: (text) => `custom:${text}`,
+      customDescription: () => localize("ui.useCustomHabitat")
+    }, signal);
     mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-role-picker"]'), {
       ...common,
       items: rolePickerItems()
@@ -560,7 +799,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       items: tierStyle === TIER_STYLES.CR ? crTierPickerItems() : namedTierPickerItems()
     }, signal);
 
-    mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-race-picker"]'), {
+    this.#racePickerController = mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-race-picker"]'), {
       ...common,
       items: racePickerItems(),
       allowCustom: true,
@@ -571,6 +810,19 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-naming-picker"]'), {
       ...common,
       items: namingPickerItems()
+    }, signal);
+
+    mountHierarchicalMultiPicker(form.querySelector('[data-hierarchical-multi-picker="runyth-npc-button-group-races-picker"]'), {
+      ...common,
+      items: racePickerItems(),
+      allowCustom: true,
+      customValueBuilder: (text) => `custom:${text}`,
+      customDescription: () => localize("ui.useCustomRace"),
+      customGroupLabel: localize("raceGroups.custom"),
+      doneText: localize("ui.done"),
+      requireOne: true,
+      fallbackValue: "human",
+      placeholder: localize("ui.choosePossibleRaces")
     }, signal);
 
     mountHierarchicalPicker(form.querySelector('[data-hierarchical-picker="runyth-npc-button-folder-picker"]'), {
@@ -602,14 +854,62 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
 
   #syncCountControls(form) {
     const count = Math.trunc(Number(form.elements.count.valueAsNumber) || 1);
-    for (const button of form.querySelectorAll("[data-count]")) {
-      const active = Number(button.dataset.count) === count;
+    for (const button of form.querySelectorAll("[data-count], [data-group-count]")) {
+      const configured = Number(button.dataset.count ?? button.dataset.groupCount);
+      const active = configured === count;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     }
     const single = form.elements.singleAiObject;
     single.disabled = count !== 1;
     if (count !== 1) single.checked = false;
+  }
+
+  #syncGroupControls(form, { adjustCount = false } = {}) {
+    const typeId = String(form.elements.groupType.value || DEFAULT_OPTIONS.groupType);
+    const type = GROUP_TYPES[typeId] ?? GROUP_TYPES.independent;
+    const groupSection = form.querySelector("[data-group-config]");
+    groupSection.hidden = typeId === "independent";
+    form.querySelector("[data-family-settings]").hidden = typeId !== "family";
+
+    const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
+    const sizes = form.querySelector("[data-group-size-presets]");
+    sizes.innerHTML = suggestedSizesMarkup(typeId, maxBatch);
+    if (adjustCount) {
+      const current = Math.trunc(Number(form.elements.count.valueAsNumber) || 1);
+      if (current < type.minCount) {
+        const target = type.suggestedSizes.find((value) => value >= type.minCount && value <= maxBatch) ?? type.minCount;
+        form.elements.count.value = String(Math.min(target, maxBatch));
+      }
+      if (typeId === "orcRaiders" && form.elements.raceSelection.value === "human") {
+        this.#racePickerController?.setValue("orc", configuredLabel(RACES.orc));
+      }
+    }
+    this.#syncCountControls(form);
+  }
+
+  #syncRaceComposition(form) {
+    const mixed = form.elements.raceComposition.value === "mixed";
+    form.querySelector("[data-mixed-race-settings]").hidden = !mixed;
+    const weighted = mixed && form.elements.raceDistribution.value === "weighted";
+    form.querySelector("[data-race-weights]").hidden = !weighted;
+    if (mixed) this.#renderRaceWeights(form);
+  }
+
+  #renderRaceWeights(form) {
+    const container = form.querySelector("[data-race-weight-list]");
+    if (!container) return;
+    const selected = parseJsonArray(form.elements.groupRaces.value, ["human"]);
+    const remembered = loadLastOptions();
+    const current = {};
+    for (const input of container.querySelectorAll("[data-race-weight]")) current[input.dataset.raceId] = Number(input.value) || 0;
+    const configured = { ...(remembered.raceWeights ?? {}), ...current };
+    container.innerHTML = selected.map((raceId) => `
+      <label class="runyth-npc-button__weight-row">
+        <span>${escapeAttribute(raceLabelFromSelectionId(raceId))}</span>
+        <input type="number" min="0" max="1000" step="1" inputmode="numeric" value="${escapeAttribute(configured[raceId] ?? 1)}" data-race-weight data-race-id="${escapeAttribute(raceId)}">
+      </label>
+    `).join("");
   }
 
   #setBusy(form, busy, message = "") {
@@ -623,7 +923,10 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       }
     }
     form.querySelector(".runyth-npc-button__status").textContent = message;
-    if (!busy) this.#syncCountControls(form);
+    if (!busy) {
+      this.#syncCountControls(form);
+      this.#syncRaceComposition(form);
+    }
   }
 
   async #createLocal(form) {
@@ -714,5 +1017,4 @@ export async function openNpcDashboard() {
   return dashboardApplication;
 }
 
-// Backwards-compatible public API name from v0.1.0.
 export const openNpcDialog = openNpcDashboard;

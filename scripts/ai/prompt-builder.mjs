@@ -5,15 +5,22 @@ function clean(value, fallback = "") {
   return text || fallback;
 }
 
+function list(values, fallback = "none") {
+  if (!Array.isArray(values) || values.length === 0) return fallback;
+  return values.map((value) => clean(value)).filter(Boolean).join(", ") || fallback;
+}
+
 export function buildAiPrompt(options = {}) {
   const count = Math.max(1, Math.trunc(Number(options.count) || 1));
   const singleObject = count === 1 && Boolean(options.singleAiObject);
+  const grouped = clean(options.groupType, "independent") !== "independent" && clean(options.groupTypeLabel, "Independent NPCs") !== "Independent NPCs";
   const payloadShape = singleObject
     ? "exactly one JSON object, not an array"
     : `exactly one JSON array containing ${count} Actor object${count === 1 ? "" : "s"}`;
   const namingExamples = Array.isArray(options.namingExamples) && options.namingExamples.length
-    ? options.namingExamples.join(", ")
+    ? options.namingExamples.join("; ")
     : "use names consistent with the requested naming style";
+  const groupRaces = list(options.groupRaceLabels, clean(options.raceLabel, "Human"));
 
   return [
     "Create table-ready D&D 5e (2024 rules) NPC data for import into Foundry Virtual Tabletop v13 with dnd5e 5.x using the exact JSON contract below.",
@@ -23,31 +30,69 @@ export function buildAiPrompt(options = {}) {
     "Every Actor must have type \"npc\". Do not include _id, folder, ownership, sort, _stats, effects, prototypeToken, or flags.",
     "Set img to \"icons/svg/mystery-man.svg\". The importer applies the chosen Foundry folder locally.",
     "Use HTML only inside system.details.biography.value and system.details.biography.public. Allowed tags are <p>, <strong>, <em>, <ul>, <li>, and <br>, with no attributes.",
-    "The private biography must be terse but immediately useful at the table and contain: Appearance, Speech, Motivation, Mannerism, Rumours, Secrets, Relationships, and Adventure Hook.",
+    "The private biography must be terse but immediately useful at the table and contain these labeled sections: Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.",
+    "Quirk must be a small, playable behavior, habit, preference, superstition, or personal oddity. Avoid cartoonish gimmicks unless the requested group specifically calls for one.",
     "Rumours should be things other people might plausibly say or believe about the NPC; they may be true, false, or distorted. Secrets must contain information the NPC would not readily volunteer.",
-    count > 1
-      ? "This is a batch. When it improves play, connect the NPCs: relationships, rumours, secrets, debts, loyalties, rivalries, family ties, or shared incidents may refer to other generated NPCs by exact name. Do not force a connection when it would be unnatural."
-      : "Relationships may mention off-screen people or groups when useful, but do not invent batch relationships because only one NPC is requested.",
+    grouped
+      ? "This is an intentional group. Cross-reference generated NPCs by exact name. Relationship, rumour, secret, obligation, debt, affection, rivalry, family tie, chain-of-command issue, shared incident, or dispute details should connect members wherever useful. Do not generate isolated strangers unless the group concept logically requires it."
+      : count > 1
+        ? "This is a batch of independent NPCs. Relationships between generated NPCs are optional; add them only when they improve play and feel natural."
+        : "Relationships may mention off-screen people or groups when useful, but do not invent batch relationships because only one NPC is requested.",
+    grouped
+      ? "Give every group member a distinct functional or social role inside the group, even when two members share the same broad D&D role. Make the group feel like it existed before the PCs arrived and will keep functioning after they leave."
+      : "Keep each NPC distinct in voice, motivation, possessions, and hook.",
+    clean(options.groupType, "") === "family"
+      ? "FAMILY REQUIREMENTS: establish exact kinship between every member; make household responsibilities clear; include at least one shared family secret, one plausible family rumour, and one meaningful disagreement or pressure. Every family member must have an individual quirk. Reuse family surnames naturally where appropriate, while allowing married-in relatives, step-relations, adopted relatives, or different surnames when the chosen family structure supports it."
+      : "",
     "Use sensible D&D 5e numbers for the requested role and tier/CR. Ability values must be integers from 1 to 30. HP value/max must be non-negative numbers. AC flat must be numeric. CR must be numeric and match the requested CR exactly when a CR is explicitly requested.",
     "Use movement.units = \"ft\" and a standard dnd5e size key: tiny, sm, med, lg, huge, or grg.",
-    "Inventory is important. Give each NPC a short, plausible inventory appropriate to Role and Wealth, not a generic adventurer loadout.",
+    "Inventory is important. Give each NPC a short, plausible inventory appropriate to Role, Wealth, Habitat, group function, and immediate circumstances, not a generic adventurer loadout.",
     "Prefer standard D&D 5e equipment when it fits. For a standard item, set lookup to its exact English canonical equipment name so the importer can resolve it from the D&D 5e compendium. For an invented roleplay-only possession, set lookup to null.",
-    "Invented possessions are encouraged when mundane specificity improves roleplay: purses, letters, receipts, toys, keys, work scraps, devotional keepsakes, food, personal mementos, local tokens, and similar items.",
+    "Invented possessions are encouraged when mundane specificity improves roleplay: purses, letters, receipts, toys, keys, work scraps, devotional keepsakes, food, personal mementos, local tokens, family objects, duty rosters, travel papers, trade samples, repair parts, and similar items.",
     "Represent carried money as a believable purse, pouch, strongbox, wallet, or similar roleplay item whose description states the coins or valuables. Scale it to Wealth and circumstances rather than giving every NPC the same money.",
     "Do not overload inventories. Usually 3–8 entries is enough unless the role strongly calls for more.",
     "Do not invent additional top-level Actor keys.",
     "Do not include prose before or after the JSON value.",
     "",
+    "NAMING REQUIREMENTS:",
+    `- Naming style: ${clean(options.namingStyleLabel, clean(options.namingStyle, "Central"))}`,
+    `- Style guidance: ${clean(options.namingStyleGuidance, "use a coherent fictional regional naming palette")}`,
+    `- Creative idiomatic examples: ${namingExamples}`,
+    "- Treat examples as tonal references, not a finite name list. Do not simply copy every example or mechanically recombine first and last halves.",
+    "- Produce names that sound natural together, with enough phonetic and structural variation that a batch does not look algorithmically generated.",
+    "- For families or long-standing houses, use shared surnames, cadet surnames, marriage names, nicknames, and generational variation naturally rather than forcing every relative to have an identical surname.",
+    "",
     "Requested NPC profile:",
-    `- Role: ${clean(options.roleLabel, clean(options.role, "Guard"))}`,
+    `- Count: ${count}`,
+    `- Role / primary role: ${clean(options.roleLabel, clean(options.role, "Guard"))}`,
     `- Role equipment guidance: ${clean(options.roleEquipmentHint, "choose practical possessions that directly support the role")}`,
     `- Tier / CR: ${clean(options.tierLabel, clean(options.tier, "Trained"))}`,
-    `- Race: ${clean(options.raceLabel, clean(options.race, "Human"))}`,
+    `- Race / primary race: ${clean(options.raceLabel, clean(options.race, "Human"))}`,
     `- Wealth: ${clean(options.wealthLabel, clean(options.wealth, "Average"))}`,
     `- Wealth guidance: ${clean(options.wealthPrompt, "ordinary practical possessions and modest spending money")}`,
-    `- Naming style: ${clean(options.namingStyleLabel, clean(options.namingStyle, "Central"))}`,
-    `- Naming examples: ${namingExamples}`,
+    `- Habitat: ${clean(options.habitatLabel, "Forest Village")}`,
+    `- Habitat guidance: ${clean(options.habitatPrompt, "adapt daily life, possessions, travel, and social assumptions to the habitat")}`,
+    `- Group type: ${clean(options.groupTypeLabel, "Independent NPCs")}`,
+    `- Group archetype guidance: ${clean(options.groupTypePrompt, "generate distinct individuals")}`,
+    clean(options.groupType, "") === "family" ? `- Family structure: ${clean(options.familyStructureLabel, "Single household")}` : "",
+    grouped ? `- Group cohesion: ${clean(options.groupCohesionLabel, "Functional")} — ${clean(options.groupCohesionPrompt)}` : "",
+    grouped ? `- Group hierarchy: ${clean(options.groupHierarchyLabel, "Informal leader")} — ${clean(options.groupHierarchyPrompt)}` : "",
+    grouped ? `- Relationship density: ${clean(options.relationshipDensityLabel, "Rich")} — ${clean(options.relationshipDensityPrompt)}` : "",
+    grouped ? `- Internal conflict: ${clean(options.internalConflictLabel, "Low")} — ${clean(options.internalConflictPrompt)}` : "",
+    grouped ? `- Race composition: ${clean(options.raceCompositionLabel, "Single race")}` : "",
+    grouped && options.raceComposition === "mixed" ? `- Allowed races: ${groupRaces}` : "",
+    grouped && options.raceComposition === "mixed" ? `- Primary race: ${clean(options.primaryRaceLabel, clean(options.raceLabel, "Human"))}` : "",
+    grouped && options.raceComposition === "mixed" ? `- Race distribution: ${clean(options.raceDistributionLabel, "Roughly equal")} — ${clean(options.raceDistributionPrompt)}` : "",
+    grouped && options.raceComposition === "mixed" && options.raceDistribution === "weighted" ? `- Relative race weights: ${clean(options.raceWeightSummary, "equal weights")}` : "",
+    grouped && clean(options.groupBrief) ? `- Additional group brief: ${clean(options.groupBrief)}` : "",
     `- Requested name or batch prefix: ${clean(options.customName, "none; generate natural names")}`,
+    "",
+    grouped ? "GROUP COHERENCE RULES:" : "",
+    grouped ? "- Give the group a coherent shared situation, recent history, and reason its members are currently together." : "",
+    grouped ? "- Assign responsibilities and useful internal roles so not every member is a copy of the same stat concept." : "",
+    grouped ? "- At least half the NPCs should explicitly name another generated NPC in Relationships, Rumours, or Secrets; for families, every NPC must do so." : "",
+    grouped ? "- Shared secrets and rumours may appear from different perspectives, but do not paste identical biography text into every Actor." : "",
+    grouped ? "- Vary equipment by responsibility: leaders, scouts, caretakers, artisans, guards, dependents, specialists, and wealthy members should carry different things." : "",
     "",
     "Required Actor object shape:",
     "{",
@@ -65,7 +110,7 @@ export function buildAiPrompt(options = {}) {
     "      \"cr\": 0.25,",
     "      \"type\": { \"value\": \"humanoid\", \"subtype\": \"Human\", \"swarm\": \"\", \"custom\": \"\" },",
     "      \"biography\": {",
-    "        \"value\": \"<p><strong>Appearance:</strong> ...</p><p><strong>Speech:</strong> ...</p><p><strong>Motivation:</strong> ...</p><p><strong>Mannerism:</strong> ...</p><p><strong>Rumours:</strong> ...</p><p><strong>Secrets:</strong> ...</p><p><strong>Relationships:</strong> ...</p><p><strong>Adventure Hook:</strong> ...</p>\",",
+    "        \"value\": \"<p><strong>Appearance:</strong> ...</p><p><strong>Speech:</strong> ...</p><p><strong>Motivation:</strong> ...</p><p><strong>Mannerism:</strong> ...</p><p><strong>Quirk:</strong> ...</p><p><strong>Rumours:</strong> ...</p><p><strong>Secrets:</strong> ...</p><p><strong>Relationships:</strong> ...</p><p><strong>Adventure Hook:</strong> ...</p>\",",
     "        \"public\": \"\"",
     "      }",
     "    },",
@@ -94,7 +139,7 @@ export function buildAiPrompt(options = {}) {
     "- description: short roleplay context. It may be empty for obvious canonical equipment.",
     "- Do not put raw Foundry Item system data in items; the importer resolves canonical items and safely creates fallback roleplay items.",
     "",
-    `Final validation before replying: JSON.parse must succeed; the root JSON value must be ${singleObject ? "an object" : "an array"}; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections.`,
+    `Final validation before replying: JSON.parse must succeed; the root JSON value must be ${singleObject ? "an object" : "an array"}; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections, including Quirk, Rumours, Secrets, and Relationships.`,
     "Output only the JSON value."
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 }

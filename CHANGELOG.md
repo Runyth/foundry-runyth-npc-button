@@ -2,6 +2,27 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.1.3 - 2026-09-20
+
+### Added
+
+- Full Player's Handbook 2024 built-in Race catalog: Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, and Tiefling, while retaining custom Race support.
+- Habitat selection with Forest Village as the default and a broad preset catalog for settlements, wilderness, arid, aquatic/coastal, rugged, cold, underground, and ruined environments.
+- Advanced group generation with families, noble households, guard/watch groups, militia, mercenaries, orc raiders, bandits, criminal cells, caravans, guild crews, ship crews, hunting parties, expeditions, temple households, councils, pilgrims, and refugee parties.
+- Family structure, group cohesion, hierarchy, relationship-density, internal-conflict, and free-form group-brief controls.
+- Searchable virtualized multi-select Race picker for mixed groups.
+- Mixed-Race distributions for roughly equal representation, a primary Race, a strong primary-Race majority, or custom relative weights.
+- Exact-size Race quota allocation before deterministic shuffling so small mixed groups do not collapse accidentally to one Race.
+- Per-NPC quirks and richer local relationship/group metadata.
+
+### Changed
+
+- Expanded every naming style to at least twelve creative idiomatic examples plus stronger style guidance. The Help window and copied AI prompt share the same naming source data.
+- Expanded the AI prompt with habitat, group archetype, family structure, responsibilities, cohesion, hierarchy, conflict, mixed-Race composition, shared history, cross-NPC lore, quirks, secrets, rumours, relationships, and role/wealth/habitat-aware possessions.
+- Strengthened AI import validation so biography text must contain all required labeled sections, including Quirk, and every Actor must contain at least one inventory entry.
+- Local group generation now records and reflects advanced cohesion, hierarchy, relationship-density, family-structure, and conflict choices rather than treating them as AI-only hints.
+- Documentation ZIP continues to exclude `module.json` by enforced build invariant.
+
 ## 0.1.2 - 2026-09-20
 
 ### Added

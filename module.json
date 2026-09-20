@@ -1,8 +1,8 @@
 {
   "id": "runyth-npc-button",
   "title": "Runyth NPC Button",
-  "description": "Fast D&D 5e NPC creation for Foundry VTT with deterministic local generation and a validated AI clipboard workflow.",
-  "version": "0.1.2",
+  "description": "Advanced D&D 5e NPC and group generation for Foundry VTT with habitats, mixed-Race composition, deterministic local generation, and a validated AI clipboard workflow.",
+  "version": "0.1.3",
   "authors": [
     {
       "name": "Akito"

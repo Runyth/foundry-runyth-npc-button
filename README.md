@@ -1,43 +1,41 @@
 # Runyth NPC Button
 
-Runyth NPC Button is a focused D&D 5e utility for Foundry VTT that creates NPC Actors from the Actors directory, either with a deterministic local generator or through a portable AI clipboard workflow.
+Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It supports deterministic local generation and an AI-native clipboard workflow without requiring an API key or external service integration.
 
 ## Features
 
 - GM-only **NPC Button** action in the Actors directory.
 - Resizable dashboard with client-side size and placement persistence.
-- Ergonomic count control with direct numeric input and 1, 3, 5, and 10 shortcuts.
-- World-level **Tier style** setting:
-  - named competence tiers; or
-  - exact D&D 5e Challenge Rating selection covering 0, 1/8, 1/4, 1/2, and every integer CR from 1 through 30.
-- Reusable searchable, scrollable, virtualized hierarchical pickers for Role, Race, Naming style, Tier/CR, and Actor folder selection.
-- Race picker supports presets and free-form custom races without a separate Custom mode.
-- Actor-folder picker preserves nested folder hierarchy and can also target the Actors root, configured default, or create/reuse a new root folder.
+- Ergonomic Count control with arbitrary numeric input plus 1, 3, 5, and 10 shortcuts.
+- World-level **Tier style** setting with named competence tiers or exact Challenge Rating selection covering CR 0, 1/8, 1/4, 1/2, and 1–30.
+- Searchable, scrollable, virtualized hierarchical pickers for Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection.
+- Built-in Player's Handbook 2024 Race catalog: Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, and Tiefling, plus arbitrary custom races.
+- Habitat-aware generation with **Forest Village** as the default and more than twenty presets spanning settlements, forests, plains, jungle, deserts, riverlands, wetlands, lakesides, coasts, ports, islands, mountains, tundra, underground environments, and ruined frontiers. Custom habitats are supported.
 - Wealth selection: Poor, Average, Well-Off, or Elite.
-- Help button in the dashboard title bar with field explanations and deliberately distinct naming-style examples.
-- Single or batch deterministic local NPC generation with optional reproducible seeds.
-- Optional Actor review layout:
-  - opens at most the first 10 created Actors;
-  - shows up to three Actor sheets side-by-side;
-  - later sheets reuse those column positions behind the top three, so closing one reveals the next sheet in that stack.
+- Four naming palettes with richer idiomatic guidance and at least twelve distinct examples per palette. The same guidance is used by Help and the AI prompt.
+- Individual NPC generation or coherent group generation. Built-in group archetypes include family and noble households, guard/watch groups, militia, mercenaries, orc raiders, bandits, criminal cells, caravans, guild crews, ship crews, hunting parties, expeditions, temple households, village councils, pilgrims, and refugee parties.
+- Family generation with shared surnames, household roles, quirks, shared rumours/secrets, relationship lore, family structure, and configurable internal disputes.
+- Advanced group controls for cohesion, hierarchy, relationship density, internal conflict, family structure, and a free-form group brief.
+- Mixed-race group composition with a scalable multi-select Race picker and exact-size allocation modes:
+  - roughly equal;
+  - primary-race majority;
+  - strong primary-race majority; or
+  - custom relative weights.
+- Deterministic local group generation respects habitat, Race composition, group roles, quirks, cohesion, hierarchy, relationship density, and conflict settings.
+- Optional Actor review layout opens at most the first ten created Actors, with up to three visible side-by-side and later sheets stacked behind those positions.
 - AI-native clipboard workflow:
-  - **Copy prompt** builds a detailed strict portable prompt for a manual AI conversation.
-  - AI output is an array by default, including when Count is 1.
-  - An explicit toggle permits a single JSON object only when Count is 1.
-  - Prompted biographies include terse Appearance, Speech, Motivation, Mannerism, Rumours, Secrets, Relationships, and Adventure Hook sections.
-  - Multi-NPC prompts allow meaningful cross-NPC relationships, rumours, secrets, debts, loyalties, rivalries, and shared incidents.
-  - AI inventory is role- and wealth-aware.
-  - Canonical D&D equipment names are resolved against D&D 5e system compendia where possible.
-  - Invented or unresolved roleplay possessions safely fall back to embedded loot Items.
-  - **Import NPC** reads the copied AI JSON and creates the Actors in the currently selected destination.
+  - **Copy prompt** creates a strict, detailed portable prompt for a manual AI conversation.
+  - AI output is an array by default, including when Count is 1; an explicit toggle permits one object only when Count is 1.
+  - Prompted biographies require Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.
+  - Group prompts require coherent responsibilities, relationships, shared history, secrets, rumours, disputes, and cross-NPC references appropriate to the selected group archetype.
+  - Naming guidance includes the selected palette's idiomatic description and rich example set.
+  - Inventory is role-, wealth-, habitat-, and group-aware. Canonical D&D equipment names are resolved against D&D 5e system compendia where possible; invented roleplay possessions safely fall back to embedded loot Items.
+  - **Import NPC** validates the copied JSON and creates Actors in the currently selected destination.
   - Manual paste is available when browser clipboard reading is unavailable.
-- Strict AI payload validation before any Actor is created.
-- AI biography and item-description HTML sanitization.
-- Sensible D&D 5e ability scores, Armor Class, Hit Points, movement, Challenge Rating, creature type, Race, wealth, and biography fields.
-- Modular English and German UI localization.
+- Strict AI payload validation and HTML sanitization before any Actor is created.
+- Modular English and German localization.
 - Optional concise debug logging, disabled by default.
 - Public API for macros and future integrations.
-- No external AI API, API key, or network request is required by the module.
 
 ## Compatibility
 
@@ -58,24 +56,30 @@ Then enable **Runyth NPC Button** in the world's module settings.
 
 1. Open the **Actors** directory as a Game Master.
 2. Click **NPC Button**.
-3. Configure Count, Role, Tier/CR, Race, Wealth, Naming style, and Destination.
-4. Choose one workflow:
-   - **Create locally** for deterministic in-module generation.
-   - **Copy prompt**, paste it into an AI conversation, copy the JSON-only answer, return to Foundry, and click **Import NPC**.
-5. Use the title-bar **Help** button for control descriptions and naming examples.
+3. Choose Count, Group type, Habitat, Role, Tier/CR, Race, Wealth, Naming style, and Destination.
+4. For a group, open **Advanced group settings** to tune family structure, cohesion, hierarchy, relationship density, conflict, Race composition, distribution, and the group brief.
+5. Choose **Create locally** for deterministic in-module generation, or **Copy prompt** for the AI workflow.
+6. For the AI workflow, paste the prompt into an AI conversation, copy its JSON-only answer, return to Foundry, and click **Import NPC**.
+7. Use the title-bar **Help** button for explanations and naming examples.
 
 ### Tier style
 
 Open **Game Settings → Configure Settings → Runyth NPC Button → Tier style**.
 
-- **Named tiers** keeps the module's Ordinary, Trained, Veteran, Elite, and Champion bands.
-- **Challenge Rating (CR)** replaces that picker with all standard D&D 5e CR values from 0 through 30.
+- **Named tiers** uses Ordinary, Trained, Veteran, Elite, and Champion.
+- **Challenge Rating (CR)** replaces that picker with all supported standard CR values from 0 through 30.
+
+### Group Race composition
+
+The normal Race picker establishes the primary/default Race. In a mixed group, **Possible races** becomes a virtualized multi-select list. The generator then allocates the exact requested Count according to the chosen distribution instead of relying on repeated random draws, preventing small groups from accidentally collapsing into a single Race.
+
+Custom Race entries can participate in mixed groups as well.
 
 ### AI payload shape
 
-The default prompt always requests a JSON array with exactly the selected Count. This includes a Count of 1. When Count is 1, the optional **Use a single JSON object** toggle changes both the prompt contract and importer to require one object instead.
+The default prompt always requests a JSON array with exactly the selected Count. This includes Count 1. When Count is 1, **Use a single JSON object** changes both the prompt contract and importer to require one object instead.
 
-The importer accepts a narrow validated Actor core plus a deliberately simple inventory request format. Standard item requests can provide an exact English canonical lookup name; the module attempts to resolve those from the modern D&D 5e equipment compendium first, then compatible legacy SRD item packs. If no canonical match exists, the possession remains a safe roleplay loot Item rather than causing import failure.
+Every Actor must include at least one inventory entry and a labeled biography containing Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook. Standard item requests can provide an exact English canonical lookup name. The module attempts to resolve those from modern D&D 5e equipment content first, then compatible legacy SRD item packs. If no canonical match exists, the possession remains a safe roleplay loot Item rather than causing the import to fail.
 
 ## Public API
 
@@ -125,6 +129,7 @@ See `docs/` for architecture, testing, release, and roadmap notes.
 - Foundry v13 ApplicationV2 API: https://foundryvtt.com/api/v13/classes/foundry.applications.api.ApplicationV2.html
 - Foundry v13 ClientSettings API: https://foundryvtt.com/api/v13/classes/foundry.helpers.ClientSettings.html
 - D&D 5e project and wiki: https://github.com/foundryvtt/dnd5e
+- D&D Beyond Race/Species catalog: https://www.dndbeyond.com/species
 - D&D 2024 Basic Rules — Challenge Rating: https://www.dndbeyond.com/sources/dnd/br-2024/how-to-use-a-monster
 
 ## License

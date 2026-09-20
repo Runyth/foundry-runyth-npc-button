@@ -5,6 +5,7 @@ const VALID_SIZES = new Set(["tiny", "sm", "med", "lg", "huge", "grg"]);
 const DEFAULT_ACTOR_IMAGE = "icons/svg/mystery-man.svg";
 const DEFAULT_ITEM_IMAGE = "icons/svg/item-bag.svg";
 const ALLOWED_BIOGRAPHY_TAGS = new Set(["p", "/p", "strong", "/strong", "em", "/em", "ul", "/ul", "li", "/li", "br", "br/"]);
+const REQUIRED_BIOGRAPHY_SECTIONS = Object.freeze(["Appearance", "Speech", "Motivation", "Mannerism", "Quirk", "Rumours", "Secrets", "Relationships", "Adventure Hook"]);
 
 function fail(message) {
   throw new Error(message);
@@ -129,10 +130,19 @@ function normalizeItemRequest(source, actorIndex, itemIndex) {
 }
 
 function normalizeItems(value, actorIndex) {
-  if (value === undefined) return [];
   if (!Array.isArray(value)) fail(`Actor ${actorIndex + 1}.items must be an array.`);
+  if (!value.length) fail(`Actor ${actorIndex + 1}.items must contain at least one inventory entry.`);
   if (value.length > 50) fail(`Actor ${actorIndex + 1}.items may contain at most 50 entries.`);
   return value.map((item, itemIndex) => normalizeItemRequest(item, actorIndex, itemIndex));
+}
+
+function validateBiographySections(value, path) {
+  const plain = String(value ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").toLocaleLowerCase();
+  for (const section of REQUIRED_BIOGRAPHY_SECTIONS) {
+    if (!plain.includes(`${section.toLocaleLowerCase()}:`)) {
+      fail(`${path} must include a labeled ${section}: section.`);
+    }
+  }
 }
 
 function normalizeActor(source, index) {
@@ -161,6 +171,7 @@ function normalizeActor(source, index) {
   const details = objectAt(system.details, `${path}.system.details`);
   const creatureType = objectAt(details.type, `${path}.system.details.type`);
   const biography = objectAt(details.biography, `${path}.system.details.biography`);
+  validateBiographySections(biography.value, `${path}.system.details.biography.value`);
   const traits = objectAt(system.traits, `${path}.system.traits`);
   const size = String(traits.size ?? "").trim().toLowerCase();
   if (!VALID_SIZES.has(size)) fail(`${path}.system.traits.size must be one of: ${[...VALID_SIZES].join(", ")}.`);

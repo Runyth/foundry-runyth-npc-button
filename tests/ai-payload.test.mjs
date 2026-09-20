@@ -28,7 +28,7 @@ function actorSource(name = "Mara Reed") {
         cr: 0.25,
         type: { value: "humanoid", subtype: "Human", swarm: "", custom: "" },
         biography: {
-          value: '<p onclick="alert(1)"><strong>Appearance:</strong> Plain coat.</p><script>alert(1)</script>',
+          value: '<p onclick="alert(1)"><strong>Appearance:</strong> Plain coat.</p><p><strong>Speech:</strong> Quiet.</p><p><strong>Motivation:</strong> Keep working.</p><p><strong>Mannerism:</strong> Taps a finger.</p><p><strong>Quirk:</strong> Sorts buttons.</p><p><strong>Rumours:</strong> Knows the miller.</p><p><strong>Secrets:</strong> Hid a letter.</p><p><strong>Relationships:</strong> Trusts Mara.</p><p><strong>Adventure Hook:</strong> Needs help.</p><script>alert(1)</script>',
           public: ""
         }
       },
@@ -72,14 +72,38 @@ test("AI prompt requires role-fitting inventory, rumours, secrets, relationships
     wealthLabel: "Poor",
     wealthPrompt: "very little cash",
     tierLabel: "CR 1/4",
-    raceLabel: "Human"
+    raceLabel: "Human",
+    habitatLabel: "Forest Village",
+    habitatPrompt: "temperate woodland settlement",
+    groupType: "guardPatrol",
+    groupTypeLabel: "Guard Patrol",
+    groupTypePrompt: "functioning guard patrol",
+    groupCohesionLabel: "Functional",
+    groupCohesionPrompt: "cooperate reliably",
+    groupHierarchyLabel: "Clear chain",
+    groupHierarchyPrompt: "clear chain of responsibility",
+    relationshipDensityLabel: "Rich",
+    relationshipDensityPrompt: "multiple concrete ties",
+    internalConflictLabel: "Low",
+    internalConflictPrompt: "mild disagreements",
+    raceComposition: "mixed",
+    raceCompositionLabel: "Mixed races",
+    groupRaceLabels: ["Human", "Elf"],
+    raceDistribution: "primary",
+    raceDistributionLabel: "Primary race",
+    raceDistributionPrompt: "about 70% primary race",
+    namingStyleGuidance: "settled inland names",
+    namingExamples: ["Aldren Voss", "Mira Halden", "Elian Mercer"]
   });
   assert.match(prompt, /Inventory is important/);
   assert.match(prompt, /holy symbol and devotional possessions/);
   assert.match(prompt, /Rumours, Secrets, Relationships/);
-  assert.match(prompt, /connect the NPCs/);
+  assert.match(prompt, /intentional group/);
   assert.match(prompt, /Wealth: Poor/);
   assert.match(prompt, /lookup to its exact English canonical equipment name/);
+  assert.match(prompt, /Creative idiomatic examples: Aldren Voss; Mira Halden; Elian Mercer/);
+  assert.match(prompt, /Habitat: Forest Village/);
+  assert.match(prompt, /Allowed races: Human, Elf/);
 });
 
 test("default import contract rejects a lone object", () => {
@@ -129,5 +153,26 @@ test("biography sanitizer preserves supported tags and removes attributes", () =
   assert.equal(
     sanitizeBiographyHtml('<p class="x">Hello <em>there</em><br/></p>'),
     "<p>Hello <em>there</em><br></p>"
+  );
+});
+
+test("AI import rejects biographies that omit the required Quirk section", () => {
+  const source = actorSource();
+  source.system.details.biography.value = source.system.details.biography.value.replace(
+    '<p><strong>Quirk:</strong> Sorts buttons.</p>',
+    ""
+  );
+  assert.throws(
+    () => normalizeNpcJsonPayload([source], { expectedCount: 1 }),
+    /must include a labeled Quirk: section/
+  );
+});
+
+test("AI import rejects an empty inventory", () => {
+  const source = actorSource();
+  source.items = [];
+  assert.throws(
+    () => normalizeNpcJsonPayload([source], { expectedCount: 1 }),
+    /items must contain at least one inventory entry/
   );
 });

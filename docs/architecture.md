@@ -2,68 +2,85 @@
 
 ## Design goals
 
-Runyth NPC Button keeps deterministic generation, AI payload handling, Foundry persistence, and UI integration separated. Pure data logic remains testable without a running Foundry server, while version-sensitive code stays at the Foundry boundary.
+Runyth NPC Button separates deterministic generation, group composition, AI payload handling, Foundry persistence, and UI integration. Pure data logic remains testable without a running Foundry server, while version-sensitive code stays at the Foundry boundary.
 
 ## Layers
 
 | Layer | Path | Responsibility |
 | --- | --- | --- |
 | Entry point | `scripts/main.mjs` | Hooks, settings registration, public API |
-| UI | `scripts/ui/` | Actor-directory integration, dashboard, help window, virtualized hierarchical picker, Actor review layout |
+| UI | `scripts/ui/` | Actor-directory integration, dashboard, help window, single/multi virtualized hierarchical pickers, Actor review layout |
 | AI contract | `scripts/ai/` | Prompt construction, JSON parsing, validation, normalization, HTML sanitization |
-| Generator | `scripts/generator/` | Pure deterministic NPC blueprints, exact CR profile mapping, Actor source construction |
+| Generator | `scripts/generator/` | Pure deterministic NPC/group blueprints, Race allocation, habitat/group lore, exact CR profile mapping, Actor source construction |
 | Foundry services | `scripts/services/` | Folder resolution, canonical item resolution, batched Actor creation/import |
-| Infrastructure | `scripts/settings.mjs`, `scripts/logger.mjs` | Configuration, window state, diagnostics |
+| Infrastructure | `scripts/settings.mjs`, `scripts/logger.mjs` | Configuration, persisted dashboard state, diagnostics |
 
 ## Tier styles
 
 `Tier style` is a world setting because it changes a shared generation rule rather than a single browser preference.
 
-- `named` uses the module's Ordinary, Trained, Veteran, Elite, and Champion bands.
-- `cr` exposes all standard D&D 5e CRs: 0, 1/8, 1/4, 1/2, and every integer from 1 through 30.
+- `named` uses Ordinary, Trained, Veteran, Elite, and Champion.
+- `cr` exposes CR 0, 1/8, 1/4, 1/2, and every integer 1–30.
 
-The local generator preserves the exact requested CR and interpolates its coarse supporting stat knobs between practical anchors. The AI prompt receives the exact selected CR.
+The local generator preserves the exact requested CR and interpolates coarse supporting stat knobs between practical anchors. The AI prompt receives the exact selected CR.
 
-## Scalable hierarchical picker
+## Scalable hierarchical pickers
 
-Role, Race, Naming style, Tier/CR, and Actor folder all use `scripts/ui/hierarchical-picker.mjs`.
+Single-selection catalogs use `scripts/ui/hierarchical-picker.mjs`; mixed-Race selection uses `scripts/ui/hierarchical-multi-picker.mjs`.
 
-The picker intentionally avoids native/select dropdown animation behavior. It expands a stable inline panel containing:
+Both avoid native/select dropdown animation behavior and use stable inline panels with search, grouped/hierarchical rows, a scroll viewport, and row virtualization. Searchable text is pre-indexed and filter refresh is coalesced to animation frames. Only the visible window plus small overscan is mounted, keeping DOM work bounded as world folder trees or future catalogs reach hundreds or thousands of entries.
 
-- search;
-- hierarchy/group rows;
-- a scroll viewport;
-- row virtualization.
+Race, Habitat, and Actor-folder workflows support custom entries without a separate Custom mode. The Actor-folder picker preserves real nested folder hierarchy.
 
-Only the visible row window plus a small overscan buffer is mounted in the DOM. This keeps rendering work bounded even if future catalogs or world folder trees grow to hundreds or thousands of entries.
+## Group model
 
-Race and Actor folder pickers additionally support custom values directly from the search field. This keeps custom Race and new-root-folder workflows inside the same control rather than requiring a separate Custom mode.
+`data.mjs` owns group archetypes, habitats, family structures, cohesion/hierarchy/conflict models, Race-composition policies, naming palettes, and reusable lore fragments. The dashboard stores user intent as normalized IDs rather than display text.
+
+`generateNpcBatch()` turns that configuration into deterministic group blueprints:
+
+1. determine group archetype and exact Count;
+2. allocate Race quotas for the full batch;
+3. deterministically shuffle those allocations when a seed is supplied;
+4. assign practical member roles from the group archetype;
+5. apply family surname behavior when applicable;
+6. generate per-NPC stats, habitat, quirk, and personal details;
+7. add group-wide rumour/secret context;
+8. construct relationship text reflecting cohesion, hierarchy, relationship density, and internal conflict.
+
+Balanced and weighted mixed groups use integer quotas before shuffling rather than independent random draws. This guarantees the requested exact Count and makes distribution intent meaningful even for small groups.
+
+## Naming data
+
+Each naming style stores generation pools, a prose `aiGuidance` description, and a rich example set. Help and the AI prompt consume the same source data, preventing documentation/prompt drift.
 
 ## Actor review stack
 
-When Actor review opening is enabled, at most the first ten created Actors are opened. The module calculates up to three columns based on viewport width. Actors after the first visible row reuse those same column coordinates. Sheets are rendered from the back of the batch toward the front so Actors 1–3 remain on top and closing one exposes the next Actor assigned to that column.
+When Actor review opening is enabled, at most the first ten created Actors are opened. The module calculates up to three columns based on viewport width. Actors after the first visible row reuse those coordinates. Sheets are rendered from the back of the batch toward the front so Actors 1–3 remain on top and closing one exposes the next Actor assigned to that column.
 
 ## AI boundary
 
-The module does not call an AI service. `Copy prompt` produces a portable strict JSON-only request. The user manually pastes that prompt into any AI conversation and copies the resulting JSON back.
+The module does not call an AI service. `Copy prompt` produces a portable strict JSON-only request; the user manually pastes that prompt into any AI conversation and copies the JSON response back.
+
+The prompt carries the same configuration model as local generation: exact Count, Tier/CR, Role, Race composition, wealth, habitat, naming guidance/examples, group archetype, family structure, cohesion, hierarchy, relationship density, internal conflict, and group brief. It additionally requires coherent inventory, quirks, rumours, secrets, relationships, and cross-NPC references for groups.
 
 AI output is treated as untrusted input. The importer:
 
 1. parses clipboard or manual-paste text;
-2. enforces the requested root shape and exact count;
+2. enforces the requested root shape and exact Count;
 3. validates required D&D 5e Actor fields and numeric bounds;
-4. constructs a fresh Actor source instead of trusting arbitrary document fields;
-5. sanitizes biography and roleplay-item HTML to a tiny attribute-free allowlist;
-6. validates a narrow inventory request schema;
-7. resolves exact canonical equipment names against `dnd5e.equipment24`, then compatible legacy SRD item packs;
-8. keeps unresolved or invented possessions as safe loot Items;
-9. applies folder placement locally;
-10. creates the validated Actors through Foundry's public batch document API.
+4. requires all labeled biography sections and at least one inventory entry;
+5. constructs a fresh Actor source instead of trusting arbitrary document fields;
+6. sanitizes biography and roleplay-item HTML to a tiny attribute-free allowlist;
+7. validates a narrow inventory request schema;
+8. resolves exact canonical equipment names against modern D&D 5e equipment content, then compatible legacy SRD item packs;
+9. keeps unresolved or invented possessions as safe loot Items;
+10. applies folder placement locally;
+11. creates validated Actors through Foundry's public batch document API.
 
 The default root shape is always an array. A single object is valid only when Count is 1 and the dedicated single-object toggle is enabled.
 
 ## Compatibility strategy
 
-The manifest restricts activation to D&D 5e and records the supported D&D 5e range. Runtime code uses public Foundry APIs where available, including ApplicationV2 rendering/positioning and `Actor.implementation.createDocuments`.
+The manifest restricts activation to D&D 5e and records the supported system range. Runtime code uses public Foundry APIs where available, including ApplicationV2 rendering/positioning and `Actor.implementation.createDocuments`.
 
-The Actor-directory integration uses the public render hook and only a small DOM insertion adapter. If a future Foundry release changes directory markup, that adapter can be replaced without touching generation, AI validation, picker logic, or persistence.
+The Actor-directory integration uses the public render hook and only a small DOM insertion adapter. A future directory-markup change can therefore be isolated from generation, AI validation, picker logic, and persistence.

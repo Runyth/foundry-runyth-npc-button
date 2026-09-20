@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { TIER_STYLES } from "../scripts/constants.mjs";
-import { CR_VALUES, formatChallengeRating } from "../scripts/generator/data.mjs";
+import { CR_VALUES, HABITATS, NAME_STYLES, RACES, formatChallengeRating } from "../scripts/generator/data.mjs";
 import {
   buildActorSource,
+  buildRaceAssignments,
   createSeededRandom,
   escapeHtml,
   generateNpcBatch,
@@ -94,4 +95,110 @@ test("actor source uses dnd5e NPC fields and records wealth", () => {
 
 test("HTML values are escaped before biography interpolation", () => {
   assert.equal(escapeHtml(`<script>alert("x")</script>`), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
+});
+
+
+test("built-in Race catalog contains all standard 2024 Player's Handbook races", () => {
+  const ids = Object.keys(RACES).filter((id) => id !== "custom").sort();
+  assert.deepEqual(ids, [
+    "aasimar", "dragonborn", "dwarf", "elf", "gnome",
+    "goliath", "halfling", "human", "orc", "tiefling"
+  ]);
+});
+
+test("Forest Village is available as the normal default habitat and habitat catalog is broad", () => {
+  assert.equal(HABITATS.forestVillage.label, "Forest Village");
+  assert.ok(Object.keys(HABITATS).length >= 20);
+  assert.equal(HABITATS.desertOasis.group, "arid");
+  assert.equal(HABITATS.island.group, "water");
+  assert.equal(HABITATS.mountains.group, "rugged");
+});
+
+test("every naming style provides a rich creative example set", () => {
+  for (const style of Object.values(NAME_STYLES)) {
+    assert.ok(style.examples.length >= 12);
+    assert.ok(style.aiGuidance.length > 40);
+    assert.equal(new Set(style.examples).size, style.examples.length);
+  }
+});
+
+test("balanced mixed-race assignment uses exact quotas instead of random collapse", () => {
+  const assignments = buildRaceAssignments({
+    raceComposition: "mixed",
+    species: "human",
+    groupRaces: ["human", "elf", "dwarf"],
+    primaryRace: "human",
+    raceDistribution: "balanced"
+  }, 9, createSeededRandom("mixed-balanced"));
+
+  const counts = assignments.reduce((map, entry) => {
+    map[entry.species] = (map[entry.species] ?? 0) + 1;
+    return map;
+  }, {});
+  assert.deepEqual(counts, { human: 3, elf: 3, dwarf: 3 });
+});
+
+test("primary-race mixed groups keep a strong majority while preserving minorities", () => {
+  const assignments = buildRaceAssignments({
+    raceComposition: "mixed",
+    species: "orc",
+    groupRaces: ["orc", "human", "goliath"],
+    primaryRace: "orc",
+    raceDistribution: "primary"
+  }, 20, createSeededRandom("mixed-primary"));
+
+  const orcs = assignments.filter((entry) => entry.species === "orc").length;
+  assert.ok(orcs >= 13 && orcs <= 15);
+  assert.ok(assignments.some((entry) => entry.species === "human"));
+  assert.ok(assignments.some((entry) => entry.species === "goliath"));
+});
+
+test("family generation shares a surname and adds quirks, relationship lore, secrets, and habitat", () => {
+  const family = generateNpcBatch({
+    count: 5,
+    groupType: "family",
+    species: "human",
+    raceComposition: "single",
+    habitat: "forestVillage",
+    namingStyle: "central",
+    seed: "family-test"
+  });
+  const surnames = family.map((npc) => npc.name.split(" ").at(-1));
+  assert.equal(new Set(surnames).size, 1);
+  assert.ok(family.every((npc) => npc.quirk));
+  assert.ok(family.every((npc) => npc.relationship.includes("family disagreement")));
+  assert.ok(family.every((npc) => npc.groupSecret));
+  assert.ok(family.every((npc) => npc.groupRumour));
+  assert.ok(family.every((npc) => npc.habitat === "Forest Village"));
+  assert.ok(family.every((npc) => npc.familyStructure === "Single household"));
+  assert.ok(family.every((npc) => npc.groupCohesion === "Functional"));
+  assert.ok(family.every((npc) => npc.groupHierarchy === "Informal leader"));
+  assert.ok(family.every((npc) => npc.relationshipDensity === "Rich"));
+  assert.ok(family.every((npc) => npc.internalConflict === "Low"));
+});
+
+test("advanced group controls alter local relationship lore and Actor flags", () => {
+  const group = generateNpcBatch({
+    count: 4,
+    groupType: "guardPatrol",
+    species: "human",
+    raceComposition: "single",
+    habitat: "marketTown",
+    namingStyle: "central",
+    groupCohesion: "fractured",
+    groupHierarchy: "rigid",
+    relationshipDensity: "tangled",
+    internalConflict: "high",
+    seed: "advanced-group-test"
+  });
+  assert.ok(group.every((npc) => npc.relationship.includes("serious unresolved dispute")));
+  assert.ok(group.every((npc) => npc.relationship.includes("rank as a real boundary")));
+  assert.ok(group.every((npc) => npc.groupCohesion === "Fractured"));
+  assert.ok(group.every((npc) => npc.groupHierarchy === "Rigid hierarchy"));
+  assert.ok(group.every((npc) => npc.relationshipDensity === "Tangled"));
+  assert.ok(group.every((npc) => npc.internalConflict === "High"));
+  const actor = buildActorSource(group[0]);
+  assert.equal(actor.flags["runyth-npc-button"].groupCohesion, "Fractured");
+  assert.equal(actor.flags["runyth-npc-button"].groupHierarchy, "Rigid hierarchy");
+  assert.match(actor.system.details.biography.value, /<strong>Internal conflict:<\/strong> High/);
 });

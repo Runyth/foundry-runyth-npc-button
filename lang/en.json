@@ -76,7 +76,35 @@
       "createLocally": "Create locally",
       "creating": "Creating NPCs…",
       "copyingPrompt": "Preparing AI prompt…",
-      "importing": "Validating items and importing NPCs…"
+      "importing": "Validating items and importing NPCs…",
+      "groupType": "Generation mode / group type",
+      "groupTypeHint": "Create independent NPCs or a coherent family, patrol, raider band, crew, caravan, council, and other group archetypes.",
+      "habitat": "Habitat",
+      "habitatHint": "Choose the environment and settlement context that shapes daily life, possessions, travel, and social assumptions. Type any other habitat to use it directly.",
+      "useCustomHabitat": "Use this text as a custom habitat",
+      "groupConfigurationTitle": "Group composition",
+      "groupConfigurationIntro": "Advanced controls for relationships, internal structure, race mixing, and shared group context.",
+      "suggestedGroupSizes": "Suggested sizes",
+      "suggestedGroupSizesHint": "Shortcuts only; Count remains fully editable.",
+      "familyStructure": "Family structure",
+      "advancedGroupSettings": "Advanced group settings",
+      "groupCohesion": "Cohesion",
+      "groupHierarchy": "Hierarchy",
+      "relationshipDensity": "Relationship lore",
+      "internalConflict": "Internal conflict",
+      "raceComposition": "Race composition",
+      "raceCompositionHint": "Use the main Race field for a single-race group or as the primary race when mixing several races.",
+      "possibleRaces": "Possible races",
+      "possibleRacesHint": "Search and select any number of allowed races. Custom races can be added by typing them into the search.",
+      "choosePossibleRaces": "Choose possible races…",
+      "raceDistribution": "Race distribution",
+      "raceDistributionHint": "Controls how strongly the primary Race dominates the generated group.",
+      "raceWeights": "Custom race weights",
+      "raceWeightsHint": "Relative weights; they do not need to add up to 100.",
+      "groupBrief": "Additional group brief",
+      "groupBriefPlaceholder": "Optional: local feud, family business, employer, current crisis, taboo, destination, shared objective…",
+      "groupBriefHint": "Passed into the AI prompt as additional context. Keep it focused on facts that should affect multiple NPCs.",
+      "done": "Done"
     },
     "help": {
       "title": "NPC Button Help",
@@ -86,25 +114,34 @@
       "role": "Defines the NPC's practical function and biases local ability scores and durability. It also strongly guides AI inventory and characterization.",
       "tierStyleNamed": "The world currently uses named tiers. Ordinary through Champion provide broad competence bands; Configure Settings can switch the world to exact CR selection.",
       "tierStyleCr": "The world currently uses CR tiers. Every standard D&D 5e CR from 0 through 30 is selectable and the AI prompt requests that exact CR.",
-      "race": "Browse preset races in a searchable hierarchy. Typing a non-preset name offers it directly as a custom Race without a separate Custom mode.",
+      "race": "The built-in Race picker contains all standard 2024 Player’s Handbook races. Typing a non-preset name offers it directly as a custom Race; mixed groups can select several preset or custom races.",
       "wealth": "Poor, Average, Well-Off, or Elite. The AI uses this to scale carried money, equipment quality, comfort items, and visible status.",
       "seed": "Only affects deterministic local generation. It is intentionally not required for AI generation.",
       "destination": "The folder picker preserves the Actor hierarchy. It can target any nested folder, the Actors root, the configured default, or a newly named root folder.",
       "pickersTitle": "Scalable pickers",
-      "pickersBody": "Role, Race, Naming style, Tier/CR, and Actor folder use searchable hierarchical lists. The lists render only visible rows plus a small buffer, so very large catalogs and folder trees do not create huge DOMs or lag the dashboard.",
+      "pickersBody": "Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection use searchable hierarchical lists. Large lists render only visible rows plus a small buffer so catalog growth and large folder trees remain responsive.",
       "namingTitle": "Naming styles",
-      "namingBody": "Naming styles are broad fictional tonal palettes rather than historical or linguistic claims. The examples below are deliberately varied so the difference is visible before generation.",
+      "namingBody": "Naming styles are broad fictional tonal palettes rather than historical or linguistic claims. Each style now includes a larger set of creative idiomatic examples; the same examples and style guidance are embedded into the copied AI prompt as tonal references rather than a finite name list.",
       "character": "Character",
       "examples": "Distinct examples",
       "actorReviewTitle": "Actor review layout",
       "actorReviewBody": "When review opening is enabled, the module opens at most the first 10 created Actors. Up to three top sheets are arranged side-by-side. Additional sheets reuse those column positions behind the first row, so closing a top sheet exposes the next Actor in that stack.",
       "aiTitle": "AI workflow",
-      "aiBody": "The module does not call an AI service itself. It creates a strict portable prompt, validates the returned Actor core and inventory requests, resolves canonical D&D equipment from system compendia when possible, and safely falls back to roleplay loot items when necessary.",
-      "aiStep1": "Configure Count, Role, Tier or CR, Race, Wealth, Naming style, and Destination.",
+      "aiBody": "The module does not call an AI service itself. It creates a strict portable prompt carrying naming references, habitat, group structure, race mixture, wealth, relationship density, secrets, rumours, quirks, and inventory requirements; then it validates the returned Actor core and inventory requests before import.",
+      "aiStep1": "Configure Count, Group type, Habitat, Role, Tier or CR, Race composition, Wealth, Naming style, and Destination.",
       "aiStep2": "Click Copy prompt and paste the prompt into an AI conversation.",
       "aiStep3": "Copy the AI's JSON-only reply to your clipboard.",
       "aiStep4": "Return to Foundry and click Import NPC. The current destination is applied locally.",
-      "aiValidation": "The importer rejects malformed or count-mismatched payloads before creating Actors. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items."
+      "aiValidation": "The importer rejects malformed or count-mismatched payloads before creating Actors. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items.",
+      "groupType": "Choose independent NPCs or an intentional group archetype. Group presets vary responsibilities and tell the AI to create shared history and useful internal roles instead of copies of one NPC.",
+      "habitat": "Defaults to Forest Village. Habitat changes the expected daily life, possessions, travel assumptions, work, rumors, and social context.",
+      "standardRacesTitle": "Standard 2024 races",
+      "standardRacesBody": "The built-in Player’s Handbook 2024 catalog is: {races}. Custom races remain available through the same picker.",
+      "habitatsTitle": "Habitats",
+      "habitatsBody": "Built-in environments cover ordinary settlements and more specialized regions, including {habitats}. Any other habitat can be typed as a custom entry.",
+      "groupsTitle": "Families and groups",
+      "groupsBody": "Group presets include {groups}, plus further security, outlaw, travel, work, faith, and community structures. Count stays editable, while each preset exposes sensible size shortcuts.",
+      "groupsAdvanced": "Advanced settings control family structure, cohesion, hierarchy, relationship density, internal conflict, allowed races, race distribution, custom weights, and an optional shared group brief."
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -156,8 +193,8 @@
       "champion": "Champion"
     },
     "raceGroups": {
-      "common": "Common humanoids",
-      "other": "Other humanoids"
+      "phb2024": "Player’s Handbook 2024",
+      "custom": "Custom races"
     },
     "races": {
       "human": "Human",
@@ -165,8 +202,12 @@
       "dwarf": "Dwarf",
       "halfling": "Halfling",
       "orc": "Orc",
-      "goblin": "Goblin",
-      "custom": "Custom"
+      "custom": "Custom",
+      "aasimar": "Aasimar",
+      "dragonborn": "Dragonborn",
+      "gnome": "Gnome",
+      "goliath": "Goliath",
+      "tiefling": "Tiefling"
     },
     "namingGroups": {
       "regional": "Regional palettes"
@@ -192,6 +233,108 @@
     "folderGroups": {
       "destination": "Destination choices",
       "existing": "Existing Actor folders"
+    },
+    "habitatGroups": {
+      "settled": "Settlements",
+      "wild": "Wild regions",
+      "arid": "Arid regions",
+      "water": "Water & coast",
+      "rugged": "Rugged highlands",
+      "cold": "Cold regions",
+      "unusual": "Unusual regions"
+    },
+    "habitats": {
+      "forestVillage": "Forest Village",
+      "farmingHamlet": "Farming Hamlet",
+      "marketTown": "Market Town",
+      "cityDistrict": "City District",
+      "deepForest": "Deep Forest",
+      "plains": "Open Plains / Steppe",
+      "jungle": "Jungle Region",
+      "desertOasis": "Desert Oasis",
+      "desertRoute": "Desert Caravan Route",
+      "badlands": "Badlands",
+      "riverlands": "Riverlands",
+      "wetlands": "Marsh / Wetlands",
+      "lakeside": "Lakeside Region",
+      "coast": "Coastal Region",
+      "portCity": "Port City",
+      "island": "Island",
+      "foothills": "Mountain Foothills",
+      "mountains": "Mountain Region",
+      "highPlateau": "High Plateau",
+      "tundra": "Tundra / Far North",
+      "underground": "Underground Settlement",
+      "ruinedFrontier": "Ruined Frontier"
+    },
+    "groupTypeGroups": {
+      "individual": "Individuals",
+      "household": "Households & families",
+      "security": "Security & martial",
+      "outlaw": "Raiders & underworld",
+      "travelWork": "Travel & work crews",
+      "community": "Community & faith"
+    },
+    "groupTypes": {
+      "independent": "Independent NPCs",
+      "family": "Family Household",
+      "nobleHousehold": "Noble Household",
+      "guardPatrol": "Guard Patrol",
+      "watchShift": "Town Watch Shift",
+      "militia": "Local Militia",
+      "mercenaryBand": "Mercenary Band",
+      "orcRaiders": "Orc Raider Band",
+      "banditCrew": "Bandit Crew",
+      "criminalCell": "Criminal Cell",
+      "caravan": "Caravan",
+      "guildCrew": "Guild Work Crew",
+      "shipCrew": "Ship Crew",
+      "huntingParty": "Hunting Party",
+      "expedition": "Expedition Team",
+      "templeHousehold": "Temple Household",
+      "villageCouncil": "Village Council",
+      "pilgrims": "Pilgrim Company",
+      "refugeeParty": "Refugee Party"
+    },
+    "familyStructures": {
+      "household": "Single household",
+      "multiGeneration": "Multi-generational",
+      "extendedKin": "Extended kin",
+      "siblings": "Siblings / cousins",
+      "blended": "Blended household"
+    },
+    "groupCohesion": {
+      "close": "Close-knit",
+      "functional": "Functional",
+      "strained": "Strained",
+      "fractured": "Fractured"
+    },
+    "groupHierarchy": {
+      "egalitarian": "Egalitarian",
+      "informal": "Informal leader",
+      "clear": "Clear chain",
+      "rigid": "Rigid hierarchy"
+    },
+    "relationshipDensity": {
+      "light": "Light",
+      "rich": "Rich",
+      "tangled": "Tangled"
+    },
+    "internalConflict": {
+      "none": "Minimal",
+      "low": "Low",
+      "medium": "Moderate",
+      "high": "High"
+    },
+    "raceComposition": {
+      "single": "Single race",
+      "mixed": "Mixed races"
+    },
+    "raceDistribution": {
+      "balanced": "Roughly equal",
+      "primary": "Primary race",
+      "dominant": "Strong majority",
+      "weighted": "Custom weights"
     }
   }
 }

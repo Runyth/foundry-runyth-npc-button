@@ -1,5 +1,5 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
-import { NAME_STYLES } from "../generator/data.mjs";
+import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES } from "../generator/data.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 
 function localize(key) {
@@ -7,8 +7,8 @@ function localize(key) {
 }
 
 function namingExamples(style) {
-  return [0, 1, 2, 3]
-    .map((index) => `${style.given[index % style.given.length]} ${style.family[index % style.family.length]}`)
+  return (style.examples ?? [])
+    .slice(0, 12)
     .join("; ");
 }
 
@@ -24,6 +24,16 @@ function helpContent() {
       <td>${escapeAttribute(namingExamples(style))}</td>
     </tr>
   `).join("");
+  const raceNames = Object.entries(RACES)
+    .filter(([id]) => id !== "custom")
+    .map(([, race]) => localize(race.labelKey))
+    .join(", ");
+  const habitatExamples = ["forestVillage", "desertOasis", "riverlands", "coast", "island", "mountains", "tundra", "underground"]
+    .map((id) => localize(HABITATS[id].labelKey))
+    .join(", ");
+  const groupExamples = ["family", "guardPatrol", "orcRaiders", "caravan", "shipCrew", "templeHousehold", "villageCouncil", "expedition"]
+    .map((id) => localize(GROUP_TYPES[id].labelKey))
+    .join(", ");
 
   return `
     <article class="runyth-npc-button__help">
@@ -32,6 +42,8 @@ function helpContent() {
         <p>${escapeAttribute(localize("help.generationBody"))}</p>
         <dl class="runyth-npc-button__help-list">
           <dt>${escapeAttribute(localize("ui.count"))}</dt><dd>${escapeAttribute(localize("help.count"))}</dd>
+          <dt>${escapeAttribute(localize("ui.groupType"))}</dt><dd>${escapeAttribute(localize("help.groupType"))}</dd>
+          <dt>${escapeAttribute(localize("ui.habitat"))}</dt><dd>${escapeAttribute(localize("help.habitat"))}</dd>
           <dt>${escapeAttribute(localize("ui.role"))}</dt><dd>${escapeAttribute(localize("help.role"))}</dd>
           <dt>${escapeAttribute(localize(tierStyle === TIER_STYLES.CR ? "ui.challengeRating" : "ui.tier"))}</dt><dd>${escapeAttribute(tierStyleText)}</dd>
           <dt>${escapeAttribute(localize("ui.race"))}</dt><dd>${escapeAttribute(localize("help.race"))}</dd>
@@ -39,6 +51,19 @@ function helpContent() {
           <dt>${escapeAttribute(localize("ui.seed"))}</dt><dd>${escapeAttribute(localize("help.seed"))}</dd>
           <dt>${escapeAttribute(localize("ui.destinationFolder"))}</dt><dd>${escapeAttribute(localize("help.destination"))}</dd>
         </dl>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.standardRacesTitle"))}</h2>
+        <p>${escapeAttribute(game.i18n.format(`${MODULE_ID}.help.standardRacesBody`, { races: raceNames }))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.habitatsTitle"))}</h2>
+        <p>${escapeAttribute(game.i18n.format(`${MODULE_ID}.help.habitatsBody`, { habitats: habitatExamples }))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.groupsTitle"))}</h2>
+        <p>${escapeAttribute(game.i18n.format(`${MODULE_ID}.help.groupsBody`, { groups: groupExamples }))}</p>
+        <p>${escapeAttribute(localize("help.groupsAdvanced"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.pickersTitle"))}</h2>
@@ -82,8 +107,8 @@ class NpcHelpApplication extends foundry.applications.api.ApplicationV2 {
       minimizable: true
     },
     position: {
-      width: 520,
-      height: 700
+      width: 620,
+      height: 760
     }
   };
 
@@ -104,7 +129,7 @@ function sidePosition(master, help) {
   const gap = 12;
   const masterPosition = master?.position ?? {};
   const helpPosition = help.position ?? {};
-  const width = Number(helpPosition.width) || 520;
+  const width = Number(helpPosition.width) || 620;
   const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
   const preferredLeft = Number(masterPosition.left) + Number(masterPosition.width) + gap;
   const left = Number.isFinite(preferredLeft) && preferredLeft + width <= viewportWidth
