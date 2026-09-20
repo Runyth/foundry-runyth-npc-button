@@ -1,0 +1,109 @@
+import { MODULE_ID } from "../constants.mjs";
+import { NAME_STYLES } from "../generator/data.mjs";
+import { escapeAttribute } from "../utils/html.mjs";
+
+function localize(key) {
+  return game.i18n.localize(`${MODULE_ID}.${key}`);
+}
+
+function namingExample(style) {
+  const first = `${style.given[0]} ${style.family[0]}`;
+  const second = `${style.given[1] ?? style.given[0]} ${style.family[1] ?? style.family[0]}`;
+  return `${first}; ${second}`;
+}
+
+function helpContent() {
+  const namingRows = Object.entries(NAME_STYLES).map(([key, style]) => `
+    <tr>
+      <th scope="row">${escapeAttribute(localize(style.labelKey))}</th>
+      <td>${escapeAttribute(namingExample(style))}</td>
+    </tr>
+  `).join("");
+
+  return `
+    <article class="runyth-npc-button__help">
+      <section>
+        <h2>${escapeAttribute(localize("help.generationTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.generationBody"))}</p>
+        <dl class="runyth-npc-button__help-list">
+          <dt>${escapeAttribute(localize("ui.count"))}</dt><dd>${escapeAttribute(localize("help.count"))}</dd>
+          <dt>${escapeAttribute(localize("ui.role"))}</dt><dd>${escapeAttribute(localize("help.role"))}</dd>
+          <dt>${escapeAttribute(localize("ui.tier"))}</dt><dd>${escapeAttribute(localize("help.tier"))}</dd>
+          <dt>${escapeAttribute(localize("ui.species"))}</dt><dd>${escapeAttribute(localize("help.species"))}</dd>
+          <dt>${escapeAttribute(localize("ui.seed"))}</dt><dd>${escapeAttribute(localize("help.seed"))}</dd>
+          <dt>${escapeAttribute(localize("ui.destinationFolder"))}</dt><dd>${escapeAttribute(localize("help.destination"))}</dd>
+        </dl>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.namingTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.namingBody"))}</p>
+        <table class="runyth-npc-button__help-table">
+          <thead><tr><th>${escapeAttribute(localize("ui.namingStyle"))}</th><th>${escapeAttribute(localize("help.examples"))}</th></tr></thead>
+          <tbody>${namingRows}</tbody>
+        </table>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.aiTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.aiBody"))}</p>
+        <ol>
+          <li>${escapeAttribute(localize("help.aiStep1"))}</li>
+          <li>${escapeAttribute(localize("help.aiStep2"))}</li>
+          <li>${escapeAttribute(localize("help.aiStep3"))}</li>
+          <li>${escapeAttribute(localize("help.aiStep4"))}</li>
+        </ol>
+        <p class="runyth-npc-button__note">${escapeAttribute(localize("help.aiValidation"))}</p>
+      </section>
+    </article>
+  `;
+}
+
+class NpcHelpApplication extends foundry.applications.api.ApplicationV2 {
+  static DEFAULT_OPTIONS = {
+    id: "runyth-npc-button-help",
+    classes: ["runyth-npc-button", "runyth-npc-button--help"],
+    window: {
+      title: `${MODULE_ID}.help.title`,
+      icon: "fa-solid fa-circle-question",
+      resizable: true,
+      minimizable: true
+    },
+    position: {
+      width: 440,
+      height: 650
+    }
+  };
+
+  async _renderHTML() {
+    const template = document.createElement("template");
+    template.innerHTML = helpContent();
+    return template.content;
+  }
+
+  _replaceHTML(result, content) {
+    content.replaceChildren(result);
+  }
+}
+
+let helpApplication = null;
+
+function sidePosition(master, help) {
+  const gap = 12;
+  const masterPosition = master?.position ?? {};
+  const helpPosition = help.position ?? {};
+  const width = Number(helpPosition.width) || 440;
+  const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+  const preferredLeft = Number(masterPosition.left) + Number(masterPosition.width) + gap;
+  const left = Number.isFinite(preferredLeft) && preferredLeft + width <= viewportWidth
+    ? preferredLeft
+    : Math.max(gap, Number(masterPosition.left || gap) - width - gap);
+  const top = Math.max(gap, Number(masterPosition.top || gap));
+  return { left, top };
+}
+
+export async function openNpcHelp(masterApplication) {
+  if (!helpApplication) helpApplication = new NpcHelpApplication();
+  if (!helpApplication.rendered) await helpApplication.render({ force: true });
+  helpApplication.setPosition(sidePosition(masterApplication, helpApplication));
+  helpApplication.bringToFront();
+  return helpApplication;
+}

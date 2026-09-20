@@ -5,9 +5,13 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = JSON.parse(await readFile(path.join(root, "module.json"), "utf8"));
+const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
+const constantsSource = await readFile(path.join(root, "scripts/constants.mjs"), "utf8");
 
 assert.equal(manifest.id, "runyth-npc-button");
 assert.equal(manifest.title, "Runyth NPC Button");
+assert.equal(packageJson.version, manifest.version, "package.json version must match module.json");
+assert.match(constantsSource, new RegExp(`MODULE_VERSION\\s*=\\s*["']${manifest.version.replaceAll(".", "\\.")}["']`), "constants module version must match module.json");
 assert.equal(manifest.compatibility.minimum, "13");
 assert.ok(manifest.esmodules.includes("scripts/main.mjs"));
 assert.ok(manifest.relationships.systems.some((entry) => entry.id === "dnd5e"));

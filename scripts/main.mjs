@@ -4,7 +4,7 @@ import { logger } from "./logger.mjs";
 import { registerSettings } from "./settings.mjs";
 import { createNpcActors } from "./services/actor-service.mjs";
 import { injectActorDirectoryButton } from "./ui/actor-directory.mjs";
-import { openNpcDialog } from "./ui/npc-dialog.mjs";
+import { openNpcDashboard, openNpcDialog } from "./ui/npc-dialog.mjs";
 
 // Foundry hook lifecycle documentation:
 // https://foundryvtt.com/api/v13/modules/hookEvents.html
@@ -17,6 +17,7 @@ Hooks.once("init", () => {
       createNpcActors,
       generateNpcBatch,
       generateNpcBlueprint,
+      openNpcDashboard,
       openNpcDialog
     });
   }

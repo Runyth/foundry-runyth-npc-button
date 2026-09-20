@@ -41,10 +41,17 @@ export function registerSettings() {
     type: String,
     default: ""
   });
+
+  game.settings.register(MODULE_ID, SETTINGS.WINDOW_STATE, {
+    scope: "client",
+    config: false,
+    type: String,
+    default: ""
+  });
 }
 
-export function loadLastOptions() {
-  const raw = game.settings.get(MODULE_ID, SETTINGS.LAST_OPTIONS);
+function parseJsonSetting(setting) {
+  const raw = game.settings.get(MODULE_ID, setting);
   if (!raw) return {};
 
   try {
@@ -53,6 +60,10 @@ export function loadLastOptions() {
   } catch {
     return {};
   }
+}
+
+export function loadLastOptions() {
+  return parseJsonSetting(SETTINGS.LAST_OPTIONS);
 }
 
 export async function saveLastOptions(options) {
@@ -64,7 +75,28 @@ export async function saveLastOptions(options) {
     namingStyle: options.namingStyle,
     customSpecies: options.customSpecies,
     folderId: options.folderId,
-    openLastActor: options.openLastActor
+    newFolderName: options.newFolderName,
+    openLastActor: options.openLastActor,
+    singleAiObject: options.singleAiObject
   };
   await game.settings.set(MODULE_ID, SETTINGS.LAST_OPTIONS, JSON.stringify(safeOptions));
+}
+
+export function loadWindowState() {
+  const state = parseJsonSetting(SETTINGS.WINDOW_STATE);
+  const numericKeys = ["left", "top", "width", "height"];
+  return Object.fromEntries(
+    numericKeys
+      .filter((key) => Number.isFinite(Number(state[key])))
+      .map((key) => [key, Number(state[key])])
+  );
+}
+
+export async function saveWindowState(position) {
+  const state = {};
+  for (const key of ["left", "top", "width", "height"]) {
+    const value = Number(position?.[key]);
+    if (Number.isFinite(value)) state[key] = Math.round(value);
+  }
+  await game.settings.set(MODULE_ID, SETTINGS.WINDOW_STATE, JSON.stringify(state));
 }

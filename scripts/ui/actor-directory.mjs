@@ -1,7 +1,7 @@
 import { MODULE_ID } from "../constants.mjs";
 import { logger } from "../logger.mjs";
 import { htmlElement } from "../utils/html.mjs";
-import { openNpcDialog } from "./npc-dialog.mjs";
+import { openNpcDashboard } from "./npc-dashboard.mjs";
 
 const BUTTON_SELECTOR = `[data-${MODULE_ID}-action="open"]`;
 
@@ -28,7 +28,7 @@ export function injectActorDirectoryButton(app, html) {
   button.setAttribute(`data-${MODULE_ID}-action`, "open");
   button.innerHTML = `<i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>${game.i18n.localize(`${MODULE_ID}.ui.sidebarButton`)}</span>`;
   button.addEventListener("click", () => {
-    void openNpcDialog();
+    void openNpcDashboard();
   });
 
   actionArea.append(button);

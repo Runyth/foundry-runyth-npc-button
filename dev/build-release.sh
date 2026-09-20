@@ -27,12 +27,17 @@ cp -R "${ROOT}/lang" "${ROOT}/scripts" "${ROOT}/styles" "${MODULE_STAGE}/"
 )
 
 mkdir -p "${STAGE}/docs"
-cp "${ROOT}/README.md" "${ROOT}/CHANGELOG.md" "${ROOT}/CONTRIBUTING.md" "${ROOT}/SECURITY.md" "${ROOT}/LICENSE" "${ROOT}/module.json" "${STAGE}/docs/"
+cp "${ROOT}/README.md" "${ROOT}/CHANGELOG.md" "${ROOT}/CONTRIBUTING.md" "${ROOT}/SECURITY.md" "${ROOT}/LICENSE" "${STAGE}/docs/"
 cp -R "${ROOT}/docs" "${STAGE}/docs/project-docs"
 (
   cd "${STAGE}/docs"
   zip -q -r "${DOC_ZIP}" .
 )
+
+if unzip -Z1 "${DOC_ZIP}" | grep -Eq '(^|/)module\.json$'; then
+  printf 'Refusing release: documentation ZIP contains module.json\n' >&2
+  exit 1
+fi
 
 (
   cd "${DIST}"
