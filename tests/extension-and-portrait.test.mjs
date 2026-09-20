@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { buildPortraitPromptFromActor } from "../scripts/ai/portrait-prompt-builder.mjs";
 import { clearExtensionRegistry, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
-import { applyStringFilters, buildFilterProfile, parseFilterProfile, parseFilterSettings } from "../scripts/filters.mjs";
+import { FilterSettingsForm, applyStringFilters, buildFilterProfile, defaultFilterConfiguration, parseFilterProfile, parseFilterSettings, settingsFromForm } from "../scripts/filters.mjs";
 
 test("portrait prompt builder creates a terse single-image prompt", () => {
   const actor = {
@@ -90,4 +90,66 @@ test("filter profiles export and import as versioned portable JSON", () => {
   assert.equal(profile.version, 1);
   assert.equal(restored.races.exactDeny, "Tiefling");
   assert.equal(restored.roles.regexAllow, "^(Guard|Scout)$");
+});
+
+
+class FilterControl {
+  constructor(value = "", checked = false) {
+    this.value = value;
+    this.checked = checked;
+  }
+}
+
+function fakeFilterForm(overrides = {}) {
+  const defaults = defaultFilterConfiguration();
+  const map = new Map();
+  for (const [category, config] of Object.entries(defaults)) {
+    for (const [key, value] of Object.entries(config)) {
+      const override = overrides?.[category]?.[key];
+      if (typeof value === "boolean") map.set(`filters.${category}.${key}`, new FilterControl("on", override ?? value));
+      else map.set(`filters.${category}.${key}`, new FilterControl(override ?? value, false));
+    }
+  }
+  return {
+    querySelector(selector) {
+      const match = selector.match(/^\[name="(.+)"\]$/);
+      return match ? map.get(match[1]) ?? null : null;
+    }
+  };
+}
+
+test("ApplicationV2 filter settings form extracts defaults and edited values deterministically", () => {
+  const form = fakeFilterForm({
+    races: { exactDeny: "Goblin", caseSensitive: true },
+    roles: { regexAllow: "^(Guard|Scout)$" }
+  });
+  const parsed = settingsFromForm(form);
+  assert.equal(parsed.races.exactDeny, "Goblin");
+  assert.equal(parsed.races.caseSensitive, true);
+  assert.equal(parsed.roles.regexAllow, "^(Guard|Scout)$");
+  assert.equal(parsed.roles.normalizeDiacritics, true);
+});
+
+test("filter settings ApplicationV2 form handler persists current form values", async () => {
+  const writes = [];
+  globalThis.game = {
+    i18n: { localize: (key) => key },
+    settings: {
+      async set(moduleId, setting, value) { writes.push({ moduleId, setting, value }); }
+    }
+  };
+  globalThis.ui = { notifications: { info() {} } };
+  const form = fakeFilterForm({ folders: { containsDeny: "Archive" } });
+  const handler = FilterSettingsForm.DEFAULT_OPTIONS.form.handler;
+  await handler.call({}, new Event("submit"), form);
+  assert.equal(writes.length, 1);
+  const persisted = JSON.parse(writes[0].value);
+  assert.equal(persisted.folders.containsDeny, "Archive");
+});
+
+
+test("malformed and foreign filter profiles are rejected", () => {
+  assert.throws(() => parseFilterProfile("not json"), SyntaxError);
+  assert.throws(() => parseFilterProfile(JSON.stringify({ format: "other", version: 1, filters: {} })), /not a Runyth NPC Button filter profile/);
+  assert.throws(() => parseFilterProfile(JSON.stringify({ format: "runyth-npc-button-filter-profile", version: 99, filters: {} })), /Unsupported filter profile version/);
 });

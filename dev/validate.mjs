@@ -38,7 +38,13 @@ for (const file of files) {
   const text = await readFile(file, "utf8");
   assert.equal(text.includes("globalThis.hasProperty"), false, `${file} uses removed globalThis.hasProperty`);
   assert.equal(/\bnew\s+Dialog\s*\(/.test(text), false, `${file} uses legacy Dialog`);
-  assert.equal(/\bextends\s+FormApplication\b/.test(text), false, `${file} uses deprecated FormApplication`);
+  if (/\.(?:mjs|js)$/.test(file)) {
+    assert.equal(/\bFormApplication\b/.test(text), false, `${file} references deprecated FormApplication`);
+    assert.equal(/\bactivateListeners\s*\(/.test(text), false, `${file} uses ApplicationV1 activateListeners`);
+    assert.equal(/\bhtml\.(?:on|find)\s*\(/.test(text), false, `${file} uses jQuery-only html.on/html.find`);
+    assert.equal(/form\.elements\.[A-Za-z0-9_$]+\.addEventListener\s*\(/.test(text), false, `${file} blindly binds a named form entry`);
+    assert.equal(/\bextends\s+Application\b/.test(text), false, `${file} extends an un-namespaced Application class`);
+  }
 }
 
 console.log("Validation passed.");

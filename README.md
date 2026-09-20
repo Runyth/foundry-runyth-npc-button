@@ -122,6 +122,10 @@ Creation hooks:
 - `runyth-npc-button.imported`
 - `runyth-npc-button.importedBatch`
 
+### UI reliability
+
+Dashboard and filter-setting listeners use ApplicationV2/native DOM patterns. Same-name radio groups are resolved as concrete controls rather than treated as one element, and rerender-scoped AbortControllers prevent duplicate listeners. Clipboard writes prefer Foundry's clipboard helper and transparently fall back to the browser clipboard API.
+
 ## Development
 
 Requirements: Node.js 20+ for validation/tests. Runtime code itself has no npm dependencies.

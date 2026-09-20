@@ -79,6 +79,15 @@ AI output is treated as untrusted input. The importer:
 
 The default root shape is always an array. A single object is valid only when Count is 1 and the dedicated single-object toggle is enabled.
 
+
+## UI event reliability
+
+Dashboard event binding never assumes `form.elements[name]` is one HTMLElement. `scripts/ui/form-events.mjs` resolves concrete named controls with DOM queries, supports single controls and same-name groups, and binds listeners using the current render's `AbortSignal`. Each ApplicationV2 rerender aborts the previous controller before attaching new listeners, preventing duplicate callbacks and stale closures.
+
+Dashboard action buttons are bound through `scripts/ui/dashboard-bindings.mjs`, so Create, Copy prompt, and Import actions remain independent of grouped-control shape. Clipboard writes use one Foundry-first/browser-fallback helper in `scripts/utils/clipboard.mjs`.
+
+The filter settings submenu is a namespaced ApplicationV2 with a top-level `form.handler`; it does not use FormApplication, jQuery listener adapters, or FormDataExtended. File/clipboard import actions remain native-DOM listeners scoped to the render AbortController.
+
 ## Compatibility strategy
 
 The manifest restricts activation to D&D 5e and records the supported system range. Runtime code uses public Foundry APIs where available, including ApplicationV2 rendering/positioning and `Actor.implementation.createDocuments`.

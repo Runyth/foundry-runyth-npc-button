@@ -2,6 +2,21 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.1.6 - 2026-09-20
+
+### Fixed
+
+- Fixed dashboard initialization crashes when same-name controls such as Race composition and Role composition are exposed as RadioNodeList-style grouped form controls instead of a single HTMLElement.
+- Restored reliable binding for Create locally, Copy prompt, and Import NPC actions by preventing earlier grouped-control initialization failures from aborting `_onRender`.
+- Hardened all dashboard form reads/bindings against missing, conditional, single, and multi-control fields.
+- Reworked Dashboard string filters onto ApplicationV2's native top-level form handler and native DOM events, removing the remaining ApplicationV1/jQuery-era form assumptions.
+- Unified clipboard writes behind a tested Foundry-first/browser-fallback helper for AI prompts, portrait prompts, and filter profile JSON.
+
+### Added
+
+- Regression coverage for grouped Race/Role composition controls, repeated rerenders, listener cleanup, action-button delivery, keyboard-style change events, missing controls, clipboard fallback, ApplicationV2 filter persistence, and filter profile validation.
+- Static repository validation that rejects FormApplication/V1 listener patterns, jQuery-only `html.on`/`html.find`, and direct `form.elements.<name>.addEventListener(...)` usage in runtime JavaScript.
+
 ## 0.1.5 - 2026-09-20
 
 ### Added

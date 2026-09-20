@@ -1,5 +1,6 @@
 import { MODULE_ID, SETTINGS } from "./constants.mjs";
 import { logger } from "./logger.mjs";
+import { readClipboardText, writeClipboardText } from "./utils/clipboard.mjs";
 
 export const FILTER_CATEGORIES = Object.freeze({
   roles: { labelKey: "filters.categories.roles", placeholderKey: "filters.placeholders.roles" },
@@ -196,17 +197,6 @@ function downloadTextFile(filename, text) {
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
-async function copyText(text) {
-  if (game.clipboard?.copyPlainText) return game.clipboard.copyPlainText(text);
-  if (!navigator.clipboard?.writeText) throw new Error("Clipboard writing is not available in this client.");
-  return navigator.clipboard.writeText(text);
-}
-
-async function readClipboardText() {
-  if (!navigator.clipboard?.readText) throw new Error("Clipboard reading is not available in this client.");
-  return navigator.clipboard.readText();
-}
-
 export function filterSummary(config) {
   const parts = [];
   for (const [label, key] of [["allow exact", "exactAllow"], ["deny exact", "exactDeny"], ["allow contains", "containsAllow"], ["deny contains", "containsDeny"], ["allow prefix", "prefixAllow"], ["deny prefix", "prefixDeny"], ["allow suffix", "suffixAllow"], ["deny suffix", "suffixDeny"], ["allow regex", "regexAllow"], ["deny regex", "regexDeny"]]) {
@@ -215,15 +205,17 @@ export function filterSummary(config) {
   return parts.join(", ");
 }
 
-function settingsFromForm(form) {
-  const formData = new FormDataExtended(form).object;
-  const expanded = foundry.utils.expandObject(formData);
+export function settingsFromForm(form) {
   const next = defaultFilterConfiguration();
+  const stringKeys = ["exactAllow", "exactDeny", "containsAllow", "containsDeny", "prefixAllow", "prefixDeny", "suffixAllow", "suffixDeny", "regexAllow", "regexDeny"];
   for (const category of Object.keys(FILTER_CATEGORIES)) {
-    next[category] = { ...next[category], ...(expanded.filters?.[category] ?? {}) };
-    for (const booleanKey of ["caseSensitive", "normalizeDiacritics", "trimWhitespace"]) {
-      const control = form.elements[`filters.${category}.${booleanKey}`];
-      next[category][booleanKey] = Boolean(control?.checked);
+    for (const key of stringKeys) {
+      const control = form?.querySelector?.(`[name="filters.${category}.${key}"]`);
+      next[category][key] = String(control?.value ?? "");
+    }
+    for (const key of ["caseSensitive", "normalizeDiacritics", "trimWhitespace"]) {
+      const control = form?.querySelector?.(`[name="filters.${category}.${key}"]`);
+      next[category][key] = Boolean(control?.checked);
     }
   }
   return next;
@@ -234,6 +226,14 @@ export class FilterSettingsForm extends BaseApplicationV2 {
     id: "runyth-npc-button-filter-settings",
     classes: ["runyth-npc-button", "runyth-npc-button--filters"],
     tag: "form",
+    form: {
+      closeOnSubmit: true,
+      submitOnChange: false,
+      handler: async function(_event, form) {
+        await saveFilterSettings(settingsFromForm(form));
+        ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersSaved`));
+      }
+    },
     window: {
       title: `${MODULE_ID}.filters.title`,
       icon: "fa-solid fa-filter",
@@ -303,16 +303,8 @@ export class FilterSettingsForm extends BaseApplicationV2 {
     this.#abortController?.abort();
     this.#abortController = new AbortController();
     const { signal } = this.#abortController;
-    const form = this.element;
-    if (!(form instanceof HTMLFormElement)) return;
-
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      void saveFilterSettings(settingsFromForm(form))
-        .then(() => ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersSaved`)))
-        .then(() => this.close())
-        .catch((error) => ui.notifications.error(error?.message ?? String(error)));
-    }, { signal });
+    const form = this.form ?? (this.element?.tagName === "FORM" ? this.element : null);
+    if (!form) return;
 
     form.querySelector('[data-action="export-filter-file"]')?.addEventListener("click", () => {
       const profile = JSON.stringify(buildFilterProfile(settingsFromForm(form)), null, 2);
@@ -322,7 +314,7 @@ export class FilterSettingsForm extends BaseApplicationV2 {
 
     form.querySelector('[data-action="copy-filter-json"]')?.addEventListener("click", () => {
       const profile = `${JSON.stringify(buildFilterProfile(settingsFromForm(form)), null, 2)}\n`;
-      void copyText(profile)
+      void writeClipboardText(profile)
         .then(() => ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersCopied`)))
         .catch((error) => ui.notifications.error(error?.message ?? String(error)));
     }, { signal });

@@ -1,17 +1,9 @@
 import { buildPortraitPromptFromActor } from "../ai/portrait-prompt-builder.mjs";
 import { MODULE_ID } from "../constants.mjs";
+import { writeClipboardText } from "../utils/clipboard.mjs";
 
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
-}
-
-async function copyPlainText(text) {
-  if (game.clipboard?.copyPlainText) {
-    await game.clipboard.copyPlainText(text);
-    return;
-  }
-  if (!navigator.clipboard?.writeText) throw new Error(localize("errors.clipboardWrite"));
-  await navigator.clipboard.writeText(text);
 }
 
 function supportsPortraitPrompt(actor) {
@@ -36,7 +28,7 @@ export function injectPortraitPromptButton(app) {
     event.preventDefault();
     event.stopPropagation();
     const prompt = buildPortraitPromptFromActor(actor);
-    void copyPlainText(prompt)
+    void writeClipboardText(prompt)
       .then(() => ui.notifications.info(localize("notifications.portraitPromptCopied")))
       .catch((error) => ui.notifications.error(`${localize("notifications.failed")}: ${error?.message ?? String(error)}`));
   });

@@ -35,7 +35,10 @@ import { logger } from "../logger.mjs";
 import { loadLastOptions, loadWindowState, saveLastOptions, saveWindowState } from "../settings.mjs";
 import { createImportedNpcActors, createNpcActors } from "../services/actor-service.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
+import { readClipboardText, writeClipboardText } from "../utils/clipboard.mjs";
 import { openActorReviewStack } from "./actor-review.mjs";
+import { bindDashboardActionButtons } from "./dashboard-bindings.mjs";
+import { bindNamedControls, bindOptionalControl, namedFormChecked, namedFormControls, namedFormValue } from "./form-events.mjs";
 import { hierarchicalMultiPickerMarkup, mountHierarchicalMultiPicker } from "./hierarchical-multi-picker.mjs";
 import { hierarchicalPickerMarkup, mountHierarchicalPicker } from "./hierarchical-picker.mjs";
 import { openNpcHelp } from "./npc-help.mjs";
@@ -603,60 +606,66 @@ function readRoleWeights(form, groupRoles) {
 }
 
 function readForm(form) {
-  const elements = form.elements;
   const remembered = loadLastOptions();
   const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
   const tierStyle = game.settings.get(MODULE_ID, SETTINGS.TIER_STYLE) || TIER_STYLES.NAMED;
-  const rawCount = Math.trunc(Number(elements.count.valueAsNumber) || 1);
+  const countControl = namedFormControls(form, "count")[0];
+  const rawCount = Math.trunc(Number(countControl?.valueAsNumber ?? namedFormValue(form, "count", 1)) || 1);
   const count = Math.min(Math.max(1, rawCount), maxBatch);
-  elements.count.value = String(count);
-  const race = resolveRaceSelection(elements.raceSelection.value);
-  const destination = resolveDestinationSelection(elements.destinationSelection.value);
-  const tier = tierStyle === TIER_STYLES.NAMED ? elements.tier.value : (remembered.tier ?? DEFAULT_OPTIONS.tier);
-  const cr = tierStyle === TIER_STYLES.CR ? Number(elements.cr.value) : Number(remembered.cr ?? DEFAULT_OPTIONS.cr);
-  const rawGroupRaces = parseJsonArray(elements.groupRaces?.value, [raceSelectionValue(race)]);
+  if (countControl) countControl.value = String(count);
+
+  const race = resolveRaceSelection(namedFormValue(form, "raceSelection", "human"));
+  const destination = resolveDestinationSelection(namedFormValue(form, "destinationSelection", "@default"));
+  const tier = tierStyle === TIER_STYLES.NAMED
+    ? namedFormValue(form, "tier", DEFAULT_OPTIONS.tier)
+    : (remembered.tier ?? DEFAULT_OPTIONS.tier);
+  const cr = tierStyle === TIER_STYLES.CR
+    ? Number(namedFormValue(form, "cr", DEFAULT_OPTIONS.cr))
+    : Number(remembered.cr ?? DEFAULT_OPTIONS.cr);
+
+  const role = namedFormValue(form, "role", DEFAULT_OPTIONS.role);
+  const rawGroupRaces = parseJsonArray(namedFormValue(form, "groupRaces", ""), [raceSelectionValue(race)]);
   const primaryRace = race.species === "custom" ? `custom:${race.customSpecies}` : race.species;
   const groupRaces = normalizeGroupRaceIds({ species: race.species, customSpecies: race.customSpecies, groupRaces: rawGroupRaces });
-  const rawGroupRoles = parseJsonArray(elements.groupRoles?.value, [elements.role.value]);
-  const groupRoles = normalizeGroupRoleIds({ role: elements.role.value, groupRoles: rawGroupRoles });
-  const primaryRole = elements.role.value;
+  const rawGroupRoles = parseJsonArray(namedFormValue(form, "groupRoles", ""), [role]);
+  const groupRoles = normalizeGroupRoleIds({ role, groupRoles: rawGroupRoles });
 
   return {
     count,
-    role: elements.role.value,
+    role,
     tierStyle,
     tier,
     cr,
     species: race.species,
-    namingStyle: elements.namingStyle.value,
-    wealth: elements.wealth.value,
-    combatReadiness: elements.combatReadiness?.value ?? DEFAULT_OPTIONS.combatReadiness,
-    habitat: elements.habitat.value,
-    groupType: elements.groupType.value,
-    familyStructure: elements.familyStructure?.value ?? DEFAULT_OPTIONS.familyStructure,
-    groupCohesion: elements.groupCohesion?.value ?? DEFAULT_OPTIONS.groupCohesion,
-    groupHierarchy: elements.groupHierarchy?.value ?? DEFAULT_OPTIONS.groupHierarchy,
-    relationshipDensity: elements.relationshipDensity?.value ?? DEFAULT_OPTIONS.relationshipDensity,
-    internalConflict: elements.internalConflict?.value ?? DEFAULT_OPTIONS.internalConflict,
-    raceComposition: elements.raceComposition?.value ?? DEFAULT_OPTIONS.raceComposition,
+    namingStyle: namedFormValue(form, "namingStyle", DEFAULT_OPTIONS.namingStyle),
+    wealth: namedFormValue(form, "wealth", DEFAULT_OPTIONS.wealth),
+    combatReadiness: namedFormValue(form, "combatReadiness", DEFAULT_OPTIONS.combatReadiness),
+    habitat: namedFormValue(form, "habitat", DEFAULT_OPTIONS.habitat),
+    groupType: namedFormValue(form, "groupType", DEFAULT_OPTIONS.groupType),
+    familyStructure: namedFormValue(form, "familyStructure", DEFAULT_OPTIONS.familyStructure),
+    groupCohesion: namedFormValue(form, "groupCohesion", DEFAULT_OPTIONS.groupCohesion),
+    groupHierarchy: namedFormValue(form, "groupHierarchy", DEFAULT_OPTIONS.groupHierarchy),
+    relationshipDensity: namedFormValue(form, "relationshipDensity", DEFAULT_OPTIONS.relationshipDensity),
+    internalConflict: namedFormValue(form, "internalConflict", DEFAULT_OPTIONS.internalConflict),
+    raceComposition: namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceComposition),
     groupRaces,
     primaryRace,
-    raceDistribution: elements.raceComposition?.value ?? DEFAULT_OPTIONS.raceDistribution,
+    raceDistribution: namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceDistribution),
     raceWeights: readRaceWeights(form, groupRaces),
-    roleComposition: elements.roleComposition?.value ?? DEFAULT_OPTIONS.roleComposition,
+    roleComposition: namedFormValue(form, "roleComposition", DEFAULT_OPTIONS.roleComposition),
     groupRoles,
-    primaryRole,
+    primaryRole: role,
     roleWeights: readRoleWeights(form, groupRoles),
-    groupBrief: elements.groupBrief?.value.trim() ?? "",
-    customName: elements.customName.value.trim(),
+    groupBrief: String(namedFormValue(form, "groupBrief", "")).trim(),
+    customName: String(namedFormValue(form, "customName", "")).trim(),
     customSpecies: race.customSpecies,
-    seed: elements.seed.value.trim(),
+    seed: String(namedFormValue(form, "seed", "")).trim(),
     folderId: destination.folderId,
     newFolderName: destination.newFolderName,
     useActorRoot: destination.useActorRoot,
-    openLastActor: elements.openLastActor.checked,
-    singleAiObject: count === 1 && elements.singleAiObject.checked,
-    aiPayload: elements.aiPayload.value.trim()
+    openLastActor: namedFormChecked(form, "openLastActor", false),
+    singleAiObject: count === 1 && namedFormChecked(form, "singleAiObject", false),
+    aiPayload: String(namedFormValue(form, "aiPayload", "")).trim()
   };
 }
 
@@ -723,20 +732,6 @@ function promptOptions(options) {
     raceDistributionPrompt: (RACE_DISTRIBUTIONS[options.raceDistribution] ?? RACE_DISTRIBUTIONS.balanced).prompt,
     raceWeightSummary: weightSummary
   };
-}
-
-async function copyPlainText(text) {
-  if (game.clipboard?.copyPlainText) {
-    await game.clipboard.copyPlainText(text);
-    return;
-  }
-  if (!navigator.clipboard?.writeText) throw new Error(localize("errors.clipboardWrite"));
-  await navigator.clipboard.writeText(text);
-}
-
-async function readClipboardText() {
-  if (!navigator.clipboard?.readText) throw new Error(localize("errors.clipboardRead"));
-  return navigator.clipboard.readText();
 }
 
 function safeWindowState(state) {
@@ -824,42 +819,48 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
 
     for (const button of form.querySelectorAll("[data-count]")) {
       button.addEventListener("click", () => {
-        form.elements.count.value = button.dataset.count;
-        form.elements.count.dispatchEvent(new Event("input", { bubbles: true }));
+        const countControl = namedFormControls(form, "count")[0];
+        if (!countControl) return;
+        countControl.value = button.dataset.count;
+        countControl.dispatchEvent(new Event("input", { bubbles: true }));
       }, { signal });
     }
 
-    form.elements.count.addEventListener("input", () => this.#syncCountControls(form), { signal });
-    form.elements.count.addEventListener("change", () => {
+    bindNamedControls(form, "count", "input", () => this.#syncCountControls(form), { signal });
+    bindNamedControls(form, "count", "change", () => {
       const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
-      const value = Math.min(Math.max(1, Math.trunc(Number(form.elements.count.valueAsNumber) || 1)), maxBatch);
-      form.elements.count.value = String(value);
+      const countControl = namedFormControls(form, "count")[0];
+      if (!countControl) return;
+      const value = Math.min(Math.max(1, Math.trunc(Number(countControl.valueAsNumber ?? countControl.value) || 1)), maxBatch);
+      countControl.value = String(value);
       this.#syncCountControls(form);
     }, { signal });
 
-    form.elements.groupType.addEventListener("change", () => this.#syncGroupControls(form, { adjustCount: true }), { signal });
-    form.elements.raceSelection.addEventListener("change", () => {
-      const primary = String(form.elements.raceSelection.value || "human");
+    bindNamedControls(form, "groupType", "change", () => this.#syncGroupControls(form, { adjustCount: true }), { signal });
+    bindNamedControls(form, "raceSelection", "change", () => {
+      const primary = String(namedFormValue(form, "raceSelection", "human"));
       const values = this.#groupRacePickerController?.getValues() ?? [];
       if (!values.includes(primary)) this.#groupRacePickerController?.setValues([primary, ...values]);
       this.#renderRaceWeights(form);
     }, { signal });
-    form.elements.role.addEventListener("change", () => {
-      const primary = String(form.elements.role.value || DEFAULT_OPTIONS.role);
+    bindNamedControls(form, "role", "change", () => {
+      const primary = String(namedFormValue(form, "role", DEFAULT_OPTIONS.role));
       const values = this.#groupRolePickerController?.getValues() ?? [];
       if (!values.includes(primary)) this.#groupRolePickerController?.setValues([primary, ...values]);
       this.#renderRoleWeights(form);
     }, { signal });
-    form.elements.raceComposition.addEventListener("change", () => this.#syncRaceComposition(form), { signal });
-    form.elements.groupRaces.addEventListener("change", () => this.#renderRaceWeights(form), { signal });
-    form.elements.roleComposition.addEventListener("change", () => this.#syncRoleComposition(form), { signal });
-    form.elements.groupRoles.addEventListener("change", () => this.#renderRoleWeights(form), { signal });
+    bindNamedControls(form, "raceComposition", "change", () => this.#syncRaceComposition(form), { signal });
+    bindNamedControls(form, "groupRaces", "change", () => this.#renderRaceWeights(form), { signal });
+    bindNamedControls(form, "roleComposition", "change", () => this.#syncRoleComposition(form), { signal });
+    bindNamedControls(form, "groupRoles", "change", () => this.#renderRoleWeights(form), { signal });
 
-    form.querySelector("[data-group-size-presets]").addEventListener("click", (event) => {
-      const button = event.target.closest("[data-group-count]");
+    bindOptionalControl(form, "[data-group-size-presets]", "click", (event) => {
+      const button = event.target.closest?.("[data-group-count]");
       if (!button) return;
-      form.elements.count.value = button.dataset.groupCount;
-      form.elements.count.dispatchEvent(new Event("input", { bubbles: true }));
+      const countControl = namedFormControls(form, "count")[0];
+      if (!countControl) return;
+      countControl.value = button.dataset.groupCount;
+      countControl.dispatchEvent(new Event("input", { bubbles: true }));
     }, { signal });
 
     this.#syncCountControls(form);
@@ -867,15 +868,11 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     this.#syncRaceComposition(form);
     this.#syncRoleComposition(form);
 
-    form.querySelector('[data-action="create-local"]').addEventListener("click", () => {
-      void this.#createLocal(form);
-    }, { signal });
-    form.querySelector('[data-action="copy-prompt"]').addEventListener("click", () => {
-      void this.#copyPrompt(form);
-    }, { signal });
-    form.querySelector('[data-action="import-npc"]').addEventListener("click", () => {
-      void this.#importNpc(form);
-    }, { signal });
+    bindDashboardActionButtons(form, {
+      create: () => { void this.#createLocal(form); },
+      copyPrompt: () => { void this.#copyPrompt(form); },
+      importNpc: () => { void this.#importNpc(form); }
+    }, signal);
   }
 
   async _preClose(options) {
@@ -974,35 +971,40 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   }
 
   #syncCountControls(form) {
-    const count = Math.trunc(Number(form.elements.count.valueAsNumber) || 1);
+    const countControl = namedFormControls(form, "count")[0];
+    const count = Math.trunc(Number(countControl?.valueAsNumber ?? countControl?.value) || 1);
     for (const button of form.querySelectorAll("[data-count], [data-group-count]")) {
       const configured = Number(button.dataset.count ?? button.dataset.groupCount);
       const active = configured === count;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     }
-    const single = form.elements.singleAiObject;
-    single.disabled = count !== 1;
-    if (count !== 1) single.checked = false;
+    const single = namedFormControls(form, "singleAiObject")[0];
+    if (single) {
+      single.disabled = count !== 1;
+      if (count !== 1) single.checked = false;
+    }
   }
 
   #syncGroupControls(form, { adjustCount = false } = {}) {
-    const typeId = String(form.elements.groupType.value || DEFAULT_OPTIONS.groupType);
+    const typeId = String(namedFormValue(form, "groupType", DEFAULT_OPTIONS.groupType));
     const type = getGroupTypes()[typeId] ?? getGroupTypes().independent ?? GROUP_TYPES.independent;
     const groupSection = form.querySelector("[data-group-config]");
-    groupSection.hidden = typeId === "independent";
-    form.querySelector("[data-family-settings]").hidden = typeId !== "family";
+    if (groupSection) groupSection.hidden = typeId === "independent";
+    const familySettings = form.querySelector("[data-family-settings]");
+    if (familySettings) familySettings.hidden = typeId !== "family";
 
     const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
     const sizes = form.querySelector("[data-group-size-presets]");
-    sizes.innerHTML = suggestedSizesMarkup(typeId, maxBatch);
+    if (sizes) sizes.innerHTML = suggestedSizesMarkup(typeId, maxBatch);
     if (adjustCount) {
-      const current = Math.trunc(Number(form.elements.count.valueAsNumber) || 1);
+      const countControl = namedFormControls(form, "count")[0];
+      const current = Math.trunc(Number(countControl?.valueAsNumber ?? countControl?.value) || 1);
       if (current < type.minCount) {
         const target = type.suggestedSizes.find((value) => value >= type.minCount && value <= maxBatch) ?? type.minCount;
-        form.elements.count.value = String(Math.min(target, maxBatch));
+        if (countControl) countControl.value = String(Math.min(target, maxBatch));
       }
-      if (typeId === "orcRaiders" && form.elements.raceSelection.value === "human") {
+      if (typeId === "orcRaiders" && namedFormValue(form, "raceSelection", "human") === "human") {
         this.#racePickerController?.setValue("orc", configuredLabel(getRaces().orc ?? RACES.orc));
       }
     }
@@ -1010,25 +1012,29 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   }
 
   #syncRaceComposition(form) {
-    const composition = form.elements.raceComposition.value;
+    const composition = namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceComposition);
     const mixed = composition !== "single";
-    form.querySelector("[data-mixed-race-settings]").hidden = !mixed;
-    form.querySelector("[data-race-weights]").hidden = composition !== "weighted";
+    const mixedSettings = form.querySelector("[data-mixed-race-settings]");
+    if (mixedSettings) mixedSettings.hidden = !mixed;
+    const raceWeights = form.querySelector("[data-race-weights]");
+    if (raceWeights) raceWeights.hidden = composition !== "weighted";
     if (mixed) this.#renderRaceWeights(form);
   }
 
   #syncRoleComposition(form) {
-    const composition = form.elements.roleComposition.value;
+    const composition = namedFormValue(form, "roleComposition", DEFAULT_OPTIONS.roleComposition);
     const mixed = ["balanced", "primary", "dominant", "weighted"].includes(composition);
-    form.querySelector("[data-mixed-role-settings]").hidden = !mixed;
-    form.querySelector("[data-role-weights]").hidden = composition !== "weighted";
+    const mixedSettings = form.querySelector("[data-mixed-role-settings]");
+    if (mixedSettings) mixedSettings.hidden = !mixed;
+    const roleWeights = form.querySelector("[data-role-weights]");
+    if (roleWeights) roleWeights.hidden = composition !== "weighted";
     if (mixed) this.#renderRoleWeights(form);
   }
 
   #renderRaceWeights(form) {
     const container = form.querySelector("[data-race-weight-list]");
     if (!container) return;
-    const selected = parseJsonArray(form.elements.groupRaces.value, ["human"]);
+    const selected = parseJsonArray(namedFormValue(form, "groupRaces", ""), ["human"]);
     const remembered = loadLastOptions();
     const current = {};
     for (const input of container.querySelectorAll("[data-race-weight]")) current[input.dataset.raceId] = Number(input.value) || 0;
@@ -1044,7 +1050,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   #renderRoleWeights(form) {
     const container = form.querySelector("[data-role-weight-list]");
     if (!container) return;
-    const selected = parseJsonArray(form.elements.groupRoles.value, [DEFAULT_OPTIONS.role]);
+    const selected = parseJsonArray(namedFormValue(form, "groupRoles", ""), [DEFAULT_OPTIONS.role]);
     const remembered = loadLastOptions();
     const current = {};
     for (const input of container.querySelectorAll("[data-role-weight]")) current[input.dataset.roleId] = Number(input.value) || 0;
@@ -1067,7 +1073,8 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         delete control.dataset.runythWasDisabled;
       }
     }
-    form.querySelector(".runyth-npc-button__status").textContent = message;
+    const status = form.querySelector(".runyth-npc-button__status");
+    if (status) status.textContent = message;
     if (!busy) {
       this.#syncCountControls(form);
       this.#syncRaceComposition(form);
@@ -1101,7 +1108,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     try {
       await saveLastOptions(options);
       const prompt = buildAiPrompt(promptOptions(options));
-      await copyPlainText(prompt);
+      await writeClipboardText(prompt);
       ui.notifications.info(localize("notifications.promptCopied"));
     } catch (error) {
       logger.error("Could not copy AI prompt.", error);
@@ -1122,8 +1129,8 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
           text = await readClipboardText();
         } catch (error) {
           const details = form.querySelector(".runyth-npc-button__fallback");
-          details.open = true;
-          form.elements.aiPayload.focus();
+          if (details) details.open = true;
+          namedFormControls(form, "aiPayload")[0]?.focus?.();
           throw new Error(`${error.message} ${localize("errors.manualPasteFallback")}`);
         }
       }
@@ -1139,7 +1146,8 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         return;
       }
       ui.notifications.info(game.i18n.format(`${MODULE_ID}.notifications.imported`, { count: actors.length }));
-      form.elements.aiPayload.value = "";
+      const payloadControl = namedFormControls(form, "aiPayload")[0];
+      if (payloadControl) payloadControl.value = "";
       if (options.openLastActor) await openActorReviewStack(actors);
     } catch (error) {
       logger.error("NPC import failed.", error);

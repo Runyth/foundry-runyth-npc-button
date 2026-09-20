@@ -2,7 +2,7 @@
   "id": "runyth-npc-button",
   "title": "Runyth NPC Button",
   "description": "Advanced D&D 5e NPC and group generation for Foundry VTT with deterministic composition, role-relative combat readiness, portable filters, and a validated AI clipboard workflow.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "authors": [
     {
       "name": "Akito"
