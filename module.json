@@ -1,0 +1,46 @@
+{
+  "id": "runyth-npc-button",
+  "title": "Runyth NPC Button",
+  "description": "Fast, deterministic D&D 5e NPC creation from the Actors directory.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Akito"
+    }
+  ],
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0",
+          "maximum": "5.3.3"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "styles/runyth-npc-button.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ]
+}

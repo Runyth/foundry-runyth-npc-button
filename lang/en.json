@@ -1,0 +1,79 @@
+{
+  "runyth-npc-button": {
+    "settings": {
+      "debug": {
+        "name": "Debug logging",
+        "hint": "Write concise diagnostic messages to the browser console. Disabled by default."
+      },
+      "defaultFolder": {
+        "name": "Default NPC folder",
+        "hint": "Root Actor folder used when the generator does not target an existing folder. Leave empty to create NPCs at the Actors root."
+      },
+      "maxBatch": {
+        "name": "Maximum batch size",
+        "hint": "Maximum number of NPC Actors that one generation action may create."
+      }
+    },
+    "ui": {
+      "sidebarButton": "Runyth NPC",
+      "dialogTitle": "Create NPCs",
+      "intro": "Generate lightweight D&D 5e NPC Actors without external services.",
+      "count": "Count",
+      "role": "Role",
+      "tier": "Tier",
+      "species": "Species",
+      "customSpecies": "Custom species",
+      "customSpeciesPlaceholder": "Used when Species is Custom",
+      "namingStyle": "Naming style",
+      "customName": "Name or batch prefix",
+      "customNamePlaceholder": "Leave blank for generated names",
+      "seed": "Seed",
+      "seedPlaceholder": "Optional reproducible seed",
+      "seedHint": "Using the same options and seed reproduces the same generated data.",
+      "destination": "Destination",
+      "folder": "Existing folder",
+      "defaultFolder": "Use configured default",
+      "newFolder": "New root folder",
+      "newFolderPlaceholder": "Overrides the selected/default folder",
+      "openLastActor": "Open the last created Actor",
+      "create": "Create",
+      "cancel": "Cancel"
+    },
+    "notifications": {
+      "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
+      "created": "Created {count} NPC Actor(s).",
+      "noneCreated": "No NPC Actors were created.",
+      "failed": "NPC generation failed: {message}"
+    },
+    "roles": {
+      "civilian": "Civilian",
+      "guard": "Guard",
+      "scout": "Scout",
+      "bruiser": "Bruiser",
+      "specialist": "Specialist",
+      "leader": "Leader"
+    },
+    "tiers": {
+      "ordinary": "Ordinary",
+      "trained": "Trained",
+      "veteran": "Veteran",
+      "elite": "Elite",
+      "champion": "Champion"
+    },
+    "species": {
+      "human": "Human",
+      "elf": "Elf",
+      "dwarf": "Dwarf",
+      "halfling": "Halfling",
+      "orc": "Orc",
+      "goblin": "Goblin",
+      "custom": "Custom"
+    },
+    "naming": {
+      "central": "Central",
+      "coastal": "Coastal",
+      "highland": "Highland",
+      "frontier": "Frontier"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "runyth-npc-button": {
+    "settings": {
+      "debug": {
+        "name": "Debug-Protokollierung",
+        "hint": "Schreibt knappe Diagnosemeldungen in die Browser-Konsole. Standardmäßig deaktiviert."
+      },
+      "defaultFolder": {
+        "name": "Standardordner für NSCs",
+        "hint": "Actor-Stammordner, der verwendet wird, wenn kein bestehender Ordner ausgewählt ist. Leer lassen, um NSCs im Actors-Stamm zu erstellen."
+      },
+      "maxBatch": {
+        "name": "Maximale Stapelgröße",
+        "hint": "Maximale Anzahl an NSC-Actors, die eine Generierungsaktion erstellen darf."
+      }
+    },
+    "ui": {
+      "sidebarButton": "Runyth NSC",
+      "dialogTitle": "NSCs erstellen",
+      "intro": "Erstellt schlanke D&D-5e-NSC-Actors ohne externe Dienste.",
+      "count": "Anzahl",
+      "role": "Rolle",
+      "tier": "Stufe",
+      "species": "Spezies",
+      "customSpecies": "Eigene Spezies",
+      "customSpeciesPlaceholder": "Wird bei Spezies 'Custom' verwendet",
+      "namingStyle": "Namensstil",
+      "customName": "Name oder Stapelpräfix",
+      "customNamePlaceholder": "Leer lassen für generierte Namen",
+      "seed": "Seed",
+      "seedPlaceholder": "Optionaler reproduzierbarer Seed",
+      "seedHint": "Gleiche Optionen und gleicher Seed erzeugen dieselben Daten.",
+      "destination": "Ziel",
+      "folder": "Bestehender Ordner",
+      "defaultFolder": "Konfigurierten Standard verwenden",
+      "newFolder": "Neuer Stammordner",
+      "newFolderPlaceholder": "Überschreibt ausgewählten/Standardordner",
+      "openLastActor": "Zuletzt erstellten Actor öffnen",
+      "create": "Erstellen",
+      "cancel": "Abbrechen"
+    },
+    "notifications": {
+      "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
+      "created": "{count} NSC-Actor(s) erstellt.",
+      "noneCreated": "Es wurden keine NSC-Actors erstellt.",
+      "failed": "NSC-Generierung fehlgeschlagen: {message}"
+    },
+    "roles": {
+      "civilian": "Zivilist",
+      "guard": "Wache",
+      "scout": "Späher",
+      "bruiser": "Schläger",
+      "specialist": "Spezialist",
+      "leader": "Anführer"
+    },
+    "tiers": {
+      "ordinary": "Gewöhnlich",
+      "trained": "Ausgebildet",
+      "veteran": "Veteran",
+      "elite": "Elite",
+      "champion": "Champion"
+    },
+    "species": {
+      "human": "Mensch",
+      "elf": "Elf",
+      "dwarf": "Zwerg",
+      "halfling": "Halbling",
+      "orc": "Ork",
+      "goblin": "Goblin",
+      "custom": "Benutzerdefiniert"
+    },
+    "naming": {
+      "central": "Zentral",
+      "coastal": "Küste",
+      "highland": "Hochland",
+      "frontier": "Grenzland"
+    }
+  }
+}
