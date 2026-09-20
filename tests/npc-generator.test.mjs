@@ -288,3 +288,71 @@ test("highly prepared soldiers carry armor plus shield instead of a shield-only 
   assert.ok(names.includes("Shield"));
   assert.ok(names.some((name) => ["Spear", "Longsword", "Light Crossbow"].includes(name)));
 });
+
+test("every local batch gets a reusable generation seed and stores it on Actor metadata", () => {
+  const batch = generateNpcBatch({ count: 3, role: "guard", seed: "reusable-seed" });
+  assert.ok(batch.every((npc) => npc.generationSeed === "reusable-seed"));
+  const actor = buildActorSource(batch[0]);
+  assert.equal(actor.flags["runyth-npc-button"].generationSeed, "reusable-seed");
+  assert.match(actor.system.details.biography.value, /<strong>Generation seed:<\/strong> reusable-seed/);
+});
+
+test("blank local seed is automatically materialized once for the whole batch", () => {
+  const batch = generateNpcBatch({ count: 4, role: "civilian" });
+  const seeds = new Set(batch.map((npc) => npc.generationSeed));
+  assert.equal(seeds.size, 1);
+  assert.ok([...seeds][0].length >= 8);
+});
+
+test("weapon variety hard modes constrain role-appropriate generated weapons", () => {
+  const rangedScout = generateNpcBlueprint({
+    role: "scout",
+    combatReadiness: "armed",
+    weaponVariety: "rangedOnly",
+    tier: "elite",
+    seed: "ranged-scout"
+  }, createSeededRandom("ranged-scout"));
+  const scoutWeapons = rangedScout.combatItems.filter((item) => item.kind === "weapon").map((item) => item.name);
+  assert.deepEqual(scoutWeapons, ["Shortbow"]);
+
+  const meleeGuard = generateNpcBlueprint({
+    role: "guard",
+    combatReadiness: "armed",
+    weaponVariety: "meleeOnly",
+    tier: "elite"
+  }, createSeededRandom("melee-guard"));
+  assert.ok(meleeGuard.combatItems.some((item) => item.kind === "weapon"));
+  assert.equal(meleeGuard.combatItems.some((item) => item.name === "Light Crossbow"), false);
+});
+
+test("ranged-only never invents an implausible ranged weapon for a jurist", () => {
+  const jurist = generateNpcBlueprint({
+    role: "scholar",
+    roleVariant: "Jurist",
+    combatReadiness: "armed",
+    weaponVariety: "rangedOnly",
+    tierStyle: TIER_STYLES.CR,
+    cr: 10
+  }, createSeededRandom("ranged-jurist"));
+  assert.equal(jurist.combatItems.some((item) => item.kind === "weapon"), false);
+});
+
+test("weapon preference modes keep the preferred engagement range primary at high readiness", () => {
+  const rangedPreferred = generateNpcBlueprint({
+    role: "guard",
+    combatReadiness: "armed",
+    weaponVariety: "rangedPreferred",
+    tierStyle: TIER_STYLES.CR,
+    cr: 12
+  }, createSeededRandom("ranged-preferred"));
+  assert.equal(rangedPreferred.combatItems.find((item) => item.kind === "weapon")?.name, "Light Crossbow");
+
+  const meleePreferred = generateNpcBlueprint({
+    role: "guard",
+    combatReadiness: "armed",
+    weaponVariety: "meleePreferred",
+    tierStyle: TIER_STYLES.CR,
+    cr: 12
+  }, createSeededRandom("melee-preferred"));
+  assert.notEqual(meleePreferred.combatItems.find((item) => item.kind === "weapon")?.name, "Light Crossbow");
+});

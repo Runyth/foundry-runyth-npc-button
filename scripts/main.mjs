@@ -5,7 +5,7 @@ import { logger } from "./logger.mjs";
 import { registerSettings } from "./settings.mjs";
 import { createNpcActors } from "./services/actor-service.mjs";
 import { injectActorDirectoryButton } from "./ui/actor-directory.mjs";
-import { injectPortraitPromptButton } from "./ui/actor-portrait-button.mjs";
+import { registerPortraitPromptHooks } from "./ui/actor-portrait-button.mjs";
 import { openNpcDashboard, openNpcDialog } from "./ui/npc-dialog.mjs";
 import {
   getCatalogGroups,
@@ -75,6 +75,4 @@ Hooks.once("ready", () => {
 });
 
 
-Hooks.on("renderActorSheet", (app) => {
-  injectPortraitPromptButton(app);
-});
+registerPortraitPromptHooks(Hooks);

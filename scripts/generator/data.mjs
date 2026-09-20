@@ -501,6 +501,30 @@ export const COMBAT_READINESS = Object.freeze({
   armed: { label: "Highly Prepared", labelKey: "combatReadiness.armed", level: 4, prompt: "maximum realistic preparedness for the role: several sensible combat options for martial roles, but strict occupational ceilings for civilians and professionals; never turn a noncombatant profession into a fantasy warrior" }
 });
 
+export const WEAPON_VARIETY = Object.freeze({
+  meleeOnly: { label: "Melee only", labelKey: "weaponVariety.meleeOnly", prompt: "use melee-capable weapons only; do not add dedicated ranged weapons" },
+  meleePreferred: { label: "Melee preference", labelKey: "weaponVariety.meleePreferred", prompt: "strongly prefer melee weapons, allowing a ranged backup only when the role and readiness make it sensible" },
+  mixed: { label: "Mixed", labelKey: "weaponVariety.mixed", prompt: "use a natural mix of melee and ranged options when the role plausibly supports both" },
+  rangedPreferred: { label: "Ranged preference", labelKey: "weaponVariety.rangedPreferred", prompt: "strongly prefer ranged weapons, allowing a melee backup only when the role and readiness make it sensible" },
+  rangedOnly: { label: "Ranged only", labelKey: "weaponVariety.rangedOnly", prompt: "use dedicated ranged weapons only; if the role has no realistic ranged weapon, leave the NPC weaponless rather than inventing an implausible weapon" }
+});
+
+export const WEAPON_CATEGORIES = Object.freeze({
+  Dagger: "melee",
+  "Light Hammer": "melee",
+  Quarterstaff: "melee",
+  Mace: "melee",
+  Spear: "melee",
+  Longsword: "melee",
+  Shortsword: "melee",
+  Club: "melee",
+  Greatclub: "melee",
+  Handaxe: "melee",
+  Rapier: "melee",
+  Shortbow: "ranged",
+  "Light Crossbow": "ranged"
+});
+
 export const ROLE_COMBAT_PROFILES = Object.freeze({
   civilian: { weaponAt: 3, armorAt: 99, weapons: ["Dagger"], armor: [], guidance: "ordinary civilians rarely carry dedicated weapons; at high readiness a small knife or similarly discreet self-defense implement is the ceiling" },
   artisan: { weaponAt: 1, armorAt: 99, weapons: ["Dagger", "Light Hammer"], armor: [], guidance: "work tools may double as emergency weapons; a baker, carpenter, or smith should look like their trade first and a combatant second" },

@@ -125,7 +125,12 @@
       "possibleRolesHint": "Search and select the Roles allowed in a mixed-role batch. The selected main Role remains the primary Role.",
       "choosePossibleRoles": "Choose possible roles…",
       "roleWeights": "Custom role weights",
-      "roleWeightsHint": "Relative weights; they do not need to add up to 100."
+      "roleWeightsHint": "Relative weights; they do not need to add up to 100.",
+      "weaponVariety": "Weapon variety",
+      "weaponVarietyHint": "Controls whether realistic role-appropriate weapons favor melee, ranged, or a mix. Hard-only modes never invent an implausible weapon just to satisfy the category.",
+      "previewImport": "Preview and edit before import",
+      "previewImportHint": "Validate the AI payload, open a fast preview editor for names, biography, race, CR, AC, HP, and speed, then validate the edited payload again before creating Actors.",
+      "portraitPromptShort": "Portrait"
     },
     "help": {
       "title": "NPC Button Help",
@@ -137,7 +142,7 @@
       "tierStyleCr": "The world currently uses CR tiers. Every standard D&D 5e CR from 0 through 30 is selectable and the AI prompt requests that exact CR.",
       "race": "The built-in Race picker contains all standard 2024 Player’s Handbook races. Typing a non-preset name offers it directly as a custom Race; mixed groups can select several preset or custom races.",
       "wealth": "Poor, Average, Well-Off, or Elite. The AI uses this to scale carried money, equipment quality, comfort items, and visible status.",
-      "seed": "Only affects deterministic local generation. It is intentionally not required for AI generation.",
+      "seed": "Local generation always has a reusable seed. If you leave Seed blank, the module creates one automatically, shows it back in the dashboard, and records it in every generated Actor biography and module metadata.",
       "destination": "The folder picker preserves the Actor hierarchy. It can target any nested folder, the Actors root, the configured default, or a newly named root folder.",
       "pickersTitle": "Scalable pickers",
       "pickersBody": "Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection use searchable hierarchical lists. Large lists render only visible rows plus a small buffer so catalog growth and large folder trees remain responsive.",
@@ -170,7 +175,11 @@
       "compositionTitle": "Race and Role composition",
       "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Roles can stay uniform, rotate through distinct subtypes such as merchant specialties, follow the group preset, or use the same proportional mixing model.",
       "combatReadinessTitle": "Combat readiness",
-      "combatReadinessBody": "Every NPC still has combat-capable statistics. The readiness setting controls carried weapons and armor. Weaponless forces none; higher settings are strictly role-relative, so a scholar or jurist never turns into a heavily armed warrior while guards, soldiers, and raiders scale naturally."
+      "combatReadinessBody": "Every NPC still has combat-capable statistics. The readiness setting controls carried weapons and armor. Weaponless forces none; higher settings are strictly role-relative, so a scholar or jurist never turns into a heavily armed warrior while guards, soldiers, and raiders scale naturally.",
+      "weaponVarietyTitle": "Weapon variety",
+      "weaponVarietyBody": "Melee only, Melee preference, Mixed, Ranged preference, and Ranged only bias or constrain carried weapons without overriding occupational realism. If a ranged-only jurist has no plausible ranged weapon, the correct result is no weapon rather than an absurd loadout.",
+      "importPreviewTitle": "Import preview",
+      "importPreviewBody": "Enable Preview and edit before import to inspect each validated AI NPC in a compact editor. Minor fields can be changed quickly; the edited payload is validated again before Actor creation."
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -187,12 +196,14 @@
       "filtersCopied": "Filter profile JSON copied to the clipboard.",
       "filtersImported": "Filter profile imported and applied.",
       "filterImportFailed": "Filter profile import failed",
-      "filterProfileTooLarge": "Filter profile is too large to import."
+      "filterProfileTooLarge": "Filter profile is too large to import.",
+      "importCancelled": "NPC import preview cancelled."
     },
     "errors": {
       "clipboardWrite": "Clipboard writing is not available in this client.",
       "clipboardRead": "Clipboard reading is not available or was blocked by the browser.",
-      "manualPasteFallback": "Open the manual-paste section, paste the AI JSON there, and click Import NPC again."
+      "manualPasteFallback": "Open the manual-paste section, paste the AI JSON there, and click Import NPC again.",
+      "portraitPromptUnavailable": "This Actor does not contain Runyth NPC Button generation metadata."
     },
     "roleGroups": {
       "everyday": "Everyday & commerce",
@@ -432,6 +443,33 @@
       "primary": "Primary-role majority",
       "dominant": "Strong primary-role majority",
       "weighted": "Custom role weights"
+    },
+    "preview": {
+      "title": "NPC import preview",
+      "npcHeading": "NPC {current} of {count}",
+      "editorHint": "Edit only the simple table-facing fields you need. The complete payload is validated again before import.",
+      "npcList": "NPCs to import",
+      "unnamedNpc": "Unnamed NPC {number}",
+      "name": "Name",
+      "race": "Race / subtype",
+      "cr": "CR",
+      "ac": "AC",
+      "hp": "HP",
+      "hpMax": "Max HP",
+      "speed": "Walk speed",
+      "biography": "Biography HTML",
+      "biographyHint": "Keep the required labeled biography sections. Unsupported HTML is sanitized during final import.",
+      "cancel": "Cancel",
+      "confirm": "Validate and import",
+      "valid": "Edited payload is valid.",
+      "invalid": "Edited payload is invalid: {message}"
+    },
+    "weaponVariety": {
+      "meleeOnly": "Melee only",
+      "meleePreferred": "Melee preference",
+      "mixed": "Mixed",
+      "rangedPreferred": "Ranged preference",
+      "rangedOnly": "Ranged only"
     }
   }
 }

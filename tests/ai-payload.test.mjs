@@ -205,3 +205,18 @@ test("AI import rejects an empty inventory", () => {
     /items must contain at least one inventory entry/
   );
 });
+
+
+test("AI prompt carries weapon variety independently of combat readiness", () => {
+  const prompt = buildAiPrompt({
+    count: 1,
+    combatReadinessLabel: "Prepared",
+    combatReadinessPrompt: "above-normal readiness",
+    weaponVarietyLabel: "Ranged preference",
+    weaponVarietyPrompt: "strongly prefer ranged weapons",
+    roleLabel: "Scout"
+  });
+  assert.match(prompt, /Weapon variety: Ranged preference/);
+  assert.match(prompt, /strongly prefer ranged weapons/);
+  assert.match(prompt, /Weapon variety never overrides role realism/);
+});

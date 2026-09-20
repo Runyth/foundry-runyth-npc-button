@@ -50,3 +50,7 @@ Repository validation checks the manifest, referenced runtime files, version con
 31. Trigger the same composition changes with keyboard navigation and verify dependent mixed-composition sections update exactly once per change.
 32. Open Dashboard string filters repeatedly, save changes, close without saving, reopen, import/export by file and clipboard, and verify no stale state or duplicate action firing.
 33. Test clipboard writing with Foundry clipboard permissions available and with browser clipboard fallback; verify Copy prompt, portrait prompt, and Copy filter JSON all show success only after an actual write succeeds.
+
+## v0.1.7 regressions
+
+Automated coverage includes automatically materialized and explicitly reused generation seeds, seed persistence to biography/flags, melee/ranged hard weapon constraints, occupation-safe ranged-only fallback, ApplicationV2 Actor-sheet portrait hook registration, preview whitelisting, non-mutating preview edits, and rejection of invalid post-edit payloads.

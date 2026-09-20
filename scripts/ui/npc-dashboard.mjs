@@ -1,5 +1,5 @@
 import { buildAiPrompt } from "../ai/prompt-builder.mjs";
-import { parseAndNormalizeNpcJson } from "../ai/npc-json.mjs";
+import { normalizeNpcJsonPayload, parseNpcJsonPayload } from "../ai/npc-json.mjs";
 import { DEFAULT_OPTIONS, MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import {
   CR_VALUES,
@@ -26,6 +26,7 @@ import {
   ROLE_VARIANTS,
   TIERS,
   WEALTH_LEVELS,
+  WEAPON_VARIETY,
   formatChallengeRating
 } from "../generator/data.mjs";
 import { normalizeGroupRaceIds, normalizeGroupRoleIds, resolveTierProfile } from "../generator/npc-generator.mjs";
@@ -42,6 +43,7 @@ import { bindNamedControls, bindOptionalControl, namedFormChecked, namedFormCont
 import { hierarchicalMultiPickerMarkup, mountHierarchicalMultiPicker } from "./hierarchical-multi-picker.mjs";
 import { hierarchicalPickerMarkup, mountHierarchicalPicker } from "./hierarchical-picker.mjs";
 import { openNpcHelp } from "./npc-help.mjs";
+import { openNpcImportPreview } from "./npc-import-preview.mjs";
 
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
@@ -408,6 +410,12 @@ function dashboardContent(options, tierStyle) {
           <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("combatReadiness", COMBAT_READINESS, options.combatReadiness ?? DEFAULT_OPTIONS.combatReadiness)}</div>
         </fieldset>
 
+        <fieldset class="runyth-npc-button__field runyth-npc-button__field--full">
+          <legend>${escapeAttribute(localize("ui.weaponVariety"))}</legend>
+          <small>${escapeAttribute(localize("ui.weaponVarietyHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("weaponVariety", WEAPON_VARIETY, options.weaponVariety ?? DEFAULT_OPTIONS.weaponVariety)}</div>
+        </fieldset>
+
         <div class="runyth-npc-button__grid">
           <div class="runyth-npc-button__field">
             <label for="runyth-npc-button-name">${escapeAttribute(localize("ui.customName"))}</label>
@@ -555,6 +563,10 @@ function dashboardContent(options, tierStyle) {
           <input type="checkbox" name="singleAiObject"${options.singleAiObject && Number(options.count) === 1 ? " checked" : ""}${Number(options.count) === 1 ? "" : " disabled"}>
           <span><strong>${escapeAttribute(localize("ui.singleAiObject"))}</strong><small>${escapeAttribute(localize("ui.singleAiObjectHint"))}</small></span>
         </label>
+        <label class="runyth-npc-button__toggle">
+          <input type="checkbox" name="previewImport"${options.previewImport ? " checked" : ""}>
+          <span><strong>${escapeAttribute(localize("ui.previewImport"))}</strong><small>${escapeAttribute(localize("ui.previewImportHint"))}</small></span>
+        </label>
         <div class="runyth-npc-button__button-row">
           <button type="button" data-action="copy-prompt"><i class="fa-regular fa-copy" aria-hidden="true"></i>${escapeAttribute(localize("ui.copyPrompt"))}</button>
           <button type="button" data-action="import-npc"><i class="fa-solid fa-file-import" aria-hidden="true"></i>${escapeAttribute(localize("ui.importNpc"))}</button>
@@ -640,6 +652,7 @@ function readForm(form) {
     namingStyle: namedFormValue(form, "namingStyle", DEFAULT_OPTIONS.namingStyle),
     wealth: namedFormValue(form, "wealth", DEFAULT_OPTIONS.wealth),
     combatReadiness: namedFormValue(form, "combatReadiness", DEFAULT_OPTIONS.combatReadiness),
+    weaponVariety: namedFormValue(form, "weaponVariety", DEFAULT_OPTIONS.weaponVariety),
     habitat: namedFormValue(form, "habitat", DEFAULT_OPTIONS.habitat),
     groupType: namedFormValue(form, "groupType", DEFAULT_OPTIONS.groupType),
     familyStructure: namedFormValue(form, "familyStructure", DEFAULT_OPTIONS.familyStructure),
@@ -665,6 +678,7 @@ function readForm(form) {
     useActorRoot: destination.useActorRoot,
     openLastActor: namedFormChecked(form, "openLastActor", false),
     singleAiObject: count === 1 && namedFormChecked(form, "singleAiObject", false),
+    previewImport: namedFormChecked(form, "previewImport", false),
     aiPayload: String(namedFormValue(form, "aiPayload", "")).trim()
   };
 }
@@ -677,6 +691,7 @@ function promptOptions(options) {
   const role = getRoles()[options.role] ?? getRoles().guard ?? ROLES.guard;
   const roleComposition = ROLE_COMPOSITION_MODES[options.roleComposition] ?? ROLE_COMPOSITION_MODES.groupPreset;
   const combatReadiness = COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard;
+  const weaponVariety = WEAPON_VARIETY[options.weaponVariety] ?? WEAPON_VARIETY.mixed;
   const combatProfile = role.combatProfile ?? ROLE_COMBAT_PROFILES[options.role] ?? ROLE_COMBAT_PROFILES.civilian;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
   const tierProfile = resolveTierProfile(options);
@@ -703,6 +718,8 @@ function promptOptions(options) {
     roleWeightSummary,
     combatReadinessLabel: configuredLabel(combatReadiness),
     combatReadinessPrompt: combatReadiness.prompt,
+    weaponVarietyLabel: configuredLabel(weaponVariety),
+    weaponVarietyPrompt: weaponVariety.prompt,
     roleCombatGuidance: combatProfile.guidance,
     tierLabel: options.tierStyle === TIER_STYLES.CR ? tierProfile.label : configuredLabel(TIERS[options.tier] ?? TIERS.trained),
     raceLabel: race,
@@ -1093,6 +1110,9 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         return;
       }
       ui.notifications.info(game.i18n.format(`${MODULE_ID}.notifications.created`, { count: actors.length }));
+      const generatedSeed = String(actors[0]?.flags?.[MODULE_ID]?.generationSeed ?? "");
+      const seedControl = namedFormControls(form, "seed")[0];
+      if (generatedSeed && seedControl && !String(seedControl.value ?? "").trim()) seedControl.value = generatedSeed;
       if (options.openLastActor) await openActorReviewStack(actors);
     } catch (error) {
       logger.error("NPC generation failed.", error);
@@ -1135,11 +1155,24 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         }
       }
       const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
-      const sources = parseAndNormalizeNpcJson(text, {
+      const validationOptions = {
         expectedCount: options.count,
         maxCount: maxBatch,
         allowSingleObject: options.singleAiObject
-      });
+      };
+      let payload = parseNpcJsonPayload(text);
+      // Validate the unedited payload before preview so malformed AI responses never
+      // enter the editor. Preview confirmation validates the edited payload again,
+      // and we repeat validation here immediately before Actor creation.
+      let sources = normalizeNpcJsonPayload(payload, validationOptions);
+      if (options.previewImport) {
+        payload = await openNpcImportPreview(payload, validationOptions);
+        if (payload === null) {
+          ui.notifications.info(localize("notifications.importCancelled"));
+          return;
+        }
+        sources = normalizeNpcJsonPayload(payload, validationOptions);
+      }
       const actors = await createImportedNpcActors(sources, options);
       if (!actors.length) {
         ui.notifications.warn(localize("notifications.noneImported"));

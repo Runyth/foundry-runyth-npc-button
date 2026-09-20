@@ -111,6 +111,7 @@ export async function saveLastOptions(options) {
     namingStyle: options.namingStyle,
     wealth: options.wealth,
     combatReadiness: options.combatReadiness,
+    weaponVariety: options.weaponVariety,
     habitat: options.habitat,
     groupType: options.groupType,
     familyStructure: options.familyStructure,
@@ -133,7 +134,8 @@ export async function saveLastOptions(options) {
     newFolderName: options.newFolderName,
     useActorRoot: options.useActorRoot,
     openLastActor: options.openLastActor,
-    singleAiObject: options.singleAiObject
+    singleAiObject: options.singleAiObject,
+    previewImport: options.previewImport
   };
   await game.settings.set(MODULE_ID, SETTINGS.LAST_OPTIONS, JSON.stringify(safeOptions));
 }

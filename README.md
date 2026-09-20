@@ -155,3 +155,11 @@ See `docs/` for architecture, testing, release, and roadmap notes.
 ## License
 
 AGPL-3.0-or-later. See `LICENSE`.
+
+### Reusable seeds, weapon variety, and import preview
+
+Local NPC generation always has a concrete reusable seed. When the Seed field is blank, NPC Button creates one automatically, returns it to the dashboard, and stores it on every generated Actor in both private biography and module flags.
+
+Weapon variety is separate from Combat readiness. It can constrain or bias generated combat gear toward melee or ranged weapons while preserving role realism; a noncombatant with no plausible weapon in a hard-only category remains weaponless.
+
+AI import can optionally open a preview editor before Actor creation. Names, biography, Race/subtype, CR, AC, HP, and walking speed can be adjusted quickly. The edited payload is revalidated before import.

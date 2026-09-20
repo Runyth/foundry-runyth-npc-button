@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildPortraitPromptFromActor } from "../scripts/ai/portrait-prompt-builder.mjs";
+import { registerPortraitPromptHooks } from "../scripts/ui/actor-portrait-button.mjs";
 import { clearExtensionRegistry, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
 import { FilterSettingsForm, applyStringFilters, buildFilterProfile, defaultFilterConfiguration, parseFilterProfile, parseFilterSettings, settingsFromForm } from "../scripts/filters.mjs";
 
@@ -152,4 +153,17 @@ test("malformed and foreign filter profiles are rejected", () => {
   assert.throws(() => parseFilterProfile("not json"), SyntaxError);
   assert.throws(() => parseFilterProfile(JSON.stringify({ format: "other", version: 1, filters: {} })), /not a Runyth NPC Button filter profile/);
   assert.throws(() => parseFilterProfile(JSON.stringify({ format: "runyth-npc-button-filter-profile", version: 99, filters: {} })), /Unsupported filter profile version/);
+});
+
+
+test("portrait prompt integration registers ApplicationV2 and legacy Actor-sheet render hooks", () => {
+  const registered = [];
+  const hooks = { on(name, callback) { registered.push({ name, callback }); } };
+  assert.equal(registerPortraitPromptHooks(hooks), true);
+  assert.deepEqual(registered.map((entry) => entry.name), [
+    "renderActorSheetV2",
+    "renderApplicationV2",
+    "renderActorSheet"
+  ]);
+  assert.ok(registered.every((entry) => typeof entry.callback === "function"));
 });

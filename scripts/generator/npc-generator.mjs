@@ -12,6 +12,8 @@ import {
   ROLE_COMBAT_PROFILES,
   ROLE_COMPOSITION_MODES,
   ROLE_VARIANTS,
+  WEAPON_CATEGORIES,
+  WEAPON_VARIETY,
   HABITATS,
   IMPRESSIONS,
   NAME_STYLES,
@@ -51,6 +53,16 @@ export function createSeededRandom(seed) {
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
     return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+export function createGenerationSeed() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  if (globalThis.crypto?.getRandomValues) {
+    const bytes = new Uint32Array(4);
+    globalThis.crypto.getRandomValues(bytes);
+    return Array.from(bytes, (value) => value.toString(16).padStart(8, "0")).join("-");
+  }
+  return `seed-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
 function pick(values, random) {
@@ -255,6 +267,27 @@ function roleVariantForIndex(roleId, index) {
   return variants.length ? variants[index % variants.length] : "";
 }
 
+function weaponPoolsForVariety(weapons, varietyId) {
+  const variety = WEAPON_VARIETY[varietyId] ? varietyId : "mixed";
+  const melee = weapons.filter((name) => WEAPON_CATEGORIES[name] !== "ranged");
+  const ranged = weapons.filter((name) => WEAPON_CATEGORIES[name] === "ranged");
+  if (variety === "meleeOnly") return { variety, primary: melee, secondary: [] };
+  if (variety === "rangedOnly") return { variety, primary: ranged, secondary: [] };
+  if (variety === "meleePreferred") return { variety, primary: melee.length ? melee : weapons, secondary: ranged };
+  if (variety === "rangedPreferred") return { variety, primary: ranged.length ? ranged : weapons, secondary: melee };
+  return { variety: "mixed", primary: [...weapons], secondary: [] };
+}
+
+function chooseWeapon(pool, cr, readinessOffset = 0) {
+  if (!pool.length) return "";
+  const qualityIndex = Math.min(
+    pool.length - 1,
+    Math.floor(Math.max(0, Number(cr) || 0) / 5),
+    Math.max(0, readinessOffset)
+  );
+  return pool[qualityIndex];
+}
+
 function combatLoadout(roleId, options, cr = 0) {
   const readiness = COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard;
   if (readiness.level === 0) return [];
@@ -269,16 +302,27 @@ function combatLoadout(roleId, options, cr = 0) {
   }
   const violentGroup = ["guardPatrol", "watchShift", "militia", "mercenaryBand", "orcRaiders", "banditCrew"].includes(String(options.groupType ?? ""));
   const weaponAt = violentGroup ? Math.min(profile.weaponAt, 1) : profile.weaponAt;
+  const pools = weaponPoolsForVariety(profile.weapons ?? [], options.weaponVariety ?? DEFAULT_OPTIONS.weaponVariety);
   const items = [];
-  if (readiness.level >= weaponAt && profile.weapons.length) {
-    const qualityIndex = Math.min(profile.weapons.length - 1, Math.floor(Math.max(0, Number(cr) || 0) / 5), Math.max(0, readiness.level - weaponAt));
-    items.push({ name: profile.weapons[qualityIndex], lookup: profile.weapons[qualityIndex], kind: "weapon" });
-    if (readiness.level >= 3 && profile.weapons.length > 1) {
-      const backup = profile.weapons[Math.max(0, qualityIndex - 1)];
-      if (backup !== items[0].name) items.push({ name: backup, lookup: backup, kind: "weapon" });
+  if (readiness.level >= weaponAt && pools.primary.length) {
+    const primary = chooseWeapon(pools.primary, cr, readiness.level - weaponAt);
+    if (primary) items.push({ name: primary, lookup: primary, kind: "weapon" });
+
+    if (readiness.level >= 3) {
+      const primaryBackups = pools.primary.filter((weapon) => weapon !== primary);
+      const backup = chooseWeapon(primaryBackups, cr, readiness.level - weaponAt - 1);
+      if (backup) items.push({ name: backup, lookup: backup, kind: "weapon" });
+      else if (pools.variety === "mixed" && (profile.weapons ?? []).length > 1) {
+        const alternate = (profile.weapons ?? []).find((weapon) => weapon !== primary);
+        if (alternate) items.push({ name: alternate, lookup: alternate, kind: "weapon" });
+      }
     }
-    if (readiness.level >= 4 && profile.weapons.length > 2) {
-      for (const weapon of profile.weapons) {
+
+    if (readiness.level >= 4) {
+      const candidates = pools.variety === "mixed"
+        ? (profile.weapons ?? [])
+        : [...pools.primary, ...pools.secondary];
+      for (const weapon of candidates) {
         if (items.some((entry) => entry.name === weapon)) continue;
         items.push({ name: weapon, lookup: weapon, kind: "weapon" });
         if (items.filter((entry) => entry.kind === "weapon").length >= 3) break;
@@ -414,7 +458,9 @@ function buildBiography(blueprint) {
     `<p><strong>Race:</strong> ${escapeHtml(blueprint.race)}</p>`,
     `<p><strong>Wealth:</strong> ${escapeHtml(blueprint.wealth)}</p>`,
     `<p><strong>Combat readiness:</strong> ${escapeHtml(blueprint.combatReadiness)}</p>`,
-    `<p><strong>Habitat:</strong> ${escapeHtml(blueprint.habitat)}</p>`
+    `<p><strong>Weapon variety:</strong> ${escapeHtml(blueprint.weaponVariety)}</p>`,
+    `<p><strong>Habitat:</strong> ${escapeHtml(blueprint.habitat)}</p>`,
+    `<p><strong>Generation seed:</strong> ${escapeHtml(blueprint.generationSeed)}</p>`
   ];
   if (blueprint.groupType && blueprint.groupType !== GROUP_TYPES.independent.label) {
     rows.push(`<p><strong>Group:</strong> ${escapeHtml(blueprint.groupType)}</p>`);
@@ -463,6 +509,8 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
     species: race.label,
     wealth: wealth.label,
     combatReadiness: (COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard).label,
+    weaponVariety: (WEAPON_VARIETY[options.weaponVariety] ?? WEAPON_VARIETY.mixed).label,
+    generationSeed: String(options.generationSeed ?? options.seed ?? ""),
     combatItems,
     habitat: habitatLabel(options),
     cr: tier.cr,
@@ -619,6 +667,8 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         tier: blueprint.tier,
         wealth: blueprint.wealth,
         combatReadiness: blueprint.combatReadiness,
+        weaponVariety: blueprint.weaponVariety,
+        generationSeed: blueprint.generationSeed,
         habitat: blueprint.habitat,
         groupType: blueprint.groupType,
         groupMemberRole: blueprint.groupMemberRole,
@@ -634,8 +684,8 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
 
 export function generateNpcBatch(options = {}) {
   const count = clamp(Number(options.count) || 1, 1, 100);
-  const baseSeed = String(options.seed ?? "").trim();
-  const random = baseSeed ? createSeededRandom(baseSeed) : Math.random;
+  const baseSeed = String(options.seed ?? "").trim() || createGenerationSeed();
+  const random = createSeededRandom(baseSeed);
   const customName = String(options.customName ?? "").trim();
   const groupTypes = getGroupTypes();
   const groupType = groupTypes[options.groupType] ?? groupTypes.independent ?? GROUP_TYPES.independent;
@@ -660,6 +710,7 @@ export function generateNpcBatch(options = {}) {
         ...race,
         role: roleAssignment.role,
         roleVariant: roleAssignment.variant,
+        generationSeed: baseSeed,
         forcedFamilyName,
         customName: customName && count > 1 ? `${customName} ${index + 1}` : customName
       };

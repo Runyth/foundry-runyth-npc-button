@@ -2,6 +2,27 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.1.7 - 2026-09-20
+
+### Added
+
+- Reusable generation-seed metadata on every locally generated NPC. Blank seeds are generated automatically, written back into the dashboard for immediate reuse, stored in Actor flags, and shown in the private biography.
+- Weapon-variety control independent of Combat readiness: Melee only, Melee preference, Mixed, Ranged preference, and Ranged only.
+- Optional AI import preview with a compact multi-NPC editor for name, Race/subtype, CR, AC, HP, walking speed, and biography before Actor creation.
+- Import-preview regression tests that verify whitelisted edits, non-mutating edit helpers, and final contract rejection of invalid post-edit values.
+
+### Fixed
+
+- Portrait-prompt sheet action now integrates with dnd5e 5.3.x ApplicationV2 Actor sheets through Foundry v13 V2 render hooks, while retaining a legacy Actor-sheet fallback.
+- Portrait action injection is idempotent across overlapping render hooks and has resilient header/close-button discovery.
+- AI preview payloads are validated once before editing, again when the user confirms preview, and once more immediately before Actor creation.
+
+### Changed
+
+- Local combat loadouts now honor Weapon variety without overriding occupational realism. Hard ranged-only mode leaves roles without a plausible ranged option weaponless rather than inventing inappropriate gear.
+- The copied AI prompt includes the selected Weapon variety and explicitly states that it cannot override role realism.
+- Help and localization now document reusable seeds, Weapon variety, portrait controls, and preview import.
+
 ## 0.1.6 - 2026-09-20
 
 ### Fixed

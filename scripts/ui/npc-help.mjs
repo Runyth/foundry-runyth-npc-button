@@ -91,6 +91,10 @@ function helpContent() {
         <p>${escapeAttribute(localize("help.combatReadinessBody"))}</p>
       </section>
       <section>
+        <h2>${escapeAttribute(localize("help.weaponVarietyTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.weaponVarietyBody"))}</p>
+      </section>
+      <section>
         <h2>${escapeAttribute(localize("help.actorReviewTitle"))}</h2>
         <p>${escapeAttribute(localize("help.actorReviewBody"))}</p>
       </section>
@@ -101,6 +105,10 @@ function helpContent() {
       <section>
         <h2>${escapeAttribute(localize("help.filterTitle"))}</h2>
         <p>${escapeAttribute(localize("help.filterBody"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.importPreviewTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.importPreviewBody"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.aiTitle"))}</h2>

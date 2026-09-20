@@ -101,3 +101,11 @@ Combat readiness is independent from CR and Role. The generator first applies a 
 ## Filter profiles
 
 `filters.mjs` stores world-level picker filters and serializes them as a versioned portable profile (`runyth-npc-button-filter-profile`, version 1). Import validates the format/version before replacing world filter settings. File and clipboard workflows use the same schema.
+
+## v0.1.7 generation metadata and preview
+
+Local generation always resolves a concrete batch seed before the seeded PRNG is created. The seed is copied to every blueprint, private biography, and `flags.runyth-npc-button.generationSeed`, making an automatically generated batch reproducible with the same options.
+
+The Actor portrait control is attached from both `renderActorSheetV2`/`renderApplicationV2` and the legacy `renderActorSheet` fallback. Injection is idempotent, so overlapping Foundry hooks cannot duplicate the control.
+
+AI import preview edits the original validated AI contract rather than already-normalized Foundry Item sources. Only simple whitelisted Actor fields are exposed. The raw payload is validated before preview, on preview confirmation, and once again in the dashboard immediately before Actor creation.

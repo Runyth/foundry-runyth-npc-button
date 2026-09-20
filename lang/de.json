@@ -125,7 +125,12 @@
       "possibleRolesHint": "Durchsuche und wähle Rollen, die in einer gemischten Rollengruppe vorkommen dürfen. Die primäre Rollenwahl bleibt die Hauptrolle.",
       "choosePossibleRoles": "Mögliche Rollen wählen…",
       "roleWeights": "Benutzerdefinierte Rollengewichte",
-      "roleWeightsHint": "Relative Gewichte; sie müssen zusammen nicht 100 ergeben."
+      "roleWeightsHint": "Relative Gewichte; sie müssen zusammen nicht 100 ergeben.",
+      "weaponVariety": "Waffenvielfalt",
+      "weaponVarietyHint": "Steuert, ob realistische rollenpassende Waffen Nahkampf, Fernkampf oder eine Mischung bevorzugen. Reine Modi erfinden niemals eine unplausible Waffe nur für die Kategorie.",
+      "previewImport": "Vor Import prüfen und bearbeiten",
+      "previewImportHint": "Validiert die KI-Nutzlast, öffnet eine schnelle Vorschau für Name, Biografie, Volk, CR, RK, TP und Bewegung und validiert die bearbeitete Nutzlast erneut vor dem Erstellen der Actors.",
+      "portraitPromptShort": "Porträt"
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -137,7 +142,7 @@
       "tierStyleCr": "Die Welt verwendet derzeit CR-Stufen. Jeder Standard-CR von 0 bis 30 ist wählbar und der KI-Prompt fordert exakt diesen CR an.",
       "race": "Der eingebaute Volkswähler enthält alle Standardvölker des Player’s Handbook 2024. Ein nicht vorhandener Name kann direkt als eigenes Volk gewählt werden; gemischte Gruppen können mehrere Standard- oder eigene Völker auswählen.",
       "wealth": "Poor, Average, Well-Off oder Elite. Die KI skaliert damit mitgeführtes Geld, Ausrüstungsqualität, Komfortgegenstände und sichtbaren Status.",
-      "seed": "Beeinflusst nur die deterministische lokale Erstellung und ist für KI-Erstellung absichtlich nicht erforderlich.",
+      "seed": "Lokale Generierung besitzt immer einen wiederverwendbaren Seed. Bleibt Seed leer, erzeugt das Modul automatisch einen, zeigt ihn im Dashboard an und speichert ihn in Biografie und Modul-Metadaten jedes erzeugten Actors.",
       "destination": "Der Ordnerwähler erhält die Actor-Hierarchie. Er kann beliebige Unterordner, den Actors-Stamm, den konfigurierten Standard oder einen neu benannten Stammordner ansteuern.",
       "pickersTitle": "Skalierbare Auswahlfelder",
       "pickersBody": "Rolle, Volk, Namensstil, Lebensraum, Gruppentyp, Tier/CR, Actor-Ordner und gemischte Volksauswahl verwenden durchsuchbare hierarchische Listen. Große Listen rendern nur sichtbare Zeilen plus kleinen Puffer und bleiben dadurch auch bei großen Katalogen und Ordnerbäumen reaktionsschnell.",
@@ -170,7 +175,11 @@
       "compositionTitle": "Volks- und Rollenzusammensetzung",
       "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert (z. B. ungefähr 8/1/1 bei zehn NPCs und drei Völkern), mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Rollen können einheitlich bleiben, unterschiedliche Untertypen wie Händlerspezialisierungen durchlaufen, den Gruppen-Preset verwenden oder ebenso anteilig gemischt werden.",
       "combatReadinessTitle": "Kampfbereitschaft",
-      "combatReadinessBody": "Jeder NPC besitzt weiterhin kampffähige Werte. Die Einstellung steuert getragene Waffen und Rüstung. Waffenlos erzwingt keine davon; höhere Stufen bleiben streng rollenbezogen, sodass ein Gelehrter oder Jurist nicht plötzlich zum schwer bewaffneten Krieger wird, während Wachen, Soldaten und Plünderer natürlich skalieren."
+      "combatReadinessBody": "Jeder NPC besitzt weiterhin kampffähige Werte. Die Einstellung steuert getragene Waffen und Rüstung. Waffenlos erzwingt keine davon; höhere Stufen bleiben streng rollenbezogen, sodass ein Gelehrter oder Jurist nicht plötzlich zum schwer bewaffneten Krieger wird, während Wachen, Soldaten und Plünderer natürlich skalieren.",
+      "weaponVarietyTitle": "Waffenvielfalt",
+      "weaponVarietyBody": "Nur Nahkampf, Nahkampf bevorzugt, Gemischt, Fernkampf bevorzugt und Nur Fernkampf gewichten oder beschränken getragene Waffen, ohne die Berufslogik zu überschreiben. Hat ein Jurist bei Nur Fernkampf keine plausible Fernkampfwaffe, ist keine Waffe das korrekte Ergebnis.",
+      "importPreviewTitle": "Importvorschau",
+      "importPreviewBody": "Aktiviere Vor Import prüfen und bearbeiten, um jeden validierten KI-NPC in einem kompakten Editor zu prüfen. Kleine Felder lassen sich schnell ändern; die bearbeitete Nutzlast wird vor dem Erstellen der Actors erneut validiert."
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -187,12 +196,14 @@
       "filtersCopied": "JSON des Filterprofils in die Zwischenablage kopiert.",
       "filtersImported": "Filterprofil importiert und angewendet.",
       "filterImportFailed": "Import des Filterprofils fehlgeschlagen",
-      "filterProfileTooLarge": "Das Filterprofil ist zu groß zum Importieren."
+      "filterProfileTooLarge": "Das Filterprofil ist zu groß zum Importieren.",
+      "importCancelled": "NPC-Importvorschau abgebrochen."
     },
     "errors": {
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
       "clipboardRead": "Lesen aus der Zwischenablage ist nicht verfügbar oder wurde vom Browser blockiert.",
-      "manualPasteFallback": "Den Bereich für manuelles Einfügen öffnen, das KI-JSON dort einfügen und NSC importieren erneut anklicken."
+      "manualPasteFallback": "Den Bereich für manuelles Einfügen öffnen, das KI-JSON dort einfügen und NSC importieren erneut anklicken.",
+      "portraitPromptUnavailable": "Dieser Actor enthält keine Generierungs-Metadaten von Runyth NPC Button."
     },
     "roleGroups": {
       "everyday": "Alltag & Handel",
@@ -432,6 +443,33 @@
       "primary": "Mehrheit der Hauptrolle",
       "dominant": "Starke Mehrheit der Hauptrolle",
       "weighted": "Benutzerdefinierte Rollengewichte"
+    },
+    "preview": {
+      "title": "NPC-Importvorschau",
+      "npcHeading": "NPC {current} von {count}",
+      "editorHint": "Bearbeite nur die einfachen, spielfertigen Felder. Die komplette Nutzlast wird vor dem Import erneut validiert.",
+      "npcList": "Zu importierende NPCs",
+      "unnamedNpc": "Unbenannter NPC {number}",
+      "name": "Name",
+      "race": "Volk / Subtyp",
+      "cr": "CR",
+      "ac": "RK",
+      "hp": "TP",
+      "hpMax": "Max. TP",
+      "speed": "Laufbewegung",
+      "biography": "Biografie-HTML",
+      "biographyHint": "Behalte die erforderlichen beschrifteten Biografie-Abschnitte bei. Nicht unterstütztes HTML wird beim finalen Import bereinigt.",
+      "cancel": "Abbrechen",
+      "confirm": "Validieren und importieren",
+      "valid": "Bearbeitete Nutzlast ist gültig.",
+      "invalid": "Bearbeitete Nutzlast ist ungültig: {message}"
+    },
+    "weaponVariety": {
+      "meleeOnly": "Nur Nahkampf",
+      "meleePreferred": "Nahkampf bevorzugt",
+      "mixed": "Gemischt",
+      "rangedPreferred": "Fernkampf bevorzugt",
+      "rangedOnly": "Nur Fernkampf"
     }
   }
 }
