@@ -1,4 +1,16 @@
-import { DRIVES, IMPRESSIONS, NAME_STYLES, ROLES, SPECIES, TELLS, TIERS } from "./data.mjs";
+import {
+  CR_VALUES,
+  DRIVES,
+  IMPRESSIONS,
+  NAME_STYLES,
+  RACES,
+  ROLES,
+  TELLS,
+  TIERS,
+  WEALTH_LEVELS,
+  formatChallengeRating
+} from "./data.mjs";
+import { TIER_STYLES } from "../constants.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 
@@ -50,12 +62,70 @@ export function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function resolveSpecies(speciesKey, customSpecies) {
-  const configured = SPECIES[speciesKey] ?? SPECIES.human;
-  if (speciesKey !== "custom") return configured;
+function resolveRace(raceKey, customRace) {
+  const configured = RACES[raceKey] ?? RACES.human;
+  if (raceKey !== "custom") return configured;
 
-  const label = titleCase(customSpecies) || "Humanoid";
+  const label = titleCase(customRace) || "Humanoid";
   return { ...configured, label };
+}
+
+function interpolate(left, right, ratio) {
+  return left + ((right - left) * ratio);
+}
+
+/**
+ * Convert an exact CR choice into the coarse numeric knobs used by the local
+ * MVP generator. CR itself remains exact; only the generated supporting stats
+ * are interpolated between practical anchors.
+ */
+export function profileForChallengeRating(value) {
+  const cr = clamp(Number(value) || 0, 0, 30);
+  const anchors = [
+    { cr: 0, acBonus: 0, hpMultiplier: 0.7, abilityBonus: -1 },
+    { cr: 0.125, acBonus: 1, hpMultiplier: 1.0, abilityBonus: 0 },
+    { cr: 0.5, acBonus: 2, hpMultiplier: 1.8, abilityBonus: 1 },
+    { cr: 2, acBonus: 3, hpMultiplier: 3.0, abilityBonus: 2 },
+    { cr: 5, acBonus: 4, hpMultiplier: 5.0, abilityBonus: 3 },
+    { cr: 10, acBonus: 5, hpMultiplier: 10.0, abilityBonus: 4 },
+    { cr: 15, acBonus: 6, hpMultiplier: 16.0, abilityBonus: 5 },
+    { cr: 20, acBonus: 7, hpMultiplier: 23.0, abilityBonus: 6 },
+    { cr: 25, acBonus: 8, hpMultiplier: 30.0, abilityBonus: 7 },
+    { cr: 30, acBonus: 9, hpMultiplier: 38.0, abilityBonus: 8 }
+  ];
+
+  const exact = anchors.find((entry) => entry.cr === cr);
+  if (exact) {
+    return {
+      label: `CR ${formatChallengeRating(cr)}`,
+      cr,
+      acBonus: exact.acBonus,
+      hpMultiplier: exact.hpMultiplier,
+      abilityBonus: exact.abilityBonus
+    };
+  }
+
+  const upperIndex = anchors.findIndex((entry) => entry.cr > cr);
+  const upper = anchors[upperIndex];
+  const lower = anchors[Math.max(0, upperIndex - 1)];
+  const ratio = (cr - lower.cr) / (upper.cr - lower.cr);
+
+  return {
+    label: `CR ${formatChallengeRating(cr)}`,
+    cr,
+    acBonus: Math.round(interpolate(lower.acBonus, upper.acBonus, ratio)),
+    hpMultiplier: interpolate(lower.hpMultiplier, upper.hpMultiplier, ratio),
+    abilityBonus: Math.round(interpolate(lower.abilityBonus, upper.abilityBonus, ratio))
+  };
+}
+
+export function resolveTierProfile(options = {}) {
+  if (options.tierStyle === TIER_STYLES.CR) {
+    const requested = Number(options.cr);
+    const cr = CR_VALUES.includes(requested) ? requested : 0.125;
+    return profileForChallengeRating(cr);
+  }
+  return TIERS[options.tier] ?? TIERS.trained;
 }
 
 function buildAbilityScores(role, tier, random) {
@@ -63,7 +133,7 @@ function buildAbilityScores(role, tier, random) {
   for (const ability of ABILITIES) {
     const variance = Math.floor(random() * 5) - 2;
     const roleBias = role.biases[ability] ?? 0;
-    scores[ability] = clamp(10 + roleBias + tier.abilityBonus + variance, 6, 20);
+    scores[ability] = clamp(10 + roleBias + tier.abilityBonus + variance, 6, 24);
   }
   return scores;
 }
@@ -88,10 +158,11 @@ function generatedName(style, random) {
   return `${pick(style.given, random)} ${pick(style.family, random)}`;
 }
 
-function buildBiography({ role, tier, species, impression, drive, tell }) {
+function buildBiography({ role, tier, race, wealth, impression, drive, tell }) {
   return [
     `<p><strong>Role:</strong> ${escapeHtml(role.label)} (${escapeHtml(tier.label)})</p>`,
-    `<p><strong>Species:</strong> ${escapeHtml(species.label)}</p>`,
+    `<p><strong>Race:</strong> ${escapeHtml(race.label)}</p>`,
+    `<p><strong>Wealth:</strong> ${escapeHtml(wealth.label)}</p>`,
     `<p><strong>First impression:</strong> ${escapeHtml(impression)}.</p>`,
     `<p><strong>Drive:</strong> ${escapeHtml(drive)}.</p>`,
     `<p><strong>Tell:</strong> ${escapeHtml(tell)}.</p>`
@@ -100,11 +171,12 @@ function buildBiography({ role, tier, species, impression, drive, tell }) {
 
 export function generateNpcBlueprint(options = {}, random = Math.random) {
   const role = ROLES[options.role] ?? ROLES.guard;
-  const tier = TIERS[options.tier] ?? TIERS.trained;
-  const species = resolveSpecies(options.species ?? "human", options.customSpecies ?? "");
+  const tier = resolveTierProfile(options);
+  const race = resolveRace(options.species ?? "human", options.customSpecies ?? "");
   const style = NAME_STYLES[options.namingStyle] ?? NAME_STYLES.central;
+  const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
   const scores = buildAbilityScores(role, tier, random);
-  const hitDie = species.size === "sm" ? 6 : 8;
+  const hitDie = race.size === "sm" ? 6 : 8;
   const hp = buildHitPoints(role, tier, scores.con, hitDie);
   const generated = generatedName(style, random);
   const suppliedName = titleCase(options.customName ?? "");
@@ -114,12 +186,15 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
     name,
     role: role.label,
     tier: tier.label,
-    species: species.label,
+    race: race.label,
+    // Compatibility field retained for external consumers from earlier MVP releases.
+    species: race.label,
+    wealth: wealth.label,
     cr: tier.cr,
-    ac: clamp(role.ac + tier.acBonus, 8, 22),
+    ac: clamp(role.ac + tier.acBonus, 8, 30),
     hp,
-    speed: species.speed,
-    size: species.size,
+    speed: race.speed,
+    size: race.size,
     abilities: scores,
     impression: pick(IMPRESSIONS, random),
     drive: pick(DRIVES, random),
@@ -158,12 +233,20 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         cr: blueprint.cr,
         type: {
           value: "humanoid",
-          subtype: blueprint.species,
+          subtype: blueprint.race,
           swarm: "",
           custom: ""
         },
         biography: {
-          value: buildBiography(blueprint),
+          value: buildBiography({
+            role: { label: blueprint.role },
+            tier: { label: blueprint.tier },
+            race: { label: blueprint.race },
+            wealth: { label: blueprint.wealth },
+            impression: blueprint.impression,
+            drive: blueprint.drive,
+            tell: blueprint.tell
+          }),
           public: ""
         }
       },
@@ -175,7 +258,8 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
       "runyth-npc-button": {
         generated: true,
         role: blueprint.role,
-        tier: blueprint.tier
+        tier: blueprint.tier,
+        wealth: blueprint.wealth
       }
     }
   };

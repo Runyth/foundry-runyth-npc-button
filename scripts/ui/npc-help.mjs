@@ -1,4 +1,4 @@
-import { MODULE_ID } from "../constants.mjs";
+import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import { NAME_STYLES } from "../generator/data.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 
@@ -6,17 +6,22 @@ function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
 }
 
-function namingExample(style) {
-  const first = `${style.given[0]} ${style.family[0]}`;
-  const second = `${style.given[1] ?? style.given[0]} ${style.family[1] ?? style.family[0]}`;
-  return `${first}; ${second}`;
+function namingExamples(style) {
+  return [0, 1, 2, 3]
+    .map((index) => `${style.given[index % style.given.length]} ${style.family[index % style.family.length]}`)
+    .join("; ");
 }
 
 function helpContent() {
-  const namingRows = Object.entries(NAME_STYLES).map(([key, style]) => `
+  const tierStyle = game.settings.get(MODULE_ID, SETTINGS.TIER_STYLE) || TIER_STYLES.NAMED;
+  const tierStyleText = tierStyle === TIER_STYLES.CR
+    ? localize("help.tierStyleCr")
+    : localize("help.tierStyleNamed");
+  const namingRows = Object.values(NAME_STYLES).map((style) => `
     <tr>
       <th scope="row">${escapeAttribute(localize(style.labelKey))}</th>
-      <td>${escapeAttribute(namingExample(style))}</td>
+      <td>${escapeAttribute(localize(style.descriptionKey))}</td>
+      <td>${escapeAttribute(namingExamples(style))}</td>
     </tr>
   `).join("");
 
@@ -28,19 +33,28 @@ function helpContent() {
         <dl class="runyth-npc-button__help-list">
           <dt>${escapeAttribute(localize("ui.count"))}</dt><dd>${escapeAttribute(localize("help.count"))}</dd>
           <dt>${escapeAttribute(localize("ui.role"))}</dt><dd>${escapeAttribute(localize("help.role"))}</dd>
-          <dt>${escapeAttribute(localize("ui.tier"))}</dt><dd>${escapeAttribute(localize("help.tier"))}</dd>
-          <dt>${escapeAttribute(localize("ui.species"))}</dt><dd>${escapeAttribute(localize("help.species"))}</dd>
+          <dt>${escapeAttribute(localize(tierStyle === TIER_STYLES.CR ? "ui.challengeRating" : "ui.tier"))}</dt><dd>${escapeAttribute(tierStyleText)}</dd>
+          <dt>${escapeAttribute(localize("ui.race"))}</dt><dd>${escapeAttribute(localize("help.race"))}</dd>
+          <dt>${escapeAttribute(localize("ui.wealth"))}</dt><dd>${escapeAttribute(localize("help.wealth"))}</dd>
           <dt>${escapeAttribute(localize("ui.seed"))}</dt><dd>${escapeAttribute(localize("help.seed"))}</dd>
           <dt>${escapeAttribute(localize("ui.destinationFolder"))}</dt><dd>${escapeAttribute(localize("help.destination"))}</dd>
         </dl>
       </section>
       <section>
+        <h2>${escapeAttribute(localize("help.pickersTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.pickersBody"))}</p>
+      </section>
+      <section>
         <h2>${escapeAttribute(localize("help.namingTitle"))}</h2>
         <p>${escapeAttribute(localize("help.namingBody"))}</p>
         <table class="runyth-npc-button__help-table">
-          <thead><tr><th>${escapeAttribute(localize("ui.namingStyle"))}</th><th>${escapeAttribute(localize("help.examples"))}</th></tr></thead>
+          <thead><tr><th>${escapeAttribute(localize("ui.namingStyle"))}</th><th>${escapeAttribute(localize("help.character"))}</th><th>${escapeAttribute(localize("help.examples"))}</th></tr></thead>
           <tbody>${namingRows}</tbody>
         </table>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.actorReviewTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.actorReviewBody"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.aiTitle"))}</h2>
@@ -68,8 +82,8 @@ class NpcHelpApplication extends foundry.applications.api.ApplicationV2 {
       minimizable: true
     },
     position: {
-      width: 440,
-      height: 650
+      width: 520,
+      height: 700
     }
   };
 
@@ -90,7 +104,7 @@ function sidePosition(master, help) {
   const gap = 12;
   const masterPosition = master?.position ?? {};
   const helpPosition = help.position ?? {};
-  const width = Number(helpPosition.width) || 440;
+  const width = Number(helpPosition.width) || 520;
   const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
   const preferredLeft = Number(masterPosition.left) + Number(masterPosition.width) + gap;
   const left = Number.isFinite(preferredLeft) && preferredLeft + width <= viewportWidth

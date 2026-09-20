@@ -1,6 +1,9 @@
+import { MODULE_ID } from "../constants.mjs";
+
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 const VALID_SIZES = new Set(["tiny", "sm", "med", "lg", "huge", "grg"]);
 const DEFAULT_ACTOR_IMAGE = "icons/svg/mystery-man.svg";
+const DEFAULT_ITEM_IMAGE = "icons/svg/item-bag.svg";
 const ALLOWED_BIOGRAPHY_TAGS = new Set(["p", "/p", "strong", "/strong", "em", "/em", "ul", "/ul", "li", "/li", "br", "br/"]);
 
 function fail(message) {
@@ -36,8 +39,8 @@ function escapeHtml(value) {
 }
 
 /**
- * Preserve only a tiny, attribute-free HTML subset in AI-authored biography text.
- * Everything else is escaped as text before it can reach a Foundry sheet.
+ * Preserve only a tiny, attribute-free HTML subset in AI-authored biography
+ * and roleplay item text. Everything else is escaped as plain text.
  */
 export function sanitizeBiographyHtml(value) {
   const input = String(value ?? "");
@@ -92,6 +95,44 @@ export function parseNpcJsonPayload(text) {
   } catch (error) {
     fail(`The clipboard JSON could not be parsed: ${error.message}`);
   }
+}
+
+function normalizeItemRequest(source, actorIndex, itemIndex) {
+  const path = `Actor ${actorIndex + 1}.items[${itemIndex}]`;
+  const item = objectAt(source, path);
+  const name = String(item.name ?? "").trim();
+  if (!name) fail(`${path}.name is required.`);
+
+  const rawLookup = item.lookup;
+  const lookup = rawLookup === null || rawLookup === undefined ? "" : String(rawLookup).trim();
+  const quantity = integer(item.quantity ?? 1, `${path}.quantity`, { min: 1, max: 1000 });
+  const description = sanitizeBiographyHtml(item.description ?? "");
+
+  return {
+    name: name.slice(0, 120),
+    type: "loot",
+    img: DEFAULT_ITEM_IMAGE,
+    system: {
+      quantity,
+      description: {
+        value: description,
+        chat: ""
+      }
+    },
+    flags: {
+      [MODULE_ID]: {
+        aiImported: true,
+        canonicalLookup: lookup.slice(0, 120)
+      }
+    }
+  };
+}
+
+function normalizeItems(value, actorIndex) {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) fail(`Actor ${actorIndex + 1}.items must be an array.`);
+  if (value.length > 50) fail(`Actor ${actorIndex + 1}.items may contain at most 50 entries.`);
+  return value.map((item, itemIndex) => normalizeItemRequest(item, actorIndex, itemIndex));
 }
 
 function normalizeActor(source, index) {
@@ -162,9 +203,9 @@ function normalizeActor(source, index) {
         size
       }
     },
-    items: [],
+    items: normalizeItems(actor.items, index),
     flags: {
-      "runyth-npc-button": {
+      [MODULE_ID]: {
         aiImported: true
       }
     }

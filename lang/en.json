@@ -7,11 +7,19 @@
       },
       "defaultFolder": {
         "name": "Default NPC folder",
-        "hint": "Root Actor folder used when no destination is entered in NPC Button. Leave empty to create NPCs at the Actors root."
+        "hint": "Root Actor folder used when the dashboard is set to the configured default destination. Leave empty to use the Actors root."
       },
       "maxBatch": {
         "name": "Maximum batch size",
         "hint": "Maximum number of NPC Actors that one generation or import action may create."
+      },
+      "tierStyle": {
+        "name": "Tier style",
+        "hint": "Choose whether NPC Button uses its named competence tiers or exact D&D 5e Challenge Ratings. CR mode exposes every standard CR from 0 through 30.",
+        "choices": {
+          "named": "Named tiers",
+          "cr": "Challenge Rating (CR)"
+        }
       }
     },
     "ui": {
@@ -24,11 +32,19 @@
       "countRange": "1–{max}",
       "quickCounts": "Common counts",
       "role": "Role",
+      "roleHint": "Search or browse the hierarchical role catalog. The picker is virtualized so it stays responsive as the catalog grows.",
       "tier": "Tier",
-      "species": "Species",
-      "speciesPlaceholder": "Choose a suggestion or type any species",
-      "speciesHint": "Preset species are suggested, but any custom species can be typed directly here.",
+      "tierHint": "Named competence tier. Change Tier style in Configure Settings to use exact CR values instead.",
+      "challengeRating": "Challenge Rating",
+      "challengeRatingHint": "Choose any standard D&D 5e CR from 0, 1/8, 1/4, 1/2, and 1 through 30.",
+      "race": "Race",
+      "raceHint": "Search or browse preset races. To use any other race, type its name into the picker search and select the custom entry.",
+      "customRace": "Custom race",
+      "useCustomRace": "Use this text as a custom Race",
       "namingStyle": "Naming style",
+      "namingStyleHint": "Search or browse naming palettes. The Help window shows clearly distinct examples for each style.",
+      "wealth": "Wealth",
+      "wealthHint": "Influences AI-generated money, equipment quality, personal possessions, and status items.",
       "customName": "Name or batch prefix",
       "customNamePlaceholder": "Leave blank for generated names",
       "seed": "Seed",
@@ -37,12 +53,19 @@
       "destination": "Destination",
       "destinationIntro": "Choose where locally generated or AI-imported Actors are created.",
       "destinationFolder": "Actor folder",
-      "destinationHint": "Leave blank for the configured default. Choose an existing folder suggestion, or type a new root-folder name.",
+      "destinationHint": "Browse the full Actor-folder hierarchy, choose the Actors root or configured default, or type a new root-folder name into search and select it.",
       "actorsRoot": "Actors root",
-      "openLastActor": "Open the last created Actor",
-      "openLastActorHint": "Useful for immediately reviewing the result after a local generation or AI import.",
+      "configuredDefault": "Configured default",
+      "configuredDefaultNamed": "Configured default — {name}",
+      "configuredDefaultRoot": "Configured default — Actors root",
+      "destinationMissing": "Missing Actor folder",
+      "createRootFolder": "Create or reuse a new root Actor folder with this name",
+      "searchOptions": "Search options…",
+      "noMatchingOptions": "No matching options.",
+      "openLastActor": "Open created Actors for review",
+      "openLastActorHint": "Opens up to 10 Actors. Up to three are visible side-by-side; later Actors are stacked behind them so closing a top sheet reveals the next one.",
       "aiTitle": "AI workflow",
-      "aiIntro": "Copy a strict prompt into any AI conversation, copy its JSON reply, then import that reply into the destination above.",
+      "aiIntro": "Copy a detailed strict prompt into any AI conversation, copy its JSON reply, then import that reply into the destination above.",
       "singleAiObject": "Use a single JSON object when Count is 1",
       "singleAiObjectHint": "Off by default. Otherwise the prompt always requests a JSON array, including for a single NPC.",
       "copyPrompt": "Copy prompt",
@@ -53,28 +76,35 @@
       "createLocally": "Create locally",
       "creating": "Creating NPCs…",
       "copyingPrompt": "Preparing AI prompt…",
-      "importing": "Validating and importing NPCs…"
+      "importing": "Validating items and importing NPCs…"
     },
     "help": {
       "title": "NPC Button Help",
       "generationTitle": "Generation controls",
       "generationBody": "The dashboard uses the same intent for deterministic local generation and the AI prompt workflow.",
       "count": "Type any allowed number directly, or use the common 1, 3, 5, and 10 shortcuts.",
-      "role": "Defines the NPC's practical function and biases local ability scores and durability.",
-      "tier": "Controls the overall competence and challenge of locally generated NPCs.",
-      "species": "Choose a suggested species or simply type a custom one in the same field; no separate Custom mode is required.",
+      "role": "Defines the NPC's practical function and biases local ability scores and durability. It also strongly guides AI inventory and characterization.",
+      "tierStyleNamed": "The world currently uses named tiers. Ordinary through Champion provide broad competence bands; Configure Settings can switch the world to exact CR selection.",
+      "tierStyleCr": "The world currently uses CR tiers. Every standard D&D 5e CR from 0 through 30 is selectable and the AI prompt requests that exact CR.",
+      "race": "Browse preset races in a searchable hierarchy. Typing a non-preset name offers it directly as a custom Race without a separate Custom mode.",
+      "wealth": "Poor, Average, Well-Off, or Elite. The AI uses this to scale carried money, equipment quality, comfort items, and visible status.",
       "seed": "Only affects deterministic local generation. It is intentionally not required for AI generation.",
-      "destination": "Blank uses the configured default. An existing suggestion targets that folder. Any other text creates or reuses a root Actor folder of that name.",
+      "destination": "The folder picker preserves the Actor hierarchy. It can target any nested folder, the Actors root, the configured default, or a newly named root folder.",
+      "pickersTitle": "Scalable pickers",
+      "pickersBody": "Role, Race, Naming style, Tier/CR, and Actor folder use searchable hierarchical lists. The lists render only visible rows plus a small buffer, so very large catalogs and folder trees do not create huge DOMs or lag the dashboard.",
       "namingTitle": "Naming styles",
-      "namingBody": "Naming styles are deliberately broad tonal palettes rather than historical or linguistic claims.",
-      "examples": "Example results",
+      "namingBody": "Naming styles are broad fictional tonal palettes rather than historical or linguistic claims. The examples below are deliberately varied so the difference is visible before generation.",
+      "character": "Character",
+      "examples": "Distinct examples",
+      "actorReviewTitle": "Actor review layout",
+      "actorReviewBody": "When review opening is enabled, the module opens at most the first 10 created Actors. Up to three top sheets are arranged side-by-side. Additional sheets reuse those column positions behind the first row, so closing a top sheet exposes the next Actor in that stack.",
       "aiTitle": "AI workflow",
-      "aiBody": "The module does not call an AI service itself. It creates a strict portable prompt and validates the returned Foundry Actor JSON before importing it.",
-      "aiStep1": "Configure Count, Role, Tier, Species, Naming style, and Destination.",
+      "aiBody": "The module does not call an AI service itself. It creates a strict portable prompt, validates the returned Actor core and inventory requests, resolves canonical D&D equipment from system compendia when possible, and safely falls back to roleplay loot items when necessary.",
+      "aiStep1": "Configure Count, Role, Tier or CR, Race, Wealth, Naming style, and Destination.",
       "aiStep2": "Click Copy prompt and paste the prompt into an AI conversation.",
       "aiStep3": "Copy the AI's JSON-only reply to your clipboard.",
       "aiStep4": "Return to Foundry and click Import NPC. The current destination is applied locally.",
-      "aiValidation": "The importer accepts the stable D&D 5e NPC Actor core used by this release and rejects malformed or count-mismatched payloads before creating Actors."
+      "aiValidation": "The importer rejects malformed or count-mismatched payloads before creating Actors. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items."
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -91,13 +121,32 @@
       "clipboardRead": "Clipboard reading is not available or was blocked by the browser.",
       "manualPasteFallback": "Open the manual-paste section, paste the AI JSON there, and click Import NPC again."
     },
+    "roleGroups": {
+      "everyday": "Everyday & commerce",
+      "learned": "Learned & specialist",
+      "martial": "Martial & security",
+      "authority": "Authority & status"
+    },
     "roles": {
       "civilian": "Civilian",
+      "artisan": "Artisan",
+      "merchant": "Merchant",
+      "acolyte": "Acolyte",
+      "scholar": "Scholar",
+      "specialist": "Specialist",
       "guard": "Guard",
       "scout": "Scout",
       "bruiser": "Bruiser",
-      "specialist": "Specialist",
-      "leader": "Leader"
+      "soldier": "Soldier",
+      "leader": "Leader",
+      "noble": "Noble"
+    },
+    "tierGroups": {
+      "named": "Named tiers",
+      "fractional": "Fractional CR",
+      "cr1to10": "CR 1–10",
+      "cr11to20": "CR 11–20",
+      "cr21to30": "CR 21–30"
     },
     "tiers": {
       "ordinary": "Ordinary",
@@ -106,7 +155,11 @@
       "elite": "Elite",
       "champion": "Champion"
     },
-    "species": {
+    "raceGroups": {
+      "common": "Common humanoids",
+      "other": "Other humanoids"
+    },
+    "races": {
       "human": "Human",
       "elf": "Elf",
       "dwarf": "Dwarf",
@@ -115,11 +168,30 @@
       "goblin": "Goblin",
       "custom": "Custom"
     },
+    "namingGroups": {
+      "regional": "Regional palettes"
+    },
     "naming": {
       "central": "Central",
       "coastal": "Coastal",
       "highland": "Highland",
       "frontier": "Frontier"
+    },
+    "namingDescriptions": {
+      "central": "Balanced town-and-road names with restrained surnames; broadly settled and neutral in tone.",
+      "coastal": "Open-vowel given names and maritime surnames suggesting ports, fishing communities, and sea trade.",
+      "highland": "Harder consonants and landscape-heavy surnames suggesting uplands, stone settlements, and old local lineages.",
+      "frontier": "Short practical names and occupational or settlement surnames suggesting farms, trades, border villages, and new communities."
+    },
+    "wealth": {
+      "poor": "Poor",
+      "average": "Average",
+      "wellOff": "Well-Off",
+      "elite": "Elite"
+    },
+    "folderGroups": {
+      "destination": "Destination choices",
+      "existing": "Existing Actor folders"
     }
   }
 }

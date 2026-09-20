@@ -7,11 +7,19 @@
       },
       "defaultFolder": {
         "name": "Standardordner für NSCs",
-        "hint": "Actor-Stammordner, wenn in NPC Button kein Ziel eingegeben wurde. Leer lassen, um NSCs im Actors-Stamm zu erstellen."
+        "hint": "Actor-Stammordner, der verwendet wird, wenn im Dashboard das konfigurierte Standardziel gewählt ist. Leer lassen für den Actors-Stamm."
       },
       "maxBatch": {
         "name": "Maximale Stapelgröße",
         "hint": "Maximale Anzahl an NSC-Actors, die eine Generierungs- oder Importaktion erstellen darf."
+      },
+      "tierStyle": {
+        "name": "Tier-Stil",
+        "hint": "Legt fest, ob NPC Button benannte Kompetenzstufen oder exakte D&D-5e-Challenge-Ratings verwendet. CR-Modus bietet jeden Standard-CR von 0 bis 30.",
+        "choices": {
+          "named": "Benannte Stufen",
+          "cr": "Challenge Rating (CR)"
+        }
       }
     },
     "ui": {
@@ -24,11 +32,19 @@
       "countRange": "1–{max}",
       "quickCounts": "Häufige Anzahlen",
       "role": "Rolle",
+      "roleHint": "Die hierarchische Rollenliste durchsuchen oder durchblättern. Sie ist virtualisiert und bleibt auch bei sehr vielen Einträgen reaktionsschnell.",
       "tier": "Stufe",
-      "species": "Spezies",
-      "speciesPlaceholder": "Vorschlag wählen oder beliebige Spezies eingeben",
-      "speciesHint": "Vorgegebene Spezies werden vorgeschlagen; eine eigene Spezies kann direkt in dasselbe Feld geschrieben werden.",
+      "tierHint": "Benannte Kompetenzstufe. Unter Einstellungen konfigurieren kann stattdessen exakte CR-Auswahl aktiviert werden.",
+      "challengeRating": "Challenge Rating",
+      "challengeRatingHint": "Jeden Standard-CR aus 0, 1/8, 1/4, 1/2 und 1 bis 30 wählen.",
+      "race": "Volk",
+      "raceHint": "Vorgegebene Völker durchsuchen. Für ein anderes Volk dessen Namen in die Suche schreiben und den benutzerdefinierten Eintrag wählen.",
+      "customRace": "Eigenes Volk",
+      "useCustomRace": "Diesen Text als eigenes Volk verwenden",
       "namingStyle": "Namensstil",
+      "namingStyleHint": "Namenspaletten durchsuchen. Das Hilfefenster zeigt deutlich unterschiedliche Beispiele für jeden Stil.",
+      "wealth": "Wohlstand",
+      "wealthHint": "Beeinflusst KI-generiertes Geld, Qualität der Ausrüstung, persönlichen Besitz und Statusgegenstände.",
       "customName": "Name oder Stapelpräfix",
       "customNamePlaceholder": "Leer lassen für generierte Namen",
       "seed": "Seed",
@@ -37,12 +53,19 @@
       "destination": "Ziel",
       "destinationIntro": "Legt fest, wo lokal erzeugte oder KI-importierte Actors erstellt werden.",
       "destinationFolder": "Actor-Ordner",
-      "destinationHint": "Leer lassen für den konfigurierten Standard. Bestehenden Ordner als Vorschlag wählen oder den Namen eines neuen Stammordners eingeben.",
+      "destinationHint": "Die vollständige Actor-Ordnerhierarchie durchsuchen, Actors-Stamm oder Standardziel wählen oder einen neuen Stammordnernamen suchen und auswählen.",
       "actorsRoot": "Actors-Stamm",
-      "openLastActor": "Zuletzt erstellten Actor öffnen",
-      "openLastActorHint": "Hilfreich zur sofortigen Prüfung nach lokaler Erstellung oder KI-Import.",
+      "configuredDefault": "Konfigurierter Standard",
+      "configuredDefaultNamed": "Konfigurierter Standard — {name}",
+      "configuredDefaultRoot": "Konfigurierter Standard — Actors-Stamm",
+      "destinationMissing": "Actor-Ordner fehlt",
+      "createRootFolder": "Neuen Actor-Stammordner mit diesem Namen erstellen oder wiederverwenden",
+      "searchOptions": "Optionen durchsuchen…",
+      "noMatchingOptions": "Keine passenden Optionen.",
+      "openLastActor": "Erstellte Actors zur Prüfung öffnen",
+      "openLastActorHint": "Öffnet bis zu 10 Actors. Bis zu drei sind nebeneinander sichtbar; weitere liegen dahinter, sodass beim Schließen des oberen Fensters das nächste erscheint.",
       "aiTitle": "KI-Arbeitsablauf",
-      "aiIntro": "Einen strikten Prompt in eine beliebige KI-Konversation kopieren, deren JSON-Antwort kopieren und anschließend in das oben gewählte Ziel importieren.",
+      "aiIntro": "Einen ausführlichen strikten Prompt in eine beliebige KI-Konversation kopieren, deren JSON-Antwort kopieren und anschließend in das oben gewählte Ziel importieren.",
       "singleAiObject": "Bei Anzahl 1 ein einzelnes JSON-Objekt verwenden",
       "singleAiObjectHint": "Standardmäßig aus. Andernfalls verlangt der Prompt immer ein JSON-Array, auch bei nur einem NSC.",
       "copyPrompt": "Prompt kopieren",
@@ -53,51 +76,77 @@
       "createLocally": "Lokal erstellen",
       "creating": "NSCs werden erstellt…",
       "copyingPrompt": "KI-Prompt wird vorbereitet…",
-      "importing": "NSCs werden geprüft und importiert…"
+      "importing": "Gegenstände werden geprüft und NSCs importiert…"
     },
     "help": {
       "title": "NPC Button Hilfe",
       "generationTitle": "Erstellungsoptionen",
       "generationBody": "Das Dashboard verwendet dieselbe Vorgabe für deterministische lokale Erstellung und den KI-Prompt-Arbeitsablauf.",
       "count": "Beliebige erlaubte Zahl direkt eingeben oder die häufigen Werte 1, 3, 5 und 10 verwenden.",
-      "role": "Bestimmt die praktische Funktion des NSCs und beeinflusst bei lokaler Erstellung Attribute und Robustheit.",
-      "tier": "Steuert die allgemeine Kompetenz und Herausforderung lokal erzeugter NSCs.",
-      "species": "Vorgeschlagene Spezies wählen oder direkt eine eigene eingeben; ein separater Custom-Modus ist nicht nötig.",
-      "seed": "Wirkt nur auf die deterministische lokale Erstellung und ist für KI-Erstellung absichtlich nicht erforderlich.",
-      "destination": "Leer verwendet den konfigurierten Standard. Ein bestehender Vorschlag wählt diesen Ordner. Andere Eingaben erstellen oder verwenden einen Actor-Stammordner dieses Namens.",
+      "role": "Bestimmt die praktische Funktion des NSCs und beeinflusst bei lokaler Erstellung Attribute und Robustheit. Außerdem steuert sie KI-Inventar und Charakterisierung stark.",
+      "tierStyleNamed": "Die Welt verwendet derzeit benannte Stufen. Ordinary bis Champion bilden grobe Kompetenzbereiche; unter Einstellungen konfigurieren kann auf exakte CR-Auswahl umgestellt werden.",
+      "tierStyleCr": "Die Welt verwendet derzeit CR-Stufen. Jeder Standard-CR von 0 bis 30 ist wählbar und der KI-Prompt fordert exakt diesen CR an.",
+      "race": "Vorgegebene Völker in einer durchsuchbaren Hierarchie wählen. Ein nicht vorhandener Name wird direkt als eigenes Volk angeboten, ohne separaten Custom-Modus.",
+      "wealth": "Poor, Average, Well-Off oder Elite. Die KI skaliert damit mitgeführtes Geld, Ausrüstungsqualität, Komfortgegenstände und sichtbaren Status.",
+      "seed": "Beeinflusst nur die deterministische lokale Erstellung und ist für KI-Erstellung absichtlich nicht erforderlich.",
+      "destination": "Der Ordnerwähler erhält die Actor-Hierarchie. Er kann beliebige Unterordner, den Actors-Stamm, den konfigurierten Standard oder einen neu benannten Stammordner ansteuern.",
+      "pickersTitle": "Skalierbare Auswahlfelder",
+      "pickersBody": "Rolle, Volk, Namensstil, Tier/CR und Actor-Ordner verwenden durchsuchbare hierarchische Listen. Nur sichtbare Zeilen plus kleiner Puffer werden gerendert, sodass sehr große Kataloge und Ordnerbäume keine riesigen DOMs oder Verzögerungen erzeugen.",
       "namingTitle": "Namensstile",
-      "namingBody": "Namensstile sind bewusst breite Klangrichtungen und keine historischen oder sprachwissenschaftlichen Aussagen.",
-      "examples": "Beispielergebnisse",
+      "namingBody": "Namensstile sind breite fiktionale Klangpaletten und keine historischen oder sprachwissenschaftlichen Aussagen. Die Beispiele sind absichtlich deutlich verschieden.",
+      "character": "Charakter",
+      "examples": "Deutliche Beispiele",
+      "actorReviewTitle": "Actor-Prüfanordnung",
+      "actorReviewBody": "Bei aktivierter Prüfung werden höchstens die ersten 10 erstellten Actors geöffnet. Bis zu drei oberste Fenster stehen nebeneinander. Weitere Fenster verwenden dieselben Spaltenpositionen dahinter, sodass beim Schließen eines oberen Fensters der nächste Actor im Stapel sichtbar wird.",
       "aiTitle": "KI-Arbeitsablauf",
-      "aiBody": "Das Modul ruft selbst keinen KI-Dienst auf. Es erstellt einen strikten portablen Prompt und validiert das zurückgegebene Foundry-Actor-JSON vor dem Import.",
-      "aiStep1": "Anzahl, Rolle, Stufe, Spezies, Namensstil und Ziel konfigurieren.",
+      "aiBody": "Das Modul ruft selbst keinen KI-Dienst auf. Es erzeugt einen strikten portablen Prompt, prüft Actor-Kern und Inventaranfragen, löst kanonische D&D-Ausrüstung nach Möglichkeit aus System-Kompendien auf und fällt sonst sicher auf Rollenspiel-Loot-Items zurück.",
+      "aiStep1": "Anzahl, Rolle, Tier oder CR, Volk, Wohlstand, Namensstil und Ziel konfigurieren.",
       "aiStep2": "Prompt kopieren anklicken und den Prompt in eine KI-Konversation einfügen.",
       "aiStep3": "Die reine JSON-Antwort der KI in die Zwischenablage kopieren.",
-      "aiStep4": "Zu Foundry zurückkehren und NSC importieren anklicken. Das aktuelle Ziel wird lokal angewandt.",
-      "aiValidation": "Der Importer akzeptiert den stabilen D&D-5e-NSC-Actor-Kern dieser Version und weist fehlerhafte oder mengenmäßig abweichende Payloads zurück, bevor Actors erstellt werden."
+      "aiStep4": "Zu Foundry zurückkehren und NSC importieren anklicken. Das aktuelle Ziel wird lokal angewendet.",
+      "aiValidation": "Der Importer lehnt fehlerhafte oder in der Anzahl unpassende Payloads vor der Actor-Erstellung ab. Kanonische Gegenstände werden gegen D&D-5e-Ausrüstungskompendien aufgelöst; erfundener Rollenspielbesitz bleibt ein sicheres Loot-Item."
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
       "created": "{count} NSC-Actor(s) erstellt.",
-      "noneCreated": "Es wurden keine NSC-Actors erstellt.",
+      "noneCreated": "Keine NSC-Actors wurden erstellt.",
       "failed": "NSC-Erstellung fehlgeschlagen: {message}",
-      "promptCopied": "KI-NSC-Prompt in die Zwischenablage kopiert.",
+      "promptCopied": "KI-NSC-Prompt wurde in die Zwischenablage kopiert.",
       "imported": "{count} NSC-Actor(s) importiert.",
-      "noneImported": "Es wurden keine NSC-Actors importiert.",
+      "noneImported": "Keine NSC-Actors wurden importiert.",
       "importFailed": "NSC-Import fehlgeschlagen: {message}"
     },
     "errors": {
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
-      "clipboardRead": "Lesen der Zwischenablage ist nicht verfügbar oder wurde vom Browser blockiert.",
+      "clipboardRead": "Lesen aus der Zwischenablage ist nicht verfügbar oder wurde vom Browser blockiert.",
       "manualPasteFallback": "Den Bereich für manuelles Einfügen öffnen, das KI-JSON dort einfügen und NSC importieren erneut anklicken."
+    },
+    "roleGroups": {
+      "everyday": "Alltag & Handel",
+      "learned": "Gelehrte & Spezialisten",
+      "martial": "Kampf & Sicherheit",
+      "authority": "Autorität & Status"
     },
     "roles": {
       "civilian": "Zivilist",
+      "artisan": "Handwerker",
+      "merchant": "Händler",
+      "acolyte": "Akolyth",
+      "scholar": "Gelehrter",
+      "specialist": "Spezialist",
       "guard": "Wache",
       "scout": "Späher",
       "bruiser": "Schläger",
-      "specialist": "Spezialist",
-      "leader": "Anführer"
+      "soldier": "Soldat",
+      "leader": "Anführer",
+      "noble": "Adliger"
+    },
+    "tierGroups": {
+      "named": "Benannte Stufen",
+      "fractional": "Bruch-CR",
+      "cr1to10": "CR 1–10",
+      "cr11to20": "CR 11–20",
+      "cr21to30": "CR 21–30"
     },
     "tiers": {
       "ordinary": "Gewöhnlich",
@@ -106,7 +155,11 @@
       "elite": "Elite",
       "champion": "Champion"
     },
-    "species": {
+    "raceGroups": {
+      "common": "Häufige Humanoide",
+      "other": "Andere Humanoide"
+    },
+    "races": {
       "human": "Mensch",
       "elf": "Elf",
       "dwarf": "Zwerg",
@@ -115,11 +168,30 @@
       "goblin": "Goblin",
       "custom": "Benutzerdefiniert"
     },
+    "namingGroups": {
+      "regional": "Regionale Paletten"
+    },
     "naming": {
       "central": "Zentral",
       "coastal": "Küste",
       "highland": "Hochland",
       "frontier": "Grenzland"
+    },
+    "namingDescriptions": {
+      "central": "Ausgewogene Stadt-und-Landstraßen-Namen mit zurückhaltenden Nachnamen; sesshaft und neutral im Klang.",
+      "coastal": "Offene Vokale und maritime Nachnamen mit Anklängen an Häfen, Fischerei und Seehandel.",
+      "highland": "Härtere Konsonanten und landschaftsbezogene Nachnamen mit Anklängen an Hochland, Steinorte und alte Linien.",
+      "frontier": "Kurze praktische Namen und Berufs- oder Siedlungsnachnamen mit Anklängen an Höfe, Gewerke, Randdörfer und neue Gemeinden."
+    },
+    "wealth": {
+      "poor": "Arm",
+      "average": "Durchschnittlich",
+      "wellOff": "Wohlhabend",
+      "elite": "Elite"
+    },
+    "folderGroups": {
+      "destination": "Zieloptionen",
+      "existing": "Bestehende Actor-Ordner"
     }
   }
 }

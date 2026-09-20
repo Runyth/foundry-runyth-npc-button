@@ -1,4 +1,4 @@
-import { MODULE_ID, SETTINGS } from "./constants.mjs";
+import { MODULE_ID, SETTINGS, TIER_STYLES } from "./constants.mjs";
 
 export function registerSettings() {
   game.settings.register(MODULE_ID, SETTINGS.DEBUG, {
@@ -33,6 +33,20 @@ export function registerSettings() {
       max: 100,
       step: 1
     }
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.TIER_STYLE, {
+    name: `${MODULE_ID}.settings.tierStyle.name`,
+    hint: `${MODULE_ID}.settings.tierStyle.hint`,
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      [TIER_STYLES.NAMED]: game.i18n.localize(`${MODULE_ID}.settings.tierStyle.choices.named`),
+      [TIER_STYLES.CR]: game.i18n.localize(`${MODULE_ID}.settings.tierStyle.choices.cr`)
+    },
+    default: TIER_STYLES.NAMED
   });
 
   game.settings.register(MODULE_ID, SETTINGS.LAST_OPTIONS, {
@@ -71,11 +85,14 @@ export async function saveLastOptions(options) {
     count: options.count,
     role: options.role,
     tier: options.tier,
+    cr: options.cr,
     species: options.species,
     namingStyle: options.namingStyle,
+    wealth: options.wealth,
     customSpecies: options.customSpecies,
     folderId: options.folderId,
     newFolderName: options.newFolderName,
+    useActorRoot: options.useActorRoot,
     openLastActor: options.openLastActor,
     singleAiObject: options.singleAiObject
   };

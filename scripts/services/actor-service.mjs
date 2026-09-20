@@ -1,8 +1,11 @@
 import { MODULE_ID, SETTINGS } from "../constants.mjs";
 import { buildActorSource, generateNpcBatch } from "../generator/npc-generator.mjs";
 import { logger } from "../logger.mjs";
+import { resolveCanonicalItemsForActors } from "./item-resolver.mjs";
 
 export async function resolveNpcFolder(options) {
+  if (options.useActorRoot) return null;
+
   const requested = String(options.newFolderName ?? "").trim();
   if (!requested && options.folderId) {
     const existing = game.folders.get(options.folderId);
@@ -72,7 +75,8 @@ export async function createImportedNpcActors(actorSources, options = {}) {
   }
 
   const folder = await resolveNpcFolder(options);
-  const sources = actorSources.map((source) => ({
+  const resolvedItems = await resolveCanonicalItemsForActors(actorSources);
+  const sources = resolvedItems.map((source) => ({
     ...source,
     folder: folder?.id ?? null
   }));

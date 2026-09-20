@@ -34,7 +34,20 @@ function actorSource(name = "Mara Reed") {
       },
       traits: { size: "med" }
     },
-    items: [{ name: "Untrusted item" }],
+    items: [
+      {
+        name: "Mace",
+        lookup: "Mace",
+        quantity: 1,
+        description: "A standard service weapon."
+      },
+      {
+        name: "Worn coin purse",
+        lookup: null,
+        quantity: 1,
+        description: '<p class="coins">Contains 8 cp and 3 sp.</p>'
+      }
+    ],
     flags: { arbitrary: true }
   };
 }
@@ -51,6 +64,24 @@ test("AI prompt requests a single object only when explicitly enabled", () => {
   assert.match(prompt, /root JSON value must be an object/);
 });
 
+test("AI prompt requires role-fitting inventory, rumours, secrets, relationships, and wealth", () => {
+  const prompt = buildAiPrompt({
+    count: 3,
+    roleLabel: "Acolyte",
+    roleEquipmentHint: "holy symbol and devotional possessions",
+    wealthLabel: "Poor",
+    wealthPrompt: "very little cash",
+    tierLabel: "CR 1/4",
+    raceLabel: "Human"
+  });
+  assert.match(prompt, /Inventory is important/);
+  assert.match(prompt, /holy symbol and devotional possessions/);
+  assert.match(prompt, /Rumours, Secrets, Relationships/);
+  assert.match(prompt, /connect the NPCs/);
+  assert.match(prompt, /Wealth: Poor/);
+  assert.match(prompt, /lookup to its exact English canonical equipment name/);
+});
+
 test("default import contract rejects a lone object", () => {
   assert.throws(
     () => normalizeNpcJsonPayload(actorSource(), { expectedCount: 1 }),
@@ -65,15 +96,28 @@ test("single-object import mode rejects an array", () => {
   );
 });
 
-test("AI Actor normalization strips unsupported source data and sanitizes biography HTML", () => {
+test("AI Actor normalization strips unsupported source data, sanitizes biography, and converts inventory requests", () => {
   const [actor] = normalizeNpcJsonPayload([actorSource()], { expectedCount: 1 });
   assert.equal(actor.folder, undefined);
   assert.equal(actor.img, "icons/svg/mystery-man.svg");
-  assert.deepEqual(actor.items, []);
+  assert.equal(actor.items.length, 2);
+  assert.equal(actor.items[0].type, "loot");
+  assert.equal(actor.items[0].flags["runyth-npc-button"].canonicalLookup, "Mace");
+  assert.equal(actor.items[1].flags["runyth-npc-button"].canonicalLookup, "");
+  assert.equal(actor.items[1].system.description.value, "<p>Contains 8 cp and 3 sp.</p>");
   assert.deepEqual(actor.flags, { "runyth-npc-button": { aiImported: true } });
   assert.equal(actor.system.details.biography.value.includes("onclick"), false);
   assert.equal(actor.system.details.biography.value.includes("<script>"), false);
   assert.match(actor.system.details.biography.value, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+});
+
+test("AI inventory rejects invalid quantities", () => {
+  const source = actorSource();
+  source.items[0].quantity = 0;
+  assert.throws(
+    () => normalizeNpcJsonPayload([source], { expectedCount: 1 }),
+    /quantity must be a number between 1 and 1000/
+  );
 });
 
 test("clipboard parser tolerates a fenced JSON reply", () => {
