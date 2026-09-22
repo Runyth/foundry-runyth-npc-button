@@ -1,6 +1,8 @@
 import { buildPortraitPromptFromActor } from "../ai/portrait-prompt-builder.mjs";
 import { MODULE_ID } from "../constants.mjs";
-import { writeClipboardText } from "../utils/clipboard.mjs";
+import { tryWriteClipboardText } from "../utils/clipboard.mjs";
+import { logger } from "../logger.mjs";
+import { openManualCopy } from "./manual-copy.mjs";
 
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
@@ -37,7 +39,9 @@ function closeButton(app, header) {
 
 export async function copyPortraitPrompt(actor) {
   if (!supportsPortraitPrompt(actor)) throw new Error(localize("errors.portraitPromptUnavailable"));
-  await writeClipboardText(buildPortraitPromptFromActor(actor));
+  const prompt = buildPortraitPromptFromActor(actor);
+  const result = await tryWriteClipboardText(prompt);
+  return { ...result, prompt };
 }
 
 /**
@@ -62,7 +66,15 @@ export function injectPortraitPromptButton(app, element = null) {
     event.preventDefault();
     event.stopPropagation();
     void copyPortraitPrompt(actor)
-      .then(() => ui.notifications.info(localize("notifications.portraitPromptCopied")))
+      .then(async (result) => {
+        if (result.ok) {
+          ui.notifications.info(localize("notifications.portraitPromptCopied"));
+          return;
+        }
+        logger.warn("Portrait prompt prepared, but clipboard copy failed.", result.error);
+        ui.notifications.warn(localize("notifications.clipboardUnavailable"));
+        await openManualCopy(result.prompt, { label: localize("manualCopy.portraitPrompt") });
+      })
       .catch((error) => ui.notifications.error(game.i18n.format(`${MODULE_ID}.notifications.failed`, { message: error?.message ?? String(error) })));
   });
 

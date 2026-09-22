@@ -1,10 +1,14 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
-import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES } from "../generator/data.mjs";
+import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES, ROLE_COMPOSITION_MODES } from "../generator/data.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
+}
+
+function configuredLabel(config) {
+  return config?.labelKey ? localize(config.labelKey) : (config?.label ?? "");
 }
 
 function namingExamples(style) {
@@ -24,21 +28,28 @@ function helpContent() {
   const groupTypes = getGroupTypes();
   const namingRows = Object.values(namingStyles).map((style) => `
     <tr>
-      <th scope="row">${escapeAttribute(localize(style.labelKey))}</th>
+      <th scope="row">${escapeAttribute(configuredLabel(style))}</th>
       <td>${escapeAttribute(localize(style.descriptionKey))}</td>
       <td>${escapeAttribute(namingExamples(style))}</td>
     </tr>
   `).join("");
   const raceNames = Object.entries(races)
     .filter(([id]) => id !== "custom")
-    .map(([, race]) => localize(race.labelKey))
+    .map(([, race]) => configuredLabel(race))
     .join(", ");
   const habitatExamples = ["forestVillage", "desertOasis", "riverlands", "coast", "island", "mountains", "tundra", "underground"]
     .map((id) => localize((habitats[id] ?? HABITATS[id]).labelKey))
     .join(", ");
   const groupExamples = ["family", "guardPatrol", "orcRaiders", "caravan", "shipCrew", "templeHousehold", "villageCouncil", "expedition"]
-    .map((id) => localize((groupTypes[id] ?? GROUP_TYPES[id]).labelKey))
+    .map((id) => configuredLabel(groupTypes[id] ?? GROUP_TYPES[id]))
     .join(", ");
+  const roleMixRows = Object.entries(ROLE_COMPOSITION_MODES).map(([id, config]) => `
+    <tr>
+      <th scope="row">${escapeAttribute(configuredLabel(config))}</th>
+      <td>${escapeAttribute(localize(`help.roleMixModes.${id}`))}</td>
+      <td>${escapeAttribute(localize(`help.roleMixExamples.${id}`))}</td>
+    </tr>
+  `).join("");
 
   return `
     <article class="runyth-npc-button__help">
@@ -85,6 +96,16 @@ function helpContent() {
       <section>
         <h2>${escapeAttribute(localize("help.compositionTitle"))}</h2>
         <p>${escapeAttribute(localize("help.compositionBody"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.roleMixTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.roleMixBody"))}</p>
+        <table class="runyth-npc-button__help-table">
+          <thead><tr><th>${escapeAttribute(localize("help.roleMixMode"))}</th><th>${escapeAttribute(localize("help.roleMixRule"))}</th><th>${escapeAttribute(localize("help.roleMixExample"))}</th></tr></thead>
+          <tbody>${roleMixRows}</tbody>
+        </table>
+        <p>${escapeAttribute(localize("help.roleMixWeights"))}</p>
+        <p class="runyth-npc-button__note">${escapeAttribute(localize("help.roleMixRounding"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.combatReadinessTitle"))}</h2>

@@ -488,8 +488,8 @@ export const ROLE_COMPOSITION_MODES = Object.freeze({
   variants: { label: "Role variants", labelKey: "roleComposition.variants", prompt: "keep the selected primary role, but distribute distinct practical subtypes or professions as evenly as possible" },
   groupPreset: { label: "Group-appropriate roles", labelKey: "roleComposition.groupPreset", prompt: "use the selected group archetype's natural internal division of responsibilities" },
   balanced: { label: "Balanced mixed roles", labelKey: "roleComposition.balanced", prompt: "distribute the allowed roles roughly evenly" },
-  primary: { label: "Primary-role majority", labelKey: "roleComposition.primary", prompt: "use about 65–75% primary role and spread the remainder across the other allowed roles" },
-  dominant: { label: "Strong primary-role majority", labelKey: "roleComposition.dominant", prompt: "use about 80–90% primary role and only a small minority of the other allowed roles" },
+  primary: { label: "Primary-role majority", labelKey: "roleComposition.primary", prompt: "target 70% primary role and spread the remaining 30% across the other allowed roles" },
+  dominant: { label: "Strong primary-role majority", labelKey: "roleComposition.dominant", prompt: "target 85% primary role and spread the remaining 15% across the other allowed roles" },
   weighted: { label: "Custom role weights", labelKey: "roleComposition.weighted", prompt: "follow the supplied relative role weights as closely as the exact group size allows" }
 });
 

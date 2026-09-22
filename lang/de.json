@@ -120,12 +120,12 @@
       "compositionTitle": "Zusammensetzung des Stapels",
       "compositionIntro": "Steuert die Verteilung von Volk und Rolle über beliebige Mehrfach-Erzeugungen, unabhängig davon, ob die NPCs eine bewusste Gruppe bilden.",
       "roleComposition": "Rollenzusammensetzung",
-      "roleCompositionHint": "Eine Rolle beibehalten, unterschiedliche Varianten dieser Rolle verteilen, die natürlichen Aufgaben des Gruppenarchetyps verwenden oder mehrere Rollen ungefähr anteilig mischen.",
+      "roleCompositionHint": "Die oben gewählte Hauptrolle ist immer die primäre Rolle. Gemischte Modi verteilen nur auf die möglichen Rollen und behalten die exakte Stapelgröße bei.",
       "possibleRoles": "Mögliche Rollen",
-      "possibleRolesHint": "Durchsuche und wähle Rollen, die in einer gemischten Rollengruppe vorkommen dürfen. Die primäre Rollenwahl bleibt die Hauptrolle.",
+      "possibleRolesHint": "Rollen durchsuchen und auswählen, die in einer gemischten Gruppe vorkommen dürfen. Die Hauptrolle wird automatisch einbezogen und ist immer die primäre Rolle.",
       "choosePossibleRoles": "Mögliche Rollen wählen…",
       "roleWeights": "Benutzerdefinierte Rollengewichte",
-      "roleWeightsHint": "Relative Gewichte; sie müssen zusammen nicht 100 ergeben.",
+      "roleWeightsHint": "Relative nichtnegative Gewichte von 0 bis 1000, keine Prozente. Größere Zahlen erhalten mehr NPCs; 0 schließt die Rolle aus, sofern mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30 entspricht 1/2/3.",
       "weaponVariety": "Waffenvielfalt",
       "weaponVarietyHint": "Steuert, ob realistische rollenpassende Waffen Nahkampf, Fernkampf oder eine Mischung bevorzugen. Reine Modi erfinden niemals eine unplausible Waffe nur für die Kategorie.",
       "previewImport": "Vor Import prüfen und bearbeiten",
@@ -134,7 +134,13 @@
       "genderComposition": "Geschlechterverteilung",
       "genderCompositionHint": "Legt fest, wie männliche und weibliche NSC innerhalb des erzeugten Stapels verteilt werden.",
       "maleCount": "Männlich",
-      "femaleCount": "Weiblich"
+      "femaleCount": "Weiblich",
+      "primaryRoleNote": "Primäre Rolle: {role}. Das ist die oben im Hauptfeld Rolle gewählte Rolle.",
+      "roleMixPreview": "{count} NPCs → {distribution}",
+      "preparedPrompt": "Vorbereiteter KI-Prompt",
+      "preparedPromptHint": "Der erzeugte Prompt bleibt hier erhalten. Wenn der automatische Zwischenablagezugriff blockiert ist oder Foundry nicht fokussiert ist, kann der Text ausgewählt oder das Kopieren erneut versucht werden.",
+      "selectPrompt": "Prompt-Text auswählen",
+      "retryPromptCopy": "Erneut kopieren"
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -177,13 +183,38 @@
       "filterTitle": "Dashboard-Filtereinstellungen",
       "filterBody": "Configure Settings bietet ein eigenes Filter-Menü. Jeder wichtige Dashboard-Katalog besitzt eine skalierbare, durchsuchbare Mehrfachauswahlliste, in der standardmäßig alle aktuellen Einträge enthalten sind; entferne Auswahlen, um Einträge auszublenden. Erweiterte String-/Regex-Erlauben- und Verbieten-Regeln bleiben verfügbar, und Filterprofile können als versionierte JSON-Dateien oder über die Zwischenablage exportiert/importiert werden.",
       "compositionTitle": "Volks- und Rollenzusammensetzung",
-      "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert (z. B. ungefähr 8/1/1 bei zehn NPCs und drei Völkern), mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Rollen können einheitlich bleiben, unterschiedliche Untertypen wie Händlerspezialisierungen durchlaufen, den Gruppen-Preset verwenden oder ebenso anteilig gemischt werden.",
+      "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert, mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Die Rollenzusammensetzung verwendet das Hauptfeld Rolle als primäre Rolle und wendet dann den gewählten Verteilungsmodus auf die erlaubten Rollen an.",
       "combatReadinessTitle": "Kampfbereitschaft",
       "combatReadinessBody": "Jeder NPC besitzt weiterhin kampffähige Werte. Die Einstellung steuert getragene Waffen und Rüstung. Waffenlos erzwingt keine davon; höhere Stufen bleiben streng rollenbezogen, sodass ein Gelehrter oder Jurist nicht plötzlich zum schwer bewaffneten Krieger wird, während Wachen, Soldaten und Plünderer natürlich skalieren.",
       "weaponVarietyTitle": "Waffenvielfalt",
       "weaponVarietyBody": "Nur Nahkampf, Nahkampf bevorzugt, Gemischt, Fernkampf bevorzugt und Nur Fernkampf gewichten oder beschränken getragene Waffen, ohne die Berufslogik zu überschreiben. Hat ein Jurist bei Nur Fernkampf keine plausible Fernkampfwaffe, ist keine Waffe das korrekte Ergebnis.",
       "importPreviewTitle": "Importvorschau",
-      "importPreviewBody": "Aktiviere Vor Import prüfen und bearbeiten, um jeden validierten KI-NPC in einem kompakten Editor zu prüfen. Kleine Felder lassen sich schnell ändern; die bearbeitete Nutzlast wird vor dem Erstellen der Actors erneut validiert."
+      "importPreviewBody": "Aktiviere Vor Import prüfen und bearbeiten, um jeden validierten KI-NPC in einem kompakten Editor zu prüfen. Kleine Felder lassen sich schnell ändern; die bearbeitete Nutzlast wird vor dem Erstellen der Actors erneut validiert.",
+      "roleMixTitle": "Rollenzusammensetzung im Detail",
+      "roleMixBody": "Die im Bereich Erzeugung gewählte Hauptrolle ist immer die primäre Rolle. Bei gemischten Modi definiert Mögliche Rollen den erlaubten Pool; die primäre Rolle wird automatisch einbezogen, auch wenn sie nicht manuell gewählt wurde. Ganzzahlige Quoten ergeben immer exakt die gewünschte Anzahl.",
+      "roleMixWeights": "Eigene Gewichte sind relative Verhältnisse, keine Prozente. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt die Rolle aus, solange mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
+      "roleMixRounding": "Wenn ein Verhältnis nicht glatt in die Stapelgröße passt, verwendet das Modul proportionale Ganzzahlquoten und vergibt übrige NPCs nach den größten Nachkommaresten. Dadurch bleibt die exakte Anzahl erhalten und das gewünschte Verhältnis wird möglichst genau getroffen.",
+      "roleMixMode": "Modus",
+      "roleMixRule": "Verteilungsregel",
+      "roleMixExample": "Beispiel mit Anzahl 10",
+      "roleMixModes": {
+        "single": "Jeder NPC verwendet die primäre Rolle.",
+        "variants": "Jeder NPC behält die primäre Rolle; praktische Untertypen dieser Rolle werden möglichst gleichmäßig verteilt, bevor Wiederholungen beginnen.",
+        "groupPreset": "Der erste NPC verwendet die primäre Rolle; weitere NPCs folgen dem eingebauten Aufgabenzyklus des Gruppentyps. Unabhängige Stapel bleiben vollständig bei der primären Rolle.",
+        "balanced": "Alle erlaubten Rollen erhalten dasselbe Gewicht.",
+        "primary": "Die primäre Rolle zielt auf 70 %; die übrigen 30 % werden gleichmäßig auf die anderen erlaubten Rollen verteilt.",
+        "dominant": "Die primäre Rolle zielt auf 85 %; die übrigen 15 % werden gleichmäßig auf die anderen erlaubten Rollen verteilt.",
+        "weighted": "Jede erlaubte Rolle verwendet ihr eingegebenes relatives Gewicht."
+      },
+      "roleMixExamples": {
+        "single": "Primär Händler → 10 Händler.",
+        "variants": "Primär Händler → 10 Händler mit unterschiedlichen Händlerspezialisierungen vor Wiederholungen.",
+        "groupPreset": "Abhängig vom Gruppentyp; bei Unabhängigen NPCs mit primär Händler → 10 Händler.",
+        "balanced": "Händler + Handwerker + Wache → 4 Händler, 3 Handwerker, 3 Wachen.",
+        "primary": "Primär Händler + Handwerker + Wache → 7 Händler, 2 Handwerker, 1 Wache.",
+        "dominant": "Primär Händler + Handwerker + Wache → 8 Händler, 1 Handwerker, 1 Wache.",
+        "weighted": "Händler 10, Handwerker 20, Wache 30 → 2 Händler, 3 Handwerker, 5 Wachen."
+      }
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -201,7 +232,10 @@
       "filtersImported": "Filterprofil importiert und angewendet.",
       "filterImportFailed": "Import des Filterprofils fehlgeschlagen",
       "filterProfileTooLarge": "Das Filterprofil ist zu groß zum Importieren.",
-      "importCancelled": "NPC-Importvorschau abgebrochen."
+      "importCancelled": "NPC-Importvorschau abgebrochen.",
+      "promptCopyManual": "KI-Prompt vorbereitet, aber automatischer Zwischenablagezugriff ist nicht verfügbar. Der Prompt bleibt unten zum manuellen Kopieren erhalten.",
+      "clipboardUnavailable": "Automatischer Zwischenablagezugriff ist nicht verfügbar. Der vorbereitete Inhalt bleibt zum manuellen Kopieren erhalten.",
+      "promptPrepareFailed": "Vorbereitung des KI-Prompts fehlgeschlagen: {message}"
     },
     "errors": {
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
@@ -489,6 +523,18 @@
       "mostlyMale": "Überwiegend männlich",
       "mostlyFemale": "Überwiegend weiblich",
       "exact": "Exakte Anzahl"
+    },
+    "manualCopy": {
+      "title": "Manuell kopieren",
+      "content": "Vorbereiteter Text",
+      "hint": "Automatischer Zwischenablagezugriff war nicht verfügbar. Der vorbereitete Inhalt bleibt unten erhalten; für Strg+C auswählen oder den Browser-Zwischenablagezugriff erneut versuchen.",
+      "select": "Text auswählen",
+      "retry": "Erneut kopieren",
+      "selected": "Text ausgewählt. Mit Strg+C kopieren.",
+      "copied": "In die Zwischenablage kopiert.",
+      "unavailable": "Zwischenablagezugriff ist weiterhin nicht verfügbar. Der Text ist zum manuellen Kopieren ausgewählt.",
+      "portraitPrompt": "Porträt-Prompt",
+      "filterProfile": "Filterprofil-JSON"
     }
   }
 }

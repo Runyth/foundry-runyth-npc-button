@@ -280,7 +280,7 @@ export function buildRoleAssignments(options = {}, count = 1, random = Math.rand
 
   const ids = normalizeGroupRoleIds(options);
   if (ids.length === 1) return Array.from({ length: total }, () => ({ role: ids[0], variant: "" }));
-  const primaryId = ids.includes(options.primaryRole) ? options.primaryRole : primary;
+  const primaryId = primary;
   const weights = {};
   if (composition === "primary" || composition === "dominant") {
     const primaryShare = composition === "dominant" ? 0.85 : 0.70;

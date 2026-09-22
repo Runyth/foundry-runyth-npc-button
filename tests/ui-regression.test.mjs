@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { bindDashboardActionButtons } from "../scripts/ui/dashboard-bindings.mjs";
 import { bindNamedControls, bindOptionalControl, namedFormChecked, namedFormControls, namedFormValue } from "../scripts/ui/form-events.mjs";
-import { readClipboardText, writeClipboardText } from "../scripts/utils/clipboard.mjs";
+import { readClipboardText, tryWriteClipboardText, writeClipboardText } from "../scripts/utils/clipboard.mjs";
 
 class FakeControl extends EventTarget {
   constructor({ name = "", type = "text", value = "", checked = false } = {}) {
@@ -163,6 +163,47 @@ test("clipboard reader returns browser clipboard text", async () => {
   assert.equal(value, "json");
 });
 
+test("best-effort clipboard writer isolates unfocused and permission failures", async () => {
+  let foundryCalls = 0;
+  let browserCalls = 0;
+  const notAllowed = Object.assign(new Error("Document is not focused"), { name: "NotAllowedError" });
+  const result = await tryWriteClipboardText("prepared prompt", {
+    gameRef: { clipboard: { copyPlainText() { foundryCalls += 1; throw notAllowed; } } },
+    navigatorRef: { clipboard: { async writeText() { browserCalls += 1; throw notAllowed; } } }
+  });
+  assert.equal(result.ok, false);
+  assert.equal(result.error.name, "NotAllowedError");
+  assert.equal(foundryCalls, 1);
+  assert.equal(browserCalls, 1);
+});
+
+test("best-effort clipboard writer reports unavailable API without throwing", async () => {
+  const result = await tryWriteClipboardText("prepared prompt", { gameRef: {}, navigatorRef: {} });
+  assert.equal(result.ok, false);
+  assert.match(result.error.message, /not available/i);
+});
+
+test("dashboard preserves prepared prompt and treats clipboard failure as a warning path", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(new URL("../scripts/ui/npc-dashboard.mjs", import.meta.url), "utf8");
+  assert.match(source, /this\.#lastPreparedPrompt = prompt/);
+  assert.match(source, /tryWriteClipboardText\(prompt\)/);
+  assert.match(source, /notifications\.promptCopyManual/);
+  assert.match(source, /data-prompt-output/);
+  assert.doesNotMatch(source, /await writeClipboardText\(prompt\)/);
+});
+
+test("runtime clipboard fallbacks never use deprecated execCommand", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const sources = await Promise.all([
+    "../scripts/utils/clipboard.mjs",
+    "../scripts/ui/manual-copy.mjs",
+    "../scripts/ui/actor-portrait-button.mjs",
+    "../scripts/filters.mjs"
+  ].map((file) => readFile(new URL(file, import.meta.url), "utf8")));
+  assert.equal(sources.some((source) => source.includes("execCommand")), false);
+});
+
 
 test("multi-picker selection updates do not reset the virtual viewport", async () => {
   const source = await import("node:fs/promises").then(({ readFile }) => readFile(new URL("../scripts/ui/hierarchical-multi-picker.mjs", import.meta.url), "utf8"));
@@ -171,4 +212,19 @@ test("multi-picker selection updates do not reset the virtual viewport", async (
   assert.equal(toggleBody.includes("updateRenderedOption"), true);
   assert.match(source, /if \(resetScroll\) viewport\.scrollTop = 0/);
   assert.match(source, /updateActiveRows\(\{ resetScroll: true \}\)/);
+});
+
+
+test("all runtime clipboard write surfaces use the best-effort isolation path", async () => {
+  const { readFile } = await import("node:fs/promises");
+  for (const file of [
+    "../scripts/ui/npc-dashboard.mjs",
+    "../scripts/ui/actor-portrait-button.mjs",
+    "../scripts/filters.mjs",
+    "../scripts/ui/manual-copy.mjs"
+  ]) {
+    const source = await readFile(new URL(file, import.meta.url), "utf8");
+    assert.match(source, /tryWriteClipboardText/);
+    assert.doesNotMatch(source, /import\s*\{[^}]*\bwriteClipboardText\b[^}]*\}/);
+  }
 });

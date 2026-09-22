@@ -120,12 +120,12 @@
       "compositionTitle": "Batch composition",
       "compositionIntro": "Control how Race and Role are distributed across any multi-NPC batch, whether or not the NPCs form an intentional group.",
       "roleComposition": "Role composition",
-      "roleCompositionHint": "Keep one Role, distribute distinct variants of that Role, use the group archetype’s natural jobs, or mix several Roles with approximate proportions.",
+      "roleCompositionHint": "The main Role selected above is always the primary Role. Mixed modes distribute only among Possible roles while preserving the exact batch Count.",
       "possibleRoles": "Possible roles",
-      "possibleRolesHint": "Search and select the Roles allowed in a mixed-role batch. The selected main Role remains the primary Role.",
+      "possibleRolesHint": "Search and select the Roles allowed in a mixed-role batch. The main Role is automatically included and is always the primary Role.",
       "choosePossibleRoles": "Choose possible roles…",
       "roleWeights": "Custom role weights",
-      "roleWeightsHint": "Relative weights; they do not need to add up to 100.",
+      "roleWeightsHint": "Relative non-negative weights from 0 to 1000, not percentages. Higher numbers receive more NPCs; 0 excludes that Role when another Role has a positive weight. 10/20/30 is the same ratio as 1/2/3.",
       "weaponVariety": "Weapon variety",
       "weaponVarietyHint": "Controls whether realistic role-appropriate weapons favor melee, ranged, or a mix. Hard-only modes never invent an implausible weapon just to satisfy the category.",
       "previewImport": "Preview and edit before import",
@@ -134,7 +134,13 @@
       "genderComposition": "Gender mix",
       "genderCompositionHint": "Choose how male and female NPCs are distributed across the generated batch.",
       "maleCount": "Male count",
-      "femaleCount": "Female count"
+      "femaleCount": "Female count",
+      "primaryRoleNote": "Primary Role: {role}. This is the Role selected in the main Role field above.",
+      "roleMixPreview": "{count} NPCs → {distribution}",
+      "preparedPrompt": "Prepared AI prompt",
+      "preparedPromptHint": "The generated prompt is kept here. If automatic clipboard access is blocked or Foundry is not focused, select the text or retry copying manually.",
+      "selectPrompt": "Select prompt text",
+      "retryPromptCopy": "Copy again"
     },
     "help": {
       "title": "NPC Button Help",
@@ -177,13 +183,38 @@
       "filterTitle": "Dashboard filter settings",
       "filterBody": "Configure Settings provides a dedicated filter menu. Each major dashboard catalog has a scalable searchable multi-select list with every current item included by default; deselect entries to hide them. Advanced allow/deny string and regex rules remain available, and filter profiles can be exported/imported as versioned JSON files or through the clipboard.",
       "compositionTitle": "Race and Role composition",
-      "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Roles can stay uniform, rotate through distinct subtypes such as merchant specialties, follow the group preset, or use the same proportional mixing model.",
+      "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Role composition uses the main Role field as the primary Role and then applies the selected distribution mode to the allowed Roles.",
       "combatReadinessTitle": "Combat readiness",
       "combatReadinessBody": "Every NPC still has combat-capable statistics. The readiness setting controls carried weapons and armor. Weaponless forces none; higher settings are strictly role-relative, so a scholar or jurist never turns into a heavily armed warrior while guards, soldiers, and raiders scale naturally.",
       "weaponVarietyTitle": "Weapon variety",
       "weaponVarietyBody": "Melee only, Melee preference, Mixed, Ranged preference, and Ranged only bias or constrain carried weapons without overriding occupational realism. If a ranged-only jurist has no plausible ranged weapon, the correct result is no weapon rather than an absurd loadout.",
       "importPreviewTitle": "Import preview",
-      "importPreviewBody": "Enable Preview and edit before import to inspect each validated AI NPC in a compact editor. Minor fields can be changed quickly; the edited payload is validated again before Actor creation."
+      "importPreviewBody": "Enable Preview and edit before import to inspect each validated AI NPC in a compact editor. Minor fields can be changed quickly; the edited payload is validated again before Actor creation.",
+      "roleMixTitle": "Role composition in detail",
+      "roleMixBody": "The main Role selected in Generation is always the primary Role. For mixed modes, Possible roles defines the allowed pool; the primary Role is automatically included even if it was not manually selected. Integer quotas always add up to the requested Count.",
+      "roleMixWeights": "Custom weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Role as long as at least one other Role has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
+      "roleMixRounding": "When a proportion does not divide evenly into the batch size, the module uses proportional integer quotas and assigns leftover NPCs to the largest fractional remainders. This preserves the exact batch Count and stays as close as possible to the requested ratio.",
+      "roleMixMode": "Mode",
+      "roleMixRule": "Distribution rule",
+      "roleMixExample": "Example with Count 10",
+      "roleMixModes": {
+        "single": "Every NPC uses the primary Role.",
+        "variants": "Every NPC keeps the primary Role, but practical subtypes of that Role are spread as evenly as possible before repeating.",
+        "groupPreset": "The first NPC uses the primary Role; remaining NPCs follow the selected group archetype’s built-in responsibility cycle. Independent batches remain the primary Role throughout.",
+        "balanced": "All allowed Roles receive equal weight.",
+        "primary": "The primary Role targets 70%; the remaining 30% is split evenly across the other allowed Roles.",
+        "dominant": "The primary Role targets 85%; the remaining 15% is split evenly across the other allowed Roles.",
+        "weighted": "Each allowed Role uses its entered relative weight."
+      },
+      "roleMixExamples": {
+        "single": "Primary Merchant → 10 Merchant.",
+        "variants": "Primary Merchant → 10 Merchants with distinct merchant specializations before reuse.",
+        "groupPreset": "Depends on Group type; for Independent NPCs with primary Merchant → 10 Merchant.",
+        "balanced": "Merchant + Artisan + Guard → 4 Merchant, 3 Artisan, 3 Guard.",
+        "primary": "Primary Merchant + Artisan + Guard → 7 Merchant, 2 Artisan, 1 Guard.",
+        "dominant": "Primary Merchant + Artisan + Guard → 8 Merchant, 1 Artisan, 1 Guard.",
+        "weighted": "Merchant 10, Artisan 20, Guard 30 → 2 Merchant, 3 Artisan, 5 Guard."
+      }
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -201,7 +232,10 @@
       "filtersImported": "Filter profile imported and applied.",
       "filterImportFailed": "Filter profile import failed",
       "filterProfileTooLarge": "Filter profile is too large to import.",
-      "importCancelled": "NPC import preview cancelled."
+      "importCancelled": "NPC import preview cancelled.",
+      "promptCopyManual": "AI prompt prepared, but automatic clipboard access is unavailable. The prompt is preserved below for manual copying.",
+      "clipboardUnavailable": "Automatic clipboard access is unavailable. The prepared content remains available for manual copying.",
+      "promptPrepareFailed": "AI prompt preparation failed: {message}"
     },
     "errors": {
       "clipboardWrite": "Clipboard writing is not available in this client.",
@@ -489,6 +523,18 @@
       "mostlyMale": "Mostly male",
       "mostlyFemale": "Mostly female",
       "exact": "Exact numbers"
+    },
+    "manualCopy": {
+      "title": "Manual copy",
+      "content": "Prepared text",
+      "hint": "Automatic clipboard access was unavailable. The prepared content is preserved below; select it for Ctrl+C or retry the browser clipboard action.",
+      "select": "Select text",
+      "retry": "Copy again",
+      "selected": "Text selected. Press Ctrl+C to copy it.",
+      "copied": "Copied to the clipboard.",
+      "unavailable": "Clipboard access is still unavailable. The text is selected for manual copying.",
+      "portraitPrompt": "Portrait prompt",
+      "filterProfile": "Filter profile JSON"
     }
   }
 }

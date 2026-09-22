@@ -2,6 +2,26 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.2.2 - 2026-09-22
+
+### Fixed
+
+- Clipboard focus/permission failures no longer abort or masquerade as NPC generation failures. Prepared AI prompts remain available in the dashboard for selection and explicit retry when automatic copying is blocked.
+- Portrait-prompt and filter-profile copy actions now use the same best-effort clipboard isolation and manual-copy fallback instead of treating clipboard access as a content-generation failure.
+- Role-weight inputs isolate numeric keystrokes from Foundry hotkeys so values containing zero, including 10, 20, 30, and 0 itself, can be entered reliably.
+
+### Changed
+
+- The main Role field is now the explicit invariant primary Role for all Role-composition modes; stale saved primary-role metadata cannot silently override it.
+- Primary-role majority targets 70%, while Strong primary-role majority targets 85%; remaining quota is shared across the other allowed Roles and rounded to preserve the exact batch Count.
+- Custom Role weights are documented and previewed as relative non-negative ratios: larger values receive more NPCs, 0 excludes a Role when another weight is positive, and equivalent ratios such as 1/2/3 and 10/20/30 produce the same distribution.
+- The dashboard now shows the primary Role and a live exact integer Role allocation preview for the current Count and composition settings.
+- Help now includes a detailed Role-composition table with concrete Count-10 examples, weighting semantics, and quota-rounding behavior.
+
+### Added
+
+- Regression coverage for unfocused/denied/unavailable clipboard writes, prompt preservation, manual-copy fallbacks, primary-role invariance, zero-weight exclusion, and exact mixed-Role quota examples.
+
 ## 0.2.1 - 2026-09-22
 
 ### Fixed

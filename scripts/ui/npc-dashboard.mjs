@@ -29,14 +29,14 @@ import {
   WEAPON_VARIETY,
   formatChallengeRating
 } from "../generator/data.mjs";
-import { normalizeGroupRaceIds, normalizeGroupRoleIds, resolveTierProfile } from "../generator/npc-generator.mjs";
+import { buildRoleAssignments, normalizeGroupRaceIds, normalizeGroupRoleIds, resolveTierProfile } from "../generator/npc-generator.mjs";
 import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 import { applyStringFilters, loadFilterSettings, visibleFilterCatalogIds } from "../filters.mjs";
 import { logger } from "../logger.mjs";
 import { loadLastOptions, loadWindowState, saveLastOptions, saveWindowState } from "../settings.mjs";
 import { createImportedNpcActors, createNpcActors } from "../services/actor-service.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
-import { readClipboardText, writeClipboardText } from "../utils/clipboard.mjs";
+import { readClipboardText, tryWriteClipboardText } from "../utils/clipboard.mjs";
 import { openActorReviewStack } from "./actor-review.mjs";
 import { bindDashboardActionButtons } from "./dashboard-bindings.mjs";
 import { bindNamedControls, bindOptionalControl, namedFormChecked, namedFormControls, namedFormValue } from "./form-events.mjs";
@@ -373,6 +373,7 @@ function dashboardContent(options, tierStyle) {
   const groupRaces = normalizeGroupRaceIds({ ...options, raceComposition, groupRaces: options.groupRaces ?? DEFAULT_OPTIONS.groupRaces });
   const roleComposition = effectiveRoleComposition(options);
   const groupRoles = normalizeGroupRoleIds({ ...options, groupRoles: options.groupRoles ?? [options.role ?? DEFAULT_OPTIONS.role] });
+  const primaryRoleLabel = configuredLabel(getRoles()[options.role] ?? getRoles()[DEFAULT_OPTIONS.role] ?? ROLES[DEFAULT_OPTIONS.role]);
 
   return `
     <form class="runyth-npc-button__dashboard" autocomplete="off">
@@ -531,6 +532,7 @@ function dashboardContent(options, tierStyle) {
         <fieldset class="runyth-npc-button__field">
           <legend>${escapeAttribute(localize("ui.roleComposition"))}</legend>
           <small>${escapeAttribute(localize("ui.roleCompositionHint"))}</small>
+          <p class="runyth-npc-button__composition-note" data-primary-role-note>${escapeAttribute(game.i18n.format(`${MODULE_ID}.ui.primaryRoleNote`, { role: primaryRoleLabel }))}</p>
           <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("roleComposition", ROLE_COMPOSITION_MODES, roleComposition)}</div>
         </fieldset>
 
@@ -548,6 +550,7 @@ function dashboardContent(options, tierStyle) {
             <div data-role-weight-list></div>
           </div>
         </div>
+        <div class="runyth-npc-button__composition-preview" data-role-mix-preview role="status" aria-live="polite"></div>
       </section>
 
       <section class="runyth-npc-button__section runyth-npc-button__section--group" data-group-config${groupType === "independent" ? " hidden" : ""}>
@@ -641,6 +644,15 @@ function dashboardContent(options, tierStyle) {
           <button type="button" data-action="copy-prompt"><i class="fa-regular fa-copy" aria-hidden="true"></i>${escapeAttribute(localize("ui.copyPrompt"))}</button>
           <button type="button" data-action="import-npc"><i class="fa-solid fa-file-import" aria-hidden="true"></i>${escapeAttribute(localize("ui.importNpc"))}</button>
         </div>
+        <details class="runyth-npc-button__fallback" data-prompt-fallback hidden>
+          <summary>${escapeAttribute(localize("ui.preparedPrompt"))}</summary>
+          <p>${escapeAttribute(localize("ui.preparedPromptHint"))}</p>
+          <textarea data-prompt-output rows="10" readonly spellcheck="false"></textarea>
+          <div class="runyth-npc-button__button-row">
+            <button type="button" data-action="select-prompt"><i class="fa-solid fa-i-cursor" aria-hidden="true"></i>${escapeAttribute(localize("ui.selectPrompt"))}</button>
+            <button type="button" data-action="retry-prompt-copy"><i class="fa-regular fa-copy" aria-hidden="true"></i>${escapeAttribute(localize("ui.retryPromptCopy"))}</button>
+          </div>
+        </details>
         <details class="runyth-npc-button__fallback">
           <summary>${escapeAttribute(localize("ui.manualPaste"))}</summary>
           <label for="runyth-npc-button-ai-payload">${escapeAttribute(localize("ui.manualPasteLabel"))}</label>
@@ -866,6 +878,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   #racePickerController = null;
   #groupRacePickerController = null;
   #groupRolePickerController = null;
+  #lastPreparedPrompt = "";
 
   constructor(options = {}) {
     const rememberedPosition = safeWindowState(loadWindowState());
@@ -922,6 +935,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     bindNamedControls(form, "count", "input", () => {
       this.#syncCountControls(form);
       this.#syncExactGenderCounts(form);
+      this.#updateRoleMixPreview(form);
     }, { signal });
     bindNamedControls(form, "count", "change", () => {
       const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
@@ -932,7 +946,10 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       this.#syncCountControls(form);
     }, { signal });
 
-    bindNamedControls(form, "groupType", "change", () => this.#syncGroupControls(form, { adjustCount: true }), { signal });
+    bindNamedControls(form, "groupType", "change", () => {
+      this.#syncGroupControls(form, { adjustCount: true });
+      this.#updateRoleMixPreview(form);
+    }, { signal });
     bindNamedControls(form, "raceSelection", "change", () => {
       const primary = String(namedFormValue(form, "raceSelection", "human"));
       const values = this.#groupRacePickerController?.getValues() ?? [];
@@ -944,14 +961,33 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       const values = this.#groupRolePickerController?.getValues() ?? [];
       if (!values.includes(primary)) this.#groupRolePickerController?.setValues([primary, ...values]);
       this.#renderRoleWeights(form);
+      this.#syncPrimaryRoleNote(form);
+      this.#updateRoleMixPreview(form);
     }, { signal });
     bindNamedControls(form, "raceComposition", "change", () => this.#syncRaceComposition(form), { signal });
     bindNamedControls(form, "groupRaces", "change", () => this.#renderRaceWeights(form), { signal });
     bindNamedControls(form, "roleComposition", "change", () => this.#syncRoleComposition(form), { signal });
-    bindNamedControls(form, "groupRoles", "change", () => this.#renderRoleWeights(form), { signal });
+    bindNamedControls(form, "groupRoles", "change", () => {
+      this.#renderRoleWeights(form);
+      this.#updateRoleMixPreview(form);
+    }, { signal });
     bindNamedControls(form, "genderComposition", "change", () => this.#syncGenderComposition(form, { initializeExact: true }), { signal });
     bindNamedControls(form, "maleCount", "input", () => this.#syncExactGenderCounts(form, "male"), { signal });
     bindNamedControls(form, "femaleCount", "input", () => this.#syncExactGenderCounts(form, "female"), { signal });
+
+    const roleWeightList = form.querySelector("[data-role-weight-list]");
+    roleWeightList?.addEventListener("input", () => this.#updateRoleMixPreview(form), { signal });
+    for (const eventName of ["keydown", "keyup", "keypress"]) {
+      roleWeightList?.addEventListener(eventName, (event) => {
+        if (event.target?.matches?.("[data-role-weight]")) event.stopPropagation();
+      }, { signal });
+      form.querySelector("[data-race-weight-list]")?.addEventListener(eventName, (event) => {
+        if (event.target?.matches?.("[data-race-weight]")) event.stopPropagation();
+      }, { signal });
+    }
+
+    form.querySelector('[data-action="select-prompt"]')?.addEventListener("click", () => this.#selectPreparedPrompt(form), { signal });
+    form.querySelector('[data-action="retry-prompt-copy"]')?.addEventListener("click", () => { void this.#retryPreparedPromptCopy(form); }, { signal });
 
     bindOptionalControl(form, "[data-group-size-presets]", "click", (event) => {
       const button = event.target.closest?.("[data-group-count]");
@@ -1129,6 +1165,40 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     const roleWeights = form.querySelector("[data-role-weights]");
     if (roleWeights) roleWeights.hidden = composition !== "weighted";
     if (mixed) this.#renderRoleWeights(form);
+    this.#syncPrimaryRoleNote(form);
+    this.#updateRoleMixPreview(form);
+  }
+
+  #syncPrimaryRoleNote(form) {
+    const note = form.querySelector("[data-primary-role-note]");
+    if (!note) return;
+    const roleId = String(namedFormValue(form, "role", DEFAULT_OPTIONS.role));
+    const role = getRoles()[roleId] ?? getRoles()[DEFAULT_OPTIONS.role] ?? ROLES[DEFAULT_OPTIONS.role];
+    note.textContent = game.i18n.format(`${MODULE_ID}.ui.primaryRoleNote`, { role: configuredLabel(role) });
+  }
+
+  #updateRoleMixPreview(form) {
+    const preview = form.querySelector("[data-role-mix-preview]");
+    if (!preview) return;
+    const count = Math.max(1, Math.trunc(Number(namedFormValue(form, "count", 1)) || 1));
+    const role = String(namedFormValue(form, "role", DEFAULT_OPTIONS.role));
+    const groupRoles = parseJsonArray(namedFormValue(form, "groupRoles", ""), [role]);
+    const roleComposition = String(namedFormValue(form, "roleComposition", DEFAULT_OPTIONS.roleComposition));
+    const groupTypeId = String(namedFormValue(form, "groupType", DEFAULT_OPTIONS.groupType));
+    const groupType = getGroupTypes()[groupTypeId] ?? getGroupTypes().independent ?? GROUP_TYPES.independent;
+    const roleWeights = readRoleWeights(form, normalizeGroupRoleIds({ role, groupRoles }));
+    const assignments = buildRoleAssignments({ role, primaryRole: role, groupRoles, roleComposition, roleWeights }, count, () => 0.5, groupType);
+    const counts = new Map();
+    for (const assignment of assignments) {
+      const key = roleComposition === "variants" && assignment.variant ? assignment.variant : assignment.role;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    const roles = getRoles();
+    const distribution = [...counts.entries()].map(([id, amount]) => {
+      const label = roles[id] ? configuredLabel(roles[id]) : id;
+      return `${label} ${amount}`;
+    }).join(" · ");
+    preview.textContent = game.i18n.format(`${MODULE_ID}.ui.roleMixPreview`, { count, distribution });
   }
 
   #syncGenderComposition(form, { initializeExact = false } = {}) {
@@ -1244,16 +1314,60 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     const options = readForm(form);
     this.#setBusy(form, true, localize("ui.copyingPrompt"));
     try {
-      await saveLastOptions(options);
-      const prompt = buildAiPrompt(promptOptions(options));
-      await writeClipboardText(prompt);
-      ui.notifications.info(localize("notifications.promptCopied"));
-    } catch (error) {
-      logger.error("Could not copy AI prompt.", error);
-      ui.notifications.error(game.i18n.format(`${MODULE_ID}.notifications.failed`, { message: error?.message ?? String(error) }));
+      let prompt;
+      try {
+        prompt = buildAiPrompt(promptOptions(options));
+      } catch (error) {
+        logger.error("Could not prepare AI prompt.", error);
+        ui.notifications.error(game.i18n.format(`${MODULE_ID}.notifications.promptPrepareFailed`, { message: error?.message ?? String(error) }));
+        return;
+      }
+
+      this.#lastPreparedPrompt = prompt;
+      this.#setPreparedPrompt(form, prompt, { open: false });
+      await saveLastOptions(options).catch((error) => logger.warn("AI prompt is ready, but dashboard options could not be persisted.", error));
+
+      const result = await tryWriteClipboardText(prompt);
+      if (result.ok) {
+        ui.notifications.info(localize("notifications.promptCopied"));
+        return;
+      }
+      logger.warn("AI prompt prepared, but clipboard copy failed.", result.error);
+      this.#setPreparedPrompt(form, prompt, { open: true });
+      ui.notifications.warn(localize("notifications.promptCopyManual"));
     } finally {
       this.#setBusy(form, false);
     }
+  }
+
+  #setPreparedPrompt(form, prompt, { open = false } = {}) {
+    const details = form.querySelector("[data-prompt-fallback]");
+    const textarea = form.querySelector("[data-prompt-output]");
+    if (textarea) textarea.value = String(prompt ?? "");
+    if (details) {
+      details.hidden = false;
+      details.open = Boolean(open);
+    }
+  }
+
+  #selectPreparedPrompt(form) {
+    const textarea = form.querySelector("[data-prompt-output]");
+    textarea?.focus?.();
+    textarea?.select?.();
+  }
+
+  async #retryPreparedPromptCopy(form) {
+    const textarea = form.querySelector("[data-prompt-output]");
+    const prompt = String(textarea?.value ?? this.#lastPreparedPrompt ?? "");
+    if (!prompt) return;
+    const result = await tryWriteClipboardText(prompt);
+    if (result.ok) {
+      ui.notifications.info(localize("notifications.promptCopied"));
+      return;
+    }
+    logger.warn("Manual AI prompt copy attempt failed.", result.error);
+    this.#selectPreparedPrompt(form);
+    ui.notifications.warn(localize("notifications.clipboardUnavailable"));
   }
 
   async #importNpc(form) {

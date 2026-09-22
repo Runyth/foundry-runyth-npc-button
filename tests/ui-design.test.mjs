@@ -60,3 +60,26 @@ test("cosmetic feature release preserves dashboard action and field contracts", 
     assert.ok(dashboard.includes(`name="${directName}"`), `missing direct field contract: ${directName}`);
   }
 });
+
+
+test("role mix UX exposes primary role, live allocation preview, and zero-safe weight entry", () => {
+  assert.match(dashboard, /data-primary-role-note/);
+  assert.match(dashboard, /data-role-mix-preview/);
+  assert.match(dashboard, /min="0"[^>]*data-role-weight/);
+  assert.match(dashboard, /event\.target\?\.matches\?\.\("\[data-role-weight\]"\)/);
+  assert.match(dashboard, /event\.stopPropagation\(\)/);
+});
+
+
+test("help documents every role composition mode with concrete distribution examples", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const helpSource = await readFile(new URL("../scripts/ui/npc-help.mjs", import.meta.url), "utf8");
+  const english = JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8"))["runyth-npc-button"].help;
+  for (const mode of ["single", "variants", "groupPreset", "balanced", "primary", "dominant", "weighted"]) {
+    assert.equal(typeof english.roleMixModes[mode], "string");
+    assert.equal(typeof english.roleMixExamples[mode], "string");
+  }
+  assert.match(helpSource, /roleMixRows/);
+  assert.match(english.roleMixWeights, /10\/20\/30/);
+  assert.match(english.roleMixWeights, /0 excludes/);
+});

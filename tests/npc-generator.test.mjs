@@ -246,6 +246,29 @@ test("balanced mixed roles use exact quotas", () => {
   assert.deepEqual(counts, { merchant: 3, guard: 3, scholar: 3 });
 });
 
+function roleCounts(assignments) {
+  return assignments.reduce((map, entry) => {
+    map[entry.role] = (map[entry.role] ?? 0) + 1;
+    return map;
+  }, {});
+}
+
+test("primary and strong-primary role modes use the main Role as the invariant primary role", () => {
+  const base = { role: "merchant", groupRoles: ["merchant", "guard", "scholar"], primaryRole: "scholar" };
+  assert.deepEqual(roleCounts(buildRoleAssignments({ ...base, roleComposition: "primary" }, 10, createSeededRandom("primary-role"))), { merchant: 7, guard: 2, scholar: 1 });
+  assert.deepEqual(roleCounts(buildRoleAssignments({ ...base, roleComposition: "dominant" }, 10, createSeededRandom("dominant-role"))), { merchant: 8, guard: 1, scholar: 1 });
+});
+
+test("custom role weights are relative, accept zero, and preserve exact batch size", () => {
+  const base = { role: "merchant", roleComposition: "weighted", groupRoles: ["merchant", "guard", "scholar"] };
+  const proportional = roleCounts(buildRoleAssignments({ ...base, roleWeights: { merchant: 10, guard: 20, scholar: 30 } }, 10, createSeededRandom("weights-10-20-30")));
+  assert.deepEqual(proportional, { merchant: 2, guard: 3, scholar: 5 });
+  const zeroExcluded = roleCounts(buildRoleAssignments({ ...base, roleWeights: { merchant: 0, guard: 1, scholar: 1 } }, 10, createSeededRandom("weights-zero")));
+  assert.deepEqual(zeroExcluded, { guard: 5, scholar: 5 });
+  const allZeroFallback = roleCounts(buildRoleAssignments({ ...base, roleWeights: { merchant: 0, guard: 0, scholar: 0 } }, 10, createSeededRandom("weights-all-zero")));
+  assert.deepEqual(allZeroFallback, { merchant: 4, guard: 3, scholar: 3 });
+});
+
 test("weaponless readiness removes all generated combat gear", () => {
   const npc = generateNpcBlueprint({
     role: "soldier",

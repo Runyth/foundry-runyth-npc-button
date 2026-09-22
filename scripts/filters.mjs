@@ -1,6 +1,7 @@
 import { MODULE_ID, SETTINGS } from "./constants.mjs";
 import { logger } from "./logger.mjs";
-import { readClipboardText, writeClipboardText } from "./utils/clipboard.mjs";
+import { readClipboardText, tryWriteClipboardText } from "./utils/clipboard.mjs";
+import { openManualCopy } from "./ui/manual-copy.mjs";
 import {
   GROUP_TYPE_GROUPS,
   HABITAT_GROUPS,
@@ -516,9 +517,15 @@ export class FilterSettingsForm extends BaseApplicationV2 {
 
     form.querySelector('[data-action="copy-filter-json"]')?.addEventListener("click", () => {
       const profile = `${JSON.stringify(buildFilterProfile(settingsFromForm(form)), null, 2)}\n`;
-      void writeClipboardText(profile)
-        .then(() => ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersCopied`)))
-        .catch((error) => ui.notifications.error(error?.message ?? String(error)));
+      void tryWriteClipboardText(profile).then(async (result) => {
+        if (result.ok) {
+          ui.notifications.info(game.i18n.localize(`${MODULE_ID}.notifications.filtersCopied`));
+          return;
+        }
+        logger.warn("Filter profile prepared, but clipboard copy failed.", result.error);
+        ui.notifications.warn(game.i18n.localize(`${MODULE_ID}.notifications.clipboardUnavailable`));
+        await openManualCopy(profile, { label: game.i18n.localize(`${MODULE_ID}.manualCopy.filterProfile`) });
+      });
     }, { signal });
 
     const fileInput = form.querySelector("[data-filter-profile-file]");
