@@ -130,7 +130,11 @@
       "weaponVarietyHint": "Steuert, ob realistische rollenpassende Waffen Nahkampf, Fernkampf oder eine Mischung bevorzugen. Reine Modi erfinden niemals eine unplausible Waffe nur für die Kategorie.",
       "previewImport": "Vor Import prüfen und bearbeiten",
       "previewImportHint": "Validiert die KI-Nutzlast, öffnet eine schnelle Vorschau für Name, Biografie, Volk, CR, RK, TP und Bewegung und validiert die bearbeitete Nutzlast erneut vor dem Erstellen der Actors.",
-      "portraitPromptShort": "Porträt"
+      "portraitPromptShort": "Porträt",
+      "genderComposition": "Geschlechterverteilung",
+      "genderCompositionHint": "Legt fest, wie männliche und weibliche NSC innerhalb des erzeugten Stapels verteilt werden.",
+      "maleCount": "Männlich",
+      "femaleCount": "Weiblich"
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -478,6 +482,13 @@
       "mixed": "Gemischt",
       "rangedPreferred": "Fernkampf bevorzugt",
       "rangedOnly": "Nur Fernkampf"
+    },
+    "genderComposition": {
+      "random": "Zufällig",
+      "balanced": "Ausgeglichen",
+      "mostlyMale": "Überwiegend männlich",
+      "mostlyFemale": "Überwiegend weiblich",
+      "exact": "Exakte Anzahl"
     }
   }
 }

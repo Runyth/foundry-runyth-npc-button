@@ -5,6 +5,7 @@ import { TIER_STYLES } from "../scripts/constants.mjs";
 import { CR_VALUES, HABITATS, NAME_STYLES, RACES, formatChallengeRating } from "../scripts/generator/data.mjs";
 import {
   buildActorSource,
+  buildGenderAssignments,
   buildRaceAssignments,
   buildRoleAssignments,
   createSeededRandom,
@@ -355,4 +356,42 @@ test("weapon preference modes keep the preferred engagement range primary at hig
     cr: 12
   }, createSeededRandom("melee-preferred"));
   assert.notEqual(meleePreferred.combatItems.find((item) => item.kind === "weapon")?.name, "Light Crossbow");
+});
+
+
+test("batch gender assignment stays limited to the built-in binary tuple", () => {
+  for (const mode of ["random", "balanced", "mostlyMale", "mostlyFemale", "exact"]) {
+    const assignments = buildGenderAssignments({ genderComposition: mode, maleCount: 8, femaleCount: 2 }, 10, createSeededRandom(`gender-${mode}`));
+    assert.equal(assignments.length, 10);
+    assert.ok(assignments.every((value) => value === "male" || value === "female"));
+  }
+});
+
+test("exact batch gender counts are preserved and stored on generated actors", () => {
+  const batch = generateNpcBatch({
+    count: 10,
+    genderComposition: "exact",
+    maleCount: 8,
+    femaleCount: 2,
+    seed: "gender-exact"
+  });
+  assert.equal(batch.filter((npc) => npc.gender === "male").length, 8);
+  assert.equal(batch.filter((npc) => npc.gender === "female").length, 2);
+  const actor = buildActorSource(batch[0]);
+  assert.equal(["male", "female"].includes(actor.flags["runyth-npc-button"].gender), true);
+  assert.match(actor.system.details.biography.value, /<strong>Gender:<\/strong> (Male|Female)/);
+});
+
+test("balanced and strong-majority gender mixes use exact integer quotas", () => {
+  const balanced = buildGenderAssignments({ genderComposition: "balanced" }, 5, createSeededRandom("gender-balanced"));
+  assert.equal(balanced.filter((value) => value === "male").length, 3);
+  assert.equal(balanced.filter((value) => value === "female").length, 2);
+
+  const mostlyMale = buildGenderAssignments({ genderComposition: "mostlyMale" }, 10, createSeededRandom("gender-mostly-male"));
+  assert.equal(mostlyMale.filter((value) => value === "male").length, 8);
+  assert.equal(mostlyMale.filter((value) => value === "female").length, 2);
+
+  const mostlyFemale = buildGenderAssignments({ genderComposition: "mostlyFemale" }, 10, createSeededRandom("gender-mostly-female"));
+  assert.equal(mostlyFemale.filter((value) => value === "female").length, 8);
+  assert.equal(mostlyFemale.filter((value) => value === "male").length, 2);
 });

@@ -30,6 +30,25 @@ import { DEFAULT_OPTIONS, TIER_STYLES } from "../constants.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
+const GENDER_TUPLE = Object.freeze(["male", "female"]);
+const GENDERED_GIVEN_NAMES = Object.freeze({
+  central: Object.freeze({
+    male: Object.freeze(["Aren", "Bren", "Daro", "Elian", "Garen", "Iven", "Kelan", "Orin", "Rovan", "Tarin", "Aldren", "Tomas", "Corven"]),
+    female: Object.freeze(["Calia", "Fenna", "Hessa", "Jora", "Lysa", "Maren", "Nella", "Pera", "Sella", "Vera", "Mira", "Elira", "Nadia"])
+  }),
+  coastal: Object.freeze({
+    male: Object.freeze(["Bero", "Corin", "Eren", "Faro", "Harin", "Joren", "Liro", "Nero", "Rian", "Varen", "Orro", "Tavian"]),
+    female: Object.freeze(["Alda", "Dessa", "Gilda", "Iria", "Kessa", "Mira", "Ossa", "Sora", "Tessa", "Maela", "Selka", "Ivena"])
+  }),
+  highland: Object.freeze({
+    male: Object.freeze(["Ardan", "Cael", "Edrin", "Garr", "Korr", "Nerin", "Rann", "Torren", "Davor", "Hakon", "Merren"]),
+    female: Object.freeze(["Brina", "Dorna", "Fara", "Hedra", "Ilda", "Marda", "Orla", "Siva", "Vara", "Brenna", "Eira"])
+  }),
+  frontier: Object.freeze({
+    male: Object.freeze(["Bram", "Dain", "Flint", "Hale", "Joss", "Kitt", "Noll", "Perrin", "Silas", "Toma", "Cole", "Emmet", "Tobin"]),
+    female: Object.freeze(["Cora", "Etta", "Greta", "Mara", "Rhea", "Willa", "Ada", "Nessa", "Ruth"])
+  })
+});
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -149,6 +168,31 @@ function proportionalCounts(ids, count, weights) {
     remaining -= 1;
   }
   return counts;
+}
+
+export function buildGenderAssignments(options = {}, count = 1, random = Math.random) {
+  const total = clamp(Math.trunc(Number(count) || 1), 1, 100);
+  const mode = ["random", "balanced", "mostlyMale", "mostlyFemale", "exact"].includes(String(options.genderComposition))
+    ? String(options.genderComposition)
+    : DEFAULT_OPTIONS.genderComposition;
+
+  if (mode === "random") {
+    return Array.from({ length: total }, () => GENDER_TUPLE[random() < 0.5 ? 0 : 1]);
+  }
+
+  let maleCount;
+  if (mode === "balanced") maleCount = Math.ceil(total / 2);
+  else if (mode === "mostlyMale") maleCount = Math.round(total * 0.8);
+  else if (mode === "mostlyFemale") maleCount = Math.round(total * 0.2);
+  else {
+    const configuredMale = Number(options.maleCount);
+    maleCount = Number.isFinite(configuredMale) ? clamp(Math.trunc(configuredMale), 0, total) : Math.ceil(total / 2);
+  }
+  const femaleCount = total - maleCount;
+  return shuffle([
+    ...Array.from({ length: maleCount }, () => GENDER_TUPLE[0]),
+    ...Array.from({ length: femaleCount }, () => GENDER_TUPLE[1])
+  ], random);
 }
 
 /**
@@ -442,8 +486,10 @@ function buildHitPoints(role, tier, conScore, hitDie) {
   };
 }
 
-function generatedName(style, random, forcedFamilyName = "") {
-  return `${pick(style.given, random)} ${forcedFamilyName || pick(style.family, random)}`;
+function generatedName(style, random, forcedFamilyName = "", gender = "male", namingStyleId = "") {
+  const genderedPool = GENDERED_GIVEN_NAMES[namingStyleId]?.[gender];
+  const givenPool = Array.isArray(genderedPool) && genderedPool.length ? genderedPool : style.given;
+  return `${pick(givenPool, random)} ${forcedFamilyName || pick(style.family, random)}`;
 }
 
 function habitatLabel(options) {
@@ -456,6 +502,7 @@ function buildBiography(blueprint) {
   const rows = [
     `<p><strong>Role:</strong> ${escapeHtml(blueprint.role)}${blueprint.roleVariant ? ` — ${escapeHtml(blueprint.roleVariant)}` : ""} (${escapeHtml(blueprint.tier)})</p>`,
     `<p><strong>Race:</strong> ${escapeHtml(blueprint.race)}</p>`,
+    `<p><strong>Gender:</strong> ${escapeHtml(blueprint.gender === "female" ? "Female" : "Male")}</p>`,
     `<p><strong>Wealth:</strong> ${escapeHtml(blueprint.wealth)}</p>`,
     `<p><strong>Combat readiness:</strong> ${escapeHtml(blueprint.combatReadiness)}</p>`,
     `<p><strong>Weapon variety:</strong> ${escapeHtml(blueprint.weaponVariety)}</p>`,
@@ -494,7 +541,8 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
   const scores = buildAbilityScores(role, tier, random);
   const hitDie = race.size === "sm" ? 6 : 8;
   const hp = buildHitPoints(role, tier, scores.con, hitDie);
-  const generated = generatedName(style, random, options.forcedFamilyName ?? "");
+  const gender = options.gender === "female" ? "female" : "male";
+  const generated = generatedName(style, random, options.forcedFamilyName ?? "", gender, options.namingStyle ?? "");
   const suppliedName = titleCase(options.customName ?? "");
   const name = suppliedName || generated;
   const combatItems = combatLoadout(options.role ?? DEFAULT_OPTIONS.role, options, tier.cr);
@@ -507,6 +555,7 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
     tier: tier.label,
     race: race.label,
     species: race.label,
+    gender,
     wealth: wealth.label,
     combatReadiness: (COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard).label,
     weaponVariety: (WEAPON_VARIETY[options.weaponVariety] ?? WEAPON_VARIETY.mixed).label,
@@ -669,6 +718,7 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         combatReadiness: blueprint.combatReadiness,
         weaponVariety: blueprint.weaponVariety,
         generationSeed: blueprint.generationSeed,
+        gender: blueprint.gender,
         habitat: blueprint.habitat,
         groupType: blueprint.groupType,
         groupMemberRole: blueprint.groupMemberRole,
@@ -695,6 +745,7 @@ export function generateNpcBatch(options = {}) {
   const forcedFamilyName = family ? pick(style.family, random) : "";
   const raceAssignments = buildRaceAssignments(options, count, random);
   const roleAssignments = buildRoleAssignments(options, count, random, groupType);
+  const genderAssignments = buildGenderAssignments(options, count, random);
   const sharedRumour = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_RUMOURS, random);
   const sharedSecret = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_SECRETS, random);
   const blueprints = [];
@@ -710,6 +761,7 @@ export function generateNpcBatch(options = {}) {
         ...race,
         role: roleAssignment.role,
         roleVariant: roleAssignment.variant,
+        gender: genderAssignments[index] ?? GENDER_TUPLE[0],
         generationSeed: baseSeed,
         forcedFamilyName,
         customName: customName && count > 1 ? `${customName} ${index + 1}` : customName

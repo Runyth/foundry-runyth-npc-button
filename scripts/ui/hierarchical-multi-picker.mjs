@@ -162,7 +162,7 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
     };
   }
 
-  function updateActiveRows() {
+  function updateActiveRows({ resetScroll = false } = {}) {
     const rows = allRows();
     const needle = normalized(search.value);
     const filtered = needle
@@ -173,7 +173,7 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
     empty.hidden = activeRows.length > 0;
     viewport.hidden = activeRows.length === 0;
     spacer.style.height = `${activeRows.length * ROW_HEIGHT}px`;
-    viewport.scrollTop = 0;
+    if (resetScroll) viewport.scrollTop = 0;
     renderRows(true);
   }
 
@@ -231,15 +231,24 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
     windowElement.replaceChildren(fragment);
   }
 
-  function toggleRow(row) {
+  function updateRenderedOption(button, row) {
+    if (!button || !row || row.kind === "group") return;
+    const isSelected = selected.has(row.id);
+    button.setAttribute("aria-selected", String(isSelected));
+    button.classList.toggle("is-selected", isSelected);
+    const marker = button.querySelector("i");
+    if (marker) marker.className = isSelected ? "fa-solid fa-square-check" : "fa-regular fa-square";
+  }
+
+  function toggleRow(row, button = null) {
     if (!row || row.kind === "group") return;
     if (row.custom) customRows.set(row.id, row);
     if (selected.has(row.id)) selected.delete(row.id);
     else selected.add(row.id);
     if (selected.size === 0 && config.requireOne) selected.add(config.fallbackValue ?? baseRows.find((item) => item.kind !== "group")?.id);
     updateSummary();
+    updateRenderedOption(button, row);
     input.dispatchEvent(new Event("change", { bubbles: true }));
-    updateActiveRows();
   }
 
   // Restore custom selections that are not part of the base catalog.
@@ -256,21 +265,21 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
     selected = new Set(baseRows.filter((row) => row.kind !== "group").map((row) => String(row.id)));
     updateSummary();
     input.dispatchEvent(new Event("change", { bubbles: true }));
-    updateActiveRows();
+    renderRows(true);
   }, { signal });
   clear?.addEventListener("click", () => {
     selected.clear();
     if (config.requireOne) selected.add(config.fallbackValue ?? baseRows.find((item) => item.kind !== "group")?.id);
     updateSummary();
     input.dispatchEvent(new Event("change", { bubbles: true }));
-    updateActiveRows();
+    renderRows(true);
   }, { signal });
   done.addEventListener("click", () => setOpen(false), { signal });
   search.addEventListener("input", () => {
     if (searchFrame !== null) window.cancelAnimationFrame(searchFrame);
     searchFrame = window.requestAnimationFrame(() => {
       searchFrame = null;
-      updateActiveRows();
+      updateActiveRows({ resetScroll: true });
     });
   }, { signal });
   search.addEventListener("keydown", (event) => {
@@ -284,7 +293,7 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
   windowElement.addEventListener("click", (event) => {
     const button = event.target.closest("[data-multi-picker-index]");
     if (!button) return;
-    toggleRow(activeRows[Number(button.dataset.multiPickerIndex)]);
+    toggleRow(activeRows[Number(button.dataset.multiPickerIndex)], button);
   }, { signal });
   document.addEventListener(OPEN_EVENT, (event) => {
     if (event.detail !== root) setOpen(false);
@@ -306,7 +315,7 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
     setValues(values) {
       selected = new Set((Array.isArray(values) ? values : []).map(String));
       updateSummary();
-      updateActiveRows();
+      renderRows(true);
     }
   };
 }

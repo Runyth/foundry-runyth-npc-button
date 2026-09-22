@@ -130,7 +130,11 @@
       "weaponVarietyHint": "Controls whether realistic role-appropriate weapons favor melee, ranged, or a mix. Hard-only modes never invent an implausible weapon just to satisfy the category.",
       "previewImport": "Preview and edit before import",
       "previewImportHint": "Validate the AI payload, open a fast preview editor for names, biography, race, CR, AC, HP, and speed, then validate the edited payload again before creating Actors.",
-      "portraitPromptShort": "Portrait"
+      "portraitPromptShort": "Portrait",
+      "genderComposition": "Gender mix",
+      "genderCompositionHint": "Choose how male and female NPCs are distributed across the generated batch.",
+      "maleCount": "Male count",
+      "femaleCount": "Female count"
     },
     "help": {
       "title": "NPC Button Help",
@@ -478,6 +482,13 @@
       "mixed": "Mixed",
       "rangedPreferred": "Ranged preference",
       "rangedOnly": "Ranged only"
+    },
+    "genderComposition": {
+      "random": "Randomized",
+      "balanced": "Balanced",
+      "mostlyMale": "Mostly male",
+      "mostlyFemale": "Mostly female",
+      "exact": "Exact numbers"
     }
   }
 }

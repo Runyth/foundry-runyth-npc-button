@@ -52,6 +52,7 @@ export function buildPortraitPromptFromActor(actor) {
   const race = raceFromActor(actor);
   const role = roleFromActor(actor) || "NPC";
   const wealth = wealthFromActor(actor);
+  const gender = cleanPart(actor?.flags?.[MODULE_ID]?.gender) || cleanPart(extractSection(biography, "Gender"));
   const appearance = cleanPart(extractSection(biography, "Appearance") || extractSection(biography, "First impression"));
   const tell = cleanPart(extractSection(biography, "Tell") || extractSection(biography, "Mannerism"));
   const quirk = cleanPart(extractSection(biography, "Quirk"));
@@ -59,6 +60,7 @@ export function buildPortraitPromptFromActor(actor) {
   const parts = [
     `${name}`,
     `adult ${race} ${role}`,
+    gender,
     appearance,
     wealth ? `${wealth.toLocaleLowerCase()} attire` : "practical attire",
     items ? `carrying ${items}` : "",

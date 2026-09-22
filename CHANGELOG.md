@@ -2,6 +2,13 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.2.1 - 2026-09-22
+
+### Fixed
+
+- Scalable multi-select pickers now update visible selection state in place without jumping back to the top of the list.
+- Added regression coverage for virtualized picker viewport preservation during repeated selection changes.
+
 ## 0.2.0 - 2026-09-21
 
 ### Added

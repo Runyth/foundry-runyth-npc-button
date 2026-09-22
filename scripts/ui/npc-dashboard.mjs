@@ -45,6 +45,15 @@ import { hierarchicalPickerMarkup, mountHierarchicalPicker } from "./hierarchica
 import { openNpcHelp } from "./npc-help.mjs";
 import { openNpcImportPreview } from "./npc-import-preview.mjs";
 
+
+const GENDER_COMPOSITION_MODES = Object.freeze({
+  random: { labelKey: "genderComposition.random" },
+  balanced: { labelKey: "genderComposition.balanced" },
+  mostlyMale: { labelKey: "genderComposition.mostlyMale" },
+  mostlyFemale: { labelKey: "genderComposition.mostlyFemale" },
+  exact: { labelKey: "genderComposition.exact" }
+});
+
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
 }
@@ -482,6 +491,23 @@ function dashboardContent(options, tierStyle) {
         </div>
 
         <fieldset class="runyth-npc-button__field">
+          <legend>${escapeAttribute(localize("ui.genderComposition"))}</legend>
+          <small>${escapeAttribute(localize("ui.genderCompositionHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("genderComposition", GENDER_COMPOSITION_MODES, options.genderComposition ?? DEFAULT_OPTIONS.genderComposition)}</div>
+        </fieldset>
+
+        <div class="runyth-npc-button__grid runyth-npc-button__gender-counts" data-gender-counts${(options.genderComposition ?? DEFAULT_OPTIONS.genderComposition) === "exact" ? "" : " hidden"}>
+          <div class="runyth-npc-button__field">
+            <label for="runyth-npc-button-male-count">${escapeAttribute(localize("ui.maleCount"))}</label>
+            <input id="runyth-npc-button-male-count" type="number" name="maleCount" min="0" max="${maxBatch}" step="1" inputmode="numeric" value="${escapeAttribute(options.maleCount ?? Math.ceil(Number(options.count || 1) / 2))}">
+          </div>
+          <div class="runyth-npc-button__field">
+            <label for="runyth-npc-button-female-count">${escapeAttribute(localize("ui.femaleCount"))}</label>
+            <input id="runyth-npc-button-female-count" type="number" name="femaleCount" min="0" max="${maxBatch}" step="1" inputmode="numeric" value="${escapeAttribute(options.femaleCount ?? Math.floor(Number(options.count || 1) / 2))}">
+          </div>
+        </div>
+
+        <fieldset class="runyth-npc-button__field">
           <legend>${escapeAttribute(localize("ui.raceComposition"))}</legend>
           <small>${escapeAttribute(localize("ui.raceCompositionHint"))}</small>
           <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("raceComposition", Object.fromEntries(Object.entries(RACE_COMPOSITION_MODES).filter(([id]) => id !== "mixed")), raceComposition)}</div>
@@ -697,6 +723,9 @@ function readForm(form) {
     wealth: namedFormValue(form, "wealth", DEFAULT_OPTIONS.wealth),
     combatReadiness: namedFormValue(form, "combatReadiness", DEFAULT_OPTIONS.combatReadiness),
     weaponVariety: namedFormValue(form, "weaponVariety", DEFAULT_OPTIONS.weaponVariety),
+    genderComposition: namedFormValue(form, "genderComposition", DEFAULT_OPTIONS.genderComposition),
+    maleCount: Math.max(0, Math.trunc(Number(namedFormValue(form, "maleCount", DEFAULT_OPTIONS.maleCount)) || 0)),
+    femaleCount: Math.max(0, Math.trunc(Number(namedFormValue(form, "femaleCount", DEFAULT_OPTIONS.femaleCount)) || 0)),
     habitat: namedFormValue(form, "habitat", DEFAULT_OPTIONS.habitat),
     groupType: namedFormValue(form, "groupType", DEFAULT_OPTIONS.groupType),
     familyStructure: namedFormValue(form, "familyStructure", DEFAULT_OPTIONS.familyStructure),
@@ -764,6 +793,9 @@ function promptOptions(options) {
     combatReadinessPrompt: combatReadiness.prompt,
     weaponVarietyLabel: configuredLabel(weaponVariety),
     weaponVarietyPrompt: weaponVariety.prompt,
+    genderCompositionLabel: configuredLabel(GENDER_COMPOSITION_MODES[options.genderComposition] ?? GENDER_COMPOSITION_MODES.random),
+    genderExactMale: Math.max(0, Math.min(Number(options.count) || 1, Math.trunc(Number(options.maleCount) || 0))),
+    genderExactFemale: Math.max(0, (Math.trunc(Number(options.count) || 1) - Math.max(0, Math.min(Number(options.count) || 1, Math.trunc(Number(options.maleCount) || 0))))),
     roleCombatGuidance: combatProfile.guidance,
     tierLabel: options.tierStyle === TIER_STYLES.CR ? tierProfile.label : configuredLabel(TIERS[options.tier] ?? TIERS.trained),
     raceLabel: race,
@@ -887,7 +919,10 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       }, { signal });
     }
 
-    bindNamedControls(form, "count", "input", () => this.#syncCountControls(form), { signal });
+    bindNamedControls(form, "count", "input", () => {
+      this.#syncCountControls(form);
+      this.#syncExactGenderCounts(form);
+    }, { signal });
     bindNamedControls(form, "count", "change", () => {
       const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
       const countControl = namedFormControls(form, "count")[0];
@@ -914,6 +949,9 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     bindNamedControls(form, "groupRaces", "change", () => this.#renderRaceWeights(form), { signal });
     bindNamedControls(form, "roleComposition", "change", () => this.#syncRoleComposition(form), { signal });
     bindNamedControls(form, "groupRoles", "change", () => this.#renderRoleWeights(form), { signal });
+    bindNamedControls(form, "genderComposition", "change", () => this.#syncGenderComposition(form, { initializeExact: true }), { signal });
+    bindNamedControls(form, "maleCount", "input", () => this.#syncExactGenderCounts(form, "male"), { signal });
+    bindNamedControls(form, "femaleCount", "input", () => this.#syncExactGenderCounts(form, "female"), { signal });
 
     bindOptionalControl(form, "[data-group-size-presets]", "click", (event) => {
       const button = event.target.closest?.("[data-group-count]");
@@ -928,6 +966,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     this.#syncGroupControls(form);
     this.#syncRaceComposition(form);
     this.#syncRoleComposition(form);
+    this.#syncGenderComposition(form);
 
     bindDashboardActionButtons(form, {
       create: () => { void this.#createLocal(form); },
@@ -1090,6 +1129,41 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     const roleWeights = form.querySelector("[data-role-weights]");
     if (roleWeights) roleWeights.hidden = composition !== "weighted";
     if (mixed) this.#renderRoleWeights(form);
+  }
+
+  #syncGenderComposition(form, { initializeExact = false } = {}) {
+    const mode = namedFormValue(form, "genderComposition", DEFAULT_OPTIONS.genderComposition);
+    const counts = form.querySelector("[data-gender-counts]");
+    if (counts) counts.hidden = mode !== "exact";
+    if (mode !== "exact") return;
+    if (initializeExact) {
+      const countControl = namedFormControls(form, "count")[0];
+      const maleControl = namedFormControls(form, "maleCount")[0];
+      const femaleControl = namedFormControls(form, "femaleCount")[0];
+      const total = Math.max(1, Math.trunc(Number(countControl?.valueAsNumber ?? countControl?.value) || 1));
+      const configuredTotal = Math.max(0, Math.trunc(Number(maleControl?.value) || 0)) + Math.max(0, Math.trunc(Number(femaleControl?.value) || 0));
+      if (configuredTotal !== total && maleControl && femaleControl) {
+        maleControl.value = String(Math.ceil(total / 2));
+        femaleControl.value = String(Math.floor(total / 2));
+      }
+    }
+    this.#syncExactGenderCounts(form);
+  }
+
+  #syncExactGenderCounts(form, changed = "") {
+    const countControl = namedFormControls(form, "count")[0];
+    const maleControl = namedFormControls(form, "maleCount")[0];
+    const femaleControl = namedFormControls(form, "femaleCount")[0];
+    if (!countControl || !maleControl || !femaleControl) return;
+    const total = Math.max(1, Math.trunc(Number(countControl.valueAsNumber ?? countControl.value) || 1));
+    let male = Math.max(0, Math.min(total, Math.trunc(Number(maleControl.valueAsNumber ?? maleControl.value) || 0)));
+    let female = Math.max(0, Math.min(total, Math.trunc(Number(femaleControl.valueAsNumber ?? femaleControl.value) || 0)));
+    if (changed === "female") male = total - female;
+    else female = total - male;
+    maleControl.max = String(total);
+    femaleControl.max = String(total);
+    maleControl.value = String(male);
+    femaleControl.value = String(female);
   }
 
   #renderRaceWeights(form) {

@@ -25,6 +25,16 @@ export function buildAiPrompt(options = {}) {
   const raceMixed = clean(options.raceComposition, "single") !== "single";
   const roleMixed = ["balanced", "primary", "dominant", "weighted"].includes(clean(options.roleComposition, "groupPreset"));
   const roleVariants = list(options.roleVariants, "none supplied");
+  const genderMode = clean(options.genderComposition, "random");
+  const genderInstruction = genderMode === "exact"
+    ? `exactly ${Math.max(0, Math.trunc(Number(options.genderExactMale) || 0))} male and ${Math.max(0, Math.trunc(Number(options.genderExactFemale) || 0))} female NPCs`
+    : genderMode === "balanced"
+      ? "an as-even-as-possible male/female split, using exact integer counts for the requested batch size"
+      : genderMode === "mostlyMale"
+        ? "a strong male majority, approximately 80/20, using exact integer counts for the batch"
+        : genderMode === "mostlyFemale"
+          ? "a strong female majority, approximately 80/20, using exact integer counts for the batch"
+          : "independently randomize each NPC as male or female";
 
   return [
     "Create table-ready D&D 5e (2024 rules) NPC data for import into Foundry Virtual Tabletop v13 with dnd5e 5.x using the exact JSON contract below.",
@@ -34,7 +44,7 @@ export function buildAiPrompt(options = {}) {
     "Every Actor must have type \"npc\". Do not include _id, folder, ownership, sort, _stats, effects, prototypeToken, or flags.",
     "Set img to \"icons/svg/mystery-man.svg\". The importer applies the chosen Foundry folder locally.",
     "Use HTML only inside system.details.biography.value and system.details.biography.public. Allowed tags are <p>, <strong>, <em>, <ul>, <li>, and <br>, with no attributes.",
-    "The private biography must be terse but immediately useful at the table and contain these labeled sections: Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.",
+    "The private biography must be terse but immediately useful at the table and contain these labeled sections: Gender, Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.",
     "Quirk must be a small, playable behavior, habit, preference, superstition, or personal oddity. Avoid cartoonish gimmicks unless the requested group specifically calls for one.",
     "Rumours should be things other people might plausibly say or believe about the NPC; they may be true, false, or distorted. Secrets must contain information the NPC would not readily volunteer.",
     grouped
@@ -78,6 +88,7 @@ export function buildAiPrompt(options = {}) {
     "",
     "Requested NPC profile:",
     `- Count: ${count}`,
+    `- Gender mix: ${clean(options.genderCompositionLabel, "Randomized")} — ${genderInstruction}.`,
     `- Role / primary role: ${clean(options.roleLabel, clean(options.role, "Guard"))}`,
     `- Role composition: ${clean(options.roleCompositionLabel, "Group-appropriate roles")} — ${clean(options.roleCompositionPrompt, "use a coherent role distribution")}`,
     clean(options.roleComposition, "") === "variants" ? `- Available primary-role variants: ${roleVariants}` : "",
@@ -133,7 +144,7 @@ export function buildAiPrompt(options = {}) {
     "      \"cr\": 0.25,",
     "      \"type\": { \"value\": \"humanoid\", \"subtype\": \"Human\", \"swarm\": \"\", \"custom\": \"\" },",
     "      \"biography\": {",
-    "        \"value\": \"<p><strong>Appearance:</strong> ...</p><p><strong>Speech:</strong> ...</p><p><strong>Motivation:</strong> ...</p><p><strong>Mannerism:</strong> ...</p><p><strong>Quirk:</strong> ...</p><p><strong>Rumours:</strong> ...</p><p><strong>Secrets:</strong> ...</p><p><strong>Relationships:</strong> ...</p><p><strong>Adventure Hook:</strong> ...</p>\",",
+    "        \"value\": \"<p><strong>Gender:</strong> Male</p><p><strong>Appearance:</strong> ...</p><p><strong>Speech:</strong> ...</p><p><strong>Motivation:</strong> ...</p><p><strong>Mannerism:</strong> ...</p><p><strong>Quirk:</strong> ...</p><p><strong>Rumours:</strong> ...</p><p><strong>Secrets:</strong> ...</p><p><strong>Relationships:</strong> ...</p><p><strong>Adventure Hook:</strong> ...</p>\",",
     "        \"public\": \"\"",
     "      }",
     "    },",

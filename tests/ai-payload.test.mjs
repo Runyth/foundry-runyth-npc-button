@@ -220,3 +220,17 @@ test("AI prompt carries weapon variety independently of combat readiness", () =>
   assert.match(prompt, /strongly prefer ranged weapons/);
   assert.match(prompt, /Weapon variety never overrides role realism/);
 });
+
+
+test("AI prompt carries exact batch gender composition", () => {
+  const prompt = buildAiPrompt({
+    count: 10,
+    genderComposition: "exact",
+    genderCompositionLabel: "Exact numbers",
+    genderExactMale: 8,
+    genderExactFemale: 2
+  });
+  assert.match(prompt, /Gender mix: Exact numbers/);
+  assert.match(prompt, /exactly 8 male and 2 female NPCs/);
+  assert.match(prompt, /Gender, Appearance, Speech/);
+});

@@ -162,3 +162,13 @@ test("clipboard reader returns browser clipboard text", async () => {
   const value = await readClipboardText({ navigatorRef: { clipboard: { async readText() { return "json"; } } } });
   assert.equal(value, "json");
 });
+
+
+test("multi-picker selection updates do not reset the virtual viewport", async () => {
+  const source = await import("node:fs/promises").then(({ readFile }) => readFile(new URL("../scripts/ui/hierarchical-multi-picker.mjs", import.meta.url), "utf8"));
+  const toggleBody = source.match(/function toggleRow\(row, button = null\) \{([\s\S]*?)\n  \}/)?.[1] ?? "";
+  assert.equal(toggleBody.includes("updateActiveRows"), false);
+  assert.equal(toggleBody.includes("updateRenderedOption"), true);
+  assert.match(source, /if \(resetScroll\) viewport\.scrollTop = 0/);
+  assert.match(source, /updateActiveRows\(\{ resetScroll: true \}\)/);
+});
