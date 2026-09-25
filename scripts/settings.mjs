@@ -36,6 +36,16 @@ export function registerSettings() {
     }
   });
 
+  game.settings.register(MODULE_ID, SETTINGS.IGNORE_IMPORT_COUNT_MISMATCH, {
+    name: `${MODULE_ID}.settings.ignoreImportCountMismatch.name`,
+    hint: `${MODULE_ID}.settings.ignoreImportCountMismatch.hint`,
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: Boolean,
+    default: false
+  });
+
   game.settings.register(MODULE_ID, SETTINGS.TIER_STYLE, {
     name: `${MODULE_ID}.settings.tierStyle.name`,
     hint: `${MODULE_ID}.settings.tierStyle.hint`,

@@ -2,6 +2,20 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.2.3 - 2026-09-25
+
+### Fixed
+
+- NPC import counting now uses one centralized top-level Actor count throughout preflight, mismatch handling, preview, final validation, and Actor creation, eliminating inconsistent count decisions between stages.
+- Count mismatches no longer fail before they can be inspected. A mismatched but structurally valid payload automatically opens import preview by default.
+- Import preview now supports selecting/deselecting individual NPCs, Select all/Clear all, and a live selected-count summary; only the selected subset is imported.
+
+### Added
+
+- Global GM setting to allow arbitrary safe NPC array lengths without forcing count-mismatch review, while still enforcing maximum batch size and all Actor validation.
+- Automatic preview warning banners that show requested versus parsed top-level NPC counts and configured batch-limit overflows.
+- Regression coverage for exact top-level counting, 20-versus-21 mismatch handling, count-agnostic imports, maximum-batch review, and 21-to-20 preview selection.
+
 ## 0.2.2 - 2026-09-22
 
 ### Fixed

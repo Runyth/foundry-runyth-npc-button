@@ -120,3 +120,11 @@ The palette is defined through module-scoped CSS custom properties and Foundry t
 Large lists continue to use the existing fixed-row virtual window. The picker viewport adds CSS containment so row painting/layout stays local. Search work remains requestAnimationFrame-coalesced, scroll listeners remain passive, and visible rows plus overscan are replaced atomically. The design layer does not add observers, timers, images, canvases, or broad document hooks.
 
 Scrollable dashboard/help/filter/preview regions use stable scrollbar gutters and contained overscroll. Footer/action bars are sticky within their existing scroll contexts rather than fixed to the viewport, preserving window geometry behavior and avoiding extra layout coordination.
+
+## v0.2.3 import count planning
+
+AI import treats the parsed JSON root as the single source of truth for actual NPC count: an array contributes exactly its top-level length and a permitted single-object payload contributes one. Nested item arrays or biography structures are never included in NPC counting.
+
+Import validation is split into two stages. Preflight validates root shape and each Actor contract with a hard bounded preview ceiling, but does not reject solely because the array length differs from dashboard Count. A centralized import plan then decides whether preview is requested, automatically required by a count mismatch, or automatically required because the configured maximum batch would otherwise be exceeded.
+
+By default, a count mismatch is a review event: preview opens with requested/actual counts, every Actor starts selected, and the user can deselect any subset before final validation. The optional world setting for arbitrary import counts suppresses count-mismatch review but never bypasses maximum batch size, root-shape validation, or Actor validation.

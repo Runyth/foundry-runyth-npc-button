@@ -34,9 +34,9 @@ Repository validation checks the manifest, referenced runtime files, version con
 16. With Actor review enabled, generate 1–3 Actors and confirm side-by-side placement; generate 4–10 and confirm stacked reuse; generate 11+ and verify only the first ten open.
 17. Copy a multi-NPC AI prompt and verify it includes habitat, group archetype, family/group controls, Race composition, naming examples, quirks, relationships, rumours, secrets, and inventory requirements.
 18. For Count 1, verify array-by-default behavior and the explicit single-object toggle contract.
-19. Import a valid AI group and verify exact Count, destination, canonical equipment resolution where available, and invented loot fallback.
+19. Import a valid AI group and verify parsed top-level NPC count, destination, canonical equipment resolution where available, and invented loot fallback.
 20. Remove the Quirk section or all inventory entries from a payload and confirm import is rejected before Actor creation.
-21. Attempt malformed JSON, wrong root shape, Count mismatch, invalid numeric/item values, and unsafe HTML; confirm validation/sanitization prevents unsafe creation.
+21. Attempt malformed JSON, wrong root shape, a Count mismatch, invalid numeric/item values, and unsafe HTML; confirm malformed/unsafe data is rejected while a structurally valid Count mismatch opens review preview instead of failing early.
 22. Block clipboard-read permission and verify manual-paste fallback.
 23. Switch Foundry between English and German and inspect the new group/habitat/mixed-Race UI.
 24. Enable/disable debug logging and confirm normal operation stays quiet when disabled.
@@ -64,3 +64,7 @@ Automated coverage includes automatically materialized and explicitly reused gen
 37. Enable OS/browser reduced-motion preference and confirm all UI state remains understandable without transition timing.
 38. Repeat Create locally, Copy prompt, Import NPC, filter import/export, preview confirmation/cancel, and portrait-prompt copy after the visual overhaul. Confirm the cosmetic release has not changed action delivery or payload contracts.
 39. Run `npm run audit:ui` and confirm the stylesheet stays under the performance budget and all virtualization/animation invariants pass.
+
+### v0.2.3 count/import regression coverage
+
+Automated tests verify that NPC count is derived only from top-level Actor entries; an exact 20-entry array remains 20 regardless of nested arrays; a 21-versus-20 mismatch forces review by default; count-agnostic mode permits safe mismatches without forced preview; exceeding maximum batch size still forces review; and preview subset selection can reduce 21 entries to the first 20 without mutating or reordering the source payload. Manual QA should also confirm the automatic heads-up banner, per-NPC checkboxes, Select all/Clear all, live selected count, and final validation of only the selected subset.

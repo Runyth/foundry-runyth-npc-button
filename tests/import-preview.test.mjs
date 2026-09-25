@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { applyPreviewEdits, validatePreviewPayload } from "../scripts/ui/npc-import-preview.mjs";
+import { applyPreviewEdits, selectedPreviewPayload, validatePreviewPayload } from "../scripts/ui/npc-import-preview.mjs";
 
 function rawActor(name = "Mara Reed") {
   return {
@@ -68,4 +68,12 @@ test("preview revalidation rejects invalid post-edit basics", () => {
     () => validatePreviewPayload([invalid], { expectedCount: 1 }),
     /hp.max must be a number between 20 and 100000/
   );
+});
+
+
+test("preview subset selection preserves edited payload order and supports deselection", () => {
+  const payload = [rawActor("One"), rawActor("Two"), rawActor("Three")];
+  const selected = selectedPreviewPayload(payload, new Set([0, 2]));
+  assert.deepEqual(selected.map((entry) => entry.name), ["One", "Three"]);
+  assert.equal(payload.length, 3);
 });

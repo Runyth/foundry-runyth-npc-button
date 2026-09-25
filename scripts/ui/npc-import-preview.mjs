@@ -69,6 +69,15 @@ export function validatePreviewPayload(payload, validationOptions = {}) {
   return normalizeNpcJsonPayload(deepClone(payload), validationOptions);
 }
 
+export function selectedPreviewPayload(payload, selectedIndices) {
+  const singleObject = !Array.isArray(payload);
+  const entries = rootEntries(payload);
+  const selected = new Set([...selectedIndices].map((value) => Number(value)).filter(Number.isInteger));
+  const filtered = entries.filter((_, index) => selected.has(index));
+  if (singleObject) return filtered.length ? deepClone(filtered[0]) : null;
+  return deepClone(filtered);
+}
+
 function editorMarkup(entry, index, count) {
   return `
     <section class="runyth-npc-button__preview-editor" data-preview-editor>
@@ -104,6 +113,27 @@ function editorMarkup(entry, index, count) {
   `;
 }
 
+function noticeMarkup(options) {
+  const notices = [];
+  if (options.countMismatch) {
+    notices.push(game.i18n.format(`${MODULE_ID}.preview.countMismatchNotice`, {
+      expected: options.expectedCount,
+      actual: options.actualCount
+    }));
+  }
+  if (options.exceedsMaximum) {
+    notices.push(game.i18n.format(`${MODULE_ID}.preview.maximumNotice`, { max: options.maxBatch }));
+  }
+  if (!notices.length) return "";
+  const intro = options.autoOpened ? localize("preview.autoOpenedNotice") : localize("preview.reviewNotice");
+  return `
+    <div class="runyth-npc-button__preview-notice" role="status" aria-live="polite">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <div><strong>${escapeAttribute(intro)}</strong><p>${escapeAttribute(notices.join(" "))}</p></div>
+    </div>
+  `;
+}
+
 export class NpcImportPreviewApplication extends BaseApplication {
   static DEFAULT_OPTIONS = {
     id: "runyth-npc-button-import-preview",
@@ -124,17 +154,21 @@ export class NpcImportPreviewApplication extends BaseApplication {
   #entries;
   #singleObject;
   #validationOptions;
+  #previewOptions;
+  #selectedIndices;
   #selectedIndex = 0;
   #abortController = null;
   #resolver = null;
   #resolved = false;
 
-  constructor(payload, validationOptions = {}, options = {}) {
+  constructor(payload, validationOptions = {}, previewOptions = {}, options = {}) {
     super(options);
     this.#singleObject = !Array.isArray(payload);
     this.#payload = deepClone(payload);
     this.#entries = rootEntries(this.#payload);
     this.#validationOptions = { ...validationOptions };
+    this.#previewOptions = { ...previewOptions };
+    this.#selectedIndices = new Set(this.#entries.map((_, index) => index));
   }
 
   waitForResult() {
@@ -166,18 +200,47 @@ export class NpcImportPreviewApplication extends BaseApplication {
     this.#payload = this.#singleObject ? this.#entries[0] : this.#entries;
   }
 
+  #selectionPayload() {
+    return selectedPreviewPayload(this.#payload, this.#selectedIndices);
+  }
+
+  #updateSelectionSummary() {
+    const summary = this.element?.querySelector?.("[data-preview-selection-summary]");
+    if (summary) {
+      summary.textContent = game.i18n.format(`${MODULE_ID}.preview.selectedCount`, {
+        selected: this.#selectedIndices.size,
+        total: this.#entries.length
+      });
+    }
+  }
+
   async _renderHTML() {
     const current = this.#current();
     const list = this.#entries.map((entry, index) => `
-      <button type="button" class="runyth-npc-button__preview-entry${index === this.#selectedIndex ? " active" : ""}" data-preview-index="${index}" aria-pressed="${index === this.#selectedIndex}">
-        <span>${escapeAttribute(String(entry?.name ?? game.i18n.format(`${MODULE_ID}.preview.unnamedNpc`, { number: index + 1 })))}</span>
-        <small>${escapeAttribute(String(valueAt(entry, "system.details.type.subtype", "")))}</small>
-      </button>
+      <div class="runyth-npc-button__preview-entry-row${index === this.#selectedIndex ? " active" : ""}">
+        <label class="runyth-npc-button__preview-select" title="${escapeAttribute(localize("preview.includeNpc"))}">
+          <input type="checkbox" data-preview-selected="${index}" aria-label="${escapeAttribute(localize("preview.includeNpc"))}"${this.#selectedIndices.has(index) ? " checked" : ""}>
+        </label>
+        <button type="button" class="runyth-npc-button__preview-entry${index === this.#selectedIndex ? " active" : ""}" data-preview-index="${index}" aria-pressed="${index === this.#selectedIndex}">
+          <span>${escapeAttribute(String(entry?.name ?? game.i18n.format(`${MODULE_ID}.preview.unnamedNpc`, { number: index + 1 })))}</span>
+          <small>${escapeAttribute(String(valueAt(entry, "system.details.type.subtype", "")))}</small>
+        </button>
+      </div>
     `).join("");
     const template = document.createElement("template");
     template.innerHTML = `
       <form class="runyth-npc-button__preview-layout">
-        <aside class="runyth-npc-button__preview-list" aria-label="${escapeAttribute(localize("preview.npcList"))}">${list}</aside>
+        <aside class="runyth-npc-button__preview-sidebar" aria-label="${escapeAttribute(localize("preview.npcList"))}">
+          ${noticeMarkup(this.#previewOptions)}
+          <div class="runyth-npc-button__preview-selection-toolbar">
+            <strong data-preview-selection-summary>${escapeAttribute(game.i18n.format(`${MODULE_ID}.preview.selectedCount`, { selected: this.#selectedIndices.size, total: this.#entries.length }))}</strong>
+            <span>
+              <button type="button" data-preview-action="select-all">${escapeAttribute(localize("preview.selectAll"))}</button>
+              <button type="button" data-preview-action="clear-all">${escapeAttribute(localize("preview.clearAll"))}</button>
+            </span>
+          </div>
+          <div class="runyth-npc-button__preview-list">${list}</div>
+        </aside>
         <div class="runyth-npc-button__preview-main">
           ${editorMarkup(current, this.#selectedIndex, this.#entries.length)}
           <div class="runyth-npc-button__preview-status" role="status" aria-live="polite"></div>
@@ -209,6 +272,28 @@ export class NpcImportPreviewApplication extends BaseApplication {
       }, { signal });
     }
 
+    for (const checkbox of this.element.querySelectorAll("[data-preview-selected]")) {
+      checkbox.addEventListener("change", () => {
+        const index = Number(checkbox.dataset.previewSelected);
+        if (!Number.isInteger(index)) return;
+        if (checkbox.checked) this.#selectedIndices.add(index);
+        else this.#selectedIndices.delete(index);
+        this.#updateSelectionSummary();
+      }, { signal });
+    }
+
+    this.element.querySelector('[data-preview-action="select-all"]')?.addEventListener("click", () => {
+      this.#selectedIndices = new Set(this.#entries.map((_, index) => index));
+      for (const checkbox of this.element.querySelectorAll("[data-preview-selected]")) checkbox.checked = true;
+      this.#updateSelectionSummary();
+    }, { signal });
+
+    this.element.querySelector('[data-preview-action="clear-all"]')?.addEventListener("click", () => {
+      this.#selectedIndices.clear();
+      for (const checkbox of this.element.querySelectorAll("[data-preview-selected]")) checkbox.checked = false;
+      this.#updateSelectionSummary();
+    }, { signal });
+
     this.element.querySelector('[data-preview-action="cancel"]')?.addEventListener("click", () => {
       void this.#finish(null);
     }, { signal });
@@ -217,9 +302,13 @@ export class NpcImportPreviewApplication extends BaseApplication {
       this.#saveCurrentEditor();
       const status = this.element.querySelector(".runyth-npc-button__preview-status");
       try {
-        validatePreviewPayload(this.#payload, this.#validationOptions);
-        if (status) status.textContent = localize("preview.valid");
-        void this.#finish(deepClone(this.#payload));
+        const selectedPayload = this.#selectionPayload();
+        if (selectedPayload === null || (Array.isArray(selectedPayload) && !selectedPayload.length)) {
+          throw new Error(localize("preview.selectAtLeastOne"));
+        }
+        validatePreviewPayload(selectedPayload, this.#validationOptions);
+        if (status) status.textContent = game.i18n.format(`${MODULE_ID}.preview.validSelected`, { count: this.#selectedIndices.size });
+        void this.#finish(selectedPayload);
       } catch (error) {
         if (status) status.textContent = game.i18n.format(`${MODULE_ID}.preview.invalid`, { message: error?.message ?? String(error) });
       }
@@ -249,8 +338,8 @@ export class NpcImportPreviewApplication extends BaseApplication {
   }
 }
 
-export async function openNpcImportPreview(payload, validationOptions = {}) {
-  const app = new NpcImportPreviewApplication(payload, validationOptions);
+export async function openNpcImportPreview(payload, validationOptions = {}, previewOptions = {}) {
+  const app = new NpcImportPreviewApplication(payload, validationOptions, previewOptions);
   const resultPromise = app.waitForResult();
   await app.render({ force: true });
   return resultPromise;

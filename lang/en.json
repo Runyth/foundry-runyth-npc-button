@@ -29,6 +29,10 @@
       "filtersStorage": {
         "name": "Dashboard string filters storage",
         "hint": "Internal JSON storage for advanced dashboard string filters."
+      },
+      "ignoreImportCountMismatch": {
+        "name": "Allow arbitrary NPC import counts",
+        "hint": "When enabled, imported JSON arrays may contain a different number of NPCs than the dashboard Count without forcing review. The configured maximum batch size and all Actor validation still apply."
       }
     },
     "ui": {
@@ -129,7 +133,7 @@
       "weaponVariety": "Weapon variety",
       "weaponVarietyHint": "Controls whether realistic role-appropriate weapons favor melee, ranged, or a mix. Hard-only modes never invent an implausible weapon just to satisfy the category.",
       "previewImport": "Preview and edit before import",
-      "previewImportHint": "Validate the AI payload, open a fast preview editor for names, biography, race, CR, AC, HP, and speed, then validate the edited payload again before creating Actors.",
+      "previewImportHint": "Open a fast preview where NPCs can be selected/deselected and simple fields edited before final validation and Actor creation. Count mismatches open this preview automatically unless the global count-agnostic import setting is enabled.",
       "portraitPromptShort": "Portrait",
       "genderComposition": "Gender mix",
       "genderCompositionHint": "Choose how male and female NPCs are distributed across the generated batch.",
@@ -168,7 +172,7 @@
       "aiStep2": "Click Copy prompt and paste the prompt into an AI conversation.",
       "aiStep3": "Copy the AI's JSON-only reply to your clipboard.",
       "aiStep4": "Return to Foundry and click Import NPC. The current destination is applied locally.",
-      "aiValidation": "The importer rejects malformed or count-mismatched payloads before creating Actors. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items.",
+      "aiValidation": "The importer validates the JSON root shape and every Actor independently from the requested Count. A count mismatch triggers automatic preview by default rather than a fatal error; only the selected subset is revalidated immediately before creation. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items.",
       "groupType": "Choose independent NPCs or an intentional group archetype. Group presets vary responsibilities and tell the AI to create shared history and useful internal roles instead of copies of one NPC.",
       "habitat": "Defaults to Forest Village. Habitat changes the expected daily life, possessions, travel assumptions, work, rumors, and social context.",
       "standardRacesTitle": "Standard 2024 races",
@@ -189,7 +193,7 @@
       "weaponVarietyTitle": "Weapon variety",
       "weaponVarietyBody": "Melee only, Melee preference, Mixed, Ranged preference, and Ranged only bias or constrain carried weapons without overriding occupational realism. If a ranged-only jurist has no plausible ranged weapon, the correct result is no weapon rather than an absurd loadout.",
       "importPreviewTitle": "Import preview",
-      "importPreviewBody": "Enable Preview and edit before import to inspect each validated AI NPC in a compact editor. Minor fields can be changed quickly; the edited payload is validated again before Actor creation.",
+      "importPreviewBody": "Preview provides a selectable master list plus a compact editor. Every NPC starts selected; deselect any entry you do not want, edit simple fields, then import only the selected subset. If the parsed top-level JSON count differs from the dashboard Count, preview opens automatically with a warning so the discrepancy can be reviewed instead of failing early. GMs can enable Allow arbitrary NPC import counts to skip this automatic review for safe external/manual JSON arrays. Maximum batch size and Actor validation always remain enforced.",
       "roleMixTitle": "Role composition in detail",
       "roleMixBody": "The main Role selected in Generation is always the primary Role. For mixed modes, Possible roles defines the allowed pool; the primary Role is automatically included even if it was not manually selected. Integer quotas always add up to the requested Count.",
       "roleMixWeights": "Custom weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Role as long as at least one other Role has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
@@ -508,7 +512,17 @@
       "cancel": "Cancel",
       "confirm": "Validate and import",
       "valid": "Edited payload is valid.",
-      "invalid": "Edited payload is invalid: {message}"
+      "invalid": "Edited payload is invalid: {message}",
+      "autoOpenedNotice": "Preview opened automatically",
+      "reviewNotice": "Import count needs review",
+      "countMismatchNotice": "The dashboard requested {expected} NPCs, but the parsed top-level JSON contains {actual}. Review the batch and deselect any NPCs you do not want to import.",
+      "maximumNotice": "The payload exceeds the configured maximum batch size of {max}. Deselect entries until the selected batch is within the limit.",
+      "selectedCount": "{selected} of {total} NPCs selected",
+      "includeNpc": "Include this NPC in the import",
+      "selectAll": "Select all",
+      "clearAll": "Clear all",
+      "selectAtLeastOne": "Select at least one NPC to import.",
+      "validSelected": "{count} selected NPC(s) passed final validation."
     },
     "weaponVariety": {
       "meleeOnly": "Melee only",

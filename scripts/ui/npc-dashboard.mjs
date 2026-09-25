@@ -1,5 +1,6 @@
 import { buildAiPrompt } from "../ai/prompt-builder.mjs";
 import { normalizeNpcJsonPayload, parseNpcJsonPayload } from "../ai/npc-json.mjs";
+import { buildNpcImportPlan, countNpcPayloadEntries } from "../ai/import-plan.mjs";
 import { DEFAULT_OPTIONS, MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import {
   CR_VALUES,
@@ -1387,23 +1388,52 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         }
       }
       const maxBatch = Number(game.settings.get(MODULE_ID, SETTINGS.MAX_BATCH)) || 25;
-      const validationOptions = {
-        expectedCount: options.count,
-        maxCount: maxBatch,
-        allowSingleObject: options.singleAiObject
-      };
+      const ignoreCountMismatch = Boolean(game.settings.get(MODULE_ID, SETTINGS.IGNORE_IMPORT_COUNT_MISMATCH));
       let payload = parseNpcJsonPayload(text);
-      // Validate the unedited payload before preview so malformed AI responses never
-      // enter the editor. Preview confirmation validates the edited payload again,
-      // and we repeat validation here immediately before Actor creation.
-      let sources = normalizeNpcJsonPayload(payload, validationOptions);
-      if (options.previewImport) {
-        payload = await openNpcImportPreview(payload, validationOptions);
+      const actualCount = countNpcPayloadEntries(payload);
+      const plan = buildNpcImportPlan({
+        actualCount,
+        expectedCount: options.count,
+        maxBatch,
+        previewRequested: options.previewImport,
+        ignoreCountMismatch,
+        allowSingleObject: options.singleAiObject
+      });
+
+      logger.debug("NPC import count plan", {
+        requested: plan.expectedCount,
+        parsed: plan.actualCount,
+        maxBatch: plan.maxBatch,
+        mismatch: plan.mismatch,
+        exceedsMaximum: plan.exceedsMaximum,
+        previewRequired: plan.previewRequired,
+        autoPreview: plan.autoPreview,
+        ignoreCountMismatch
+      });
+
+      // Validate every unedited Actor before preview, but deliberately do not reject
+      // solely because the top-level array length differs from the requested Count.
+      // The count policy below decides whether that difference needs human review.
+      let sources = normalizeNpcJsonPayload(payload, plan.preflightValidationOptions);
+
+      if (plan.previewRequired) {
+        payload = await openNpcImportPreview(payload, plan.finalValidationOptions, {
+          expectedCount: plan.expectedCount,
+          actualCount: plan.actualCount,
+          maxBatch: plan.maxBatch,
+          countMismatch: plan.mismatch,
+          exceedsMaximum: plan.exceedsMaximum,
+          autoOpened: plan.autoPreview
+        });
         if (payload === null) {
           ui.notifications.info(localize("notifications.importCancelled"));
           return;
         }
-        sources = normalizeNpcJsonPayload(payload, validationOptions);
+        sources = normalizeNpcJsonPayload(payload, plan.finalValidationOptions);
+      } else {
+        // Count-agnostic mode still enforces the configured creation maximum and
+        // every Actor-level contract immediately before Actor creation.
+        sources = normalizeNpcJsonPayload(payload, plan.finalValidationOptions);
       }
       const actors = await createImportedNpcActors(sources, options);
       if (!actors.length) {

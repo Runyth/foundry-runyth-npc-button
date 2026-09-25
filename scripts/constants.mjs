@@ -1,6 +1,6 @@
 export const MODULE_ID = "runyth-npc-button";
 export const MODULE_TITLE = "Runyth NPC Button";
-export const MODULE_VERSION = "0.2.2";
+export const MODULE_VERSION = "0.2.3";
 
 export const SETTINGS = Object.freeze({
   DEBUG: "debugLogging",
@@ -9,7 +9,8 @@ export const SETTINGS = Object.freeze({
   TIER_STYLE: "tierStyle",
   LAST_OPTIONS: "lastOptions",
   WINDOW_STATE: "dashboardWindowState",
-  FILTERS: "stringFilters"
+  FILTERS: "stringFilters",
+  IGNORE_IMPORT_COUNT_MISMATCH: "ignoreImportCountMismatch"
 });
 
 export const TIER_STYLES = Object.freeze({

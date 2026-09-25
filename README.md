@@ -169,4 +169,4 @@ Local NPC generation always has a concrete reusable seed. When the Seed field is
 
 Weapon variety is separate from Combat readiness. It can constrain or bias generated combat gear toward melee or ranged weapons while preserving role realism; a noncombatant with no plausible weapon in a hard-only category remains weaponless.
 
-AI import can optionally open a preview editor before Actor creation. Names, biography, Race/subtype, CR, AC, HP, and walking speed can be adjusted quickly. The edited payload is revalidated before import.
+AI import can optionally open a preview editor before Actor creation. Names, biography, Race/subtype, CR, AC, HP, and walking speed can be adjusted quickly, and individual NPCs can be selected or deselected. Count mismatches automatically open preview by default instead of failing early; a GM world setting can allow arbitrary safe array lengths for external/manual JSON. The selected subset is revalidated before import, and maximum batch size is always enforced.

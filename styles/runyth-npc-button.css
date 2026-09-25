@@ -1645,3 +1645,85 @@
 .runyth-npc-button__manual-copy-status {
   min-height: 1.2em;
 }
+
+/* v0.2.3 import-count review: bounded selection controls without list rerendering. */
+.runyth-npc-button__preview-sidebar {
+  background: color-mix(in srgb, var(--rnb-surface-1) 90%, black 10%);
+  border-right: 1px solid var(--rnb-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.runyth-npc-button__preview-sidebar .runyth-npc-button__preview-list {
+  border-right: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.runyth-npc-button__preview-notice {
+  align-items: flex-start;
+  background: color-mix(in srgb, var(--rnb-accent-soft) 82%, transparent 18%);
+  border-bottom: 1px solid var(--rnb-border);
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.68rem 0.72rem;
+}
+
+.runyth-npc-button__preview-notice > i {
+  color: var(--rnb-accent-strong);
+  margin-top: 0.1rem;
+}
+
+.runyth-npc-button__preview-notice p {
+  color: var(--rnb-text-muted);
+  margin: 0.18rem 0 0;
+}
+
+.runyth-npc-button__preview-selection-toolbar {
+  align-items: center;
+  border-bottom: 1px solid var(--rnb-border-soft);
+  display: flex;
+  gap: 0.45rem;
+  justify-content: space-between;
+  padding: 0.48rem 0.62rem;
+}
+
+.runyth-npc-button__preview-selection-toolbar > span {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.runyth-npc-button__preview-selection-toolbar button {
+  min-height: 1.85rem;
+  padding: 0 0.42rem;
+}
+
+.runyth-npc-button__preview-entry-row {
+  align-items: stretch;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+}
+
+.runyth-npc-button__preview-select {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.runyth-npc-button__preview-select input {
+  margin: 0;
+}
+
+.runyth-npc-button__preview-entry-row .runyth-npc-button__preview-entry {
+  width: 100%;
+}
+
+@media (max-width: 760px) {
+  .runyth-npc-button__preview-sidebar {
+    border-bottom: 1px solid var(--rnb-border);
+    border-right: 0;
+  }
+}

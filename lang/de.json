@@ -29,6 +29,10 @@
       "filtersStorage": {
         "name": "Speicher für Dashboard-String-Filter",
         "hint": "Interner JSON-Speicher für erweiterte Dashboard-String-Filter."
+      },
+      "ignoreImportCountMismatch": {
+        "name": "Beliebige NSC-Importanzahl erlauben",
+        "hint": "Wenn aktiviert, dürfen importierte JSON-Arrays eine andere Anzahl an NSCs als der Dashboard-Wert Anzahl enthalten, ohne automatisch eine Prüfung zu erzwingen. Die konfigurierte maximale Stapelgröße und alle Actor-Validierungen gelten weiterhin."
       }
     },
     "ui": {
@@ -129,7 +133,7 @@
       "weaponVariety": "Waffenvielfalt",
       "weaponVarietyHint": "Steuert, ob realistische rollenpassende Waffen Nahkampf, Fernkampf oder eine Mischung bevorzugen. Reine Modi erfinden niemals eine unplausible Waffe nur für die Kategorie.",
       "previewImport": "Vor Import prüfen und bearbeiten",
-      "previewImportHint": "Validiert die KI-Nutzlast, öffnet eine schnelle Vorschau für Name, Biografie, Volk, CR, RK, TP und Bewegung und validiert die bearbeitete Nutzlast erneut vor dem Erstellen der Actors.",
+      "previewImportHint": "Öffnet eine schnelle Vorschau, in der NSCs an-/abgewählt und einfache Felder bearbeitet werden können, bevor finale Validierung und Actor-Erstellung erfolgen. Abweichende Anzahlen öffnen diese Vorschau automatisch, sofern die globale Einstellung für anzahlunabhängige Importe nicht aktiviert ist.",
       "portraitPromptShort": "Porträt",
       "genderComposition": "Geschlechterverteilung",
       "genderCompositionHint": "Legt fest, wie männliche und weibliche NSC innerhalb des erzeugten Stapels verteilt werden.",
@@ -168,7 +172,7 @@
       "aiStep2": "Prompt kopieren anklicken und den Prompt in eine KI-Konversation einfügen.",
       "aiStep3": "Die reine JSON-Antwort der KI in die Zwischenablage kopieren.",
       "aiStep4": "Zu Foundry zurückkehren und NSC importieren anklicken. Das aktuelle Ziel wird lokal angewendet.",
-      "aiValidation": "Der Importer lehnt fehlerhafte oder in der Anzahl unpassende Payloads vor der Actor-Erstellung ab. Kanonische Gegenstände werden gegen D&D-5e-Ausrüstungskompendien aufgelöst; erfundener Rollenspielbesitz bleibt ein sicheres Loot-Item.",
+      "aiValidation": "Der Importer validiert JSON-Wurzelform und jeden Actor unabhängig von der angeforderten Anzahl. Eine Abweichung öffnet standardmäßig automatisch die Vorschau statt einen fatalen Fehler auszulösen; nur die ausgewählte Teilmenge wird unmittelbar vor der Erstellung erneut validiert. Kanonische Gegenstände werden über D&D-5e-Kompendien aufgelöst, erfundene Rollenspielgegenstände bleiben sichere Loot-Items.",
       "groupType": "Unabhängige NSCs oder einen absichtlichen Gruppentyp wählen. Gruppenvorlagen variieren Aufgaben und weisen die KI an, gemeinsame Geschichte und nützliche interne Rollen statt Kopien desselben NSCs zu erstellen.",
       "habitat": "Standard ist Forest Village. Der Lebensraum verändert erwartbaren Alltag, Besitz, Reisen, Arbeit, Gerüchte und sozialen Kontext.",
       "standardRacesTitle": "Standardvölker 2024",
@@ -189,7 +193,7 @@
       "weaponVarietyTitle": "Waffenvielfalt",
       "weaponVarietyBody": "Nur Nahkampf, Nahkampf bevorzugt, Gemischt, Fernkampf bevorzugt und Nur Fernkampf gewichten oder beschränken getragene Waffen, ohne die Berufslogik zu überschreiben. Hat ein Jurist bei Nur Fernkampf keine plausible Fernkampfwaffe, ist keine Waffe das korrekte Ergebnis.",
       "importPreviewTitle": "Importvorschau",
-      "importPreviewBody": "Aktiviere Vor Import prüfen und bearbeiten, um jeden validierten KI-NPC in einem kompakten Editor zu prüfen. Kleine Felder lassen sich schnell ändern; die bearbeitete Nutzlast wird vor dem Erstellen der Actors erneut validiert.",
+      "importPreviewBody": "Die Vorschau bietet eine auswählbare Master-Liste und einen kompakten Editor. Standardmäßig sind alle NSCs ausgewählt; wähle unerwünschte Einträge ab, bearbeite einfache Felder und importiere anschließend nur die Auswahl. Weicht die eingelesene JSON-Anzahl auf oberster Ebene von der Dashboard-Anzahl ab, öffnet sich die Vorschau automatisch mit einem Hinweis, statt frühzeitig abzubrechen. GMs können Beliebige NSC-Importanzahl erlauben aktivieren, um diese automatische Prüfung für sichere externe/manuelle JSON-Arrays zu überspringen. Maximale Stapelgröße und Actor-Validierung gelten immer.",
       "roleMixTitle": "Rollenzusammensetzung im Detail",
       "roleMixBody": "Die im Bereich Erzeugung gewählte Hauptrolle ist immer die primäre Rolle. Bei gemischten Modi definiert Mögliche Rollen den erlaubten Pool; die primäre Rolle wird automatisch einbezogen, auch wenn sie nicht manuell gewählt wurde. Ganzzahlige Quoten ergeben immer exakt die gewünschte Anzahl.",
       "roleMixWeights": "Eigene Gewichte sind relative Verhältnisse, keine Prozente. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt die Rolle aus, solange mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
@@ -508,7 +512,17 @@
       "cancel": "Abbrechen",
       "confirm": "Validieren und importieren",
       "valid": "Bearbeitete Nutzlast ist gültig.",
-      "invalid": "Bearbeitete Nutzlast ist ungültig: {message}"
+      "invalid": "Bearbeitete Nutzlast ist ungültig: {message}",
+      "autoOpenedNotice": "Vorschau automatisch geöffnet",
+      "reviewNotice": "Importanzahl muss geprüft werden",
+      "countMismatchNotice": "Im Dashboard wurden {expected} NSCs angefordert, aber das eingelesene JSON auf oberster Ebene enthält {actual}. Prüfe den Stapel und wähle NSCs ab, die nicht importiert werden sollen.",
+      "maximumNotice": "Die Nutzlast überschreitet die konfigurierte maximale Stapelgröße von {max}. Wähle Einträge ab, bis die Auswahl innerhalb des Limits liegt.",
+      "selectedCount": "{selected} von {total} NSCs ausgewählt",
+      "includeNpc": "Diesen NSC importieren",
+      "selectAll": "Alle auswählen",
+      "clearAll": "Alle abwählen",
+      "selectAtLeastOne": "Wähle mindestens einen NSC zum Import aus.",
+      "validSelected": "{count} ausgewählte NSC(s) haben die finale Validierung bestanden."
     },
     "weaponVariety": {
       "meleeOnly": "Nur Nahkampf",
