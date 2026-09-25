@@ -7,10 +7,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cssPath = path.join(root, "styles/runyth-npc-button.css");
 const pickerPath = path.join(root, "scripts/ui/hierarchical-picker.mjs");
 const multiPickerPath = path.join(root, "scripts/ui/hierarchical-multi-picker.mjs");
-const [css, picker, multiPicker] = await Promise.all([
+const quotaEditorPath = path.join(root, "scripts/ui/virtual-quota-editor.mjs");
+const [css, picker, multiPicker, quotaEditor] = await Promise.all([
   readFile(cssPath, "utf8"),
   readFile(pickerPath, "utf8"),
-  readFile(multiPickerPath, "utf8")
+  readFile(multiPickerPath, "utf8"),
+  readFile(quotaEditorPath, "utf8")
 ]);
 
 const cssBytes = Buffer.byteLength(css, "utf8");
@@ -24,7 +26,7 @@ assert.match(css, /prefers-reduced-motion:\s*reduce/i, "UI must respect reduced-
 assert.match(css, /contain:\s*layout paint style;/, "virtualized picker viewport must isolate layout/paint work");
 assert.match(css, /scrollbar-gutter:\s*stable;/, "scrolling surfaces should avoid scrollbar layout shifts");
 
-for (const [name, source] of [["single picker", picker], ["multi picker", multiPicker]]) {
+for (const [name, source] of [["single picker", picker], ["multi picker", multiPicker], ["quota editor", quotaEditor]]) {
   assert.match(source, /const\s+OVERSCAN\s*=\s*\d+/, `${name} must retain bounded overscan virtualization`);
   assert.match(source, /requestAnimationFrame/, `${name} search/render work must remain frame-coalesced`);
   assert.match(source, /passive:\s*true/, `${name} scroll listener must remain passive`);

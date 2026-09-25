@@ -19,13 +19,13 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 - Individual NPC generation or coherent group generation. Built-in group archetypes include family and noble households, guard/watch groups, militia, mercenaries, orc raiders, bandits, criminal cells, caravans, guild crews, ship crews, hunting parties, expeditions, temple households, village councils, pilgrims, and refugee parties.
 - Family generation with shared surnames, household roles, quirks, shared rumours/secrets, relationship lore, family structure, and configurable internal disputes.
 - Advanced group controls for cohesion, hierarchy, relationship density, internal conflict, family structure, and a free-form group brief.
-- Race composition with a scalable multi-select picker and exact-size allocation: single Race, strong primary-Race majority, primary-Race majority, broadly mixed, or custom weights. A ten-person three-Race strong-majority batch can therefore resolve coherently to approximately 8/1/1.
+- Race composition with a scalable multi-select picker and exact-size allocation: single Race, strong primary-Race majority, primary-Race majority, broadly mixed, custom weights, or exact per-Race integer counts. A ten-person three-Race strong-majority batch can therefore resolve coherently to approximately 8/1/1.
 - Role composition with the same deterministic quota model: single Role, distinct Role variants, group-appropriate jobs, balanced mixed Roles, primary-Role majority, strong primary-Role majority, or custom weights. The main Role field is always the primary Role; custom weights are relative ratios where larger numbers mean more NPCs and 0 excludes a Role when another Role has positive weight. A live preview shows the actual integer allocation for the current Count.
 - Deterministic local group generation respects habitat, Race composition, group roles, quirks, cohesion, hierarchy, relationship density, and conflict settings.
 - Optional Actor review layout opens at most the first ten created Actors, with up to three visible side-by-side and later sheets stacked behind those positions.
 - AI-native clipboard workflow:
   - **Copy prompt** creates a strict, detailed portable prompt for a manual AI conversation. Clipboard writing is best-effort: if browser focus or permissions block automatic copying, the prepared prompt remains visible in the dashboard with Select text and Copy again controls.
-  - AI output is an array by default, including when Count is 1; an explicit toggle permits one object only when Count is 1.
+  - AI output always uses one JSON array, including when Count is 1, keeping prompt and import validation on one invariant contract.
   - Prompted biographies require Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.
   - Group prompts require coherent responsibilities, relationships, shared history, secrets, rumours, disputes, and cross-NPC references appropriate to the selected group archetype.
   - Naming guidance includes the selected palette's idiomatic description and rich example set.
@@ -94,7 +94,7 @@ Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard 
 
 ### AI payload shape
 
-The default prompt always requests exactly one fenced `json` Markdown code block containing a JSON array with exactly the selected Count. This includes Count 1. When Count is 1, **Use a single JSON object** changes both the prompt contract and importer to require one object instead.
+The prompt always requests exactly one fenced `json` Markdown code block containing a JSON array with exactly the selected Count. This includes Count 1; there is no alternate single-object root contract.
 
 Every Actor must include at least one inventory entry and a labeled biography containing Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook. Standard item requests can provide an exact English canonical lookup name. The module attempts to resolve those from modern D&D 5e equipment content first, then compatible legacy SRD item packs. If no canonical match exists, the possession remains a safe roleplay loot Item rather than causing the import to fail.
 

@@ -53,17 +53,17 @@ function actorSource(name = "Mara Reed") {
 }
 
 test("AI prompt requests an array by default, including for one NPC", () => {
-  const prompt = buildAiPrompt({ count: 1, singleAiObject: false });
+  const prompt = buildAiPrompt({ count: 1 });
   assert.match(prompt, /exactly one JSON array containing 1 Actor object/);
   assert.match(prompt, /root JSON value inside the code block must be an array/);
   assert.match(prompt, /single markdown code block labeled json/);
 });
 
-test("AI prompt requests a single object only when explicitly enabled", () => {
+test("AI prompt always requests an array even if obsolete single-object input is supplied", () => {
   const prompt = buildAiPrompt({ count: 1, singleAiObject: true });
-  assert.match(prompt, /exactly one JSON object, not an array/);
-  assert.match(prompt, /root JSON value inside the code block must be an object/);
-  assert.match(prompt, /indent nested JSON with 2 spaces/);
+  assert.match(prompt, /exactly one JSON array containing 1 Actor object/);
+  assert.match(prompt, /root JSON value inside the code block must be an array/);
+  assert.doesNotMatch(prompt, /not an array/);
 });
 
 test("AI prompt requires role-fitting inventory, rumours, secrets, relationships, and wealth", () => {
@@ -135,6 +135,20 @@ test("AI prompt carries combat readiness and role composition constraints", () =
   assert.match(prompt, /8\/1\/1/);
 });
 
+test("AI prompt carries exact Race quotas as hard counts", () => {
+  const prompt = buildAiPrompt({
+    count: 10,
+    raceComposition: "exact",
+    raceCompositionLabel: "Exact numbers",
+    raceCompositionPrompt: "use supplied exact counts",
+    groupRaceLabels: ["Human", "Elf", "Dwarf"],
+    primaryRaceLabel: "Human",
+    raceExactCountSummary: "Human=8, Elf=1, Dwarf=1"
+  });
+  assert.match(prompt, /Exact race counts: Human=8, Elf=1, Dwarf=1/);
+  assert.match(prompt, /hard quota, not an approximation/);
+});
+
 test("default import contract rejects a lone object", () => {
   assert.throws(
     () => normalizeNpcJsonPayload(actorSource(), { expectedCount: 1 }),
@@ -142,11 +156,10 @@ test("default import contract rejects a lone object", () => {
   );
 });
 
-test("single-object import mode rejects an array", () => {
-  assert.throws(
-    () => normalizeNpcJsonPayload([actorSource()], { expectedCount: 1, allowSingleObject: true }),
-    /single Actor JSON object is required/
-  );
+test("import contract remains array-only when obsolete single-object options are supplied", () => {
+  const actors = normalizeNpcJsonPayload([actorSource()], { expectedCount: 1, allowSingleObject: true });
+  assert.equal(actors.length, 1);
+  assert.throws(() => normalizeNpcJsonPayload(actorSource(), { expectedCount: 1, allowSingleObject: true }), /must be an array/);
 });
 
 test("AI Actor normalization strips unsupported source data, sanitizes biography, and converts inventory requests", () => {

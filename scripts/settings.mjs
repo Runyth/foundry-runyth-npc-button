@@ -137,6 +137,7 @@ export async function saveLastOptions(options) {
     primaryRace: options.primaryRace,
     raceDistribution: options.raceDistribution,
     raceWeights: options.raceWeights,
+    raceExactCounts: options.raceExactCounts,
     roleComposition: options.roleComposition,
     groupRoles: options.groupRoles,
     primaryRole: options.primaryRole,
@@ -147,7 +148,6 @@ export async function saveLastOptions(options) {
     newFolderName: options.newFolderName,
     useActorRoot: options.useActorRoot,
     openLastActor: options.openLastActor,
-    singleAiObject: options.singleAiObject,
     previewImport: options.previewImport
   };
   await game.settings.set(MODULE_ID, SETTINGS.LAST_OPTIONS, JSON.stringify(safeOptions));

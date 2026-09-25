@@ -1775,3 +1775,67 @@
     border-right: 0;
   }
 }
+
+/* Exact Race quota editor reuses the virtual-list primitives so large Race
+ * catalogs remain bounded and scroll smoothly. */
+.runyth-npc-button__quota-editor {
+  background: color-mix(in srgb, var(--rnb-surface-0) 72%, transparent 28%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.65rem;
+}
+
+.runyth-npc-button__quota-toolbar {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.runyth-npc-button__quota-summary {
+  border-radius: var(--rnb-radius-sm);
+  font-variant-numeric: tabular-nums;
+  padding: 0.4rem 0.55rem;
+}
+
+.runyth-npc-button__quota-summary.is-valid {
+  background: color-mix(in srgb, var(--color-level-success, #2d7a46) 18%, transparent 82%);
+}
+
+.runyth-npc-button__quota-summary.is-invalid {
+  background: color-mix(in srgb, var(--color-level-warning, #a76b19) 18%, transparent 82%);
+}
+
+.runyth-npc-button__quota-viewport {
+  max-height: 264px;
+  min-height: 132px;
+}
+
+.runyth-npc-button__quota-row {
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--rnb-border-soft) 50%, transparent 50%);
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: minmax(0, 1fr) 6rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.runyth-npc-button__quota-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.runyth-npc-button__quota-row input[type="number"] {
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .runyth-npc-button__quota-toolbar {
+    grid-template-columns: 1fr;
+  }
+}

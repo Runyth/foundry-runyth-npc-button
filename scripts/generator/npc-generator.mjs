@@ -218,6 +218,22 @@ export function buildRaceAssignments(options = {}, count = 1, random = Math.rand
   }
 
   const primaryId = ids.includes(options.primaryRace) ? options.primaryRace : ids[0];
+
+  if (composition === "exact") {
+    const configured = options.raceExactCounts && typeof options.raceExactCounts === "object" ? options.raceExactCounts : {};
+    const quotas = ids.map((id) => Math.max(0, Math.trunc(Number(configured[id]) || 0)));
+    const assigned = quotas.reduce((sum, value) => sum + value, 0);
+    if (assigned !== total) {
+      throw new Error(`Exact Race counts must add up to ${total}; currently ${assigned}.`);
+    }
+    const assignments = [];
+    ids.forEach((id, index) => {
+      const selection = raceSelectionFromId(id) ?? { species: "human", customSpecies: "" };
+      for (let item = 0; item < quotas[index]; item += 1) assignments.push({ ...selection });
+    });
+    return shuffle(assignments, random);
+  }
+
   const weights = {};
   if (composition === "primary" || composition === "dominant") {
     const primaryShare = composition === "dominant" ? 0.85 : 0.70;

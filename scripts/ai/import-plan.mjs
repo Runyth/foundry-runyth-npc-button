@@ -28,8 +28,7 @@ export function buildNpcImportPlan({
   expectedCount,
   maxBatch,
   previewRequested = false,
-  ignoreCountMismatch = false,
-  allowSingleObject = false
+  ignoreCountMismatch = false
 } = {}) {
   const actual = Math.max(0, integerCount(actualCount, 0));
   const expected = Math.max(1, integerCount(expectedCount, 1));
@@ -47,17 +46,14 @@ export function buildNpcImportPlan({
     exceedsMaximum,
     previewRequired,
     autoPreview: previewRequired && !previewRequested,
-    allowSingleObject: Boolean(allowSingleObject),
     // A mismatch that reaches preview is an explicit human-review workflow.
     // Final selection may therefore differ from the originally requested count,
     // but can never exceed the configured maximum.
     finalValidationOptions: Object.freeze({
-      maxCount: maximum,
-      allowSingleObject: Boolean(allowSingleObject)
+      maxCount: maximum
     }),
     preflightValidationOptions: Object.freeze({
-      maxCount: HARD_PREVIEW_LIMIT,
-      allowSingleObject: Boolean(allowSingleObject)
+      maxCount: HARD_PREVIEW_LIMIT
     })
   });
 }

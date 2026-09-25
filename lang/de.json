@@ -79,8 +79,6 @@
       "openLastActorHint": "Öffnet bis zu 10 Actors. Bis zu drei sind nebeneinander sichtbar; weitere liegen dahinter, sodass beim Schließen des oberen Fensters das nächste erscheint.",
       "aiTitle": "KI-Arbeitsablauf",
       "aiIntro": "Einen ausführlichen strikten Prompt in eine beliebige KI-Konversation kopieren, deren JSON-Antwort kopieren und anschließend in das oben gewählte Ziel importieren.",
-      "singleAiObject": "Bei Anzahl 1 ein einzelnes JSON-Objekt verwenden",
-      "singleAiObjectHint": "Standardmäßig aus. Andernfalls verlangt der Prompt immer ein JSON-Array, auch bei nur einem NSC.",
       "copyPrompt": "Prompt kopieren",
       "importNpc": "NSC importieren",
       "manualPaste": "Zwischenablage-Fallback / manuelles Einfügen",
@@ -144,7 +142,14 @@
       "preparedPrompt": "Vorbereiteter KI-Prompt",
       "preparedPromptHint": "Der erzeugte Prompt bleibt hier erhalten. Wenn der automatische Zwischenablagezugriff blockiert ist oder Foundry nicht fokussiert ist, kann der Text ausgewählt oder das Kopieren erneut versucht werden.",
       "selectPrompt": "Prompt-Text auswählen",
-      "retryPromptCopy": "Erneut kopieren"
+      "retryPromptCopy": "Erneut kopieren",
+      "raceExactCounts": "Exakte Völkerzahlen",
+      "raceExactCountsHint": "Lege die exakte Anzahl an NSC für jedes ausgewählte Volk fest. Die zugewiesene Summe muss Anzahl entsprechen.",
+      "searchSelectedRaces": "Ausgewählte Völker durchsuchen …",
+      "distributeEvenly": "Gleichmäßig verteilen",
+      "noSelectedRaces": "Keine Völker ausgewählt.",
+      "raceExactAssignedValid": "{assigned} von {target} zugewiesen. Die exakte Summe ist gültig.",
+      "raceExactAssignedInvalid": "{assigned} von {target} zugewiesen. Verbleibend: {remaining}. Zahlen anpassen oder gleichmäßig verteilen."
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -241,7 +246,8 @@
         "primary": "Das primäre Volk zielt auf 70 %; die restlichen 30 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
         "balanced": "Alle erlaubten Völker erhalten dasselbe Gewicht.",
         "weighted": "Jedes erlaubte Volk verwendet sein eingetragenes relatives Gewicht.",
-        "mixed": "Legacy-Kompatibilitätsmodus; die gespeicherte Einstellung der Volksverteilung bestimmt die tatsächliche Mischung."
+        "mixed": "Legacy-Kompatibilitätsmodus; die gespeicherte Einstellung der Volksverteilung bestimmt die tatsächliche Mischung.",
+        "exact": "Verwendet die exakt eingegebene Ganzzahl für jedes ausgewählte Volk. Die Summe muss Anzahl entsprechen."
       },
       "raceMixExamples": {
         "single": "Primär Human → 10 Human.",
@@ -249,7 +255,8 @@
         "primary": "Primär Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
         "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
         "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf.",
-        "mixed": "Im aktuellen Dashboard nicht sichtbar; nur für ältere gespeicherte Konfigurationen erhalten."
+        "mixed": "Im aktuellen Dashboard nicht sichtbar; nur für ältere gespeicherte Konfigurationen erhalten.",
+        "exact": "Anzahl 10: Mensch 8, Elf 1, Zwerg 1 bedeutet exakt 8 / 1 / 1."
       },
       "combatReadinessModes": {
         "weaponless": "Keine Waffen und keine Rüstung. Berufswerkzeuge bleiben gewöhnliche Werkzeuge.",
@@ -339,7 +346,8 @@
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
       "clipboardRead": "Lesen aus der Zwischenablage ist nicht verfügbar oder wurde vom Browser blockiert.",
       "manualPasteFallback": "Den Bereich für manuelles Einfügen öffnen, das KI-JSON dort einfügen und NSC importieren erneut anklicken.",
-      "portraitPromptUnavailable": "Dieser Actor enthält keine Generierungs-Metadaten von Runyth NPC Button."
+      "portraitPromptUnavailable": "Dieser Actor enthält keine Generierungs-Metadaten von Runyth NPC Button.",
+      "raceExactCountMismatch": "Die exakten Völkerzahlen weisen {assigned} NSC zu, Anzahl ist jedoch {target}. Passe zuerst die exakten Zahlen an."
     },
     "roleGroups": {
       "everyday": "Alltag & Handel",
@@ -515,7 +523,8 @@
       "dominant": "Starke Mehrheit des Hauptvolks",
       "primary": "Mehrheit des Hauptvolks",
       "balanced": "Breit gemischt",
-      "weighted": "Benutzerdefinierte Volksgewichte"
+      "weighted": "Benutzerdefinierte Volksgewichte",
+      "exact": "Exakte Zahlen"
     },
     "raceDistribution": {
       "balanced": "Etwa gleich",

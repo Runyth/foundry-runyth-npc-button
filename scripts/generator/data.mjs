@@ -546,6 +546,7 @@ export const RACE_COMPOSITION_MODES = Object.freeze({
   primary: { label: "Primary-race majority", labelKey: "raceComposition.primary", prompt: "about 65–75% primary race with the remainder spread among the other allowed races" },
   balanced: { label: "Broadly mixed", labelKey: "raceComposition.balanced", prompt: "roughly equal representation among the allowed races, subject to the exact group size" },
   weighted: { label: "Custom race weights", labelKey: "raceComposition.weighted", prompt: "follow the supplied relative race weights as closely as the exact group size allows" },
+  exact: { label: "Exact numbers", labelKey: "raceComposition.exact", prompt: "use the supplied exact integer count for every selected race; the counts must add up exactly to the requested batch size" },
   mixed: { label: "Mixed races (legacy)", labelKey: "raceComposition.mixed", prompt: "legacy mixed-race mode retained for saved configurations" }
 });
 

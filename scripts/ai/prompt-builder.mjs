@@ -12,11 +12,8 @@ function list(values, fallback = "none") {
 
 export function buildAiPrompt(options = {}) {
   const count = Math.max(1, Math.trunc(Number(options.count) || 1));
-  const singleObject = count === 1 && Boolean(options.singleAiObject);
   const grouped = clean(options.groupType, "independent") !== "independent" && clean(options.groupTypeLabel, "Independent NPCs") !== "Independent NPCs";
-  const payloadShape = singleObject
-    ? "exactly one JSON object, not an array"
-    : `exactly one JSON array containing ${count} Actor object${count === 1 ? "" : "s"}`;
+  const payloadShape = `exactly one JSON array containing ${count} Actor object${count === 1 ? "" : "s"}`;
   const namingExamples = Array.isArray(options.namingExamples) && options.namingExamples.length
     ? options.namingExamples.join("; ")
     : "use names consistent with the requested naming style";
@@ -115,6 +112,7 @@ export function buildAiPrompt(options = {}) {
     raceMixed ? `- Allowed races: ${groupRaces}` : "",
     raceMixed ? `- Primary race: ${clean(options.primaryRaceLabel, clean(options.raceLabel, "Human"))}` : "",
     clean(options.raceComposition, "") === "weighted" ? `- Relative race weights: ${clean(options.raceWeightSummary, "equal weights")}` : "",
+    clean(options.raceComposition, "") === "exact" ? `- Exact race counts: ${clean(options.raceExactCountSummary, "counts must add up exactly to the requested batch size")}` : "",
     grouped && clean(options.groupBrief) ? `- Additional group brief: ${clean(options.groupBrief)}` : "",
     `- Requested name or batch prefix: ${clean(options.customName, "none; generate natural names")}`,
     "",
@@ -126,7 +124,7 @@ export function buildAiPrompt(options = {}) {
     grouped ? "- Vary equipment by responsibility: leaders, scouts, caretakers, artisans, guards, dependents, specialists, and wealthy members should carry different things." : "",
     clean(options.roleComposition, "") === "variants" ? "- For Role variants, keep the same broad Role statistics but assign distinct practical subtypes as evenly as possible; when enough variants exist, avoid duplicates before reusing one." : "",
     roleMixed ? "- For mixed-role composition, satisfy the requested approximate proportions across the exact NPC count. Use integer counts that best approximate the requested shares; do not randomize away small minorities." : "",
-    raceMixed ? "- For mixed-Race composition, satisfy the requested approximate proportions using exact integer member counts. Strong-majority composition should preserve small minorities when group size permits; e.g. a ten-person three-Race group may reasonably become 8/1/1." : "",
+    clean(options.raceComposition, "") === "exact" ? "- Exact Race composition is a hard quota, not an approximation. Produce exactly the supplied count for each selected Race." : (raceMixed ? "- For mixed-Race composition, satisfy the requested approximate proportions using exact integer member counts. Strong-majority composition should preserve small minorities when group size permits; e.g. a ten-person three-Race group may reasonably become 8/1/1." : ""),
     "",
     "Required Actor object shape:",
     "{",
@@ -173,7 +171,7 @@ export function buildAiPrompt(options = {}) {
     "- description: short roleplay context. It may be empty for obvious canonical equipment.",
     "- Do not put raw Foundry Item system data in items; the importer resolves canonical items and safely creates fallback roleplay items.",
     "",
-    `Final validation before replying: JSON.parse must succeed; the root JSON value inside the code block must be ${singleObject ? "an object" : "an array"}; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections, including Quirk, Rumours, Secrets, and Relationships.`,
+    `Final validation before replying: JSON.parse must succeed; the root JSON value inside the code block must be an array; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections, including Quirk, Rumours, Secrets, and Relationships.`,
     "Output only one markdown code block labeled json, with no prose outside it."
   ].filter(Boolean).join("\n");
 }

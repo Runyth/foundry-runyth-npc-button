@@ -45,6 +45,7 @@ import { hierarchicalMultiPickerMarkup, mountHierarchicalMultiPicker } from "./h
 import { hierarchicalPickerMarkup, mountHierarchicalPicker } from "./hierarchical-picker.mjs";
 import { openNpcHelp } from "./npc-help.mjs";
 import { openNpcImportPreview } from "./npc-import-preview.mjs";
+import { mountVirtualQuotaEditor, virtualQuotaEditorMarkup } from "./virtual-quota-editor.mjs";
 
 
 const GENDER_COMPOSITION_MODES = Object.freeze({
@@ -238,6 +239,10 @@ function raceLabelFromSelectionId(value) {
   return configuredLabel(races[selected] ?? races.human ?? RACES.human);
 }
 
+function raceQuotaItems(ids) {
+  return (Array.isArray(ids) ? ids : []).map((id) => ({ id: String(id), label: raceLabelFromSelectionId(id) }));
+}
+
 function habitatSelectionValue(options) {
   const habitat = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
   const habitats = getHabitats();
@@ -375,6 +380,7 @@ function dashboardContent(options, tierStyle) {
   const roleComposition = effectiveRoleComposition(options);
   const groupRoles = normalizeGroupRoleIds({ ...options, groupRoles: options.groupRoles ?? [options.role ?? DEFAULT_OPTIONS.role] });
   const primaryRoleLabel = configuredLabel(getRoles()[options.role] ?? getRoles()[DEFAULT_OPTIONS.role] ?? ROLES[DEFAULT_OPTIONS.role]);
+  const raceExactCounts = options.raceExactCounts && typeof options.raceExactCounts === "object" ? options.raceExactCounts : DEFAULT_OPTIONS.raceExactCounts;
 
   return `
     <form class="runyth-npc-button__dashboard" autocomplete="off">
@@ -528,6 +534,18 @@ function dashboardContent(options, tierStyle) {
             <div class="runyth-npc-button__label-row"><strong>${escapeAttribute(localize("ui.raceWeights"))}</strong><small>${escapeAttribute(localize("ui.raceWeightsHint"))}</small></div>
             <div data-race-weight-list></div>
           </div>
+          <div data-race-exact-counts${raceComposition === "exact" ? "" : " hidden"}>
+            ${virtualQuotaEditorMarkup({
+              id: "runyth-npc-button-race-exact-counts",
+              name: "raceExactCounts",
+              label: localize("ui.raceExactCounts"),
+              hint: localize("ui.raceExactCountsHint"),
+              counts: raceExactCounts,
+              searchPlaceholder: localize("ui.searchSelectedRaces"),
+              balanceText: localize("ui.distributeEvenly"),
+              emptyText: localize("ui.noSelectedRaces")
+            })}
+          </div>
         </div>
 
         <fieldset class="runyth-npc-button__field">
@@ -634,10 +652,6 @@ function dashboardContent(options, tierStyle) {
           </div>
         </div>
         <label class="runyth-npc-button__toggle">
-          <input type="checkbox" name="singleAiObject"${options.singleAiObject && Number(options.count) === 1 ? " checked" : ""}${Number(options.count) === 1 ? "" : " disabled"}>
-          <span><strong>${escapeAttribute(localize("ui.singleAiObject"))}</strong><small>${escapeAttribute(localize("ui.singleAiObjectHint"))}</small></span>
-        </label>
-        <label class="runyth-npc-button__toggle">
           <input type="checkbox" name="previewImport"${options.previewImport ? " checked" : ""}>
           <span><strong>${escapeAttribute(localize("ui.previewImport"))}</strong><small>${escapeAttribute(localize("ui.previewImportHint"))}</small></span>
         </label>
@@ -676,6 +690,20 @@ function parseJsonArray(value, fallback = []) {
   } catch {
     return fallback;
   }
+}
+
+function readJsonObject(value, fallback = {}) {
+  try {
+    const parsed = JSON.parse(String(value ?? "{}"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function readRaceExactCounts(form, groupRaces) {
+  const parsed = readJsonObject(namedFormValue(form, "raceExactCounts", "{}"), {});
+  return Object.fromEntries(groupRaces.map((id) => [id, Math.max(0, Math.trunc(Number(parsed[id]) || 0))]));
 }
 
 function readRaceWeights(form, groupRaces) {
@@ -751,6 +779,7 @@ function readForm(form) {
     primaryRace,
     raceDistribution: namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceDistribution),
     raceWeights: readRaceWeights(form, groupRaces),
+    raceExactCounts: readRaceExactCounts(form, groupRaces),
     roleComposition: namedFormValue(form, "roleComposition", DEFAULT_OPTIONS.roleComposition),
     groupRoles,
     primaryRole: role,
@@ -763,7 +792,6 @@ function readForm(form) {
     newFolderName: destination.newFolderName,
     useActorRoot: destination.useActorRoot,
     openLastActor: namedFormChecked(form, "openLastActor", false),
-    singleAiObject: count === 1 && namedFormChecked(form, "singleAiObject", false),
     previewImport: namedFormChecked(form, "previewImport", false),
     aiPayload: String(namedFormValue(form, "aiPayload", "")).trim()
   };
@@ -789,6 +817,7 @@ function promptOptions(options) {
   const groupRaceIds = normalizeGroupRaceIds(options);
   const groupRaceLabels = groupRaceIds.map(raceLabelFromSelectionId);
   const weightSummary = groupRaceIds.map((id) => `${raceLabelFromSelectionId(id)}=${Number(options.raceWeights?.[id]) || 0}`).join(", ");
+  const exactCountSummary = groupRaceIds.map((id) => `${raceLabelFromSelectionId(id)}=${Math.max(0, Math.trunc(Number(options.raceExactCounts?.[id]) || 0))}`).join(", ");
   const groupRoleIds = normalizeGroupRoleIds(options);
   const groupRoleLabels = groupRoleIds.map((id) => configuredLabel(getRoles()[id] ?? { label: id }));
   const roleWeightSummary = groupRoleIds.map((id) => `${configuredLabel(getRoles()[id] ?? { label: id })}=${Number(options.roleWeights?.[id]) || 0}`).join(", ");
@@ -836,8 +865,19 @@ function promptOptions(options) {
     primaryRaceLabel: race,
     raceDistributionLabel: configuredLabel(RACE_DISTRIBUTIONS[options.raceDistribution] ?? RACE_DISTRIBUTIONS.balanced),
     raceDistributionPrompt: (RACE_DISTRIBUTIONS[options.raceDistribution] ?? RACE_DISTRIBUTIONS.balanced).prompt,
-    raceWeightSummary: weightSummary
+    raceWeightSummary: weightSummary,
+    raceExactCountSummary: exactCountSummary
   };
+}
+
+function validateExactRaceComposition(options) {
+  if (String(options.raceComposition ?? "single") !== "exact") return;
+  const ids = normalizeGroupRaceIds(options);
+  const assigned = ids.reduce((sum, id) => sum + Math.max(0, Math.trunc(Number(options.raceExactCounts?.[id]) || 0)), 0);
+  const target = Math.max(1, Math.trunc(Number(options.count) || 1));
+  if (assigned !== target) {
+    throw new Error(game.i18n.format(`${MODULE_ID}.errors.raceExactCountMismatch`, { assigned, target }));
+  }
 }
 
 function safeWindowState(state) {
@@ -878,6 +918,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
   #savePositionTimer = null;
   #racePickerController = null;
   #groupRacePickerController = null;
+  #raceExactQuotaController = null;
   #groupRolePickerController = null;
   #lastPreparedPrompt = "";
 
@@ -936,6 +977,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     bindNamedControls(form, "count", "input", () => {
       this.#syncCountControls(form);
       this.#syncExactGenderCounts(form);
+      this.#raceExactQuotaController?.setTargetCount(Math.max(1, Math.trunc(Number(namedFormValue(form, "count", 1)) || 1)));
       this.#updateRoleMixPreview(form);
     }, { signal });
     bindNamedControls(form, "count", "change", () => {
@@ -956,6 +998,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       const values = this.#groupRacePickerController?.getValues() ?? [];
       if (!values.includes(primary)) this.#groupRacePickerController?.setValues([primary, ...values]);
       this.#renderRaceWeights(form);
+      this.#syncRaceExactEditor(form, { rebalance: namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceComposition) === "exact" });
     }, { signal });
     bindNamedControls(form, "role", "change", () => {
       const primary = String(namedFormValue(form, "role", DEFAULT_OPTIONS.role));
@@ -965,8 +1008,11 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       this.#syncPrimaryRoleNote(form);
       this.#updateRoleMixPreview(form);
     }, { signal });
-    bindNamedControls(form, "raceComposition", "change", () => this.#syncRaceComposition(form), { signal });
-    bindNamedControls(form, "groupRaces", "change", () => this.#renderRaceWeights(form), { signal });
+    bindNamedControls(form, "raceComposition", "change", () => this.#syncRaceComposition(form, { initializeExact: true }), { signal });
+    bindNamedControls(form, "groupRaces", "change", () => {
+      this.#renderRaceWeights(form);
+      this.#syncRaceExactEditor(form, { rebalance: namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceComposition) === "exact" });
+    }, { signal });
     bindNamedControls(form, "roleComposition", "change", () => this.#syncRoleComposition(form), { signal });
     bindNamedControls(form, "groupRoles", "change", () => {
       this.#renderRoleWeights(form);
@@ -1071,6 +1117,17 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       placeholder: localize("ui.choosePossibleRaces")
     }, signal);
 
+    const selectedRaceIds = parseJsonArray(namedFormValue(form, "groupRaces", "[]"), ["human"]);
+    this.#raceExactQuotaController = mountVirtualQuotaEditor(form.querySelector('[data-virtual-quota-editor="runyth-npc-button-race-exact-counts"]'), {
+      items: raceQuotaItems(selectedRaceIds),
+      counts: readRaceExactCounts(form, selectedRaceIds),
+      targetCount: Math.max(1, Math.trunc(Number(namedFormValue(form, "count", 1)) || 1)),
+      countLabel: localize("ui.count"),
+      summaryText: ({ assigned, target, remaining }) => remaining === 0
+        ? game.i18n.format(`${MODULE_ID}.ui.raceExactAssignedValid`, { assigned, target })
+        : game.i18n.format(`${MODULE_ID}.ui.raceExactAssignedInvalid`, { assigned, target, remaining })
+    }, signal);
+
     this.#groupRolePickerController = mountHierarchicalMultiPicker(form.querySelector('[data-hierarchical-multi-picker="runyth-npc-button-group-roles-picker"]'), {
       ...common,
       items: rolePickerItems(),
@@ -1116,11 +1173,6 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     }
-    const single = namedFormControls(form, "singleAiObject")[0];
-    if (single) {
-      single.disabled = count !== 1;
-      if (count !== 1) single.checked = false;
-    }
   }
 
   #syncGroupControls(form, { adjustCount = false } = {}) {
@@ -1148,14 +1200,30 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     this.#syncCountControls(form);
   }
 
-  #syncRaceComposition(form) {
+  #syncRaceComposition(form, { initializeExact = false } = {}) {
     const composition = namedFormValue(form, "raceComposition", DEFAULT_OPTIONS.raceComposition);
     const mixed = composition !== "single";
     const mixedSettings = form.querySelector("[data-mixed-race-settings]");
     if (mixedSettings) mixedSettings.hidden = !mixed;
     const raceWeights = form.querySelector("[data-race-weights]");
     if (raceWeights) raceWeights.hidden = composition !== "weighted";
-    if (mixed) this.#renderRaceWeights(form);
+    const exactCounts = form.querySelector("[data-race-exact-counts]");
+    if (exactCounts) exactCounts.hidden = composition !== "exact";
+    if (composition === "weighted") this.#renderRaceWeights(form);
+    if (composition === "exact") this.#syncRaceExactEditor(form, { rebalance: initializeExact && !this.#raceExactQuotaController?.isValid() });
+  }
+
+  #syncRaceExactEditor(form, { rebalance = false } = {}) {
+    const race = resolveRaceSelection(namedFormValue(form, "raceSelection", "human"));
+    const fallback = race.species === "custom" ? `custom:${race.customSpecies}` : race.species;
+    const selected = normalizeGroupRaceIds({
+      species: race.species,
+      customSpecies: race.customSpecies,
+      groupRaces: parseJsonArray(namedFormValue(form, "groupRaces", "[]"), [fallback])
+    });
+    const count = Math.max(1, Math.trunc(Number(namedFormValue(form, "count", 1)) || 1));
+    this.#raceExactQuotaController?.setTargetCount(count);
+    this.#raceExactQuotaController?.setItems(raceQuotaItems(selected), { rebalance });
   }
 
   #syncRoleComposition(form) {
@@ -1292,6 +1360,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     const options = readForm(form);
     this.#setBusy(form, true, localize("ui.creating"));
     try {
+      validateExactRaceComposition(options);
       await saveLastOptions(options);
       const actors = await createNpcActors(options);
       if (!actors.length) {
@@ -1317,6 +1386,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     try {
       let prompt;
       try {
+        validateExactRaceComposition(options);
         prompt = buildAiPrompt(promptOptions(options));
       } catch (error) {
         logger.error("Could not prepare AI prompt.", error);
@@ -1396,8 +1466,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
         expectedCount: options.count,
         maxBatch,
         previewRequested: options.previewImport,
-        ignoreCountMismatch,
-        allowSingleObject: options.singleAiObject
+        ignoreCountMismatch
       });
 
       logger.debug("NPC import count plan", {

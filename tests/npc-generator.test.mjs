@@ -220,6 +220,29 @@ test("strong primary-race composition produces an 8/1/1-style ten-person mix", (
   assert.deepEqual(counts, { human: 8, elf: 1, dwarf: 1 });
 });
 
+test("exact Race composition uses the configured integer quotas", () => {
+  const assignments = buildRaceAssignments({
+    raceComposition: "exact",
+    species: "human",
+    groupRaces: ["human", "elf", "dwarf"],
+    raceExactCounts: { human: 8, elf: 1, dwarf: 1 }
+  }, 10, createSeededRandom("exact-races"));
+  const counts = assignments.reduce((map, entry) => {
+    map[entry.species] = (map[entry.species] ?? 0) + 1;
+    return map;
+  }, {});
+  assert.deepEqual(counts, { human: 8, elf: 1, dwarf: 1 });
+});
+
+test("exact Race composition rejects totals that do not match Count", () => {
+  assert.throws(() => buildRaceAssignments({
+    raceComposition: "exact",
+    species: "human",
+    groupRaces: ["human", "elf"],
+    raceExactCounts: { human: 8, elf: 1 }
+  }, 10, createSeededRandom("invalid-exact-races")), /must add up to 10; currently 9/);
+});
+
 test("merchant role variants distribute distinct merchant specializations before repeating", () => {
   const batch = generateNpcBatch({
     count: 5,

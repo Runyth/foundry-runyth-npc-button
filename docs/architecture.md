@@ -77,7 +77,7 @@ AI output is treated as untrusted input. The importer:
 10. applies folder placement locally;
 11. creates validated Actors through Foundry's public batch document API.
 
-The default root shape is always an array. A single object is valid only when Count is 1 and the dedicated single-object toggle is enabled.
+The root shape is always a JSON array, including when Count is 1. Keeping a single invariant root contract avoids prompt/import special cases and simplifies validation.
 
 
 ## UI event reliability

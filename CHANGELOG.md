@@ -2,6 +2,12 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.2.5 - 2026-09-25
+
+- Added Exact numbers Race composition with the existing scalable Race multi-picker plus a virtualized searchable quota editor, live total validation, and one-click even distribution.
+- Simplified AI/import payloads to one invariant root contract: JSON is always an array, including Count 1.
+- Added regression coverage for exact Race quotas, invalid totals, array-only Count-1 prompts/imports, and quota-editor virtualization/performance.
+
 ## 0.2.4 - 2026-09-25
 
 ### Changed

@@ -79,8 +79,6 @@
       "openLastActorHint": "Opens up to 10 Actors. Up to three are visible side-by-side; later Actors are stacked behind them so closing a top sheet reveals the next one.",
       "aiTitle": "AI workflow",
       "aiIntro": "Copy a detailed strict prompt into any AI conversation, copy its JSON reply, then import that reply into the destination above.",
-      "singleAiObject": "Use a single JSON object when Count is 1",
-      "singleAiObjectHint": "Off by default. Otherwise the prompt always requests a JSON array, including for a single NPC.",
       "copyPrompt": "Copy prompt",
       "importNpc": "Import NPC",
       "manualPaste": "Clipboard fallback / manual paste",
@@ -144,7 +142,14 @@
       "preparedPrompt": "Prepared AI prompt",
       "preparedPromptHint": "The generated prompt is kept here. If automatic clipboard access is blocked or Foundry is not focused, select the text or retry copying manually.",
       "selectPrompt": "Select prompt text",
-      "retryPromptCopy": "Copy again"
+      "retryPromptCopy": "Copy again",
+      "raceExactCounts": "Exact Race numbers",
+      "raceExactCountsHint": "Set the exact number of NPCs for every selected Race. The assigned total must equal Count.",
+      "searchSelectedRaces": "Search selected Races…",
+      "distributeEvenly": "Distribute evenly",
+      "noSelectedRaces": "No Races are selected.",
+      "raceExactAssignedValid": "Assigned {assigned} of {target}. Exact total is valid.",
+      "raceExactAssignedInvalid": "Assigned {assigned} of {target}. Remaining: {remaining}. Adjust counts or distribute evenly."
     },
     "help": {
       "title": "NPC Button Help",
@@ -241,7 +246,8 @@
         "primary": "The primary Race targets 70%; the remaining 30% is split evenly across the other allowed Races.",
         "balanced": "All allowed Races receive equal weight.",
         "weighted": "Each allowed Race uses its entered relative weight.",
-        "mixed": "Legacy compatibility mode; the saved Race distribution setting determines the effective mix."
+        "mixed": "Legacy compatibility mode; the saved Race distribution setting determines the effective mix.",
+        "exact": "Uses the exact integer count entered for every selected Race. Counts must sum to Count."
       },
       "raceMixExamples": {
         "single": "Primary Human → 10 Human.",
@@ -249,7 +255,8 @@
         "primary": "Primary Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
         "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
         "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf.",
-        "mixed": "Not shown in the current dashboard; retained only for older saved configurations."
+        "mixed": "Not shown in the current dashboard; retained only for older saved configurations.",
+        "exact": "Count 10: Human 8, Elf 1, Dwarf 1 means exactly 8 / 1 / 1."
       },
       "combatReadinessModes": {
         "weaponless": "No weapons or armor. Occupational tools remain ordinary tools.",
@@ -339,7 +346,8 @@
       "clipboardWrite": "Clipboard writing is not available in this client.",
       "clipboardRead": "Clipboard reading is not available or was blocked by the browser.",
       "manualPasteFallback": "Open the manual-paste section, paste the AI JSON there, and click Import NPC again.",
-      "portraitPromptUnavailable": "This Actor does not contain Runyth NPC Button generation metadata."
+      "portraitPromptUnavailable": "This Actor does not contain Runyth NPC Button generation metadata.",
+      "raceExactCountMismatch": "Exact Race counts assign {assigned} NPCs, but Count is {target}. Adjust the exact counts first."
     },
     "roleGroups": {
       "everyday": "Everyday & commerce",
@@ -515,7 +523,8 @@
       "dominant": "Strong primary-race majority",
       "primary": "Primary-race majority",
       "balanced": "Broadly mixed",
-      "weighted": "Custom race weights"
+      "weighted": "Custom race weights",
+      "exact": "Exact numbers"
     },
     "raceDistribution": {
       "balanced": "Roughly equal",

@@ -47,9 +47,11 @@ Repository validation checks the manifest, referenced runtime files, version con
 29. Confirm local generated canonical weapons/armor resolve to functional D&D 5e Items where the system compendium contains them, and that AC matches the generated armor/shield loadout.
 
 30. Open the NPC dashboard repeatedly, switch every Race composition and Role composition radio option, close/reopen, and confirm the dashboard never throws and Copy prompt/Create/Import remain functional.
-31. Trigger the same composition changes with keyboard navigation and verify dependent mixed-composition sections update exactly once per change.
-32. Open Dashboard string filters repeatedly, save changes, close without saving, reopen, import/export by file and clipboard, and verify no stale state or duplicate action firing.
-33. Test clipboard writing with Foundry clipboard permissions available, Foundry unfocused, permission denied, Clipboard API unavailable, and another window/tab holding focus. Verify Copy prompt never reports NPC generation failure because copying failed, the prepared AI prompt remains visible/selectable, portrait/filter copies open a manual-copy fallback, repeated attempts do not loop, and success is shown only after an actual write succeeds.
+31. Set Race composition to Exact numbers, select many Races, search/scroll the virtualized quota editor, set exact quotas summing to Count, and verify local generation and the AI prompt preserve those exact counts.
+32. For Count 1, verify the AI prompt still requires a one-element JSON array and the importer rejects a lone root object.
+33. Trigger the same composition changes with keyboard navigation and verify dependent mixed-composition sections update exactly once per change.
+34. Open Dashboard string filters repeatedly, save changes, close without saving, reopen, import/export by file and clipboard, and verify no stale state or duplicate action firing.
+35. Test clipboard writing with Foundry clipboard permissions available, Foundry unfocused, permission denied, Clipboard API unavailable, and another window/tab holding focus. Verify Copy prompt never reports NPC generation failure because copying failed, the prepared AI prompt remains visible/selectable, portrait/filter copies open a manual-copy fallback, repeated attempts do not loop, and success is shown only after an actual write succeeds.
 
 ## v0.1.7 regressions
 
@@ -58,12 +60,12 @@ Automated coverage includes automatically materialized and explicitly reused gen
 
 ## v0.2 visual regression checklist
 
-34. Inspect the dashboard at wide, medium, and narrow widths. Confirm card spacing, choice wrapping, section accents, text truncation, sticky footer behavior, and no horizontal overflow.
-35. Open every hierarchical picker and multi-picker, rapidly search/clear/scroll, and confirm the redesigned surfaces do not change row height, virtualization behavior, keyboard focus, or outside-click closing.
-36. Open Help, filter settings, and import preview at their default sizes and after aggressive resizing. Confirm independent scrolling remains smooth, sticky toolbars/footers remain bounded to their windows, and no content is hidden behind action bars.
-37. Enable OS/browser reduced-motion preference and confirm all UI state remains understandable without transition timing.
-38. Repeat Create locally, Copy prompt, Import NPC, filter import/export, preview confirmation/cancel, and portrait-prompt copy after the visual overhaul. Confirm the cosmetic release has not changed action delivery or payload contracts.
-39. Run `npm run audit:ui` and confirm the stylesheet stays under the performance budget and all virtualization/animation invariants pass.
+36. Inspect the dashboard at wide, medium, and narrow widths. Confirm card spacing, choice wrapping, section accents, text truncation, sticky footer behavior, and no horizontal overflow.
+37. Open every hierarchical picker and multi-picker, rapidly search/clear/scroll, and confirm the redesigned surfaces do not change row height, virtualization behavior, keyboard focus, or outside-click closing.
+38. Open Help, filter settings, and import preview at their default sizes and after aggressive resizing. Confirm independent scrolling remains smooth, sticky toolbars/footers remain bounded to their windows, and no content is hidden behind action bars.
+39. Enable OS/browser reduced-motion preference and confirm all UI state remains understandable without transition timing.
+40. Repeat Create locally, Copy prompt, Import NPC, filter import/export, preview confirmation/cancel, and portrait-prompt copy after the visual overhaul. Confirm the cosmetic release has not changed action delivery or payload contracts.
+41. Run `npm run audit:ui` and confirm the stylesheet stays under the performance budget and all virtualization/animation invariants pass.
 
 ### v0.2.3 count/import regression coverage
 

@@ -229,21 +229,10 @@ function normalizeActor(source, index) {
  */
 export function normalizeNpcJsonPayload(payload, {
   expectedCount,
-  maxCount = 100,
-  allowSingleObject = false
+  maxCount = 100
 } = {}) {
-  let entries;
-  if (Array.isArray(payload)) {
-    if (allowSingleObject) fail("A single Actor JSON object is required when single-object mode is enabled.");
-    entries = payload;
-  } else if (payload && typeof payload === "object") {
-    if (!allowSingleObject) fail("The JSON payload must be an array of Actor objects.");
-    entries = [payload];
-  } else {
-    fail(allowSingleObject
-      ? "The JSON payload must be a single Actor object."
-      : "The JSON payload must be an array of Actor objects.");
-  }
+  if (!Array.isArray(payload)) fail("The JSON payload must be an array of Actor objects.");
+  const entries = payload;
 
   if (!entries.length) fail("The JSON payload contains no Actors.");
   if (entries.length > maxCount) fail(`The JSON payload contains ${entries.length} Actors, exceeding the maximum of ${maxCount}.`);

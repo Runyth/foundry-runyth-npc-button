@@ -1,6 +1,6 @@
 export const MODULE_ID = "runyth-npc-button";
 export const MODULE_TITLE = "Runyth NPC Button";
-export const MODULE_VERSION = "0.2.4";
+export const MODULE_VERSION = "0.2.5";
 
 export const SETTINGS = Object.freeze({
   DEBUG: "debugLogging",
@@ -38,6 +38,7 @@ export const DEFAULT_OPTIONS = Object.freeze({
   primaryRace: "human",
   raceDistribution: "balanced",
   raceWeights: { human: 1 },
+  raceExactCounts: { human: 1 },
   roleComposition: "groupPreset",
   groupRoles: ["guard"],
   primaryRole: "guard",
@@ -55,6 +56,5 @@ export const DEFAULT_OPTIONS = Object.freeze({
   newFolderName: "",
   useActorRoot: false,
   openLastActor: true,
-  singleAiObject: false,
   previewImport: false
 });

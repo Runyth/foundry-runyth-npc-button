@@ -56,11 +56,18 @@ test("cosmetic feature release preserves dashboard action and field contracts", 
   for (const chipName of ["wealth", "combatReadiness", "weaponVariety", "raceComposition", "roleComposition"]) {
     assert.ok(dashboard.includes(`choiceChips("${chipName}"`), `missing choice field contract: ${chipName}`);
   }
-  for (const directName of ["count", "openLastActor", "singleAiObject", "previewImport", "aiPayload"]) {
+  for (const directName of ["count", "openLastActor", "previewImport", "aiPayload"]) {
     assert.ok(dashboard.includes(`name="${directName}"`), `missing direct field contract: ${directName}`);
   }
 });
 
+
+test("dashboard removes single-object mode and exposes scalable exact Race quotas", () => {
+  assert.doesNotMatch(dashboard, /name="singleAiObject"/);
+  assert.match(dashboard, /name:\s*"raceExactCounts"/);
+  assert.match(dashboard, /data-virtual-quota-editor="runyth-npc-button-race-exact-counts"/);
+  assert.match(dashboard, /mountVirtualQuotaEditor/);
+});
 
 test("role mix UX exposes primary role, live allocation preview, and zero-safe weight entry", () => {
   assert.match(dashboard, /data-primary-role-note/);
@@ -89,7 +96,7 @@ test("help presents composition and comparable controls as structured tables", a
   const helpSource = await readFile(new URL("../scripts/ui/npc-help.mjs", import.meta.url), "utf8");
   const english = JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8"))["runyth-npc-button"].help;
 
-  for (const mode of ["single", "dominant", "primary", "balanced", "weighted"]) {
+  for (const mode of ["single", "dominant", "primary", "balanced", "weighted", "exact"]) {
     assert.equal(typeof english.raceMixModes[mode], "string");
     assert.equal(typeof english.raceMixExamples[mode], "string");
   }
