@@ -68,3 +68,9 @@ Automated coverage includes automatically materialized and explicitly reused gen
 ### v0.2.3 count/import regression coverage
 
 Automated tests verify that NPC count is derived only from top-level Actor entries; an exact 20-entry array remains 20 regardless of nested arrays; a 21-versus-20 mismatch forces review by default; count-agnostic mode permits safe mismatches without forced preview; exceeding maximum batch size still forces review; and preview subset selection can reduce 21 entries to the first 20 without mutating or reordering the source payload. Manual QA should also confirm the automatic heads-up banner, per-NPC checkboxes, Select all/Clear all, live selected count, and final validation of only the selected subset.
+
+### v0.2.4 Help reference-table coverage
+
+- Open Help and verify Race composition and Role composition both use matching Mode / Distribution rule / Example tables.
+- Confirm the Count-10 Race examples match generator behavior: strong majority 8/1/1, primary majority 7/2/1, balanced 4/3/3, and weights 10/20/30 resolving to 2/3/5.
+- Verify Generation controls, Combat readiness, Weapon variety, Filter settings, Import preview, and AI workflow use the shared responsive table presentation without horizontal clipping; narrow windows should scroll the table itself rather than the whole application sideways.

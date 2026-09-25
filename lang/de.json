@@ -218,6 +218,100 @@
         "primary": "Primär Händler + Handwerker + Wache → 7 Händler, 2 Handwerker, 1 Wache.",
         "dominant": "Primär Händler + Handwerker + Wache → 8 Händler, 1 Handwerker, 1 Wache.",
         "weighted": "Händler 10, Handwerker 20, Wache 30 → 2 Händler, 3 Handwerker, 5 Wachen."
+      },
+      "setting": "Einstellung",
+      "effect": "Wirkung",
+      "example": "Beispiel",
+      "mode": "Modus",
+      "level": "Stufe",
+      "situation": "Situation",
+      "behavior": "Verhalten",
+      "step": "Schritt",
+      "action": "Aktion",
+      "mixMode": "Modus",
+      "mixRule": "Verteilungsregel",
+      "mixExample": "Beispiel bei Anzahl 10",
+      "raceMixTitle": "Volkszusammensetzung im Detail",
+      "raceMixBody": "Das unter Erstellung gewählte Hauptvolk ist das primäre Volk. Bei gemischten Modi legt Mögliche Völker den erlaubten Pool fest; das primäre Volk wird automatisch einbezogen. Ganzzahlige Quoten ergeben immer exakt die angeforderte Anzahl.",
+      "raceMixWeights": "Benutzerdefinierte Volksgewichte sind relative Verhältnisse, keine Prozentwerte. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt das Volk aus, solange mindestens ein anderes Volk ein positives Gewicht besitzt. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
+      "mixRounding": "Geht ein Verhältnis nicht glatt in der Gruppengröße auf, verwendet das Modul proportionale Ganzzahlquoten und vergibt übrige NPCs an die größten Nachkommareste. Dadurch bleibt die exakte Anzahl erhalten und das gewünschte Verhältnis wird möglichst genau getroffen.",
+      "raceMixModes": {
+        "single": "Jeder NPC verwendet das primäre Volk.",
+        "dominant": "Das primäre Volk zielt auf 85 %; die restlichen 15 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
+        "primary": "Das primäre Volk zielt auf 70 %; die restlichen 30 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
+        "balanced": "Alle erlaubten Völker erhalten dasselbe Gewicht.",
+        "weighted": "Jedes erlaubte Volk verwendet sein eingetragenes relatives Gewicht.",
+        "mixed": "Legacy-Kompatibilitätsmodus; die gespeicherte Einstellung der Volksverteilung bestimmt die tatsächliche Mischung."
+      },
+      "raceMixExamples": {
+        "single": "Primär Human → 10 Human.",
+        "dominant": "Primär Human + Elf + Dwarf → 8 Human, 1 Elf, 1 Dwarf.",
+        "primary": "Primär Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
+        "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
+        "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf.",
+        "mixed": "Im aktuellen Dashboard nicht sichtbar; nur für ältere gespeicherte Konfigurationen erhalten."
+      },
+      "combatReadinessModes": {
+        "weaponless": "Keine Waffen und keine Rüstung. Berufswerkzeuge bleiben gewöhnliche Werkzeuge.",
+        "minimal": "Nichtkämpfer bleiben praktisch unbewaffnet; eindeutig kämpferische Rollen erhalten mindestens eine einfache plausible Waffe.",
+        "standard": "Normale Ausrüstung der Rolle während gewöhnlicher Pflichten.",
+        "prepared": "Fügt glaubwürdige Ersatz- oder Schutzausrüstung hinzu, wenn die Rolle dies sinnvoll zulässt.",
+        "armed": "Maximale realistische Vorbereitung für genau diese Rolle; berufliche Obergrenzen gelten weiterhin."
+      },
+      "combatReadinessExamples": {
+        "weaponless": "Soldier → keine Waffe und keine Rüstung; Baker → nur Arbeitswerkzeuge.",
+        "minimal": "Guard → eine einfache Dienstwaffe; Scholar → normalerweise keine eigene Waffe.",
+        "standard": "Guard → praktische Waffe und übliche Schutzausrüstung für den Dienst.",
+        "prepared": "Scout → Hauptwaffe plus plausible Ersatzwaffe und leichte Schutzausrüstung.",
+        "armed": "Soldier → mehrere sinnvolle Kampfoptionen; Jurist → höchstens diskrete Selbstverteidigung."
+      },
+      "weaponVarietyModes": {
+        "meleeOnly": "Nur nahkampffähige Waffen zulassen.",
+        "meleePreferred": "Nahkampf stark bevorzugen; Fernkampf nur als plausible Ersatzoption.",
+        "mixed": "Natürliche Mischung verwenden, wenn die Rolle beide Kategorien realistisch unterstützt.",
+        "rangedPreferred": "Fernkampf stark bevorzugen; Nahkampf nur als plausible Ersatzoption.",
+        "rangedOnly": "Nur echte Fernkampfwaffen zulassen; für Rollen ohne realistische Option niemals eine erfinden."
+      },
+      "weaponVarietyExamples": {
+        "meleeOnly": "Scout → Shortsword/Dagger möglich, kein Shortbow.",
+        "meleePreferred": "Guard → Spear oder Longsword bevorzugt; Armbrust nur als sinnvolle Reserve.",
+        "mixed": "Soldier → Nah- und Fernkampfoptionen können gemeinsam vorkommen.",
+        "rangedPreferred": "Scout → Shortbow bevorzugt, Messer oder Shortsword nur als Reserve.",
+        "rangedOnly": "Jurist ohne plausible Fernkampfoption → waffenlos statt unpassend bewaffnet."
+      },
+      "importPreviewCases": {
+        "normal": {
+          "case": "Erwartete Anzahl stimmt",
+          "behavior": "Verwendet den konfigurierten Vorschau-Schalter. Ist die Vorschau aus, können validierte Actors direkt erstellt werden."
+        },
+        "mismatch": {
+          "case": "Zurückgegebene Anzahl weicht ab",
+          "behavior": "Die Vorschau öffnet automatisch mit Warnung. Alle NPCs sind zunächst ausgewählt; überzählige können vor dem Import abgewählt werden."
+        },
+        "arbitrary": {
+          "case": "Beliebige Importanzahl erlaubt",
+          "behavior": "Sichere externe oder manuelle Arrays dürfen ohne erzwungene Abweichungsvorschau fortfahren; normale Validierung bleibt aktiv."
+        },
+        "oversized": {
+          "case": "Maximale Stapelgröße überschritten",
+          "behavior": "Sicherheitsgrenzen bleiben aktiv; die Anzahl-Einstellung umgeht niemals die konfigurierte maximale Stapelgröße."
+        }
+      },
+      "aiStepLabel": "Schritt {step}",
+      "control": "Steuerung",
+      "filterControls": {
+        "items": {
+          "control": "Enthaltene Einträge",
+          "behavior": "Alle aktuellen Katalogeinträge sind zunächst enthalten. Einen Eintrag abwählen, um ihn im zugehörigen Dashboard-Wähler auszublenden; später über Erweiterungen hinzukommende Einträge bleiben standardmäßig enthalten, solange sie nicht ausdrücklich ausgeschlossen wurden."
+        },
+        "advanced": {
+          "control": "Erweiterte Regeln",
+          "behavior": "Optionale Exact-, Contains-, Prefix-, Suffix- und Regex-Regeln zum Zulassen oder Ausschließen verfeinern die Auswahl. Ausschlussregeln haben Vorrang."
+        },
+        "profiles": {
+          "control": "Filterprofile",
+          "behavior": "Die vollständige Filterkonfiguration als versioniertes JSON exportieren oder importieren, um eine fertig konfigurierte Einrichtung wiederzuverwenden oder zu übertragen."
+        }
       }
     },
     "notifications": {

@@ -1,5 +1,5 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
-import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES, ROLE_COMPOSITION_MODES } from "../generator/data.mjs";
+import { COMBAT_READINESS, GROUP_TYPES, HABITATS, NAME_STYLES, RACES, RACE_COMPOSITION_MODES, ROLE_COMPOSITION_MODES, WEAPON_VARIETY } from "../generator/data.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 
@@ -15,6 +15,31 @@ function namingExamples(style) {
   return (style.examples ?? [])
     .slice(0, 12)
     .join("; ");
+}
+
+function helpTable(headers, rows, { className = "" } = {}) {
+  const headerMarkup = headers.map((header) => `<th scope="col">${escapeAttribute(header)}</th>`).join("");
+  return `
+    <div class="runyth-npc-button__help-table-wrap ${escapeAttribute(className)}">
+      <table class="runyth-npc-button__help-table">
+        <thead><tr>${headerMarkup}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function detailRows(entries, rules, examples, { exclude = [] } = {}) {
+  const excluded = new Set(exclude);
+  return Object.entries(entries)
+    .filter(([id]) => !excluded.has(id))
+    .map(([id, config]) => `
+      <tr>
+        <th scope="row">${escapeAttribute(configuredLabel(config))}</th>
+        <td>${escapeAttribute(rules[id] ?? "")}</td>
+        <td>${escapeAttribute(examples[id] ?? "")}</td>
+      </tr>
+    `).join("");
 }
 
 function helpContent() {
@@ -43,11 +68,47 @@ function helpContent() {
   const groupExamples = ["family", "guardPatrol", "orcRaiders", "caravan", "shipCrew", "templeHousehold", "villageCouncil", "expedition"]
     .map((id) => configuredLabel(groupTypes[id] ?? GROUP_TYPES[id]))
     .join(", ");
-  const roleMixRows = Object.entries(ROLE_COMPOSITION_MODES).map(([id, config]) => `
+  const generationRows = [
+    [localize("ui.count"), localize("help.count")],
+    [localize("ui.groupType"), localize("help.groupType")],
+    [localize("ui.habitat"), localize("help.habitat")],
+    [localize("ui.role"), localize("help.role")],
+    [localize(tierStyle === TIER_STYLES.CR ? "ui.challengeRating" : "ui.tier"), tierStyleText],
+    [localize("ui.race"), localize("help.race")],
+    [localize("ui.wealth"), localize("help.wealth")],
+    [localize("ui.seed"), localize("help.seed")],
+    [localize("ui.destinationFolder"), localize("help.destination")]
+  ].map(([setting, behavior]) => `
+    <tr><th scope="row">${escapeAttribute(setting)}</th><td>${escapeAttribute(behavior)}</td></tr>
+  `).join("");
+  const raceMixRules = Object.fromEntries(Object.keys(RACE_COMPOSITION_MODES).map((id) => [id, localize(`help.raceMixModes.${id}`)]));
+  const raceMixExamples = Object.fromEntries(Object.keys(RACE_COMPOSITION_MODES).map((id) => [id, localize(`help.raceMixExamples.${id}`)]));
+  const raceMixRows = detailRows(RACE_COMPOSITION_MODES, raceMixRules, raceMixExamples, { exclude: ["mixed"] });
+  const roleMixRules = Object.fromEntries(Object.keys(ROLE_COMPOSITION_MODES).map((id) => [id, localize(`help.roleMixModes.${id}`)]));
+  const roleMixExamples = Object.fromEntries(Object.keys(ROLE_COMPOSITION_MODES).map((id) => [id, localize(`help.roleMixExamples.${id}`)]));
+  const roleMixRows = detailRows(ROLE_COMPOSITION_MODES, roleMixRules, roleMixExamples);
+  const combatRules = Object.fromEntries(Object.keys(COMBAT_READINESS).map((id) => [id, localize(`help.combatReadinessModes.${id}`)]));
+  const combatExamples = Object.fromEntries(Object.keys(COMBAT_READINESS).map((id) => [id, localize(`help.combatReadinessExamples.${id}`)]));
+  const combatRows = detailRows(COMBAT_READINESS, combatRules, combatExamples);
+  const weaponRules = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyModes.${id}`)]));
+  const weaponExamples = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyExamples.${id}`)]));
+  const weaponRows = detailRows(WEAPON_VARIETY, weaponRules, weaponExamples);
+  const previewRows = ["normal", "mismatch", "arbitrary", "oversized"].map((id) => `
     <tr>
-      <th scope="row">${escapeAttribute(configuredLabel(config))}</th>
-      <td>${escapeAttribute(localize(`help.roleMixModes.${id}`))}</td>
-      <td>${escapeAttribute(localize(`help.roleMixExamples.${id}`))}</td>
+      <th scope="row">${escapeAttribute(localize(`help.importPreviewCases.${id}.case`))}</th>
+      <td>${escapeAttribute(localize(`help.importPreviewCases.${id}.behavior`))}</td>
+    </tr>
+  `).join("");
+  const filterRows = ["items", "advanced", "profiles"].map((id) => `
+    <tr>
+      <th scope="row">${escapeAttribute(localize(`help.filterControls.${id}.control`))}</th>
+      <td>${escapeAttribute(localize(`help.filterControls.${id}.behavior`))}</td>
+    </tr>
+  `).join("");
+  const aiRows = [1, 2, 3, 4].map((step) => `
+    <tr>
+      <th scope="row">${escapeAttribute(game.i18n.format(`${MODULE_ID}.help.aiStepLabel`, { step }))}</th>
+      <td>${escapeAttribute(localize(`help.aiStep${step}`))}</td>
     </tr>
   `).join("");
 
@@ -56,17 +117,11 @@ function helpContent() {
       <section>
         <h2>${escapeAttribute(localize("help.generationTitle"))}</h2>
         <p>${escapeAttribute(localize("help.generationBody"))}</p>
-        <dl class="runyth-npc-button__help-list">
-          <dt>${escapeAttribute(localize("ui.count"))}</dt><dd>${escapeAttribute(localize("help.count"))}</dd>
-          <dt>${escapeAttribute(localize("ui.groupType"))}</dt><dd>${escapeAttribute(localize("help.groupType"))}</dd>
-          <dt>${escapeAttribute(localize("ui.habitat"))}</dt><dd>${escapeAttribute(localize("help.habitat"))}</dd>
-          <dt>${escapeAttribute(localize("ui.role"))}</dt><dd>${escapeAttribute(localize("help.role"))}</dd>
-          <dt>${escapeAttribute(localize(tierStyle === TIER_STYLES.CR ? "ui.challengeRating" : "ui.tier"))}</dt><dd>${escapeAttribute(tierStyleText)}</dd>
-          <dt>${escapeAttribute(localize("ui.race"))}</dt><dd>${escapeAttribute(localize("help.race"))}</dd>
-          <dt>${escapeAttribute(localize("ui.wealth"))}</dt><dd>${escapeAttribute(localize("help.wealth"))}</dd>
-          <dt>${escapeAttribute(localize("ui.seed"))}</dt><dd>${escapeAttribute(localize("help.seed"))}</dd>
-          <dt>${escapeAttribute(localize("ui.destinationFolder"))}</dt><dd>${escapeAttribute(localize("help.destination"))}</dd>
-        </dl>
+        ${helpTable(
+          [localize("help.setting"), localize("help.effect")],
+          generationRows,
+          { className: "runyth-npc-button__help-table-wrap--compact" }
+        )}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.standardRacesTitle"))}</h2>
@@ -88,32 +143,35 @@ function helpContent() {
       <section>
         <h2>${escapeAttribute(localize("help.namingTitle"))}</h2>
         <p>${escapeAttribute(localize("help.namingBody"))}</p>
-        <table class="runyth-npc-button__help-table">
-          <thead><tr><th>${escapeAttribute(localize("ui.namingStyle"))}</th><th>${escapeAttribute(localize("help.character"))}</th><th>${escapeAttribute(localize("help.examples"))}</th></tr></thead>
-          <tbody>${namingRows}</tbody>
-        </table>
+        ${helpTable([localize("ui.namingStyle"), localize("help.character"), localize("help.examples")], namingRows)}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.compositionTitle"))}</h2>
         <p>${escapeAttribute(localize("help.compositionBody"))}</p>
       </section>
       <section>
+        <h2>${escapeAttribute(localize("help.raceMixTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.raceMixBody"))}</p>
+        ${helpTable([localize("help.mixMode"), localize("help.mixRule"), localize("help.mixExample")], raceMixRows)}
+        <p>${escapeAttribute(localize("help.raceMixWeights"))}</p>
+        <p class="runyth-npc-button__note">${escapeAttribute(localize("help.mixRounding"))}</p>
+      </section>
+      <section>
         <h2>${escapeAttribute(localize("help.roleMixTitle"))}</h2>
         <p>${escapeAttribute(localize("help.roleMixBody"))}</p>
-        <table class="runyth-npc-button__help-table">
-          <thead><tr><th>${escapeAttribute(localize("help.roleMixMode"))}</th><th>${escapeAttribute(localize("help.roleMixRule"))}</th><th>${escapeAttribute(localize("help.roleMixExample"))}</th></tr></thead>
-          <tbody>${roleMixRows}</tbody>
-        </table>
+        ${helpTable([localize("help.mixMode"), localize("help.mixRule"), localize("help.mixExample")], roleMixRows)}
         <p>${escapeAttribute(localize("help.roleMixWeights"))}</p>
-        <p class="runyth-npc-button__note">${escapeAttribute(localize("help.roleMixRounding"))}</p>
+        <p class="runyth-npc-button__note">${escapeAttribute(localize("help.mixRounding"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.combatReadinessTitle"))}</h2>
         <p>${escapeAttribute(localize("help.combatReadinessBody"))}</p>
+        ${helpTable([localize("help.level"), localize("help.effect"), localize("help.example")], combatRows)}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.weaponVarietyTitle"))}</h2>
         <p>${escapeAttribute(localize("help.weaponVarietyBody"))}</p>
+        ${helpTable([localize("help.mode"), localize("help.effect"), localize("help.example")], weaponRows)}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.actorReviewTitle"))}</h2>
@@ -126,20 +184,17 @@ function helpContent() {
       <section>
         <h2>${escapeAttribute(localize("help.filterTitle"))}</h2>
         <p>${escapeAttribute(localize("help.filterBody"))}</p>
+        ${helpTable([localize("help.control"), localize("help.behavior")], filterRows, { className: "runyth-npc-button__help-table-wrap--compact" })}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.importPreviewTitle"))}</h2>
         <p>${escapeAttribute(localize("help.importPreviewBody"))}</p>
+        ${helpTable([localize("help.situation"), localize("help.behavior")], previewRows, { className: "runyth-npc-button__help-table-wrap--compact" })}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.aiTitle"))}</h2>
         <p>${escapeAttribute(localize("help.aiBody"))}</p>
-        <ol>
-          <li>${escapeAttribute(localize("help.aiStep1"))}</li>
-          <li>${escapeAttribute(localize("help.aiStep2"))}</li>
-          <li>${escapeAttribute(localize("help.aiStep3"))}</li>
-          <li>${escapeAttribute(localize("help.aiStep4"))}</li>
-        </ol>
+        ${helpTable([localize("help.step"), localize("help.action")], aiRows, { className: "runyth-npc-button__help-table-wrap--compact" })}
         <p class="runyth-npc-button__note">${escapeAttribute(localize("help.aiValidation"))}</p>
       </section>
     </article>
@@ -157,7 +212,7 @@ class NpcHelpApplication extends foundry.applications.api.ApplicationV2 {
       minimizable: true
     },
     position: {
-      width: 620,
+      width: 760,
       height: 760
     }
   };
@@ -179,7 +234,7 @@ function sidePosition(master, help) {
   const gap = 12;
   const masterPosition = master?.position ?? {};
   const helpPosition = help.position ?? {};
-  const width = Number(helpPosition.width) || 620;
+  const width = Number(helpPosition.width) || 760;
   const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
   const preferredLeft = Number(masterPosition.left) + Number(masterPosition.width) + gap;
   const left = Number.isFinite(preferredLeft) && preferredLeft + width <= viewportWidth

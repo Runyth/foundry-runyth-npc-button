@@ -83,3 +83,30 @@ test("help documents every role composition mode with concrete distribution exam
   assert.match(english.roleMixWeights, /10\/20\/30/);
   assert.match(english.roleMixWeights, /0 excludes/);
 });
+
+test("help presents composition and comparable controls as structured tables", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const helpSource = await readFile(new URL("../scripts/ui/npc-help.mjs", import.meta.url), "utf8");
+  const english = JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8"))["runyth-npc-button"].help;
+
+  for (const mode of ["single", "dominant", "primary", "balanced", "weighted"]) {
+    assert.equal(typeof english.raceMixModes[mode], "string");
+    assert.equal(typeof english.raceMixExamples[mode], "string");
+  }
+
+  for (const mode of ["weaponless", "minimal", "standard", "prepared", "armed"]) {
+    assert.equal(typeof english.combatReadinessModes[mode], "string");
+    assert.equal(typeof english.combatReadinessExamples[mode], "string");
+  }
+
+  for (const mode of ["meleeOnly", "meleePreferred", "mixed", "rangedPreferred", "rangedOnly"]) {
+    assert.equal(typeof english.weaponVarietyModes[mode], "string");
+    assert.equal(typeof english.weaponVarietyExamples[mode], "string");
+  }
+
+  for (const tableRows of ["generationRows", "raceMixRows", "roleMixRows", "combatRows", "weaponRows", "filterRows", "previewRows", "aiRows"]) {
+    assert.match(helpSource, new RegExp(`\\b${tableRows}\\b`));
+  }
+  assert.match(helpSource, /runyth-npc-button__help-table-wrap/);
+  assert.match(english.raceMixWeights, /10\/20\/30/);
+});

@@ -7,6 +7,7 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 - GM-only **NPC Button** action in the Actors directory.
 - Resizable dashboard with client-side size and placement persistence.
 - Cohesive high-performance field-journal visual system shared across dashboard, Help, filter settings, import preview, directory controls, and portrait-prompt actions, with restrained section accents, stable sticky actions, visible focus states, and responsive narrow-window layouts.
+- Help uses responsive reference tables for comparable controls and distribution modes, including concrete Race/Role composition quotas, while keeping narrative/catalog sections concise.
 - Ergonomic Count control with arbitrary numeric input plus 1, 3, 5, and 10 shortcuts.
 - World-level **Tier style** setting with named competence tiers or exact Challenge Rating selection covering CR 0, 1/8, 1/4, 1/2, and 1–30.
 - Searchable, scrollable, virtualized hierarchical pickers for Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection.

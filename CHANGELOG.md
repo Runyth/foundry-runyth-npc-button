@@ -2,6 +2,18 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.2.4 - 2026-09-25
+
+### Changed
+
+- Help now presents Race composition with the same detailed mode/rule/Count-10 reference-table treatment as Role composition, including exact quota examples and relative-weight semantics.
+- Comparable Help sections now use consistent responsive reference tables for generation controls, combat readiness, weapon variety, filter controls, import-preview behavior, and the AI workflow, while explanatory/catalog sections remain concise prose.
+- Help tables now use a shared scroll-safe presentation with clearer row headers, sticky column headers, narrow-window overflow handling, and no animation or expensive visual effects.
+
+### Added
+
+- Regression coverage for Race-composition Help examples and the expanded structured Help-table surfaces.
+
 ## 0.2.3 - 2026-09-25
 
 ### Fixed

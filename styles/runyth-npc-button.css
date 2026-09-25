@@ -1340,6 +1340,49 @@
   background: rgb(255 255 255 / 2%);
 }
 
+.runyth-npc-button__help-table-wrap {
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  contain: layout paint;
+  max-width: 100%;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.runyth-npc-button__help-table-wrap .runyth-npc-button__help-table {
+  border: 0;
+  border-radius: 0;
+  min-width: 42rem;
+  overflow: visible;
+}
+
+.runyth-npc-button__help-table-wrap--compact .runyth-npc-button__help-table {
+  min-width: 34rem;
+}
+
+.runyth-npc-button__help-table th,
+.runyth-npc-button__help-table td {
+  line-height: 1.35;
+  padding: 0.52rem 0.62rem;
+}
+
+.runyth-npc-button__help-table tbody th[scope="row"] {
+  background: color-mix(in srgb, var(--rnb-surface-2) 72%, transparent 28%);
+  border-bottom: 1px solid var(--rnb-border-soft);
+  font-weight: 750;
+  min-width: 8.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.runyth-npc-button__help-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.runyth-npc-button__help-table tbody tr:hover {
+  background: color-mix(in srgb, var(--rnb-accent-soft) 42%, transparent 58%);
+}
+
 /* Filter settings: operational toolbar + compact, bounded category cards. */
 .runyth-npc-button--filters .window-content {
   overflow: hidden;
@@ -1570,6 +1613,11 @@
 
   .runyth-npc-button__filter-profile-toolbar button {
     flex-basis: 100%;
+  }
+
+  .runyth-npc-button__help-table-wrap .runyth-npc-button__help-table,
+  .runyth-npc-button__help-table-wrap--compact .runyth-npc-button__help-table {
+    min-width: 38rem;
   }
 }
 

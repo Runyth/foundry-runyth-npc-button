@@ -218,6 +218,100 @@
         "primary": "Primary Merchant + Artisan + Guard → 7 Merchant, 2 Artisan, 1 Guard.",
         "dominant": "Primary Merchant + Artisan + Guard → 8 Merchant, 1 Artisan, 1 Guard.",
         "weighted": "Merchant 10, Artisan 20, Guard 30 → 2 Merchant, 3 Artisan, 5 Guard."
+      },
+      "setting": "Setting",
+      "effect": "Effect",
+      "example": "Example",
+      "mode": "Mode",
+      "level": "Level",
+      "situation": "Situation",
+      "behavior": "Behavior",
+      "step": "Step",
+      "action": "Action",
+      "mixMode": "Mode",
+      "mixRule": "Distribution rule",
+      "mixExample": "Example with Count 10",
+      "raceMixTitle": "Race composition in detail",
+      "raceMixBody": "The main Race selected in Generation is the primary Race. For mixed modes, Possible races defines the allowed pool; the primary Race is automatically included. Integer quotas always add up to the requested Count.",
+      "raceMixWeights": "Custom Race weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Race as long as at least one other Race has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
+      "mixRounding": "When a proportion does not divide evenly into the batch size, the module uses proportional integer quotas and assigns leftover NPCs to the largest fractional remainders. This preserves the exact batch Count and stays as close as possible to the requested ratio.",
+      "raceMixModes": {
+        "single": "Every NPC uses the primary Race.",
+        "dominant": "The primary Race targets 85%; the remaining 15% is split evenly across the other allowed Races.",
+        "primary": "The primary Race targets 70%; the remaining 30% is split evenly across the other allowed Races.",
+        "balanced": "All allowed Races receive equal weight.",
+        "weighted": "Each allowed Race uses its entered relative weight.",
+        "mixed": "Legacy compatibility mode; the saved Race distribution setting determines the effective mix."
+      },
+      "raceMixExamples": {
+        "single": "Primary Human → 10 Human.",
+        "dominant": "Primary Human + Elf + Dwarf → 8 Human, 1 Elf, 1 Dwarf.",
+        "primary": "Primary Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
+        "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
+        "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf.",
+        "mixed": "Not shown in the current dashboard; retained only for older saved configurations."
+      },
+      "combatReadinessModes": {
+        "weaponless": "No weapons or armor. Occupational tools remain ordinary tools.",
+        "minimal": "Noncombatants stay effectively unarmed; inherently martial Roles receive at least one simple, plausible weapon.",
+        "standard": "Normal equipment for the Role during ordinary duties.",
+        "prepared": "Adds believable backup or protective gear when the Role supports it.",
+        "armed": "Maximum realistic preparedness for that exact Role; occupational ceilings still apply."
+      },
+      "combatReadinessExamples": {
+        "weaponless": "Soldier → no weapon and no armor; Baker → work tools only.",
+        "minimal": "Guard → one simple duty weapon; Scholar → normally no dedicated weapon.",
+        "standard": "Guard → practical weapon and ordinary duty protection.",
+        "prepared": "Scout → primary weapon plus plausible backup and light protection.",
+        "armed": "Soldier → several sensible combat options; Jurist → at most discreet self-defense gear."
+      },
+      "weaponVarietyModes": {
+        "meleeOnly": "Allow melee-capable weapons only.",
+        "meleePreferred": "Strongly favor melee; a ranged backup is allowed only when plausible.",
+        "mixed": "Use a natural mix when the Role realistically supports both categories.",
+        "rangedPreferred": "Strongly favor ranged; a melee backup is allowed only when plausible.",
+        "rangedOnly": "Allow dedicated ranged weapons only; never invent one for a Role that has no realistic option."
+      },
+      "weaponVarietyExamples": {
+        "meleeOnly": "Scout → Shortsword/Dagger options, no Shortbow.",
+        "meleePreferred": "Guard → Spear or Longsword favored; crossbow only as a sensible backup.",
+        "mixed": "Soldier → melee and ranged options may both appear.",
+        "rangedPreferred": "Scout → Shortbow favored with a knife or Shortsword only as backup.",
+        "rangedOnly": "Jurist with no plausible ranged option → weaponless rather than implausibly armed."
+      },
+      "importPreviewCases": {
+        "normal": {
+          "case": "Expected count matches",
+          "behavior": "Uses the configured preview toggle. If preview is off, validated Actors can proceed directly to creation."
+        },
+        "mismatch": {
+          "case": "Returned count differs",
+          "behavior": "Preview opens automatically with a warning. Every NPC is initially selected, so extras can be deselected before import."
+        },
+        "arbitrary": {
+          "case": "Arbitrary-count setting enabled",
+          "behavior": "Safe external/manual arrays may proceed without forced mismatch preview; normal validation still applies."
+        },
+        "oversized": {
+          "case": "Maximum batch exceeded",
+          "behavior": "Safety limits remain enforced; the count setting never bypasses the configured maximum batch size."
+        }
+      },
+      "aiStepLabel": "Step {step}",
+      "control": "Control",
+      "filterControls": {
+        "items": {
+          "control": "Included items",
+          "behavior": "All current catalog items start included. Deselect an item to hide it from the matching dashboard picker; extension-added items remain included by default unless explicitly excluded."
+        },
+        "advanced": {
+          "control": "Advanced rules",
+          "behavior": "Optional exact, contains, prefix, suffix, and regular-expression allow/deny rules refine the item selection. Deny rules take precedence."
+        },
+        "profiles": {
+          "control": "Filter profiles",
+          "behavior": "Export or import the complete filter configuration as versioned JSON so a ready-configured setup can be reused or transferred."
+        }
       }
     },
     "notifications": {
