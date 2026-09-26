@@ -1,6 +1,6 @@
 export const MODULE_ID = "runyth-npc-button";
 export const MODULE_TITLE = "Runyth NPC Button";
-export const MODULE_VERSION = "0.3.1";
+export const MODULE_VERSION = "0.3.2";
 
 export const SETTINGS = Object.freeze({
   DEBUG: "debugLogging",
@@ -51,6 +51,14 @@ export const DEFAULT_OPTIONS = Object.freeze({
   femaleCount: 0,
   groupBrief: "",
   customName: "",
+  nameFormatPreset: "standard",
+  namePrefix: "",
+  nameInfix: "",
+  nameSuffix: "",
+  nameLocation: "",
+  nicknameMode: "sometimes",
+  titleMode: "sometimes",
+  nameTemplate: "{first} {last}",
   customSpecies: "",
   seed: "",
   folderId: "",

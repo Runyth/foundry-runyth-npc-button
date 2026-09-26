@@ -53,7 +53,7 @@ test("cosmetic feature release preserves dashboard action and field contracts", 
   for (const pickerName of ["groupType", "habitat", "role", "raceSelection", "namingStyle", "groupRaces", "groupRoles", "destinationSelection"]) {
     assert.ok(dashboard.includes(`name: "${pickerName}"`), `missing picker field contract: ${pickerName}`);
   }
-  for (const chipName of ["wealth", "wealthDistribution", "combatReadiness", "weaponVariety", "raceComposition", "roleComposition"]) {
+  for (const chipName of ["wealth", "wealthDistribution", "combatReadiness", "weaponVariety", "raceComposition", "roleComposition", "nameFormatPreset", "nicknameMode", "titleMode"]) {
     assert.ok(dashboard.includes(`choiceChips("${chipName}"`), `missing choice field contract: ${chipName}`);
   }
   for (const directName of ["count", "openLastActor", "previewImport", "aiPayload"]) {
@@ -116,4 +116,19 @@ test("help presents composition and comparable controls as structured tables", a
   }
   assert.match(helpSource, /runyth-npc-button__help-table-wrap/);
   assert.match(english.raceMixWeights, /10\/20\/30/);
+});
+
+
+test("help explains Name or batch prefix and advanced name-template formatting", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const helpSource = await readFile(new URL("../scripts/ui/npc-help.mjs", import.meta.url), "utf8");
+  const english = JSON.parse(await readFile(new URL("../lang/en.json", import.meta.url), "utf8"))["runyth-npc-button"];
+  assert.match(helpSource, /nameFormattingRows/);
+  assert.match(helpSource, /help\.nameFormattingTitle/);
+  assert.match(english.ui.customNameHint, /Count is 1/);
+  assert.match(english.help.nameFormattingBody, /batch prefix/i);
+  assert.match(english.help.nameTemplateTokens, /\{first\}/);
+  for (const field of ["namePrefix", "nameInfix", "nameSuffix", "nameLocation", "nameTemplate"]) {
+    assert.match(dashboard, new RegExp(`name=["']${field}["']`));
+  }
 });

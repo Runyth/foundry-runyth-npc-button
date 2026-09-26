@@ -151,7 +151,24 @@
       "raceExactAssignedValid": "Assigned {assigned} of {target}. Exact total is valid.",
       "raceExactAssignedInvalid": "Assigned {assigned} of {target}. Remaining: {remaining}. Adjust counts or distribute evenly.",
       "wealthDistribution": "Wealth distribution",
-      "wealthDistributionHint": "Controls how the fixed portable-wealth budget is split between actual coins and carried valuables. The total value does not change."
+      "wealthDistributionHint": "Controls how the fixed portable-wealth budget is split between actual coins and carried valuables. The total value does not change.",
+      "customNameHint": "If Count is 1, this becomes the Actor name. If Count is greater than 1, it becomes a numbered batch prefix such as “Harbor Watch 1”, “Harbor Watch 2”. Leave blank to use generated names and the formatting controls below.",
+      "nameFormattingTitle": "Name formatting",
+      "nameFormattingHint": "Applies only when Name or batch prefix is blank. Presets arrange generated name parts; fixed prefix/infix/suffix/location text is inserted only where the chosen template references it.",
+      "nameFormatPreset": "Format preset",
+      "namePrefix": "Fixed prefix",
+      "namePrefixPlaceholder": "e.g. Brother, Old, House",
+      "nameInfix": "Fixed infix",
+      "nameInfixPlaceholder": "e.g. van, de, ap",
+      "nameSuffix": "Fixed suffix",
+      "nameSuffixPlaceholder": "e.g. the Younger, III",
+      "nameLocation": "Fixed location",
+      "nameLocationPlaceholder": "e.g. Velia, Blackwater",
+      "nicknameMode": "Nickname frequency",
+      "titleMode": "Title frequency",
+      "nameTemplate": "Custom name template",
+      "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
+      "nameTemplateHint": "Available tokens: {tokens}. Put optional text in [square brackets]; that whole block disappears when one of its tokens is empty."
     },
     "help": {
       "title": "NPC Button Help",
@@ -338,7 +355,50 @@
         "coinsHeavy": "Average wealth: 5 gp-equivalent total → about 3.75 gp in coins + 1.25 gp in valuables.",
         "fewHighValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + one concentrated 3.25 gp valuable.",
         "manySmallValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + several items totaling 3.25 gp."
-      }
+      },
+      "nameFormattingTitle": "Name and batch-prefix formatting",
+      "nameFormattingBody": "Name or batch prefix is an override, not an extra prefix field. With Count 1 it becomes the Actor name. With a larger Count it produces numbered names such as “Harbor Watch 1”, “Harbor Watch 2”, and bypasses generated-name formatting. Leave it blank to generate names from the selected Naming style and the formatting controls.",
+      "nameFormattingControl": "Control",
+      "nameFormattingBehavior": "What it does",
+      "nameFormattingExample": "Example",
+      "nameFormattingRows": {
+        "customName": {
+          "control": "Name or batch prefix",
+          "behavior": "Overrides generated names completely. Count 1 uses the entered text as the name; batches append a sequential number.",
+          "example": "Harbor Watch + Count 3 → Harbor Watch 1, Harbor Watch 2, Harbor Watch 3."
+        },
+        "preset": {
+          "control": "Format preset",
+          "behavior": "Chooses where generated first/last names and optional components are arranged. Standard preserves the classic first-name + surname result.",
+          "example": "Formal can produce Captain Elian Mercer; Location can produce Elian Mercer of Velia."
+        },
+        "affixes": {
+          "control": "Prefix / infix / suffix",
+          "behavior": "Literal fixed text that can be placed before, between, or after generated name parts. A field has no effect if the active template does not reference its token.",
+          "example": "Prefix House + infix van + suffix the Younger → House Elian van Mercer the Younger."
+        },
+        "nickname": {
+          "control": "Nickname frequency",
+          "behavior": "Never, Sometimes, or Always generates a short nickname when the active template contains {nickname}. Optional template blocks prevent empty quotation marks.",
+          "example": "Elian “Crow” Mercer."
+        },
+        "title": {
+          "control": "Title frequency",
+          "behavior": "Never, Sometimes, or Always adds a plausible role/status title when the template contains {title}. If no sensible title exists, the token stays empty.",
+          "example": "Sergeant Bren Holt; Lady Mira Voss."
+        },
+        "location": {
+          "control": "Fixed location",
+          "behavior": "Provides literal text for {location}; usually paired with the Location or Full preset.",
+          "example": "{first} {last} [of {location}] + Velia → Elian Mercer of Velia."
+        },
+        "template": {
+          "control": "Custom template",
+          "behavior": "Places components exactly with tokens. Optional [square-bracket] blocks disappear when any token inside is empty. Literal words and punctuation are allowed.",
+          "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
+        }
+      },
+      "nameTemplateTokens": "Template tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role}, and {race}. {index} is the one-based NPC number within the batch."
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -678,6 +738,24 @@
       "coinsHeavy": "Coin-heavy",
       "fewHighValue": "Few high-value items",
       "manySmallValue": "Many small-value items"
+    },
+    "nameFormatPresets": {
+      "standard": "Standard",
+      "nickname": "Nickname",
+      "formal": "Formal",
+      "location": "Location",
+      "full": "Full",
+      "custom": "Custom template"
+    },
+    "nicknameModes": {
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "always": "Always"
+    },
+    "titleModes": {
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "always": "Always"
     }
   }
 }

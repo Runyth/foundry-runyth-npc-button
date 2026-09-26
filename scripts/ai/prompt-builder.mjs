@@ -89,6 +89,18 @@ function buildDefaultAiPrompt(options = {}) {
     "- Treat examples as tonal references, not a finite name list. Do not simply copy every example or mechanically recombine first and last halves.",
     "- Produce names that sound natural together, with enough phonetic and structural variation that a batch does not look algorithmically generated.",
     "- For families or long-standing houses, use shared surnames, cadet surnames, marriage names, nicknames, and generational variation naturally rather than forcing every relative to have an identical surname.",
+    clean(options.customName)
+      ? (count === 1
+        ? `- Name override: use ${clean(options.customName)} as the Actor name. It overrides the generated naming template.`
+        : `- Batch prefix override: use ${clean(options.customName)} followed by the sequential NPC number (for example ${clean(options.customName)} 1, ${clean(options.customName)} 2). It overrides the generated naming template.`)
+      : `- Name format template: ${clean(options.nameFormatTemplate, "{first} {last}")}`,
+    !clean(options.customName) ? "- Template tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role}, {race}. Text inside [square brackets] is optional and must be omitted when one of its placeholders is empty." : "",
+    !clean(options.customName) && clean(options.namePrefix) ? `- Fixed prefix text: ${clean(options.namePrefix)}` : "",
+    !clean(options.customName) && clean(options.nameInfix) ? `- Fixed infix text: ${clean(options.nameInfix)}` : "",
+    !clean(options.customName) && clean(options.nameSuffix) ? `- Fixed suffix text: ${clean(options.nameSuffix)}` : "",
+    !clean(options.customName) && clean(options.nameLocation) ? `- Fixed location text: ${clean(options.nameLocation)}` : "",
+    !clean(options.customName) ? `- Nickname inclusion: ${clean(options.nicknameMode, "sometimes")}. Generate a natural short nickname only if the template uses {nickname}.` : "",
+    !clean(options.customName) ? `- Title inclusion: ${clean(options.titleMode, "sometimes")}. Use a plausible role/status title only if the template uses {title}; leave it empty when no sensible title applies.` : "",
     "",
     "Requested NPC profile:",
     `- Count: ${count}`,
@@ -123,7 +135,7 @@ function buildDefaultAiPrompt(options = {}) {
     clean(options.raceComposition, "") === "weighted" ? `- Relative race weights: ${clean(options.raceWeightSummary, "equal weights")}` : "",
     clean(options.raceComposition, "") === "exact" ? `- Exact race counts: ${clean(options.raceExactCountSummary, "counts must add up exactly to the requested batch size")}` : "",
     grouped && clean(options.groupBrief) ? `- Additional group brief: ${clean(options.groupBrief)}` : "",
-    `- Requested name or batch prefix: ${clean(options.customName, "none; generate natural names")}`,
+    `- Requested name or batch prefix: ${clean(options.customName, "none; use the configured naming format")}`,
     "",
     grouped ? "GROUP COHERENCE RULES:" : "",
     grouped ? "- Give the group a coherent shared situation, recent history, and reason its members are currently together." : "",

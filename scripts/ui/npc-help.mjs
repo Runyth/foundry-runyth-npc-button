@@ -82,6 +82,13 @@ function helpContent() {
   ].map(([setting, behavior]) => `
     <tr><th scope="row">${escapeAttribute(setting)}</th><td>${escapeAttribute(behavior)}</td></tr>
   `).join("");
+  const nameFormattingRows = ["customName", "preset", "affixes", "nickname", "title", "location", "template"].map((id) => `
+    <tr>
+      <th scope="row">${escapeAttribute(localize(`help.nameFormattingRows.${id}.control`))}</th>
+      <td>${escapeAttribute(localize(`help.nameFormattingRows.${id}.behavior`))}</td>
+      <td>${escapeAttribute(localize(`help.nameFormattingRows.${id}.example`))}</td>
+    </tr>
+  `).join("");
   const raceMixRules = Object.fromEntries(Object.keys(RACE_COMPOSITION_MODES).map((id) => [id, localize(`help.raceMixModes.${id}`)]));
   const raceMixExamples = Object.fromEntries(Object.keys(RACE_COMPOSITION_MODES).map((id) => [id, localize(`help.raceMixExamples.${id}`)]));
   const raceMixRows = detailRows(RACE_COMPOSITION_MODES, raceMixRules, raceMixExamples, { exclude: ["mixed"] });
@@ -148,6 +155,15 @@ function helpContent() {
         <h2>${escapeAttribute(localize("help.namingTitle"))}</h2>
         <p>${escapeAttribute(localize("help.namingBody"))}</p>
         ${helpTable([localize("ui.namingStyle"), localize("help.character"), localize("help.examples")], namingRows)}
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.nameFormattingTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.nameFormattingBody"))}</p>
+        ${helpTable(
+          [localize("help.nameFormattingControl"), localize("help.nameFormattingBehavior"), localize("help.nameFormattingExample")],
+          nameFormattingRows
+        )}
+        <p class="runyth-npc-button__note">${escapeAttribute(localize("help.nameTemplateTokens"))}</p>
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.compositionTitle"))}</h2>

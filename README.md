@@ -17,6 +17,7 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 - Wealth distribution: Item-heavy, Mixed, Coin-heavy, Few high-value items, or Many small-value items. Distribution changes only the split between coins and valuables; the fixed wealth total does not change.
 - Role-relative Combat readiness selection: Weaponless, Minimal, Standard, Prepared, or Highly Prepared. Readiness never overrides occupational logic.
 - Four naming palettes with richer idiomatic guidance and at least twelve distinct examples per palette. The same guidance is used by Help and the AI prompt.
+- Generated-name formatting with prefix/infix/suffix/location components, optional nicknames and role-appropriate titles, ready-made formatting presets, and exact custom templates using `{first}`, `{nickname}`, `{last}`, `{title}`, `{location}`, `{index}`, `{role}`, `{race}`, and related tokens.
 - Individual NPC generation or coherent group generation. Built-in group archetypes include family and noble households, guard/watch groups, militia, mercenaries, orc raiders, bandits, criminal cells, caravans, guild crews, ship crews, hunting parties, expeditions, temple households, village councils, pilgrims, and refugee parties.
 - Family generation with shared surnames, household roles, quirks, shared rumours/secrets, relationship lore, family structure, and configurable internal disputes.
 - Advanced group controls for cohesion, hierarchy, relationship density, internal conflict, family structure, and a free-form group brief.
@@ -76,6 +77,15 @@ Open **Game Settings → Configure Settings → Runyth NPC Button → Tier style
 
 - **Named tiers** uses Ordinary, Trained, Veteran, Elite, and Champion.
 - **Challenge Rating (CR)** replaces that picker with all supported standard CR values from 0 through 30.
+
+### Name and batch-prefix formatting
+
+**Name or batch prefix** is an override. With Count 1 it supplies the Actor name; with a larger Count it creates numbered names such as `Harbor Watch 1`, `Harbor Watch 2`, and so on. Leave it blank to use generated names.
+
+The collapsible **Name formatting** controls apply only to generated names. Presets cover Standard, Nickname, Formal, Location, Full, and Custom-template layouts. Prefix, infix, suffix, and fixed-location fields provide literal text. Nickname and Title controls decide whether their optional generated components are never, sometimes, or always requested.
+
+Custom templates support `{prefix}`, `{title}`, `{first}`, `{nickname}`, `{infix}`, `{last}`, `{location}`, `{suffix}`, `{index}`, `{role}`, and `{race}`. Put optional material inside `[square brackets]`; the complete block disappears if one of its tokens is empty. Example: `{title} {first} ["{nickname}"] {last}[ of {location}]`.
+Complementary modules that register Naming styles may optionally provide a `nicknames` pool, and registered Roles may optionally provide a `titles` pool; otherwise the core fallbacks are used.
 
 ### Batch composition
 

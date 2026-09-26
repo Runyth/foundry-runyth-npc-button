@@ -441,3 +441,81 @@ test("balanced and strong-majority gender mixes use exact integer quotas", () =>
   assert.equal(mostlyFemale.filter((value) => value === "female").length, 8);
   assert.equal(mostlyFemale.filter((value) => value === "male").length, 2);
 });
+
+test("generated names support fixed prefix, infix, and suffix without changing the default naming style", () => {
+  const npc = generateNpcBlueprint({
+    namingStyle: "central",
+    nameFormatPreset: "standard",
+    namePrefix: "House",
+    nameInfix: "van",
+    nameSuffix: "the Younger"
+  }, createSeededRandom("formatted-name-affixes"));
+  assert.match(npc.name, /^House .+ van .+ the Younger$/);
+});
+
+test("location and formal naming presets place optional components only where configured", () => {
+  const located = generateNpcBlueprint({
+    role: "guard",
+    namingStyle: "central",
+    nameFormatPreset: "location",
+    nameLocation: "Velia"
+  }, createSeededRandom("formatted-name-location"));
+  assert.match(located.name, / of Velia$/);
+
+  const formal = generateNpcBlueprint({
+    role: "noble",
+    gender: "female",
+    namingStyle: "central",
+    nameFormatPreset: "formal",
+    titleMode: "always"
+  }, createSeededRandom("formatted-name-title"));
+  assert.match(formal.name, /^Lady /);
+});
+
+test("nickname preset can force a generated nickname and avoids empty punctuation", () => {
+  const withNickname = generateNpcBlueprint({
+    namingStyle: "central",
+    nameFormatPreset: "nickname",
+    nicknameMode: "always"
+  }, createSeededRandom("formatted-name-nickname"));
+  assert.match(withNickname.name, /"[^"]+"/);
+
+  const withoutNickname = generateNpcBlueprint({
+    namingStyle: "central",
+    nameFormatPreset: "nickname",
+    nicknameMode: "never"
+  }, createSeededRandom("formatted-name-no-nickname"));
+  assert.doesNotMatch(withoutNickname.name, /""/);
+  assert.doesNotMatch(withoutNickname.name, /\s{2,}/);
+});
+
+test("custom name templates support exact token placement and batch index", () => {
+  const batch = generateNpcBatch({
+    count: 2,
+    role: "soldier",
+    species: "human",
+    namingStyle: "central",
+    nameFormatPreset: "custom",
+    nameTemplate: "{title} {last}, {first}[ \"{nickname}\"] — {race} {role} #{index}[ of {location}]",
+    titleMode: "always",
+    nicknameMode: "always",
+    nameLocation: "Velia",
+    seed: "custom-template-batch"
+  });
+  assert.match(batch[0].name, / — Human Soldier #1 of Velia$/);
+  assert.match(batch[1].name, / — Human Soldier #2 of Velia$/);
+  assert.ok(batch.every((npc) => /"[^"]+"/.test(npc.name)));
+});
+
+test("Name or batch prefix remains a hard override over advanced name formatting", () => {
+  const batch = generateNpcBatch({
+    count: 2,
+    customName: "Dock Crew",
+    nameFormatPreset: "custom",
+    nameTemplate: "{title} {first} {last} of {location}",
+    nameLocation: "Velia",
+    titleMode: "always",
+    seed: "prefix-overrides-template"
+  });
+  assert.deepEqual(batch.map((npc) => npc.name), ["Dock Crew 1", "Dock Crew 2"]);
+});

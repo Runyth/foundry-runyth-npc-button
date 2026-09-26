@@ -47,6 +47,7 @@ import { hierarchicalPickerMarkup, mountHierarchicalPicker } from "./hierarchica
 import { openNpcHelp } from "./npc-help.mjs";
 import { openNpcImportPreview } from "./npc-import-preview.mjs";
 import { mountVirtualQuotaEditor, virtualQuotaEditorMarkup } from "./virtual-quota-editor.mjs";
+import { NAME_FORMAT_PRESETS, NICKNAME_MODES, TITLE_MODES, nameTemplateTokenSummary, resolveNameTemplate, validateNameTemplate } from "../generator/name-format.mjs";
 
 
 const GENDER_COMPOSITION_MODES = Object.freeze({
@@ -488,6 +489,7 @@ function dashboardContent(options, tierStyle) {
           <div class="runyth-npc-button__field">
             <label for="runyth-npc-button-name">${escapeAttribute(localize("ui.customName"))}</label>
             <input id="runyth-npc-button-name" type="text" name="customName" maxlength="100" value="" placeholder="${escapeAttribute(localize("ui.customNamePlaceholder"))}">
+            <small>${escapeAttribute(localize("ui.customNameHint"))}</small>
           </div>
           <div class="runyth-npc-button__field">
             <label for="runyth-npc-button-seed">${escapeAttribute(localize("ui.seed"))}</label>
@@ -495,6 +497,50 @@ function dashboardContent(options, tierStyle) {
             <small id="runyth-npc-button-seed-hint">${escapeAttribute(localize("ui.seedHint"))}</small>
           </div>
         </div>
+
+        <details class="runyth-npc-button__advanced" data-name-formatting>
+          <summary>${escapeAttribute(localize("ui.nameFormattingTitle"))}</summary>
+          <div class="runyth-npc-button__advanced-body">
+            <p class="runyth-npc-button__note">${escapeAttribute(localize("ui.nameFormattingHint"))}</p>
+            <fieldset class="runyth-npc-button__field runyth-npc-button__field--full">
+              <legend>${escapeAttribute(localize("ui.nameFormatPreset"))}</legend>
+              <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("nameFormatPreset", NAME_FORMAT_PRESETS, options.nameFormatPreset ?? DEFAULT_OPTIONS.nameFormatPreset)}</div>
+            </fieldset>
+            <div class="runyth-npc-button__grid">
+              <div class="runyth-npc-button__field">
+                <label for="runyth-npc-button-name-prefix">${escapeAttribute(localize("ui.namePrefix"))}</label>
+                <input id="runyth-npc-button-name-prefix" type="text" name="namePrefix" maxlength="80" value="${escapeAttribute(options.namePrefix ?? "")}" placeholder="${escapeAttribute(localize("ui.namePrefixPlaceholder"))}">
+              </div>
+              <div class="runyth-npc-button__field">
+                <label for="runyth-npc-button-name-infix">${escapeAttribute(localize("ui.nameInfix"))}</label>
+                <input id="runyth-npc-button-name-infix" type="text" name="nameInfix" maxlength="80" value="${escapeAttribute(options.nameInfix ?? "")}" placeholder="${escapeAttribute(localize("ui.nameInfixPlaceholder"))}">
+              </div>
+              <div class="runyth-npc-button__field">
+                <label for="runyth-npc-button-name-suffix">${escapeAttribute(localize("ui.nameSuffix"))}</label>
+                <input id="runyth-npc-button-name-suffix" type="text" name="nameSuffix" maxlength="80" value="${escapeAttribute(options.nameSuffix ?? "")}" placeholder="${escapeAttribute(localize("ui.nameSuffixPlaceholder"))}">
+              </div>
+              <div class="runyth-npc-button__field">
+                <label for="runyth-npc-button-name-location">${escapeAttribute(localize("ui.nameLocation"))}</label>
+                <input id="runyth-npc-button-name-location" type="text" name="nameLocation" maxlength="100" value="${escapeAttribute(options.nameLocation ?? "")}" placeholder="${escapeAttribute(localize("ui.nameLocationPlaceholder"))}">
+              </div>
+            </div>
+            <div class="runyth-npc-button__grid">
+              <fieldset class="runyth-npc-button__field">
+                <legend>${escapeAttribute(localize("ui.nicknameMode"))}</legend>
+                <div class="runyth-npc-button__choices">${choiceChips("nicknameMode", NICKNAME_MODES, options.nicknameMode ?? DEFAULT_OPTIONS.nicknameMode)}</div>
+              </fieldset>
+              <fieldset class="runyth-npc-button__field">
+                <legend>${escapeAttribute(localize("ui.titleMode"))}</legend>
+                <div class="runyth-npc-button__choices">${choiceChips("titleMode", TITLE_MODES, options.titleMode ?? DEFAULT_OPTIONS.titleMode)}</div>
+              </fieldset>
+            </div>
+            <div class="runyth-npc-button__field runyth-npc-button__field--full" data-name-template-field${(options.nameFormatPreset ?? DEFAULT_OPTIONS.nameFormatPreset) === "custom" ? "" : " hidden"}>
+              <label for="runyth-npc-button-name-template">${escapeAttribute(localize("ui.nameTemplate"))}</label>
+              <input id="runyth-npc-button-name-template" type="text" name="nameTemplate" maxlength="240" value="${escapeAttribute(options.nameTemplate ?? DEFAULT_OPTIONS.nameTemplate)}" placeholder="${escapeAttribute(localize("ui.nameTemplatePlaceholder"))}">
+              <small>${escapeAttribute(game.i18n.format(`${MODULE_ID}.ui.nameTemplateHint`, { tokens: nameTemplateTokenSummary() }))}</small>
+            </div>
+          </div>
+        </details>
       </section>
 
       <section class="runyth-npc-button__section runyth-npc-button__section--composition">
@@ -794,6 +840,14 @@ function readForm(form) {
     roleWeights: readRoleWeights(form, groupRoles),
     groupBrief: String(namedFormValue(form, "groupBrief", "")).trim(),
     customName: String(namedFormValue(form, "customName", "")).trim(),
+    nameFormatPreset: namedFormValue(form, "nameFormatPreset", DEFAULT_OPTIONS.nameFormatPreset),
+    namePrefix: String(namedFormValue(form, "namePrefix", "")).trim(),
+    nameInfix: String(namedFormValue(form, "nameInfix", "")).trim(),
+    nameSuffix: String(namedFormValue(form, "nameSuffix", "")).trim(),
+    nameLocation: String(namedFormValue(form, "nameLocation", "")).trim(),
+    nicknameMode: namedFormValue(form, "nicknameMode", DEFAULT_OPTIONS.nicknameMode),
+    titleMode: namedFormValue(form, "titleMode", DEFAULT_OPTIONS.titleMode),
+    nameTemplate: String(namedFormValue(form, "nameTemplate", DEFAULT_OPTIONS.nameTemplate)).trim(),
     customSpecies: race.customSpecies,
     seed: String(namedFormValue(form, "seed", "")).trim(),
     folderId: destination.folderId,
@@ -831,8 +885,12 @@ function promptOptions(options) {
   const groupRoleLabels = groupRoleIds.map((id) => configuredLabel(getRoles()[id] ?? { label: id }));
   const roleWeightSummary = groupRoleIds.map((id) => `${configuredLabel(getRoles()[id] ?? { label: id })}=${Number(options.roleWeights?.[id]) || 0}`).join(", ");
 
+  const nameFormatTemplate = resolveNameTemplate(options);
+  validateNameTemplate(nameFormatTemplate);
+
   return {
     ...options,
+    nameFormatTemplate,
     roleLabel: configuredLabel(role),
     roleEquipmentHint: role.aiEquipmentHint,
     roleVariants: role.variants ?? ROLE_VARIANTS[options.role] ?? [],
@@ -1031,6 +1089,10 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       this.#updateRoleMixPreview(form);
     }, { signal });
     bindNamedControls(form, "genderComposition", "change", () => this.#syncGenderComposition(form, { initializeExact: true }), { signal });
+    bindNamedControls(form, "nameFormatPreset", "change", () => {
+      const templateField = form.querySelector("[data-name-template-field]");
+      templateField?.toggleAttribute("hidden", namedFormValue(form, "nameFormatPreset", DEFAULT_OPTIONS.nameFormatPreset) !== "custom");
+    }, { signal });
     bindNamedControls(form, "maleCount", "input", () => this.#syncExactGenderCounts(form, "male"), { signal });
     bindNamedControls(form, "femaleCount", "input", () => this.#syncExactGenderCounts(form, "female"), { signal });
 

@@ -30,6 +30,7 @@ import {
 import { DEFAULT_OPTIONS, TIER_STYLES } from "../constants.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 import { buildWealthBundle, formatCopperValue } from "./wealth.mjs";
+import { formatGeneratedName } from "./name-format.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 const GENDER_TUPLE = Object.freeze(["male", "female"]);
@@ -504,10 +505,13 @@ function buildHitPoints(role, tier, conScore, hitDie) {
   };
 }
 
-function generatedName(style, random, forcedFamilyName = "", gender = "male", namingStyleId = "") {
+function generatedNameParts(style, random, forcedFamilyName = "", gender = "male", namingStyleId = "") {
   const genderedPool = GENDERED_GIVEN_NAMES[namingStyleId]?.[gender];
   const givenPool = Array.isArray(genderedPool) && genderedPool.length ? genderedPool : style.given;
-  return `${pick(givenPool, random)} ${forcedFamilyName || pick(style.family, random)}`;
+  return {
+    first: pick(givenPool, random),
+    last: forcedFamilyName || pick(style.family, random)
+  };
 }
 
 function habitatLabel(options) {
@@ -564,7 +568,18 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
   const hitDie = race.size === "sm" ? 6 : 8;
   const hp = buildHitPoints(role, tier, scores.con, hitDie);
   const gender = options.gender === "female" ? "female" : "male";
-  const generated = generatedName(style, random, options.forcedFamilyName ?? "", gender, options.namingStyle ?? "");
+  const generatedParts = generatedNameParts(style, random, options.forcedFamilyName ?? "", gender, options.namingStyle ?? "");
+  const generated = formatGeneratedName({
+    ...generatedParts,
+    roleId: options.role ?? DEFAULT_OPTIONS.role,
+    role,
+    race,
+    gender,
+    index: options.nameIndex ?? 1,
+    options,
+    style,
+    random
+  });
   const suppliedName = titleCase(options.customName ?? "");
   const name = suppliedName || generated;
   const combatItems = combatLoadout(options.role ?? DEFAULT_OPTIONS.role, options, tier.cr);
@@ -815,6 +830,7 @@ export function generateNpcBatch(options = {}) {
         gender: genderAssignments[index] ?? GENDER_TUPLE[0],
         generationSeed: baseSeed,
         forcedFamilyName,
+        nameIndex: index + 1,
         customName: customName && count > 1 ? `${customName} ${index + 1}` : customName
       };
       blueprint = generateNpcBlueprint(perNpcOptions, random);

@@ -2,6 +2,23 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.3.2 - 2026-09-26
+
+### Added
+
+- Advanced generated-name formatting with Standard, Nickname, Formal, Location, Full, and Custom-template presets.
+- Fixed prefix, infix, suffix, and location components for generated names.
+- Optional generated nicknames and role-appropriate titles with Never, Sometimes, and Always controls.
+- Exact custom name-template formatting with tokens for prefix, title, first name, nickname, infix, last name, location, suffix, batch index, Role, and Race.
+- Optional template blocks using `[ ... ]`, which disappear cleanly when a referenced optional component is empty.
+- Help reference table explaining Name or batch prefix, naming presets, affixes, nickname/title behavior, locations, template syntax, and examples.
+- Regression coverage for default compatibility, affixes, optional punctuation, role titles, batch indices, template validation, AI prompt propagation, and Name-or-batch-prefix override behavior.
+
+### Changed
+
+- Name or batch prefix now has an inline explanation in the generator and a detailed Help entry. With Count 1 it overrides the generated Actor name; with larger batches it remains the existing numbered batch-prefix workflow.
+- AI generation prompts now carry the configured naming template and naming components so AI-generated Actor names follow the same formatting intent as local generation.
+
 ## 0.3.1 - 2026-09-26
 
 ### Fixed

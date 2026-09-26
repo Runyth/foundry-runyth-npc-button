@@ -151,3 +151,12 @@ The built-in portrait prompt now defaults to a grounded semi-realistic adult-ani
 - clean isolated studio-style presentation
 
 This is a style baseline only. Complementary modules can change it through the prompt-pipeline API.
+
+## Naming-style and Role metadata used by advanced name formatting
+
+The existing catalog API remains compatible with advanced generated-name formatting. Complementary modules may optionally add:
+
+- `nicknames: string[]` to a registered Naming style; when omitted, the core generic nickname pool is used.
+- `titles: string[]` to a registered Role; when omitted, the core role-appropriate title pool is used where available.
+
+The core name-template engine remains responsible for placement, optional blocks, fixed affixes, batch index, Role, and Race tokens. Extensions do not need to reimplement the formatter merely to provide additional naming vocabulary.

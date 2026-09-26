@@ -151,7 +151,24 @@
       "raceExactAssignedValid": "{assigned} von {target} zugewiesen. Die exakte Summe ist gültig.",
       "raceExactAssignedInvalid": "{assigned} von {target} zugewiesen. Verbleibend: {remaining}. Zahlen anpassen oder gleichmäßig verteilen.",
       "wealthDistribution": "Vermögensverteilung",
-      "wealthDistributionHint": "Bestimmt, wie das feste tragbare Vermögen zwischen echten Münzen und mitgeführten Wertgegenständen verteilt wird. Der Gesamtwert bleibt gleich."
+      "wealthDistributionHint": "Bestimmt, wie das feste tragbare Vermögen zwischen echten Münzen und mitgeführten Wertgegenständen verteilt wird. Der Gesamtwert bleibt gleich.",
+      "customNameHint": "Bei Anzahl 1 wird dies zum Actor-Namen. Bei Anzahl größer als 1 wird daraus ein nummeriertes Stapelpräfix wie „Hafenwache 1“, „Hafenwache 2“. Leer lassen, um generierte Namen und die Formatierungsoptionen darunter zu verwenden.",
+      "nameFormattingTitle": "Namensformatierung",
+      "nameFormattingHint": "Gilt nur, wenn Name oder Stapelpräfix leer ist. Vorlagen ordnen generierte Namensteile an; feste Präfix-/Infix-/Suffix-/Ortsangaben erscheinen nur dort, wo die gewählte Vorlage sie referenziert.",
+      "nameFormatPreset": "Formatvorlage",
+      "namePrefix": "Festes Präfix",
+      "namePrefixPlaceholder": "z. B. Bruder, Alt, Haus",
+      "nameInfix": "Festes Infix",
+      "nameInfixPlaceholder": "z. B. van, de, ap",
+      "nameSuffix": "Festes Suffix",
+      "nameSuffixPlaceholder": "z. B. der Jüngere, III",
+      "nameLocation": "Fester Ort",
+      "nameLocationPlaceholder": "z. B. Velia, Schwarzwasser",
+      "nicknameMode": "Spitznamen-Häufigkeit",
+      "titleMode": "Titel-Häufigkeit",
+      "nameTemplate": "Eigene Namensvorlage",
+      "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
+      "nameTemplateHint": "Verfügbare Tokens: {tokens}. Optionalen Text in [eckige Klammern] setzen; der gesamte Block entfällt, wenn eines seiner Tokens leer ist."
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -338,7 +355,50 @@
         "coinsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 3,75 GM in Münzen + 1,25 GM in Wertgegenständen.",
         "fewHighValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + ein konzentrierter Wertgegenstand von 3,25 GM.",
         "manySmallValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + mehrere Gegenstände mit zusammen 3,25 GM."
-      }
+      },
+      "nameFormattingTitle": "Namens- und Stapelpräfix-Formatierung",
+      "nameFormattingBody": "Name oder Stapelpräfix ist eine Überschreibung, kein zusätzliches Präfixfeld. Bei Anzahl 1 wird daraus der Actor-Name. Bei größerer Anzahl entstehen nummerierte Namen wie „Hafenwache 1“, „Hafenwache 2“ und die generierte Namensformatierung wird umgangen. Leer lassen, um Namen aus dem gewählten Namensstil und den Formatierungsoptionen zu erzeugen.",
+      "nameFormattingControl": "Steuerung",
+      "nameFormattingBehavior": "Wirkung",
+      "nameFormattingExample": "Beispiel",
+      "nameFormattingRows": {
+        "customName": {
+          "control": "Name oder Stapelpräfix",
+          "behavior": "Überschreibt generierte Namen vollständig. Anzahl 1 verwendet den Text als Namen; Stapel hängen eine fortlaufende Nummer an.",
+          "example": "Hafenwache + Anzahl 3 → Hafenwache 1, Hafenwache 2, Hafenwache 3."
+        },
+        "preset": {
+          "control": "Formatvorlage",
+          "behavior": "Bestimmt, wo generierter Vor- und Nachname sowie optionale Bestandteile stehen. Standard erhält das klassische Vorname-Nachname-Ergebnis.",
+          "example": "Formell kann Captain Elian Mercer ergeben; Ort kann Elian Mercer of Velia ergeben."
+        },
+        "affixes": {
+          "control": "Präfix / Infix / Suffix",
+          "behavior": "Wörtlicher fester Text vor, zwischen oder nach generierten Namensteilen. Ein Feld wirkt nur, wenn die aktive Vorlage sein Token verwendet.",
+          "example": "Präfix Haus + Infix van + Suffix der Jüngere → Haus Elian van Mercer der Jüngere."
+        },
+        "nickname": {
+          "control": "Spitznamen-Häufigkeit",
+          "behavior": "Nie, Manchmal oder Immer erzeugt einen kurzen Spitznamen, wenn die aktive Vorlage {nickname} enthält. Optionale Vorlagenblöcke verhindern leere Anführungszeichen.",
+          "example": "Elian „Crow“ Mercer."
+        },
+        "title": {
+          "control": "Titel-Häufigkeit",
+          "behavior": "Nie, Manchmal oder Immer fügt einen plausiblen Rollen-/Statustitel hinzu, wenn die Vorlage {title} enthält. Gibt es keinen sinnvollen Titel, bleibt das Token leer.",
+          "example": "Sergeant Bren Holt; Lady Mira Voss."
+        },
+        "location": {
+          "control": "Fester Ort",
+          "behavior": "Liefert wörtlichen Text für {location}; normalerweise zusammen mit der Vorlage Ort oder Vollständig.",
+          "example": "{first} {last} [of {location}] + Velia → Elian Mercer of Velia."
+        },
+        "template": {
+          "control": "Eigene Vorlage",
+          "behavior": "Platziert Komponenten exakt mit Tokens. Optionale [eckige-Klammer]-Blöcke entfallen, wenn ein enthaltenes Token leer ist. Wörtliche Wörter und Satzzeichen sind erlaubt.",
+          "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
+        }
+      },
+      "nameTemplateTokens": "Vorlagen-Tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role} und {race}. {index} ist die einsbasierte NPC-Nummer im Stapel."
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -678,6 +738,24 @@
       "coinsHeavy": "Münzbetont",
       "fewHighValue": "Wenige wertvolle Gegenstände",
       "manySmallValue": "Viele kleinere Wertgegenstände"
+    },
+    "nameFormatPresets": {
+      "standard": "Standard",
+      "nickname": "Spitzname",
+      "formal": "Formell",
+      "location": "Ort",
+      "full": "Vollständig",
+      "custom": "Eigene Vorlage"
+    },
+    "nicknameModes": {
+      "never": "Nie",
+      "sometimes": "Manchmal",
+      "always": "Immer"
+    },
+    "titleModes": {
+      "never": "Nie",
+      "sometimes": "Manchmal",
+      "always": "Immer"
     }
   }
 }

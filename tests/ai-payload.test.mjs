@@ -287,3 +287,30 @@ test("AI normalization rejects an explicitly empty currency purse", () => {
     /at least 1 cp-equivalent/
   );
 });
+
+test("AI prompt carries advanced name-format templates and fixed naming components", () => {
+  const prompt = buildAiPrompt({
+    count: 3,
+    namingStyleLabel: "Central",
+    nameFormatTemplate: '{title} {first} ["{nickname}"] {infix} {last}[ of {location}] {suffix}',
+    namePrefix: "House",
+    nameInfix: "van",
+    nameSuffix: "the Younger",
+    nameLocation: "Velia",
+    nicknameMode: "always",
+    titleMode: "sometimes"
+  });
+  assert.match(prompt, /Name format template: \{title\} \{first\}/);
+  assert.match(prompt, /Template tokens: \{prefix\}, \{title\}, \{first\}/);
+  assert.match(prompt, /Fixed infix text: van/);
+  assert.match(prompt, /Fixed suffix text: the Younger/);
+  assert.match(prompt, /Fixed location text: Velia/);
+  assert.match(prompt, /Nickname inclusion: always/);
+  assert.match(prompt, /Title inclusion: sometimes/);
+});
+
+test("AI prompt explains batch-prefix override semantics", () => {
+  const prompt = buildAiPrompt({ count: 3, customName: "Harbor Watch" });
+  assert.match(prompt, /Batch prefix override: use Harbor Watch followed by the sequential NPC number/);
+  assert.match(prompt, /Harbor Watch 1, Harbor Watch 2/);
+});
