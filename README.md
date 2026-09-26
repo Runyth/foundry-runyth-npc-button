@@ -13,7 +13,8 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 - Searchable, scrollable, virtualized hierarchical pickers for Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection.
 - Built-in Player's Handbook 2024 Race catalog: Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, and Tiefling, plus arbitrary custom races.
 - Habitat-aware generation with **Forest Village** as the default and more than twenty presets spanning settlements, forests, plains, jungle, deserts, riverlands, wetlands, lakesides, coasts, ports, islands, mountains, tundra, underground environments, and ruined frontiers. Custom habitats are supported.
-- Wealth selection: Poor, Average, Well-Off, or Elite.
+- Wealth selection: Poor, Average, Well-Off, or Elite. Every locally generated NPC now receives real D&D 5e Actor currency plus portable valuables from a fixed wealth budget.
+- Wealth distribution: Item-heavy, Mixed, Coin-heavy, Few high-value items, or Many small-value items. Distribution changes only the split between coins and valuables; the fixed wealth total does not change.
 - Role-relative Combat readiness selection: Weaponless, Minimal, Standard, Prepared, or Highly Prepared. Readiness never overrides occupational logic.
 - Four naming palettes with richer idiomatic guidance and at least twelve distinct examples per palette. The same guidance is used by Help and the AI prompt.
 - Individual NPC generation or coherent group generation. Built-in group archetypes include family and noble households, guard/watch groups, militia, mercenaries, orc raiders, bandits, criminal cells, caravans, guild crews, ship crews, hunting parties, expeditions, temple households, village councils, pilgrims, and refugee parties.
@@ -83,6 +84,18 @@ The normal Race and Role pickers establish primary/default values. Composition t
 **Role variants** keep the same broad Role statistics but spread distinct practical subtypes before repeating. For example, five Merchants can become five different merchant specializations rather than five clones. Mixed-role modes instead distribute several selected base Roles.
 
 Custom Race entries can participate in mixed batches as well.
+
+### Wealth distribution
+
+Local generation assigns a fixed portable-wealth budget from the selected Wealth tier and writes actual coins to `system.currency`. The distribution control only changes how that same budget is divided between currency and portable valuables:
+
+- **Item-heavy:** roughly 20% coin, 80% valuables.
+- **Mixed:** roughly 50/50.
+- **Coin-heavy:** roughly 75% coin.
+- **Few high-value items:** modest coin reserve plus one concentrated valuable.
+- **Many small-value items:** modest coin reserve plus several lower-value possessions.
+
+Role/combat equipment is generated independently and is unchanged by the distribution selector, so switching distribution does not inflate the NPC's modeled wealth. AI prompts use the same budget/split semantics and require real `system.currency` instead of relying on a prose-only coin purse.
 
 ### Combat readiness
 

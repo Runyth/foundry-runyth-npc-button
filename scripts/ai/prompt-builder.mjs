@@ -1,4 +1,5 @@
 import { composePrompt } from "../extensions/prompt-api.mjs";
+import { wealthBudgetCp } from "../generator/wealth.mjs";
 
 const ABILITY_KEYS = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 
@@ -14,6 +15,7 @@ function list(values, fallback = "none") {
 
 function buildDefaultAiPrompt(options = {}) {
   const count = Math.max(1, Math.trunc(Number(options.count) || 1));
+  const portableWealthBudgetCp = wealthBudgetCp(options.wealth);
   const grouped = clean(options.groupType, "independent") !== "independent" && clean(options.groupTypeLabel, "Independent NPCs") !== "Independent NPCs";
   const payloadShape = `exactly one JSON array containing ${count} Actor object${count === 1 ? "" : "s"}`;
   const namingExamples = Array.isArray(options.namingExamples) && options.namingExamples.length
@@ -70,7 +72,10 @@ function buildDefaultAiPrompt(options = {}) {
     "Inventory is important. Give each NPC a short, plausible inventory appropriate to Role, Wealth, Habitat, group function, and immediate circumstances, not a generic adventurer loadout.",
     "Prefer standard D&D 5e equipment when it fits. For a standard item, set lookup to its exact English canonical equipment name so the importer can resolve it from the D&D 5e compendium. For an invented roleplay-only possession, set lookup to null.",
     "Invented possessions are encouraged when mundane specificity improves roleplay: purses, letters, receipts, toys, keys, work scraps, devotional keepsakes, food, personal mementos, local tokens, family objects, duty rosters, travel papers, trade samples, repair parts, and similar items.",
-    "Represent carried money as a believable purse, pouch, strongbox, wallet, or similar roleplay item whose description states the coins or valuables. Scale it to Wealth and circumstances rather than giving every NPC the same money.",
+    "Use system.currency for actual carried coins. Every generated NPC must carry at least 1 cp-equivalent of real coin; do not represent all money only as prose or a generic purse item.",
+    `Portable personal-wealth budget: exactly ${portableWealthBudgetCp} cp-equivalent per NPC. This budget covers system.currency plus portable valuables whose wealthValueCp is greater than 0. Ordinary role/combat equipment has wealthValueCp 0 and is outside this portable-wealth budget.`,
+    `Wealth distribution: ${clean(options.wealthDistributionLabel, "Mixed")} — ${clean(options.wealthDistributionPrompt, "split portable wealth roughly evenly between coins and portable possessions")}.`,
+    "The distribution changes only the split between coins and portable valuables. It must never change the total portable-wealth budget.",
     "Do not overload inventories. Usually 3–8 entries is enough unless the role strongly calls for more.",
     "Do not invent additional top-level Actor keys.",
     "Do not include commentary before or after the fenced JSON code block.",
@@ -101,6 +106,8 @@ function buildDefaultAiPrompt(options = {}) {
     `- Race / primary race: ${clean(options.raceLabel, clean(options.race, "Human"))}`,
     `- Wealth: ${clean(options.wealthLabel, clean(options.wealth, "Average"))}`,
     `- Wealth guidance: ${clean(options.wealthPrompt, "ordinary practical possessions and modest spending money")}`,
+    `- Wealth distribution: ${clean(options.wealthDistributionLabel, "Mixed")} — ${clean(options.wealthDistributionPrompt, "roughly even coins and portable valuables")}`,
+    `- Portable wealth budget: ${portableWealthBudgetCp} cp-equivalent total per NPC`,
     `- Habitat: ${clean(options.habitatLabel, "Forest Village")}`,
     `- Habitat guidance: ${clean(options.habitatPrompt, "adapt daily life, possessions, travel, and social assumptions to the habitat")}`,
     `- Group type: ${clean(options.groupTypeLabel, "Independent NPCs")}`,
@@ -135,6 +142,7 @@ function buildDefaultAiPrompt(options = {}) {
     "  \"img\": \"icons/svg/mystery-man.svg\",",
     "  \"system\": {",
     `    \"abilities\": { ${ABILITY_KEYS.map((key) => `\"${key}\": { \"value\": 10 }`).join(", ")} },`,
+    "    \"currency\": { \"pp\": 0, \"gp\": 2, \"ep\": 0, \"sp\": 4, \"cp\": 7 },",
     "    \"attributes\": {",
     "      \"ac\": { \"calc\": \"flat\", \"flat\": 12 },",
     "      \"hp\": { \"value\": 9, \"max\": 9, \"formula\": \"2d8\" },",
@@ -155,13 +163,15 @@ function buildDefaultAiPrompt(options = {}) {
     "      \"name\": \"Mace\",",
     "      \"lookup\": \"Mace\",",
     "      \"quantity\": 1,",
+    "      \"wealthValueCp\": 0,",
     "      \"description\": \"Why this NPC carries it, if context is useful.\"",
     "    },",
     "    {",
-    "      \"name\": \"Worn coin purse\",",
+    "      \"name\": \"Portable valuable\",",
     "      \"lookup\": null,",
     "      \"quantity\": 1,",
-    "      \"description\": \"Contains a believable amount and mix of coins for this NPC's wealth.\"",
+    "      \"wealthValueCp\": 250,",
+    "      \"description\": \"A personal valuable counted against this NPC's portable wealth budget.\"",
     "    }",
     "  ]",
     "}",
@@ -170,6 +180,7 @@ function buildDefaultAiPrompt(options = {}) {
     "- name: required display name, 1–120 characters.",
     "- lookup: exact English canonical D&D 5e equipment name when the item should resolve to standard compendium content; otherwise null.",
     "- quantity: integer from 1 to 1000.",
+    "- wealthValueCp: non-negative integer. Use 0 for ordinary role/combat gear; use the item's share of portable personal wealth for valuables counted against the fixed wealth budget.",
     "- description: short roleplay context. It may be empty for obvious canonical equipment.",
     "- Do not put raw Foundry Item system data in items; the importer resolves canonical items and safely creates fallback roleplay items.",
     "",

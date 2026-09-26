@@ -24,10 +24,12 @@ import {
   TELLS,
   TIERS,
   WEALTH_LEVELS,
+  WEALTH_DISTRIBUTIONS,
   formatChallengeRating
 } from "./data.mjs";
 import { DEFAULT_OPTIONS, TIER_STYLES } from "../constants.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
+import { buildWealthBundle, formatCopperValue } from "./wealth.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 const GENDER_TUPLE = Object.freeze(["male", "female"]);
@@ -520,6 +522,8 @@ function buildBiography(blueprint) {
     `<p><strong>Race:</strong> ${escapeHtml(blueprint.race)}</p>`,
     `<p><strong>Gender:</strong> ${escapeHtml(blueprint.gender === "female" ? "Female" : "Male")}</p>`,
     `<p><strong>Wealth:</strong> ${escapeHtml(blueprint.wealth)}</p>`,
+    `<p><strong>Wealth distribution:</strong> ${escapeHtml(blueprint.wealthDistribution)}</p>`,
+    `<p><strong>Portable wealth:</strong> ${escapeHtml(formatCopperValue(blueprint.wealthBudgetCp))} total; ${escapeHtml(formatCopperValue(blueprint.wealthCashCp))} carried as coin.</p>`,
     `<p><strong>Combat readiness:</strong> ${escapeHtml(blueprint.combatReadiness)}</p>`,
     `<p><strong>Weapon variety:</strong> ${escapeHtml(blueprint.weaponVariety)}</p>`,
     `<p><strong>Habitat:</strong> ${escapeHtml(blueprint.habitat)}</p>`,
@@ -554,6 +558,8 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
   const styles = getNamingStyles();
   const style = styles[options.namingStyle] ?? styles.central ?? NAME_STYLES.central;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
+  const wealthBundle = buildWealthBundle({ wealth: options.wealth, distribution: options.wealthDistribution });
+  const wealthDistribution = WEALTH_DISTRIBUTIONS[options.wealthDistribution] ?? WEALTH_DISTRIBUTIONS.mixed;
   const scores = buildAbilityScores(role, tier, random);
   const hitDie = race.size === "sm" ? 6 : 8;
   const hp = buildHitPoints(role, tier, scores.con, hitDie);
@@ -573,6 +579,11 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
     species: race.label,
     gender,
     wealth: wealth.label,
+    wealthDistribution: wealthDistribution.label,
+    wealthBudgetCp: wealthBundle.budgetCp,
+    wealthCashCp: wealthBundle.cashCp,
+    currency: wealthBundle.currency,
+    wealthItems: wealthBundle.valuables,
     combatReadiness: (COMBAT_READINESS[options.combatReadiness] ?? COMBAT_READINESS.standard).label,
     weaponVariety: (WEAPON_VARIETY[options.weaponVariety] ?? WEAPON_VARIETY.mixed).label,
     generationSeed: String(options.generationSeed ?? options.seed ?? ""),
@@ -674,6 +685,7 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
     img: "icons/svg/mystery-man.svg",
     system: {
       abilities,
+      currency: { ...(blueprint.currency ?? { pp: 0, gp: 0, ep: 0, sp: 0, cp: 1 }) },
       attributes: {
         ac: {
           calc: "flat",
@@ -706,24 +718,44 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         size: blueprint.size
       }
     },
-    items: (blueprint.combatItems ?? []).map((item) => ({
-      name: item.name,
-      type: "loot",
-      img: "icons/svg/item-bag.svg",
-      system: {
-        quantity: 1,
-        description: {
-          value: `<p>${escapeHtml(`Role-appropriate ${item.kind} generated for ${blueprint.combatReadiness} combat readiness.`)}</p>`,
-          chat: ""
+    items: [
+      ...(blueprint.combatItems ?? []).map((item) => ({
+        name: item.name,
+        type: "loot",
+        img: "icons/svg/item-bag.svg",
+        system: {
+          quantity: 1,
+          description: {
+            value: `<p>${escapeHtml(`Role-appropriate ${item.kind} generated for ${blueprint.combatReadiness} combat readiness.`)}</p>`,
+            chat: ""
+          }
+        },
+        flags: {
+          "runyth-npc-button": {
+            generated: true,
+            canonicalLookup: item.lookup ?? ""
+          }
         }
-      },
-      flags: {
-        "runyth-npc-button": {
-          generated: true,
-          canonicalLookup: item.lookup ?? ""
+      })),
+      ...(blueprint.wealthItems ?? []).map((item) => ({
+        name: item.name,
+        type: "loot",
+        img: "icons/svg/item-bag.svg",
+        system: {
+          quantity: 1,
+          description: {
+            value: `<p>${escapeHtml(`Portable personal wealth worth ${formatCopperValue(item.valueCp)}.`)}</p>`,
+            chat: ""
+          }
+        },
+        flags: {
+          "runyth-npc-button": {
+            generated: true,
+            wealthValueCp: item.valueCp
+          }
         }
-      }
-    })),
+      }))
+    ],
     flags: {
       "runyth-npc-button": {
         generated: true,
@@ -731,6 +763,9 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         roleVariant: blueprint.roleVariant,
         tier: blueprint.tier,
         wealth: blueprint.wealth,
+        wealthDistribution: blueprint.wealthDistribution,
+        wealthBudgetCp: blueprint.wealthBudgetCp,
+        wealthCashCp: blueprint.wealthCashCp,
         combatReadiness: blueprint.combatReadiness,
         weaponVariety: blueprint.weaponVariety,
         generationSeed: blueprint.generationSeed,

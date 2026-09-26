@@ -1,5 +1,5 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
-import { COMBAT_READINESS, GROUP_TYPES, HABITATS, NAME_STYLES, RACES, RACE_COMPOSITION_MODES, ROLE_COMPOSITION_MODES, WEAPON_VARIETY } from "../generator/data.mjs";
+import { COMBAT_READINESS, GROUP_TYPES, HABITATS, NAME_STYLES, RACES, RACE_COMPOSITION_MODES, ROLE_COMPOSITION_MODES, WEALTH_DISTRIBUTIONS, WEAPON_VARIETY } from "../generator/data.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 
@@ -76,6 +76,7 @@ function helpContent() {
     [localize(tierStyle === TIER_STYLES.CR ? "ui.challengeRating" : "ui.tier"), tierStyleText],
     [localize("ui.race"), localize("help.race")],
     [localize("ui.wealth"), localize("help.wealth")],
+    [localize("ui.wealthDistribution"), localize("help.wealthDistribution")],
     [localize("ui.seed"), localize("help.seed")],
     [localize("ui.destinationFolder"), localize("help.destination")]
   ].map(([setting, behavior]) => `
@@ -93,6 +94,9 @@ function helpContent() {
   const weaponRules = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyModes.${id}`)]));
   const weaponExamples = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyExamples.${id}`)]));
   const weaponRows = detailRows(WEAPON_VARIETY, weaponRules, weaponExamples);
+  const wealthDistributionRules = Object.fromEntries(Object.keys(WEALTH_DISTRIBUTIONS).map((id) => [id, localize(`help.wealthDistributionModes.${id}`)]));
+  const wealthDistributionExamples = Object.fromEntries(Object.keys(WEALTH_DISTRIBUTIONS).map((id) => [id, localize(`help.wealthDistributionExamples.${id}`)]));
+  const wealthDistributionRows = detailRows(WEALTH_DISTRIBUTIONS, wealthDistributionRules, wealthDistributionExamples);
   const previewRows = ["normal", "mismatch", "arbitrary", "oversized"].map((id) => `
     <tr>
       <th scope="row">${escapeAttribute(localize(`help.importPreviewCases.${id}.case`))}</th>
@@ -162,6 +166,11 @@ function helpContent() {
         ${helpTable([localize("help.mixMode"), localize("help.mixRule"), localize("help.mixExample")], roleMixRows)}
         <p>${escapeAttribute(localize("help.roleMixWeights"))}</p>
         <p class="runyth-npc-button__note">${escapeAttribute(localize("help.mixRounding"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.wealthDistributionTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.wealthDistributionBody"))}</p>
+        ${helpTable([localize("help.mode"), localize("help.effect"), localize("help.example")], wealthDistributionRows)}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.combatReadinessTitle"))}</h2>

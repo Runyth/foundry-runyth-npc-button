@@ -53,7 +53,7 @@ test("cosmetic feature release preserves dashboard action and field contracts", 
   for (const pickerName of ["groupType", "habitat", "role", "raceSelection", "namingStyle", "groupRaces", "groupRoles", "destinationSelection"]) {
     assert.ok(dashboard.includes(`name: "${pickerName}"`), `missing picker field contract: ${pickerName}`);
   }
-  for (const chipName of ["wealth", "combatReadiness", "weaponVariety", "raceComposition", "roleComposition"]) {
+  for (const chipName of ["wealth", "wealthDistribution", "combatReadiness", "weaponVariety", "raceComposition", "roleComposition"]) {
     assert.ok(dashboard.includes(`choiceChips("${chipName}"`), `missing choice field contract: ${chipName}`);
   }
   for (const directName of ["count", "openLastActor", "previewImport", "aiPayload"]) {
@@ -111,7 +111,7 @@ test("help presents composition and comparable controls as structured tables", a
     assert.equal(typeof english.weaponVarietyExamples[mode], "string");
   }
 
-  for (const tableRows of ["generationRows", "raceMixRows", "roleMixRows", "combatRows", "weaponRows", "filterRows", "previewRows", "aiRows"]) {
+  for (const tableRows of ["generationRows", "raceMixRows", "roleMixRows", "wealthDistributionRows", "combatRows", "weaponRows", "filterRows", "previewRows", "aiRows"]) {
     assert.match(helpSource, new RegExp(`\\b${tableRows}\\b`));
   }
   assert.match(helpSource, /runyth-npc-button__help-table-wrap/);

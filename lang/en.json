@@ -149,7 +149,9 @@
       "distributeEvenly": "Distribute evenly",
       "noSelectedRaces": "No Races are selected.",
       "raceExactAssignedValid": "Assigned {assigned} of {target}. Exact total is valid.",
-      "raceExactAssignedInvalid": "Assigned {assigned} of {target}. Remaining: {remaining}. Adjust counts or distribute evenly."
+      "raceExactAssignedInvalid": "Assigned {assigned} of {target}. Remaining: {remaining}. Adjust counts or distribute evenly.",
+      "wealthDistribution": "Wealth distribution",
+      "wealthDistributionHint": "Controls how the fixed portable-wealth budget is split between actual coins and carried valuables. The total value does not change."
     },
     "help": {
       "title": "NPC Button Help",
@@ -319,6 +321,23 @@
           "control": "Filter profiles",
           "behavior": "Export or import the complete filter configuration as versioned JSON so a ready-configured setup can be reused or transferred."
         }
+      },
+      "wealthDistribution": "Changes only the split of the fixed portable-wealth budget between system currency and valuables; it never changes the total budget.",
+      "wealthDistributionTitle": "Wealth distribution",
+      "wealthDistributionBody": "Every locally generated NPC now carries real D&D 5e currency. Wealth sets a fixed portable-wealth budget; this control only redistributes that same value between coins and portable valuables. Role/combat equipment remains separate.",
+      "wealthDistributionModes": {
+        "itemsHeavy": "About 20% as coins; the rest becomes several valuables.",
+        "mixed": "About half as coins and half as portable valuables.",
+        "coinsHeavy": "About 75% as coins; only a small remainder becomes valuables.",
+        "fewHighValue": "A modest coin reserve with the item share concentrated into one or two valuable possessions.",
+        "manySmallValue": "A modest coin reserve with the item share spread across several lower-value possessions."
+      },
+      "wealthDistributionExamples": {
+        "itemsHeavy": "Average wealth: 5 gp-equivalent total → about 1 gp in coins + 4 gp in valuables.",
+        "mixed": "Average wealth: 5 gp-equivalent total → about 2.5 gp in coins + 2.5 gp in valuables.",
+        "coinsHeavy": "Average wealth: 5 gp-equivalent total → about 3.75 gp in coins + 1.25 gp in valuables.",
+        "fewHighValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + one concentrated 3.25 gp valuable.",
+        "manySmallValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + several items totaling 3.25 gp."
       }
     },
     "notifications": {
@@ -652,6 +671,13 @@
       "unavailable": "Clipboard access is still unavailable. The text is selected for manual copying.",
       "portraitPrompt": "Portrait prompt",
       "filterProfile": "Filter profile JSON"
+    },
+    "wealthDistribution": {
+      "itemsHeavy": "Item-heavy",
+      "mixed": "Mixed",
+      "coinsHeavy": "Coin-heavy",
+      "fewHighValue": "Few high-value items",
+      "manySmallValue": "Many small-value items"
     }
   }
 }

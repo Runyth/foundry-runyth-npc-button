@@ -2,6 +2,22 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.3.1 - 2026-09-26
+
+### Fixed
+
+- Locally generated NPCs now populate the native D&D 5e `system.currency` fields instead of carrying zero sheet currency.
+- AI-import normalization now preserves real currency data and supplies a minimal nonzero legacy fallback when an older payload omits currency entirely.
+- AI prompts now explicitly require real Actor currency rather than representing all carried money only as prose or a generic purse item.
+
+### Added
+
+- Wealth distribution control: Item-heavy, Mixed, Coin-heavy, Few high-value items, and Many small-value items.
+- Fixed portable-wealth budgets per Wealth tier, split deterministically between coins and portable valuables without changing the total value.
+- Portable valuables carry exact copper-equivalent value metadata, while role/combat gear remains outside the distribution budget and is unaffected by the split.
+- Help-table coverage explaining each wealth-distribution mode and concrete Average-wealth examples.
+- Regression coverage proving every distribution carries nonzero coin and preserves the same total wealth budget.
+
 ## 0.3.0 - 2026-09-26
 
 ### Added

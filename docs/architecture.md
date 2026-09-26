@@ -128,3 +128,7 @@ AI import treats the parsed JSON root as the single source of truth for actual N
 Import validation is split into two stages. Preflight validates root shape and each Actor contract with a hard bounded preview ceiling, but does not reject solely because the array length differs from dashboard Count. A centralized import plan then decides whether preview is requested, automatically required by a count mismatch, or automatically required because the configured maximum batch would otherwise be exceeded.
 
 By default, a count mismatch is a review event: preview opens with requested/actual counts, every Actor starts selected, and the user can deselect any subset before final validation. The optional world setting for arbitrary import counts suppresses count-mismatch review but never bypasses maximum batch size, root-shape validation, or Actor validation.
+
+## Portable wealth
+
+Local generation uses `scripts/generator/wealth.mjs` to assign a fixed copper-equivalent portable-wealth budget by Wealth tier. `WEALTH_DISTRIBUTIONS` changes only the split between native Actor `system.currency` and generated portable valuables. The invariant is `currencyValueCp(system.currency) + sum(wealthValueCp) === wealthBudgetCp`. Role/combat equipment is independent of this budget, so distribution changes cannot inflate combat loadouts.

@@ -149,7 +149,9 @@
       "distributeEvenly": "Gleichmäßig verteilen",
       "noSelectedRaces": "Keine Völker ausgewählt.",
       "raceExactAssignedValid": "{assigned} von {target} zugewiesen. Die exakte Summe ist gültig.",
-      "raceExactAssignedInvalid": "{assigned} von {target} zugewiesen. Verbleibend: {remaining}. Zahlen anpassen oder gleichmäßig verteilen."
+      "raceExactAssignedInvalid": "{assigned} von {target} zugewiesen. Verbleibend: {remaining}. Zahlen anpassen oder gleichmäßig verteilen.",
+      "wealthDistribution": "Vermögensverteilung",
+      "wealthDistributionHint": "Bestimmt, wie das feste tragbare Vermögen zwischen echten Münzen und mitgeführten Wertgegenständen verteilt wird. Der Gesamtwert bleibt gleich."
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -319,6 +321,23 @@
           "control": "Filterprofile",
           "behavior": "Die vollständige Filterkonfiguration als versioniertes JSON exportieren oder importieren, um eine fertig konfigurierte Einrichtung wiederzuverwenden oder zu übertragen."
         }
+      },
+      "wealthDistribution": "Ändert nur die Aufteilung des festen tragbaren Vermögens zwischen Systemwährung und Wertgegenständen; der Gesamtwert bleibt unverändert.",
+      "wealthDistributionTitle": "Vermögensverteilung",
+      "wealthDistributionBody": "Jeder lokal erzeugte NSC trägt nun echte D&D-5e-Währung. Die Vermögensstufe setzt ein festes tragbares Vermögensbudget; diese Auswahl verteilt nur denselben Wert zwischen Münzen und tragbaren Wertgegenständen. Rollen-/Kampfausrüstung bleibt davon getrennt.",
+      "wealthDistributionModes": {
+        "itemsHeavy": "Etwa 20 % als Münzen; der Rest wird auf mehrere Wertgegenstände verteilt.",
+        "mixed": "Etwa die Hälfte als Münzen und die Hälfte als tragbare Wertgegenstände.",
+        "coinsHeavy": "Etwa 75 % als Münzen; nur ein kleiner Rest wird zu Wertgegenständen.",
+        "fewHighValue": "Eine moderate Münzreserve; der Gegenstandsanteil konzentriert sich auf ein oder zwei wertvolle Besitztümer.",
+        "manySmallValue": "Eine moderate Münzreserve; der Gegenstandsanteil verteilt sich auf mehrere kleinere Wertgegenstände."
+      },
+      "wealthDistributionExamples": {
+        "itemsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 1 GM in Münzen + 4 GM in Wertgegenständen.",
+        "mixed": "Durchschnittlich: 5 GM Gesamtwert → etwa 2,5 GM in Münzen + 2,5 GM in Wertgegenständen.",
+        "coinsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 3,75 GM in Münzen + 1,25 GM in Wertgegenständen.",
+        "fewHighValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + ein konzentrierter Wertgegenstand von 3,25 GM.",
+        "manySmallValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + mehrere Gegenstände mit zusammen 3,25 GM."
       }
     },
     "notifications": {
@@ -652,6 +671,13 @@
       "unavailable": "Zwischenablagezugriff ist weiterhin nicht verfügbar. Der Text ist zum manuellen Kopieren ausgewählt.",
       "portraitPrompt": "Porträt-Prompt",
       "filterProfile": "Filterprofil-JSON"
+    },
+    "wealthDistribution": {
+      "itemsHeavy": "Gegenstandsbetont",
+      "mixed": "Gemischt",
+      "coinsHeavy": "Münzbetont",
+      "fewHighValue": "Wenige wertvolle Gegenstände",
+      "manySmallValue": "Viele kleinere Wertgegenstände"
     }
   }
 }

@@ -564,6 +564,14 @@ export const WEALTH_LEVELS = Object.freeze({
   elite: { label: "Elite", labelKey: "wealth.elite", prompt: "elite: expensive or high-status possessions, substantial readily carried funds, and premium-quality personal gear" }
 });
 
+export const WEALTH_DISTRIBUTIONS = Object.freeze({
+  itemsHeavy: { label: "Item-heavy", labelKey: "wealthDistribution.itemsHeavy", cashShare: 0.2, itemCount: 3, prompt: "keep only about 20% of portable wealth as coins and put the rest into several carried valuables or possessions" },
+  mixed: { label: "Mixed", labelKey: "wealthDistribution.mixed", cashShare: 0.5, itemCount: 2, prompt: "split portable wealth roughly evenly between carried coins and portable possessions" },
+  coinsHeavy: { label: "Coin-heavy", labelKey: "wealthDistribution.coinsHeavy", cashShare: 0.75, itemCount: 1, prompt: "keep about 75% of portable wealth as coins and the remainder in one or two carried valuables" },
+  fewHighValue: { label: "Few high-value items", labelKey: "wealthDistribution.fewHighValue", cashShare: 0.35, itemCount: 1, prompt: "keep a modest coin reserve and concentrate the remaining portable wealth into one or two comparatively valuable possessions" },
+  manySmallValue: { label: "Many small-value items", labelKey: "wealthDistribution.manySmallValue", cashShare: 0.35, itemCount: 5, prompt: "keep a modest coin reserve and spread the remaining portable wealth across several lower-value possessions" }
+});
+
 export const IMPRESSIONS = Object.freeze([
   "measured and observant",
   "plain-spoken and difficult to distract",

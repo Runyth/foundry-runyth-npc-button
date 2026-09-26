@@ -120,6 +120,7 @@ export async function saveLastOptions(options) {
     species: options.species,
     namingStyle: options.namingStyle,
     wealth: options.wealth,
+    wealthDistribution: options.wealthDistribution,
     combatReadiness: options.combatReadiness,
     weaponVariety: options.weaponVariety,
     genderComposition: options.genderComposition,

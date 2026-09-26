@@ -98,6 +98,19 @@ export function parseNpcJsonPayload(text) {
   }
 }
 
+function normalizeCurrency(value, actorIndex) {
+  const path = `Actor ${actorIndex + 1}.system.currency`;
+  if (value === undefined || value === null) return { pp: 0, gp: 0, ep: 0, sp: 0, cp: 1 };
+  const source = objectAt(value, path);
+  const currency = {};
+  for (const denomination of ["pp", "gp", "ep", "sp", "cp"]) {
+    currency[denomination] = integer(source[denomination] ?? 0, `${path}.${denomination}`, { min: 0, max: 1000000 });
+  }
+  const totalCp = (currency.pp * 1000) + (currency.gp * 100) + (currency.ep * 50) + (currency.sp * 10) + currency.cp;
+  if (totalCp < 1) fail(`${path} must contain at least 1 cp-equivalent of carried coin.`);
+  return currency;
+}
+
 function normalizeItemRequest(source, actorIndex, itemIndex) {
   const path = `Actor ${actorIndex + 1}.items[${itemIndex}]`;
   const item = objectAt(source, path);
@@ -107,6 +120,7 @@ function normalizeItemRequest(source, actorIndex, itemIndex) {
   const rawLookup = item.lookup;
   const lookup = rawLookup === null || rawLookup === undefined ? "" : String(rawLookup).trim();
   const quantity = integer(item.quantity ?? 1, `${path}.quantity`, { min: 1, max: 1000 });
+  const wealthValueCp = integer(item.wealthValueCp ?? 0, `${path}.wealthValueCp`, { min: 0, max: 100000000 });
   const description = sanitizeBiographyHtml(item.description ?? "");
 
   return {
@@ -123,7 +137,8 @@ function normalizeItemRequest(source, actorIndex, itemIndex) {
     flags: {
       [MODULE_ID]: {
         aiImported: true,
-        canonicalLookup: lookup.slice(0, 120)
+        canonicalLookup: lookup.slice(0, 120),
+        wealthValueCp
       }
     }
   };
@@ -182,6 +197,7 @@ function normalizeActor(source, index) {
     img: DEFAULT_ACTOR_IMAGE,
     system: {
       abilities,
+      currency: normalizeCurrency(system.currency, index),
       attributes: {
         ac: {
           calc: "flat",

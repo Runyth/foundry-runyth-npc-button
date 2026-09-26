@@ -27,6 +27,7 @@ import {
   ROLE_VARIANTS,
   TIERS,
   WEALTH_LEVELS,
+  WEALTH_DISTRIBUTIONS,
   WEAPON_VARIETY,
   formatChallengeRating
 } from "../generator/data.mjs";
@@ -466,6 +467,12 @@ function dashboardContent(options, tierStyle) {
         </fieldset>
 
         <fieldset class="runyth-npc-button__field runyth-npc-button__field--full">
+          <legend>${escapeAttribute(localize("ui.wealthDistribution"))}</legend>
+          <small>${escapeAttribute(localize("ui.wealthDistributionHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("wealthDistribution", WEALTH_DISTRIBUTIONS, options.wealthDistribution ?? DEFAULT_OPTIONS.wealthDistribution)}</div>
+        </fieldset>
+
+        <fieldset class="runyth-npc-button__field runyth-npc-button__field--full">
           <legend>${escapeAttribute(localize("ui.combatReadiness"))}</legend>
           <small>${escapeAttribute(localize("ui.combatReadinessHint"))}</small>
           <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("combatReadiness", COMBAT_READINESS, options.combatReadiness ?? DEFAULT_OPTIONS.combatReadiness)}</div>
@@ -762,6 +769,7 @@ function readForm(form) {
     species: race.species,
     namingStyle: namedFormValue(form, "namingStyle", DEFAULT_OPTIONS.namingStyle),
     wealth: namedFormValue(form, "wealth", DEFAULT_OPTIONS.wealth),
+    wealthDistribution: namedFormValue(form, "wealthDistribution", DEFAULT_OPTIONS.wealthDistribution),
     combatReadiness: namedFormValue(form, "combatReadiness", DEFAULT_OPTIONS.combatReadiness),
     weaponVariety: namedFormValue(form, "weaponVariety", DEFAULT_OPTIONS.weaponVariety),
     genderComposition: namedFormValue(form, "genderComposition", DEFAULT_OPTIONS.genderComposition),
@@ -808,6 +816,7 @@ function promptOptions(options) {
   const weaponVariety = WEAPON_VARIETY[options.weaponVariety] ?? WEAPON_VARIETY.mixed;
   const combatProfile = role.combatProfile ?? ROLE_COMBAT_PROFILES[options.role] ?? ROLE_COMBAT_PROFILES.civilian;
   const wealth = WEALTH_LEVELS[options.wealth] ?? WEALTH_LEVELS.average;
+  const wealthDistribution = WEALTH_DISTRIBUTIONS[options.wealthDistribution] ?? WEALTH_DISTRIBUTIONS.mixed;
   const tierProfile = resolveTierProfile(options);
   const habitatValue = String(options.habitat ?? DEFAULT_OPTIONS.habitat);
   const habitat = habitatValue.startsWith("custom:")
@@ -843,6 +852,9 @@ function promptOptions(options) {
     raceLabel: race,
     wealthLabel: configuredLabel(wealth),
     wealthPrompt: wealth.prompt,
+    wealthDistribution: options.wealthDistribution ?? DEFAULT_OPTIONS.wealthDistribution,
+    wealthDistributionLabel: configuredLabel(wealthDistribution),
+    wealthDistributionPrompt: wealthDistribution.prompt,
     namingStyleLabel: configuredLabel(style),
     namingStyleGuidance: style.aiGuidance,
     namingExamples: style.examples,

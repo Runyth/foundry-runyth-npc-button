@@ -247,3 +247,43 @@ test("AI prompt carries exact batch gender composition", () => {
   assert.match(prompt, /exactly 8 male and 2 female NPCs/);
   assert.match(prompt, /Gender, Appearance, Speech/);
 });
+
+test("AI prompt requires real currency and keeps wealth distribution value-neutral", () => {
+  const prompt = buildAiPrompt({
+    count: 2,
+    wealth: "average",
+    wealthLabel: "Average",
+    wealthDistribution: "coinsHeavy",
+    wealthDistributionLabel: "Coin-heavy",
+    wealthDistributionPrompt: "keep about 75% as coins"
+  });
+  assert.match(prompt, /system\.currency for actual carried coins/);
+  assert.match(prompt, /exactly 500 cp-equivalent per NPC/);
+  assert.match(prompt, /Wealth distribution: Coin-heavy/);
+  assert.match(prompt, /must never change the total portable-wealth budget/);
+  assert.match(prompt, /"currency": \{ "pp": 0, "gp": 2/);
+  assert.match(prompt, /wealthValueCp/);
+});
+
+test("AI normalization preserves explicit dnd5e currency and wealth-value metadata", () => {
+  const source = actorSource();
+  source.system.currency = { pp: 0, gp: 1, ep: 0, sp: 2, cp: 3 };
+  source.items[1].wealthValueCp = 377;
+  const [actor] = normalizeNpcJsonPayload([source], { expectedCount: 1 });
+  assert.deepEqual(actor.system.currency, { pp: 0, gp: 1, ep: 0, sp: 2, cp: 3 });
+  assert.equal(actor.items[1].flags["runyth-npc-button"].wealthValueCp, 377);
+});
+
+test("AI normalization gives legacy payloads a nonzero coin fallback", () => {
+  const [actor] = normalizeNpcJsonPayload([actorSource()], { expectedCount: 1 });
+  assert.deepEqual(actor.system.currency, { pp: 0, gp: 0, ep: 0, sp: 0, cp: 1 });
+});
+
+test("AI normalization rejects an explicitly empty currency purse", () => {
+  const source = actorSource();
+  source.system.currency = { pp: 0, gp: 0, ep: 0, sp: 0, cp: 0 };
+  assert.throws(
+    () => normalizeNpcJsonPayload([source], { expectedCount: 1 }),
+    /at least 1 cp-equivalent/
+  );
+});
