@@ -36,7 +36,7 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
 - Portable world-level dashboard filter profiles: each major picker catalog has a scalable searchable multi-select list with all items included by default; deselect individual entries to exclude them. Advanced string/regex rules remain available, and profiles can be exported/imported as versioned JSON files or through the clipboard.
 - Modular English and German localization.
 - Optional concise debug logging, disabled by default.
-- Public API for macros and future integrations.
+- Public API for macros and future integrations, including catalog registration plus a prompt-pipeline API that can inspect, extend, or replace generated AI prompts.
 
 ### Interface and performance
 
@@ -91,6 +91,28 @@ Every NPC remains mechanically combatable, but carried combat gear is role-relat
 ### Filter profiles
 
 Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard string filters**. Each filter category first presents a searchable, scrollable, virtualized multi-select list. All available entries are selected by default; simply deselect individual Roles, Races, Naming styles, Habitats, Group types, or Actor folders to remove them from the matching dashboard picker. The older allow/deny exact, contains, prefix, suffix, and regular-expression rules remain available under **Advanced string and regex rules**. The filter window can export/import a versioned JSON profile as a file, copy it to the clipboard, or import one from the clipboard.
+
+
+### Prompt extension API
+
+Complementary modules can integrate through `game.modules.get("runyth-npc-button").api`. The catalog-registration API remains available for Races, Roles, Naming styles, Habitats, and Group types.
+
+This release also adds a prompt-pipeline API aimed at AI workflows:
+
+- `buildAiPrompt(options)` builds the current strict JSON-generation prompt.
+- `buildPortraitPromptFromActor(actor)` builds the current portrait/image prompt.
+- `registerPromptExtension(id, config)` registers a prompt extension layer.
+- `unregisterPromptExtension(id)` removes a registered layer.
+- `getPromptExtensions(target?)` lists registered prompt layers.
+- `resolvePromptContext(target, context)` resolves context transforms deterministically.
+- `resolvePromptComponents(target, defaults, context)` resolves structured prompt components such as portrait style blocks.
+
+Prompt extensions support two complementary integration styles:
+
+1. **Structured component overrides** for the built-in portrait/image prompt, e.g. replacing or appending the default style, background, or negative-prompt fragments.
+2. **Full prompt composition or post-processing** for either the `portrait` or `npcJson` target, allowing a complementary module to replace the final prompt entirely or transform the default output.
+
+The built-in portrait prompt now defaults to a grounded semi-realistic adult-anime look inspired by rugged low-fantasy character illustrations: muted earth tones, painterly shading, crisp linework, worn textiles/leather/rope detail, and a clean isolated studio-style background.
 
 ### AI payload shape
 

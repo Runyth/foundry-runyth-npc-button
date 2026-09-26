@@ -32,7 +32,8 @@ test("portrait prompt builder creates a terse single-image prompt", () => {
   assert.match(prompt, /Mara Reed, adult Human Scout/);
   assert.match(prompt, /patched coat/);
   assert.match(prompt, /Shortbow/);
-  assert.match(prompt, /adult anime style/);
+  assert.match(prompt, /semi-realistic adult anime illustration/);
+  assert.match(prompt, /muted earth-tone palette/);
   assert.match(prompt, /no extra characters/);
 });
 

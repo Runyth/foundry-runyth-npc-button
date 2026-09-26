@@ -2,6 +2,23 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.3.0 - 2026-09-26
+
+### Added
+
+- New prompt-pipeline extension API for complementary modules through `game.modules.get("runyth-npc-button").api`.
+- Prompt targets for `portrait` and `npcJson`, with deterministic priority ordering and registration metadata.
+- Structured portrait-prompt component resolution so complementary modules can replace, prepend, or append output/style/background/negative fragments instead of doing fragile string surgery.
+- Full prompt composition and post-processing hooks so a complementary module can replace or transform generated AI prompts completely when needed.
+- Regression coverage for prompt-extension registration, context transforms, component merging, full composer overrides, and text post-processing.
+- New extension API documentation in `docs/extension-api.md`.
+
+### Changed
+
+- Re-evaluated and expanded the public API to keep complementary-module integrations reliable and current.
+- `module.api` now also exposes `buildAiPrompt`, `registerPromptExtension`, `unregisterPromptExtension`, `getPromptExtensions`, `resolvePromptContext`, `resolvePromptComponents`, and `clearPromptExtensionRegistry`.
+- Default portrait/image prompts now use a grounded semi-realistic adult-anime style inspired by rugged low-fantasy full-body character illustrations: muted earth tones, painterly shading, crisp linework, worn textile/leather/rope detail, and clean isolated presentation.
+
 ## 0.2.5 - 2026-09-25
 
 - Added Exact numbers Race composition with the existing scalable Race multi-picker plus a virtualized searchable quota editor, live total validation, and one-click even distribution.

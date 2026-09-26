@@ -1,10 +1,12 @@
 import { MODULE_ID, MODULE_TITLE, MODULE_VERSION } from "./constants.mjs";
 import { buildPortraitPromptFromActor } from "./ai/portrait-prompt-builder.mjs";
+import { buildAiPrompt } from "./ai/prompt-builder.mjs";
 import { generateNpcBatch, generateNpcBlueprint } from "./generator/npc-generator.mjs";
 import { logger } from "./logger.mjs";
 import { registerSettings } from "./settings.mjs";
 import { createNpcActors } from "./services/actor-service.mjs";
 import { injectActorDirectoryButton } from "./ui/actor-directory.mjs";
+import { clearPromptExtensionRegistry, getPromptExtensions, registerPromptExtension, resolvePromptComponents, resolvePromptContext, unregisterPromptExtension } from "./extensions/prompt-api.mjs";
 import { registerPortraitPromptHooks } from "./ui/actor-portrait-button.mjs";
 import { openNpcDashboard, openNpcDialog } from "./ui/npc-dialog.mjs";
 import {
@@ -39,7 +41,14 @@ Hooks.once("init", () => {
       generateNpcBlueprint,
       openNpcDashboard,
       openNpcDialog,
+      buildAiPrompt,
       buildPortraitPromptFromActor,
+      registerPromptExtension,
+      unregisterPromptExtension,
+      getPromptExtensions,
+      resolvePromptContext,
+      resolvePromptComponents,
+      clearPromptExtensionRegistry,
       registerRace,
       unregisterRace,
       registerRole,

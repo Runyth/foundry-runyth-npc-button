@@ -1,3 +1,5 @@
+import { composePrompt } from "../extensions/prompt-api.mjs";
+
 const ABILITY_KEYS = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 
 function clean(value, fallback = "") {
@@ -10,7 +12,7 @@ function list(values, fallback = "none") {
   return values.map((value) => clean(value)).filter(Boolean).join(", ") || fallback;
 }
 
-export function buildAiPrompt(options = {}) {
+function buildDefaultAiPrompt(options = {}) {
   const count = Math.max(1, Math.trunc(Number(options.count) || 1));
   const grouped = clean(options.groupType, "independent") !== "independent" && clean(options.groupTypeLabel, "Independent NPCs") !== "Independent NPCs";
   const payloadShape = `exactly one JSON array containing ${count} Actor object${count === 1 ? "" : "s"}`;
@@ -174,4 +176,12 @@ export function buildAiPrompt(options = {}) {
     `Final validation before replying: JSON.parse must succeed; the root JSON value inside the code block must be an array; it must contain exactly ${count} Actor object${count === 1 ? "" : "s"}; every Actor must have an items array and all required biography sections, including Quirk, Rumours, Secrets, and Relationships.`,
     "Output only one markdown code block labeled json, with no prose outside it."
   ].filter(Boolean).join("\n");
+}
+
+
+export function buildAiPrompt(options = {}) {
+  return composePrompt("npcJson", {
+    context: options,
+    buildDefault: (resolvedOptions) => buildDefaultAiPrompt(resolvedOptions)
+  });
 }

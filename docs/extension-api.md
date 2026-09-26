@@ -1,0 +1,153 @@
+# Extension API
+
+Runyth NPC Button exposes a public integration surface at:
+
+`game.modules.get("runyth-npc-button").api`
+
+The API is intended for complementary Foundry modules, macros, and local tooling.
+
+## Stable catalog registration API
+
+These functions remain available for extending dashboard catalogs:
+
+- `registerRace(id, data)` / `unregisterRace(id)`
+- `registerRole(id, data)` / `unregisterRole(id)`
+- `registerNamingStyle(id, data)` / `unregisterNamingStyle(id)`
+- `registerHabitat(id, data)` / `unregisterHabitat(id)`
+- `registerGroupType(id, data)` / `unregisterGroupType(id)`
+- `getRaces()` / `getRoles()` / `getNamingStyles()` / `getHabitats()` / `getGroupTypes()` / `getCatalogGroups()`
+
+## Prompt pipeline API
+
+This feature release adds a prompt-pipeline API so complementary modules can customize AI prompts without monkey-patching internals.
+
+### Exposed helpers
+
+- `buildAiPrompt(options)`
+- `buildPortraitPromptFromActor(actor)`
+- `registerPromptExtension(id, config)`
+- `unregisterPromptExtension(id)`
+- `getPromptExtensions(target?)`
+- `resolvePromptContext(target, context)`
+- `resolvePromptComponents(target, defaults, context)`
+- `clearPromptExtensionRegistry()`
+
+### Prompt targets
+
+Current built-in prompt targets are:
+
+- `portrait` — single-NPC portrait / full-body image prompts.
+- `npcJson` — strict JSON generation prompts for AI-assisted NPC import.
+
+### Registration model
+
+Prompt extensions are registered by ID and ordered deterministically by:
+
+1. ascending numeric `priority`
+2. ascending `id`
+
+Later/higher-priority entries therefore win for replacement-oriented behavior.
+
+### Supported integration styles
+
+A prompt extension may provide one or both of the following patterns for a target.
+
+#### 1. Structured portrait-component customization
+
+Useful when a module wants to alter the default style or other reusable prompt fragments while keeping the built-in prompt builder.
+
+Supported portrait component groups are currently:
+
+- `output`
+- `subject`
+- `style`
+- `background`
+- `negative`
+
+Each target config may provide:
+
+- `components`
+- `mergeMode`
+- `transformComponents(components, context)`
+
+`mergeMode` may be:
+
+- `replace`
+- `prepend`
+- `append`
+- `clear`
+
+It may be supplied globally as a string or per component key as an object.
+
+#### 2. Full prompt composition / post-processing
+
+Useful when a module wants total control over a target's final prompt.
+
+Each target config may provide:
+
+- `transformContext(context)`
+- `compose({ context, components, buildDefault })`
+- `transformText(text, context, components)`
+
+`compose` fully replaces the final builder for the target where it is registered as the highest-priority composer. `transformText` runs after composition and can append or rewrite the output.
+
+## Example: replace portrait style defaults
+
+```js
+const api = game.modules.get("runyth-npc-button")?.api;
+
+api?.registerPromptExtension("my-portrait-style", {
+  priority: 50,
+  targets: {
+    portrait: {
+      mergeMode: {
+        style: "replace",
+        background: "replace"
+      },
+      components: {
+        style: [
+          "ink illustration",
+          "high-contrast monochrome",
+          "harsh rim lighting"
+        ],
+        background: [
+          "dark parchment background"
+        ]
+      }
+    }
+  }
+});
+```
+
+## Example: override the JSON AI prompt completely
+
+```js
+const api = game.modules.get("runyth-npc-button")?.api;
+
+api?.registerPromptExtension("my-json-format", {
+  priority: 100,
+  targets: {
+    npcJson: {
+      compose({ context }) {
+        return [
+          "Return one markdown code block labeled json.",
+          `Generate exactly ${context.count ?? 1} NPCs.`,
+          "Use my external schema here."
+        ].join("\n");
+      }
+    }
+  }
+});
+```
+
+## Default portrait aesthetic
+
+The built-in portrait prompt now defaults to a grounded semi-realistic adult-anime aesthetic inspired by rugged low-fantasy worker/traveler illustrations:
+
+- muted earth-tone palette
+- painterly shading
+- crisp linework
+- weathered textiles, leather, rope, and material detail
+- clean isolated studio-style presentation
+
+This is a style baseline only. Complementary modules can change it through the prompt-pipeline API.
