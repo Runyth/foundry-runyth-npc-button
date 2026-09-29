@@ -136,15 +136,15 @@ export function formatChallengeRating(value) {
 // uses the user's preferred "Race" wording while the rules source uses Species.
 export const RACES = Object.freeze({
   human: { label: "Human", labelKey: "races.human", group: "phb2024", size: "med", speed: 30 },
-  aasimar: { label: "Aasimar", labelKey: "races.aasimar", group: "phb2024", size: "med", speed: 30 },
-  dragonborn: { label: "Dragonborn", labelKey: "races.dragonborn", group: "phb2024", size: "med", speed: 30 },
-  dwarf: { label: "Dwarf", labelKey: "races.dwarf", group: "phb2024", size: "med", speed: 30 },
-  elf: { label: "Elf", labelKey: "races.elf", group: "phb2024", size: "med", speed: 30 },
-  gnome: { label: "Gnome", labelKey: "races.gnome", group: "phb2024", size: "sm", speed: 30 },
-  goliath: { label: "Goliath", labelKey: "races.goliath", group: "phb2024", size: "med", speed: 35 },
-  halfling: { label: "Halfling", labelKey: "races.halfling", group: "phb2024", size: "sm", speed: 30 },
-  orc: { label: "Orc", labelKey: "races.orc", group: "phb2024", size: "med", speed: 30 },
-  tiefling: { label: "Tiefling", labelKey: "races.tiefling", group: "phb2024", size: "med", speed: 30 },
+  aasimar: { label: "Aasimar", labelKey: "races.aasimar", group: "phb2024", size: "med", speed: 30, portraitGuidance: "read unmistakably as an Aasimar with a luminous celestial presence, subtly inhuman grace, and clear otherworldly features rather than an ordinary human with mild glow effects" },
+  dragonborn: { label: "Dragonborn", labelKey: "races.dragonborn", group: "phb2024", size: "med", speed: 30, portraitGuidance: "read unmistakably as a Dragonborn with draconic head structure, scales, muzzle, horns or crests, clawed hands or feet, and a powerful reptilian silhouette rather than a human body painted like a lizard" },
+  dwarf: { label: "Dwarf", labelKey: "races.dwarf", group: "phb2024", size: "med", speed: 30, portraitGuidance: "read unmistakably as a Dwarf with dense build, shorter proportions, broad hands, sturdy limbs, and a compact silhouette rather than a resized human" },
+  elf: { label: "Elf", labelKey: "races.elf", group: "phb2024", size: "med", speed: 30, portraitGuidance: "read unmistakably as an Elf with refined non-human facial structure, long elegant proportions, pointed ears that belong to the skull naturally, and a distinctly elven silhouette rather than a human with costume ears" },
+  gnome: { label: "Gnome", labelKey: "races.gnome", group: "phb2024", size: "sm", speed: 30, portraitGuidance: "read unmistakably as a Gnome with small compact proportions, expressive non-human features, and a distinct gnomish silhouette rather than a miniature adult human" },
+  goliath: { label: "Goliath", labelKey: "races.goliath", group: "phb2024", size: "med", speed: 35, portraitGuidance: "read unmistakably as a Goliath with imposing scale, heavy bone structure, rugged giant-kin features, and a monumental silhouette rather than a tall athletic human" },
+  halfling: { label: "Halfling", labelKey: "races.halfling", group: "phb2024", size: "sm", speed: 30, portraitGuidance: "read unmistakably as a Halfling with compact proportions, smaller limbs, broad expressive features, and an unmistakably halfling silhouette rather than a scaled-down human" },
+  orc: { label: "Orc", labelKey: "races.orc", group: "phb2024", size: "med", speed: 30, portraitGuidance: "read unmistakably as an Orc with robust non-human bone structure, tusks, heavy brow, powerful physique, and a savage but believable orcish silhouette rather than a green human" },
+  tiefling: { label: "Tiefling", labelKey: "races.tiefling", group: "phb2024", size: "med", speed: 30, portraitGuidance: "read unmistakably as a Tiefling with infernal traits such as horns, unusual eyes, tail or other fiend-touched anatomy integrated naturally into the body rather than a mostly human person with cosmetic accessories" },
   custom: { label: "Custom", labelKey: "races.custom", group: "custom", size: "med", speed: 30 }
 });
 

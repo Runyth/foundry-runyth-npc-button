@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildPortraitPromptFromActor } from "../scripts/ai/portrait-prompt-builder.mjs";
+import { defaultComplementaryModuleColor, parseComplementaryModuleColors, resolveComplementaryModuleColor } from "../scripts/complementary-module-colors.mjs";
 import { registerPortraitPromptHooks } from "../scripts/ui/actor-portrait-button.mjs";
-import { clearExtensionRegistry, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
+import { clearExtensionRegistry, getCatalogEntryMetadata, getComplementaryCatalogModules, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
 import { FilterSettingsForm, applyStringFilters, buildFilterProfile, defaultFilterConfiguration, filterCatalogItems, parseFilterProfile, parseFilterSettings, selectedFilterIds, settingsFromForm } from "../scripts/filters.mjs";
 import { hierarchicalMultiPickerMarkup } from "../scripts/ui/hierarchical-multi-picker.mjs";
 
@@ -50,6 +51,38 @@ test("extension registry merges registered races", () => {
   assert.equal(races.hobgoblin.label, "Hobgoblin");
   assert.equal(races.human.label, "Human");
   clearExtensionRegistry();
+});
+
+test("extension metadata tracks complementary module ownership and aggregates contribution counts", () => {
+  clearExtensionRegistry();
+  registerRace("hobgoblin", {
+    label: "Hobgoblin",
+    group: "supplemental",
+    size: "med",
+    speed: 30,
+    sourceModuleId: "orphan-black-companion"
+  });
+  registerRace("goblin", {
+    label: "Goblin",
+    group: "supplemental",
+    size: "sm",
+    speed: 30,
+    sourceModuleId: "orphan-black-companion"
+  });
+  const meta = getCatalogEntryMetadata("races", "hobgoblin");
+  assert.equal(meta.sourceModuleId, "orphan-black-companion");
+  const modules = getComplementaryCatalogModules();
+  assert.equal(modules.length, 1);
+  assert.equal(modules[0].moduleId, "orphan-black-companion");
+  assert.equal(modules[0].counts.races, 2);
+  clearExtensionRegistry();
+});
+
+test("complementary module colors parse safely and resolve deterministic defaults", () => {
+  assert.deepEqual(parseComplementaryModuleColors('{"demo":"#ABCDEF","bad":"red"}'), { demo: "#abcdef" });
+  globalThis.game = { settings: { get: () => '{"demo":"#123456"}' } };
+  assert.equal(resolveComplementaryModuleColor("demo"), "#123456");
+  assert.match(defaultComplementaryModuleColor("other-module"), /^#[0-9a-f]{6}$/i);
 });
 
 test("string filters combine allow and deny rules", () => {
@@ -225,6 +258,58 @@ test("new extension catalog items are selected by default unless their IDs were 
   assert.ok(selectedFilterIds("races", defaults.races).includes("hobgoblin"));
   const excluded = parseFilterSettings({ races: { excludedIds: ["hobgoblin"] } });
   assert.equal(selectedFilterIds("races", excluded.races).includes("hobgoblin"), false);
+  clearExtensionRegistry();
+});
+
+test("filter catalogs expose complementary-module row accents and source labels", () => {
+  globalThis.game = {
+    i18n: { localize: (key) => key },
+    folders: [],
+    modules: new Map([["orphan-black-companion", { title: "Orphan Black Companion" }]]),
+    settings: {
+      get(_moduleId, setting) {
+        if (setting === "complementaryModuleColors") return '{"orphan-black-companion":"#3355aa"}';
+        return "";
+      }
+    }
+  };
+  clearExtensionRegistry();
+  registerRace("goblin", {
+    label: "Goblin",
+    group: "supplemental",
+    size: "sm",
+    speed: 30,
+    sourceModuleId: "orphan-black-companion"
+  });
+  const goblin = filterCatalogItems("races").find((entry) => entry.id === "goblin");
+  assert.equal(goblin.sourceModuleTitle, "Orphan Black Companion");
+  assert.equal(goblin.accentColor, "#3355aa");
+  clearExtensionRegistry();
+});
+
+test("portrait prompts make non-human races explicitly race-idiomatic", () => {
+  clearExtensionRegistry();
+  registerRace("goblin", {
+    label: "Goblin",
+    group: "supplemental",
+    size: "sm",
+    speed: 30,
+    portraitGuidance: "read unmistakably as a Goblin with a wiry hunched frame, large ears, long fingers, and a goblin silhouette rather than a green human"
+  });
+  const actor = {
+    name: "Vek Bale",
+    system: {
+      details: {
+        type: { subtype: "Goblin" },
+        biography: { value: "<p><strong>Appearance:</strong> Lean and badly rested.</p>" }
+      }
+    },
+    flags: { "runyth-npc-button": { role: "Laborer", wealth: "Poor" } },
+    items: [{ name: "Club" }]
+  };
+  const prompt = buildPortraitPromptFromActor(actor);
+  assert.match(prompt, /read unmistakably as a Goblin/i);
+  assert.match(prompt, /avoid an overly human face, body, or silhouette/i);
   clearExtensionRegistry();
 });
 

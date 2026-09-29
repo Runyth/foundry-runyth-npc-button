@@ -1,5 +1,13 @@
 import { MODULE_ID } from "../constants.mjs";
 import { composePrompt } from "../extensions/prompt-api.mjs";
+import { getRaces } from "../extensions/registry.mjs";
+
+const RACE_GUIDANCE_BY_NAME = Object.freeze({
+  goblin: "read unmistakably as a Goblin with a wiry or hunched non-human frame, oversized ears, long fingers or toes, sharp features, and a distinctly goblin silhouette rather than a green-tinted human",
+  hobgoblin: "read unmistakably as a Hobgoblin with disciplined martial bearing, robust goblinoid anatomy, distinctive ears and facial structure, and a clearly goblinoid silhouette rather than a human with colored skin",
+  duergar: "read unmistakably as a Duergar with compact dwarven build, stern subterranean features, and a hard-edged underdark silhouette rather than a grey human",
+  svirfneblin: "read unmistakably as a Svirfneblin with compact deep-gnome proportions, subterranean features, and a clearly non-human gnomish silhouette rather than a short human"
+});
 
 function stripHtml(value) {
   return String(value ?? "")
@@ -47,6 +55,35 @@ function wealthFromActor(actor) {
   return cleanPart(actor?.flags?.[MODULE_ID]?.wealth) || cleanPart(extractSection(actor?.system?.details?.biography?.value, "Wealth"));
 }
 
+function normalizeRaceKey(value) {
+  return String(value ?? "")
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function raceConfigFromLabel(race) {
+  const target = normalizeRaceKey(race);
+  if (!target) return null;
+  for (const [id, config] of Object.entries(getRaces())) {
+    if (normalizeRaceKey(id) === target || normalizeRaceKey(config?.label) === target) return config;
+  }
+  return null;
+}
+
+function isHumanRace(race) {
+  return normalizeRaceKey(race) === "human";
+}
+
+function racePortraitGuidance(race) {
+  if (!race || isHumanRace(race)) return [];
+  const config = raceConfigFromLabel(race);
+  const normalized = normalizeRaceKey(race);
+  const specific = String(config?.portraitGuidance ?? RACE_GUIDANCE_BY_NAME[normalized] ?? "").trim();
+  const generic = `make the anatomy, face, posture, hands, feet, and silhouette unmistakably ${String(race).trim()} and race-idiomatic, not merely human-looking with slight fantasy coloration or token features`;
+  return [generic, specific].filter(Boolean);
+}
+
 function buildPortraitContext(actor) {
   const biography = actor?.system?.details?.biography?.value ?? "";
   const name = cleanPart(actor?.name) || "Unnamed NPC";
@@ -80,6 +117,7 @@ function defaultPortraitComponents(context) {
       `adult ${context.race} ${context.role}`,
       context.gender,
       context.appearance,
+      ...racePortraitGuidance(context.race),
       context.wealth ? `${String(context.wealth).toLowerCase()} attire` : "practical attire",
       context.items ? `carrying ${context.items}` : "",
       context.tell,
@@ -103,7 +141,8 @@ function defaultPortraitComponents(context) {
     negative: [
       "no text",
       "no watermark",
-      "no extra characters"
+      "no extra characters",
+      !isHumanRace(context.race) ? "avoid an overly human face, body, or silhouette for this race" : ""
     ]
   };
 }

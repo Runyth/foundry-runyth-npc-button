@@ -115,6 +115,8 @@ Every NPC remains mechanically combatable, but carried combat gear is role-relat
 
 Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard string filters**. Each filter category first presents a searchable, scrollable, virtualized multi-select list. All available entries are selected by default; simply deselect individual Roles, Races, Naming styles, Habitats, Group types, or Actor folders to remove them from the matching dashboard picker. The older allow/deny exact, contains, prefix, suffix, and regular-expression rules remain available under **Advanced string and regex rules**. The filter window can export/import a versioned JSON profile as a file, copy it to the clipboard, or import one from the clipboard.
 
+Complementary-module catalog entries are now color-highlighted throughout dashboard pickers and filter lists. Use **Game Settings → Configure Settings → Runyth NPC Button → Complementary module highlight colors** to assign a stable highlight color per complementary module.
+
 
 ### Prompt extension API
 
@@ -136,6 +138,8 @@ Prompt extensions support two complementary integration styles:
 2. **Full prompt composition or post-processing** for either the `portrait` or `npcJson` target, allowing a complementary module to replace the final prompt entirely or transform the default output.
 
 The built-in portrait prompt now defaults to a grounded semi-realistic adult-anime look inspired by rugged low-fantasy character illustrations: muted earth tones, painterly shading, crisp linework, worn textiles/leather/rope detail, and a clean isolated studio-style background.
+
+For non-human races, the built-in portrait prompt also explicitly steers the output toward race-idiomatic anatomy and silhouette, reducing the chance of receiving a basically human figure with only superficial fantasy coloring.
 
 ### AI payload shape
 
@@ -165,6 +169,8 @@ Available methods:
 - `registerHabitat(id, config)` / `unregisterHabitat(id)`
 - `registerGroupType(id, config)` / `unregisterGroupType(id)`
 - catalog getters: `getRaces()`, `getRoles()`, `getNamingStyles()`, `getHabitats()`, `getGroupTypes()`
+
+Complementary modules may optionally include `sourceModuleId` on catalog registrations. When present, the entry is visually highlighted in pickers and filter catalogs using the configured color for that complementary module. Race registrations may also include `portraitGuidance` to strengthen portrait prompts for that race.
 
 Creation hooks:
 

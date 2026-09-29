@@ -32,9 +32,10 @@ import {
   formatChallengeRating
 } from "../generator/data.mjs";
 import { buildRoleAssignments, normalizeGroupRaceIds, normalizeGroupRoleIds, resolveTierProfile } from "../generator/npc-generator.mjs";
-import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
+import { getCatalogEntryMetadata, getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 import { applyStringFilters, loadFilterSettings, visibleFilterCatalogIds } from "../filters.mjs";
 import { logger } from "../logger.mjs";
+import { resolveComplementaryModuleColor } from "../complementary-module-colors.mjs";
 import { loadLastOptions, loadWindowState, saveLastOptions, saveWindowState } from "../settings.mjs";
 import { createImportedNpcActors, createNpcActors } from "../services/actor-service.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
@@ -66,6 +67,17 @@ function configuredLabel(config) {
   return config?.labelKey ? localize(config.labelKey) : (config?.label ?? "");
 }
 
+function registryKindForGroupKey(groupKeyPrefix) {
+  switch (groupKeyPrefix) {
+    case "roleGroups": return "roles";
+    case "raceGroups": return "races";
+    case "namingGroups": return "namingStyles";
+    case "habitatGroups": return "habitats";
+    case "groupTypeGroups": return "groupTypes";
+    default: return "";
+  }
+}
+
 function choiceChips(name, entries, selected, { className = "" } = {}) {
   return Object.entries(entries).map(([value, config]) => `
     <label class="runyth-npc-button__choice ${escapeAttribute(className)}">
@@ -77,6 +89,7 @@ function choiceChips(name, entries, selected, { className = "" } = {}) {
 
 function groupedConfigItems(entries, groups, groupKeyPrefix) {
   const items = [];
+  const registryKind = registryKindForGroupKey(groupKeyPrefix);
   for (const group of groups) {
     const members = Object.entries(entries)
       .filter(([, config]) => config.group === group)
@@ -84,13 +97,17 @@ function groupedConfigItems(entries, groups, groupKeyPrefix) {
     if (!members.length) continue;
     items.push({ kind: "group", id: `group:${group}`, label: localize(`${groupKeyPrefix}.${group}`), depth: 0 });
     for (const [id, config] of members) {
+      const meta = registryKind ? getCatalogEntryMetadata(registryKind, id) : null;
       items.push({
         kind: "option",
         id,
         label: configuredLabel(config),
         display: configuredLabel(config),
         description: config.descriptionKey ? localize(config.descriptionKey) : "",
-        depth: 1
+        depth: 1,
+        sourceModuleId: meta?.sourceModuleId ?? "",
+        sourceModuleTitle: meta?.sourceModuleTitle ?? "",
+        accentColor: meta?.sourceModuleId ? resolveComplementaryModuleColor(meta.sourceModuleId) : ""
       });
     }
   }

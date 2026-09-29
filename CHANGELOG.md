@@ -2,6 +2,23 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.0 - 2026-09-30
+
+### Added
+
+- Complementary-module catalog entries can now be visually highlighted in dashboard pickers and filter-setting catalogs.
+- New global settings menu for configuring one highlight color per complementary module.
+- Source-module badges on contributed catalog entries to make it obvious which complementary module provided a given Race, Role, Naming style, Habitat, or Group type.
+- Registry metadata aggregation so complementary-module contribution counts are available for the new color-configuration UI.
+- Race-specific portrait guidance support on Race registrations via optional `portraitGuidance` metadata.
+- Regression coverage for complementary-module ownership metadata, color resolution, colored filter rows, and non-human race portrait guidance.
+
+### Changed
+
+- The built-in portrait prompt now pushes all non-human races toward race-idiomatic anatomy and silhouette instead of allowing generic near-human output.
+- Core Race data now includes stronger portrait guidance for PHB-style non-human ancestries.
+- Help and extension API documentation now cover complementary-module highlight colors and Race portrait-guidance metadata.
+
 ## 0.3.2 - 2026-09-26
 
 ### Added
