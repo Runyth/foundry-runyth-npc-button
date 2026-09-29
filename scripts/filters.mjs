@@ -1,4 +1,5 @@
 import { MODULE_ID, SETTINGS } from "./constants.mjs";
+import { resolveComplementaryModuleColor } from "./complementary-module-colors.mjs";
 import { logger } from "./logger.mjs";
 import { readClipboardText, tryWriteClipboardText } from "./utils/clipboard.mjs";
 import { openManualCopy } from "./ui/manual-copy.mjs";
@@ -9,7 +10,7 @@ import {
   RACE_GROUPS,
   ROLE_GROUPS
 } from "./generator/data.mjs";
-import { getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "./extensions/registry.mjs";
+import { getCatalogEntryMetadata, getCatalogGroups, getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "./extensions/registry.mjs";
 import { hierarchicalMultiPickerMarkup, mountHierarchicalMultiPicker } from "./ui/hierarchical-multi-picker.mjs";
 
 export const FILTER_CATEGORIES = Object.freeze({
@@ -164,9 +165,21 @@ function localizedGroupLabel(prefix, group) {
   return titleFromId(group);
 }
 
-function groupedCatalogItems(entries, baseGroups, groupPrefix, { excludeIds = [] } = {}) {
+function registryKindForCategory(category) {
+  switch (category) {
+    case "roles": return "roles";
+    case "races": return "races";
+    case "namingStyles": return "namingStyles";
+    case "habitats": return "habitats";
+    case "groupTypes": return "groupTypes";
+    default: return "";
+  }
+}
+
+function groupedCatalogItems(category, entries, baseGroups, groupPrefix, { excludeIds = [] } = {}) {
   const excluded = new Set(excludeIds);
   const items = [];
+  const registryKind = registryKindForCategory(category);
   for (const group of getCatalogGroups(entries, baseGroups)) {
     const members = Object.entries(entries)
       .filter(([id, config]) => !excluded.has(id) && config?.group === group)
@@ -175,7 +188,18 @@ function groupedCatalogItems(entries, baseGroups, groupPrefix, { excludeIds = []
     items.push({ kind: "group", id: `group:${group}`, label: localizedGroupLabel(groupPrefix, group), depth: 0 });
     for (const [id, config] of members) {
       const label = localizedConfigLabel(config, titleFromId(id));
-      items.push({ kind: "option", id, label, display: label, description: "", depth: 1 });
+      const meta = registryKind ? getCatalogEntryMetadata(registryKind, id) : null;
+      items.push({
+        kind: "option",
+        id,
+        label,
+        display: label,
+        description: "",
+        depth: 1,
+        sourceModuleId: meta?.sourceModuleId ?? "",
+        sourceModuleTitle: meta?.sourceModuleTitle ?? "",
+        accentColor: meta?.sourceModuleId ? resolveComplementaryModuleColor(meta.sourceModuleId) : ""
+      });
     }
   }
   return items;
@@ -231,23 +255,23 @@ export function filterCatalogItems(category) {
   switch (category) {
     case "roles": {
       const entries = getRoles();
-      return groupedCatalogItems(entries, ROLE_GROUPS, "roleGroups");
+      return groupedCatalogItems("roles", entries, ROLE_GROUPS, "roleGroups");
     }
     case "races": {
       const entries = Object.fromEntries(Object.entries(getRaces()).filter(([id]) => id !== "custom"));
-      return groupedCatalogItems(entries, RACE_GROUPS, "raceGroups");
+      return groupedCatalogItems("races", entries, RACE_GROUPS, "raceGroups");
     }
     case "namingStyles": {
       const entries = getNamingStyles();
-      return groupedCatalogItems(entries, NAMING_GROUPS, "namingGroups");
+      return groupedCatalogItems("namingStyles", entries, NAMING_GROUPS, "namingGroups");
     }
     case "habitats": {
       const entries = getHabitats();
-      return groupedCatalogItems(entries, HABITAT_GROUPS, "habitatGroups");
+      return groupedCatalogItems("habitats", entries, HABITAT_GROUPS, "habitatGroups");
     }
     case "groupTypes": {
       const entries = getGroupTypes();
-      return groupedCatalogItems(entries, GROUP_TYPE_GROUPS, "groupTypeGroups");
+      return groupedCatalogItems("groupTypes", entries, GROUP_TYPE_GROUPS, "groupTypeGroups");
     }
     case "folders":
       return actorFolderCatalogItems();

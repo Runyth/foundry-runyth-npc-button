@@ -17,6 +17,27 @@ These functions remain available for extending dashboard catalogs:
 - `registerGroupType(id, data)` / `unregisterGroupType(id)`
 - `getRaces()` / `getRoles()` / `getNamingStyles()` / `getHabitats()` / `getGroupTypes()` / `getCatalogGroups()`
 
+Catalog registrations may additionally provide a few optional metadata fields that the core module understands:
+
+- `sourceModuleId: string` — marks the entry as contributed by a complementary module. The entry is then color-highlighted in dashboard pickers and filter catalogs. The GM can configure one highlight color per module in global settings.
+- `sourceModuleTitle: string` — optional human-readable override for the source-module badge.
+- `portraitGuidance: string` — for Race registrations, appends race-specific portrait guidance to the built-in single-image portrait prompt.
+
+Example:
+
+```js
+const api = game.modules.get("runyth-npc-button")?.api;
+
+api?.registerRace("goblin", {
+  label: "Goblin",
+  group: "supplemental",
+  size: "sm",
+  speed: 30,
+  sourceModuleId: "orphan-black-companion",
+  portraitGuidance: "read unmistakably as a Goblin with a wiry frame, oversized ears, sharp features, and a goblin silhouette rather than a green human"
+});
+```
+
 ## Prompt pipeline API
 
 This feature release adds a prompt-pipeline API so complementary modules can customize AI prompts without monkey-patching internals.
@@ -151,6 +172,8 @@ The built-in portrait prompt now defaults to a grounded semi-realistic adult-ani
 - clean isolated studio-style presentation
 
 This is a style baseline only. Complementary modules can change it through the prompt-pipeline API.
+
+Additionally, the built-in portrait builder now pushes non-human races toward race-idiomatic anatomy and silhouette. If a registered Race provides `portraitGuidance`, that text is folded into the default prompt before prompt extensions run.
 
 ## Naming-style and Role metadata used by advanced name formatting
 

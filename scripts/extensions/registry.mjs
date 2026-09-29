@@ -1,6 +1,15 @@
+import { MODULE_ID } from "../constants.mjs";
 import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES, ROLES } from "../generator/data.mjs";
 
 const registries = {
+  races: new Map(),
+  roles: new Map(),
+  namingStyles: new Map(),
+  habitats: new Map(),
+  groupTypes: new Map()
+};
+
+const metadata = {
   races: new Map(),
   roles: new Map(),
   namingStyles: new Map(),
@@ -19,15 +28,39 @@ function normalizeId(id, noun) {
   return value;
 }
 
+function normalizeSourceMetadata(config) {
+  const sourceModuleId = String(
+    config?.sourceModuleId
+    ?? config?.moduleId
+    ?? config?.source?.moduleId
+    ?? ""
+  ).trim();
+  if (!sourceModuleId || sourceModuleId === MODULE_ID) return null;
+  const module = globalThis.game?.modules?.get?.(sourceModuleId);
+  const sourceModuleTitle = String(
+    config?.sourceModuleTitle
+    ?? config?.moduleTitle
+    ?? config?.source?.moduleTitle
+    ?? module?.title
+    ?? sourceModuleId
+  ).trim() || sourceModuleId;
+  return { sourceModuleId, sourceModuleTitle };
+}
+
 function register(kind, id, config, noun) {
   const key = normalizeId(id, noun);
   if (!config || typeof config !== "object" || Array.isArray(config)) throw new Error(`${noun} config must be an object.`);
   registries[kind].set(key, clone(config));
+  const source = normalizeSourceMetadata(config);
+  if (source) metadata[kind].set(key, source);
+  else metadata[kind].delete(key);
   return key;
 }
 
 function unregister(kind, id) {
-  registries[kind].delete(String(id ?? ""));
+  const key = String(id ?? "");
+  registries[kind].delete(key);
+  metadata[kind].delete(key);
 }
 
 function mergeCatalog(base, kind) {
@@ -63,6 +96,29 @@ export function getCatalogGroups(entries, baseGroups = []) {
     if (group && !groups.includes(group)) groups.push(group);
   }
   return groups;
+}
+
+export function getCatalogEntryMetadata(kind, id) {
+  return clone(metadata?.[kind]?.get(String(id ?? "")) ?? null);
+}
+
+export function getComplementaryCatalogModules() {
+  const merged = new Map();
+  for (const [kind, registry] of Object.entries(metadata)) {
+    for (const contribution of registry.values()) {
+      if (!contribution?.sourceModuleId) continue;
+      const existing = merged.get(contribution.sourceModuleId) ?? {
+        moduleId: contribution.sourceModuleId,
+        title: contribution.sourceModuleTitle,
+        counts: { races: 0, roles: 0, namingStyles: 0, habitats: 0, groupTypes: 0 },
+        totalEntries: 0
+      };
+      existing.counts[kind] = (existing.counts[kind] ?? 0) + 1;
+      existing.totalEntries += 1;
+      merged.set(contribution.sourceModuleId, existing);
+    }
+  }
+  return [...merged.values()].sort((left, right) => left.title.localeCompare(right.title, undefined, { sensitivity: "base" }));
 }
 
 export function registerRace(id, config) {
@@ -107,4 +163,5 @@ export function unregisterGroupType(id) {
 
 export function clearExtensionRegistry() {
   for (const registry of Object.values(registries)) registry.clear();
+  for (const registry of Object.values(metadata)) registry.clear();
 }

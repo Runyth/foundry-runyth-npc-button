@@ -33,6 +33,15 @@
       "ignoreImportCountMismatch": {
         "name": "Allow arbitrary NPC import counts",
         "hint": "When enabled, imported JSON arrays may contain a different number of NPCs than the dashboard Count without forcing review. The configured maximum batch size and all Actor validation still apply."
+      },
+      "complementaryModuleColors": {
+        "name": "Complementary module highlight colors",
+        "hint": "Configure per-module colors for catalog entries contributed by complementary modules.",
+        "label": "Configure colors"
+      },
+      "complementaryModuleColorsStorage": {
+        "name": "Complementary module highlight colors storage",
+        "hint": "Internal storage for complementary module highlight colors."
       }
     },
     "ui": {
@@ -183,7 +192,7 @@
       "seed": "Local generation always has a reusable seed. If you leave Seed blank, the module creates one automatically, shows it back in the dashboard, and records it in every generated Actor biography and module metadata.",
       "destination": "The folder picker preserves the Actor hierarchy. It can target any nested folder, the Actors root, the configured default, or a newly named root folder.",
       "pickersTitle": "Scalable pickers",
-      "pickersBody": "Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-race selection use searchable hierarchical lists. Large lists render only visible rows plus a small buffer so catalog growth and large folder trees remain responsive.",
+      "pickersBody": "All large catalogs use searchable, scrollable pickers. Entries contributed by complementary modules are color-highlighted with the per-module colors configured in global settings.",
       "namingTitle": "Naming styles",
       "namingBody": "Naming styles are broad fictional tonal palettes rather than historical or linguistic claims. Each style now includes a larger set of creative idiomatic examples; the same examples and style guidance are embedded into the copied AI prompt as tonal references rather than a finite name list.",
       "character": "Character",
@@ -207,7 +216,7 @@
       "groupsBody": "Group presets include {groups}, plus further security, outlaw, travel, work, faith, and community structures. Count stays editable, while each preset exposes sensible size shortcuts.",
       "groupsAdvanced": "Advanced settings control family structure, cohesion, hierarchy, relationship density, internal conflict, allowed races, race distribution, custom weights, and an optional shared group brief.",
       "portraitPromptTitle": "Portrait prompts",
-      "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC.",
+      "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC. Non-human races are explicitly described as race-idiomatic so they read clearly as their own people instead of mostly human figures with minor fantasy add-ons.",
       "filterTitle": "Dashboard filter settings",
       "filterBody": "Configure Settings provides a dedicated filter menu. Each major dashboard catalog has a scalable searchable multi-select list with every current item included by default; deselect entries to hide them. Advanced allow/deny string and regex rules remain available, and filter profiles can be exported/imported as versioned JSON files or through the clipboard.",
       "compositionTitle": "Race and Role composition",
@@ -419,7 +428,8 @@
       "importCancelled": "NPC import preview cancelled.",
       "promptCopyManual": "AI prompt prepared, but automatic clipboard access is unavailable. The prompt is preserved below for manual copying.",
       "clipboardUnavailable": "Automatic clipboard access is unavailable. The prepared content remains available for manual copying.",
-      "promptPrepareFailed": "AI prompt preparation failed: {message}"
+      "promptPrepareFailed": "AI prompt preparation failed: {message}",
+      "complementaryColorsSaved": "Complementary module highlight colors saved."
     },
     "errors": {
       "clipboardWrite": "Clipboard writing is not available in this client.",
@@ -756,6 +766,22 @@
       "never": "Never",
       "sometimes": "Sometimes",
       "always": "Always"
+    },
+    "complementaryColors": {
+      "title": "Complementary module highlight colors",
+      "intro": "Set a highlight color for entries contributed by complementary modules. Entries from the same module share one color across dashboard pickers and filter lists.",
+      "empty": "No complementary module catalog entries are currently registered.",
+      "colorLabel": "Highlight color",
+      "resetOne": "Reset",
+      "resetAll": "Reset all to defaults",
+      "savedOnly": "Saved color only; no active contributions are currently registered.",
+      "kinds": {
+        "races": "Races",
+        "roles": "Roles",
+        "namingStyles": "Naming styles",
+        "habitats": "Habitats",
+        "groupTypes": "Group types"
+      }
     }
   }
 }

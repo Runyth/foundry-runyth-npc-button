@@ -73,6 +73,20 @@ function parseSelection(input) {
   }
 }
 
+function applySourceDecorations(button, row, textContainer) {
+  const accent = String(row?.accentColor ?? "").trim();
+  const sourceTitle = String(row?.sourceModuleTitle ?? "").trim();
+  if (accent) {
+    button.classList.add("runyth-npc-button__picker-option--module");
+    button.style.setProperty("--rnb-option-accent", accent);
+  }
+  if (!sourceTitle || !textContainer) return;
+  const badge = document.createElement("span");
+  badge.className = "runyth-npc-button__picker-source-badge";
+  badge.textContent = sourceTitle;
+  textContainer.append(badge);
+}
+
 export function mountHierarchicalMultiPicker(root, config, signal) {
   if (!root) return null;
 
@@ -215,6 +229,7 @@ export function mountHierarchicalMultiPicker(root, config, signal) {
       secondary.textContent = row.description;
       text.append(secondary);
     }
+    applySourceDecorations(button, row, text);
     button.append(text);
     return button;
   }

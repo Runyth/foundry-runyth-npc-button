@@ -88,6 +88,20 @@ function selectedDisplay(rows, value, fallback) {
   return match?.display ?? match?.label ?? fallback;
 }
 
+function applySourceDecorations(button, row) {
+  const accent = String(row?.accentColor ?? "").trim();
+  const sourceTitle = String(row?.sourceModuleTitle ?? "").trim();
+  if (accent) {
+    button.classList.add("runyth-npc-button__picker-option--module");
+    button.style.setProperty("--rnb-option-accent", accent);
+  }
+  if (!sourceTitle) return;
+  const badge = document.createElement("span");
+  badge.className = "runyth-npc-button__picker-source-badge";
+  badge.textContent = sourceTitle;
+  button.append(badge);
+}
+
 /**
  * Mount a reusable, scrollable and virtualized hierarchical picker.
  * Only visible rows plus a small overscan buffer exist in the DOM, so folder
@@ -171,6 +185,7 @@ export function mountHierarchicalPicker(root, config, signal) {
       secondary.textContent = row.description;
       button.append(secondary);
     }
+    applySourceDecorations(button, row);
     return button;
   }
 

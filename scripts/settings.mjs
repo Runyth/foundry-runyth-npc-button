@@ -1,4 +1,5 @@
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "./constants.mjs";
+import { ComplementaryModuleColorsForm } from "./complementary-module-colors.mjs";
 import { FilterSettingsForm, defaultFilterConfiguration } from "./filters.mjs";
 
 export function registerSettings() {
@@ -78,6 +79,25 @@ export function registerSettings() {
     restricted: true,
     type: String,
     default: JSON.stringify(defaultFilterConfiguration())
+  });
+
+  game.settings.registerMenu(MODULE_ID, "complementaryModuleColorsMenu", {
+    name: `${MODULE_ID}.settings.complementaryModuleColors.name`,
+    hint: `${MODULE_ID}.settings.complementaryModuleColors.hint`,
+    label: `${MODULE_ID}.settings.complementaryModuleColors.label`,
+    icon: "fa-solid fa-palette",
+    type: ComplementaryModuleColorsForm,
+    restricted: true
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.COMPLEMENTARY_MODULE_COLORS, {
+    name: `${MODULE_ID}.settings.complementaryModuleColorsStorage.name`,
+    hint: `${MODULE_ID}.settings.complementaryModuleColorsStorage.hint`,
+    scope: "world",
+    config: false,
+    restricted: true,
+    type: String,
+    default: "{}"
   });
 
   game.settings.register(MODULE_ID, SETTINGS.LAST_OPTIONS, {

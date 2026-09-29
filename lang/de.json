@@ -33,6 +33,15 @@
       "ignoreImportCountMismatch": {
         "name": "Beliebige NSC-Importanzahl erlauben",
         "hint": "Wenn aktiviert, dürfen importierte JSON-Arrays eine andere Anzahl an NSCs als der Dashboard-Wert Anzahl enthalten, ohne automatisch eine Prüfung zu erzwingen. Die konfigurierte maximale Stapelgröße und alle Actor-Validierungen gelten weiterhin."
+      },
+      "complementaryModuleColors": {
+        "name": "Hervorhebungsfarben für Ergänzungsmodule",
+        "hint": "Konfiguriere modulweise Farben für Katalogeinträge, die von Ergänzungsmodulen beigesteuert werden.",
+        "label": "Farben konfigurieren"
+      },
+      "complementaryModuleColorsStorage": {
+        "name": "Speicher für Hervorhebungsfarben von Ergänzungsmodulen",
+        "hint": "Interner Speicher für Hervorhebungsfarben von Ergänzungsmodulen."
       }
     },
     "ui": {
@@ -183,7 +192,7 @@
       "seed": "Lokale Generierung besitzt immer einen wiederverwendbaren Seed. Bleibt Seed leer, erzeugt das Modul automatisch einen, zeigt ihn im Dashboard an und speichert ihn in Biografie und Modul-Metadaten jedes erzeugten Actors.",
       "destination": "Der Ordnerwähler erhält die Actor-Hierarchie. Er kann beliebige Unterordner, den Actors-Stamm, den konfigurierten Standard oder einen neu benannten Stammordner ansteuern.",
       "pickersTitle": "Skalierbare Auswahlfelder",
-      "pickersBody": "Rolle, Volk, Namensstil, Lebensraum, Gruppentyp, Tier/CR, Actor-Ordner und gemischte Volksauswahl verwenden durchsuchbare hierarchische Listen. Große Listen rendern nur sichtbare Zeilen plus kleinen Puffer und bleiben dadurch auch bei großen Katalogen und Ordnerbäumen reaktionsschnell.",
+      "pickersBody": "Alle großen Kataloge verwenden durchsuchbare, scrollbar Pickers. Einträge aus Ergänzungsmodulen werden mit den pro Modul in den globalen Einstellungen konfigurierten Farben farblich hervorgehoben.",
       "namingTitle": "Namensstile",
       "namingBody": "Namensstile sind breite fiktionale Klangpaletten und keine historischen oder sprachwissenschaftlichen Aussagen. Jeder Stil enthält nun deutlich mehr kreative, idiomatische Beispiele; dieselben Beispiele und Stilhinweise werden als Klangreferenz in den kopierten KI-Prompt eingebettet.",
       "character": "Charakter",
@@ -207,7 +216,7 @@
       "groupsBody": "Gruppenvorlagen umfassen {groups} sowie weitere Sicherheits-, Gesetzlosen-, Reise-, Arbeits-, Glaubens- und Gemeinschaftsstrukturen. Die Anzahl bleibt editierbar; jede Vorlage bietet sinnvolle Größen-Schnellwahl.",
       "groupsAdvanced": "Erweiterte Einstellungen steuern Familienstruktur, Zusammenhalt, Hierarchie, Beziehungsdichte, internen Konflikt, erlaubte Völker, deren Verteilung, eigene Gewichte und eine optionale gemeinsame Gruppenvorgabe.",
       "portraitPromptTitle": "Porträt-Prompts",
-      "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert.",
+      "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert. Nichtmenschliche Rassen werden dabei ausdrücklich rassen-idiomatisch beschrieben, damit sie klar als eigenes Volk erkennbar sind und nicht nur wie überwiegend menschliche Figuren mit kleinen Fantasy-Zusätzen wirken.",
       "filterTitle": "Dashboard-Filtereinstellungen",
       "filterBody": "Configure Settings bietet ein eigenes Filter-Menü. Jeder wichtige Dashboard-Katalog besitzt eine skalierbare, durchsuchbare Mehrfachauswahlliste, in der standardmäßig alle aktuellen Einträge enthalten sind; entferne Auswahlen, um Einträge auszublenden. Erweiterte String-/Regex-Erlauben- und Verbieten-Regeln bleiben verfügbar, und Filterprofile können als versionierte JSON-Dateien oder über die Zwischenablage exportiert/importiert werden.",
       "compositionTitle": "Volks- und Rollenzusammensetzung",
@@ -419,7 +428,8 @@
       "importCancelled": "NPC-Importvorschau abgebrochen.",
       "promptCopyManual": "KI-Prompt vorbereitet, aber automatischer Zwischenablagezugriff ist nicht verfügbar. Der Prompt bleibt unten zum manuellen Kopieren erhalten.",
       "clipboardUnavailable": "Automatischer Zwischenablagezugriff ist nicht verfügbar. Der vorbereitete Inhalt bleibt zum manuellen Kopieren erhalten.",
-      "promptPrepareFailed": "Vorbereitung des KI-Prompts fehlgeschlagen: {message}"
+      "promptPrepareFailed": "Vorbereitung des KI-Prompts fehlgeschlagen: {message}",
+      "complementaryColorsSaved": "Hervorhebungsfarben der Ergänzungsmodule gespeichert."
     },
     "errors": {
       "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
@@ -756,6 +766,22 @@
       "never": "Nie",
       "sometimes": "Manchmal",
       "always": "Immer"
+    },
+    "complementaryColors": {
+      "title": "Hervorhebungsfarben für Ergänzungsmodule",
+      "intro": "Lege eine Hervorhebungsfarbe für Einträge fest, die von Ergänzungsmodulen beigesteuert werden. Einträge desselben Moduls teilen sich dieselbe Farbe in Dashboard-Pickern und Filterlisten.",
+      "empty": "Derzeit sind keine Katalogeinträge aus Ergänzungsmodulen registriert.",
+      "colorLabel": "Hervorhebungsfarbe",
+      "resetOne": "Zurücksetzen",
+      "resetAll": "Alles auf Standard zurücksetzen",
+      "savedOnly": "Nur gespeicherte Farbe; aktuell sind keine aktiven Beiträge registriert.",
+      "kinds": {
+        "races": "Rassen",
+        "roles": "Rollen",
+        "namingStyles": "Namensstile",
+        "habitats": "Lebensräume",
+        "groupTypes": "Gruppentypen"
+      }
     }
   }
 }

@@ -339,6 +339,28 @@
   font-weight: 400;
 }
 
+.runyth-npc-button__picker-option--module {
+  border-left-color: color-mix(in srgb, var(--rnb-option-accent, var(--color-border-highlight, currentColor)) 75%, transparent 25%);
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--rnb-option-accent, var(--color-border-highlight, currentColor)) 75%, transparent 25%);
+}
+
+.runyth-npc-button__picker-source-badge {
+  align-self: start;
+  background: color-mix(in srgb, var(--rnb-option-accent, var(--color-border-highlight, currentColor)) 18%, transparent 82%);
+  border: 1px solid color-mix(in srgb, var(--rnb-option-accent, var(--color-border-highlight, currentColor)) 55%, transparent 45%);
+  border-radius: 999px;
+  color: var(--rnb-option-accent, var(--color-border-highlight, currentColor));
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 0.12rem;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0.14rem 0.45rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .runyth-npc-button__picker-empty {
   color: var(--color-text-secondary, inherit);
   font-size: 0.8rem;
@@ -1185,6 +1207,17 @@
   color: color-mix(in srgb, currentColor 76%, var(--rnb-accent-strong) 24%);
 }
 
+.runyth-npc-button__picker-option--module:hover,
+.runyth-npc-button__picker-option--module:focus-visible {
+  background: color-mix(in srgb, var(--rnb-surface-2) 72%, var(--rnb-option-accent, var(--rnb-accent)) 28%);
+}
+
+.runyth-npc-button__picker-option--module.is-selected {
+  background: color-mix(in srgb, var(--rnb-option-accent, var(--rnb-accent)) 16%, var(--rnb-surface-0) 84%);
+  border-left-color: var(--rnb-option-accent, var(--rnb-accent));
+  color: color-mix(in srgb, currentColor 80%, var(--rnb-option-accent, var(--rnb-accent)) 20%);
+}
+
 .runyth-npc-button__multi-count {
   background: var(--rnb-accent-soft);
   border: 1px solid rgb(195 155 99 / 30%);
@@ -1834,8 +1867,85 @@
   text-align: center;
 }
 
+.runyth-npc-button__complementary-colors-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.runyth-npc-button__complementary-colors-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.runyth-npc-button__complementary-colors-card {
+  background: color-mix(in srgb, var(--rnb-surface-0) 74%, transparent 26%);
+  border: 1px solid color-mix(in srgb, var(--rnb-module-color-preview, var(--rnb-accent)) 40%, var(--rnb-border-soft) 60%);
+  border-radius: var(--rnb-radius-md);
+  box-shadow: inset 3px 0 0 var(--rnb-module-color-preview, var(--rnb-accent));
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.85rem;
+}
+
+.runyth-npc-button__complementary-colors-head {
+  align-items: start;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.runyth-npc-button__complementary-colors-head h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.runyth-npc-button__complementary-colors-id,
+.runyth-npc-button__complementary-colors-summary {
+  color: var(--rnb-text-muted);
+  margin: 0;
+}
+
+.runyth-npc-button__complementary-colors-swatch {
+  background: var(--rnb-module-color-preview, var(--rnb-accent));
+  border: 1px solid color-mix(in srgb, var(--rnb-module-color-preview, var(--rnb-accent)) 70%, black 30%);
+  border-radius: 999px;
+  display: inline-flex;
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.runyth-npc-button__complementary-colors-controls {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: space-between;
+}
+
+.runyth-npc-button__complementary-colors-controls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.runyth-npc-button__complementary-colors-controls input[type="color"] {
+  background: none;
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-sm);
+  min-height: 2.25rem;
+  padding: 0.15rem;
+  width: 4.5rem;
+}
+
 @media (max-width: 560px) {
   .runyth-npc-button__quota-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .runyth-npc-button__complementary-colors-controls {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
