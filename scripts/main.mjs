@@ -10,12 +10,15 @@ import { clearPromptExtensionRegistry, getPromptExtensions, registerPromptExtens
 import { registerPortraitPromptHooks } from "./ui/actor-portrait-button.mjs";
 import { openNpcDashboard, openNpcDialog } from "./ui/npc-dialog.mjs";
 import {
+  attributeCatalogEntries,
   getCatalogGroups,
+  getComplementaryCatalogModules,
   getGroupTypes,
   getHabitats,
   getNamingStyles,
   getRaces,
   getRoles,
+  getUnattributedCatalogEntries,
   registerGroupType,
   registerHabitat,
   registerNamingStyle,
@@ -64,7 +67,10 @@ Hooks.once("init", () => {
       getNamingStyles,
       getHabitats,
       getGroupTypes,
-      getCatalogGroups
+      getCatalogGroups,
+      getComplementaryCatalogModules,
+      getUnattributedCatalogEntries,
+      attributeCatalogEntries
     });
   }
 

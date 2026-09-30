@@ -770,7 +770,7 @@
     "complementaryColors": {
       "title": "Complementary module highlight colors",
       "intro": "Set a highlight color for entries contributed by complementary modules. Entries from the same module share one color across dashboard pickers and filter lists.",
-      "empty": "No complementary module catalog entries are currently registered.",
+      "empty": "Installing or enabling a complementary module alone is not enough for color grouping. It must register catalog entries through the NPC Button extension API and identify their source module.",
       "colorLabel": "Highlight color",
       "resetOne": "Reset",
       "resetAll": "Reset all to defaults",
@@ -781,7 +781,14 @@
         "namingStyles": "Naming styles",
         "habitats": "Habitats",
         "groupTypes": "Group types"
-      }
+      },
+      "unattributedTitle": "Catalog extensions detected without source-module metadata",
+      "unattributedBody": "These entries are registered and usable, but NPC Button cannot color-group them because their registering module did not identify itself with sourceModuleId. This normally means the complementary module needs a compatibility patch.",
+      "dependenciesTitle": "Detected complementary-module dependencies",
+      "dependenciesBody": "These installed modules declare Runyth NPC Button as a dependency or recommendation, but no color-attributed catalog entries from them are currently registered.",
+      "statusEnabled": "enabled",
+      "statusDisabled": "disabled",
+      "emptyTitle": "No complementary catalog integration detected"
     }
   }
 }

@@ -770,7 +770,7 @@
     "complementaryColors": {
       "title": "Hervorhebungsfarben für Ergänzungsmodule",
       "intro": "Lege eine Hervorhebungsfarbe für Einträge fest, die von Ergänzungsmodulen beigesteuert werden. Einträge desselben Moduls teilen sich dieselbe Farbe in Dashboard-Pickern und Filterlisten.",
-      "empty": "Derzeit sind keine Katalogeinträge aus Ergänzungsmodulen registriert.",
+      "empty": "Das reine Installieren oder Aktivieren eines Ergänzungsmoduls reicht für die Farbzuordnung nicht aus. Es muss Katalogeinträge über die NPC-Button-Erweiterungs-API registrieren und dabei sein Quellmodul angeben.",
       "colorLabel": "Hervorhebungsfarbe",
       "resetOne": "Zurücksetzen",
       "resetAll": "Alles auf Standard zurücksetzen",
@@ -781,7 +781,14 @@
         "namingStyles": "Namensstile",
         "habitats": "Lebensräume",
         "groupTypes": "Gruppentypen"
-      }
+      },
+      "unattributedTitle": "Katalogerweiterungen ohne Quellmodul-Metadaten erkannt",
+      "unattributedBody": "Diese Einträge sind registriert und nutzbar, NPC Button kann sie jedoch nicht nach Farben gruppieren, weil das registrierende Modul sich nicht über sourceModuleId identifiziert hat. Das bedeutet normalerweise, dass das Ergänzungsmodul einen Kompatibilitäts-Patch benötigt.",
+      "dependenciesTitle": "Erkannte Abhängigkeiten von Ergänzungsmodulen",
+      "dependenciesBody": "Diese installierten Module deklarieren Runyth NPC Button als Abhängigkeit oder Empfehlung, aber von ihnen sind derzeit keine farblich zugeordneten Katalogeinträge registriert.",
+      "statusEnabled": "aktiviert",
+      "statusDisabled": "deaktiviert",
+      "emptyTitle": "Keine ergänzende Katalogintegration erkannt"
     }
   }
 }

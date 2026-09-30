@@ -117,6 +117,8 @@ Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard 
 
 Complementary-module catalog entries are now color-highlighted throughout dashboard pickers and filter lists. Use **Game Settings → Configure Settings → Runyth NPC Button → Complementary module highlight colors** to assign a stable highlight color per complementary module.
 
+The color settings distinguish three states: properly attributed contributions, registered extension entries that are missing source-module metadata, and installed modules that declare NPC Button as a dependency/recommendation but have not registered attributed entries. Installing/enabling a module by itself is not enough for color grouping; the registering module must identify its contributed entries with `sourceModuleId` (or call the attribution helper below).
+
 
 ### Prompt extension API
 
@@ -171,6 +173,8 @@ Available methods:
 - catalog getters: `getRaces()`, `getRoles()`, `getNamingStyles()`, `getHabitats()`, `getGroupTypes()`
 
 Complementary modules may optionally include `sourceModuleId` on catalog registrations. When present, the entry is visually highlighted in pickers and filter catalogs using the configured color for that complementary module. Race registrations may also include `portraitGuidance` to strengthen portrait prompts for that race.
+
+For modules that already register several entries without `sourceModuleId`, `attributeCatalogEntries(sourceModuleId, contributions, options)` can backfill ownership in one call after registration. `getUnattributedCatalogEntries()` exposes entries that are active but still lack ownership metadata.
 
 Creation hooks:
 

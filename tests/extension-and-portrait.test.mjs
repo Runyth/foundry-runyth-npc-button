@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { buildPortraitPromptFromActor } from "../scripts/ai/portrait-prompt-builder.mjs";
-import { defaultComplementaryModuleColor, parseComplementaryModuleColors, resolveComplementaryModuleColor } from "../scripts/complementary-module-colors.mjs";
+import { defaultComplementaryModuleColor, getComplementaryDependencyCandidates, parseComplementaryModuleColors, resolveComplementaryModuleColor } from "../scripts/complementary-module-colors.mjs";
 import { registerPortraitPromptHooks } from "../scripts/ui/actor-portrait-button.mjs";
-import { clearExtensionRegistry, getCatalogEntryMetadata, getComplementaryCatalogModules, getRaces, registerRace } from "../scripts/extensions/registry.mjs";
+import { attributeCatalogEntries, clearExtensionRegistry, getCatalogEntryMetadata, getComplementaryCatalogModules, getRaces, getUnattributedCatalogEntries, registerRace, registerRole } from "../scripts/extensions/registry.mjs";
 import { FilterSettingsForm, applyStringFilters, buildFilterProfile, defaultFilterConfiguration, filterCatalogItems, parseFilterProfile, parseFilterSettings, selectedFilterIds, settingsFromForm } from "../scripts/filters.mjs";
 import { hierarchicalMultiPickerMarkup } from "../scripts/ui/hierarchical-multi-picker.mjs";
 
@@ -76,6 +76,44 @@ test("extension metadata tracks complementary module ownership and aggregates co
   assert.equal(modules[0].moduleId, "orphan-black-companion");
   assert.equal(modules[0].counts.races, 2);
   clearExtensionRegistry();
+});
+
+test("unattributed extension entries are reported and can be attributed in one compatibility call", () => {
+  clearExtensionRegistry();
+  registerRace("goblin", { label: "Goblin", group: "supplemental", size: "sm", speed: 30 });
+  registerRole("slave", { label: "Slave", group: "everyday" });
+  const before = getUnattributedCatalogEntries();
+  assert.deepEqual(before.map((entry) => `${entry.kind}:${entry.id}`).sort(), ["races:goblin", "roles:slave"]);
+
+  const count = attributeCatalogEntries("orphan-black-companion", {
+    races: ["goblin"],
+    roles: ["slave"]
+  }, { sourceModuleTitle: "Orphan Black Companion" });
+  assert.equal(count, 2);
+  assert.equal(getUnattributedCatalogEntries().length, 0);
+  assert.equal(getCatalogEntryMetadata("races", "goblin").sourceModuleId, "orphan-black-companion");
+  assert.equal(getComplementaryCatalogModules()[0].totalEntries, 2);
+  clearExtensionRegistry();
+});
+
+test("complementary dependency candidates detect modules that declare NPC Button relationships", () => {
+  globalThis.game = {
+    modules: new Map([
+      ["runyth-npc-button", { id: "runyth-npc-button", title: "NPC Button", active: true }],
+      ["orphan-black-companion", {
+        id: "orphan-black-companion",
+        title: "Orphan Black Companion",
+        active: true,
+        relationships: { requires: [{ id: "runyth-npc-button" }] }
+      }],
+      ["unrelated", { id: "unrelated", title: "Unrelated", active: true, relationships: { requires: [] } }]
+    ])
+  };
+  assert.deepEqual(getComplementaryDependencyCandidates(), [{
+    moduleId: "orphan-black-companion",
+    title: "Orphan Black Companion",
+    active: true
+  }]);
 });
 
 test("complementary module colors parse safely and resolve deterministic defaults", () => {

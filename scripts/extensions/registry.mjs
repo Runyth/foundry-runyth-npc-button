@@ -121,6 +121,45 @@ export function getComplementaryCatalogModules() {
   return [...merged.values()].sort((left, right) => left.title.localeCompare(right.title, undefined, { sensitivity: "base" }));
 }
 
+export function getUnattributedCatalogEntries() {
+  const entries = [];
+  for (const [kind, registry] of Object.entries(registries)) {
+    for (const [id, config] of registry.entries()) {
+      if (metadata[kind].has(id)) continue;
+      entries.push({
+        kind,
+        id,
+        label: String(config?.label ?? id)
+      });
+    }
+  }
+  return entries.sort((left, right) => (
+    left.kind.localeCompare(right.kind)
+    || left.label.localeCompare(right.label, undefined, { sensitivity: "base" })
+  ));
+}
+
+export function attributeCatalogEntries(sourceModuleId, contributions = {}, { sourceModuleTitle = "" } = {}) {
+  const moduleId = String(sourceModuleId ?? "").trim();
+  if (!moduleId || moduleId === MODULE_ID) throw new Error("A complementary source module id is required.");
+  const title = String(
+    sourceModuleTitle
+    || globalThis.game?.modules?.get?.(moduleId)?.title
+    || moduleId
+  ).trim() || moduleId;
+  let attributed = 0;
+  for (const [kind, ids] of Object.entries(contributions ?? {})) {
+    if (!registries[kind]) continue;
+    for (const id of Array.isArray(ids) ? ids : []) {
+      const key = String(id ?? "").trim();
+      if (!key || !registries[kind].has(key)) continue;
+      metadata[kind].set(key, { sourceModuleId: moduleId, sourceModuleTitle: title });
+      attributed += 1;
+    }
+  }
+  return attributed;
+}
+
 export function registerRace(id, config) {
   return register("races", id, config, "Race");
 }

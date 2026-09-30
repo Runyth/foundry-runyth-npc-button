@@ -2,6 +2,23 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.1 - 2026-09-30
+
+### Fixed
+
+- Complementary-module color settings no longer misleadingly report that no catalog entries are registered when extension entries exist but were registered without source-module metadata.
+- The integration-status panel now distinguishes attributed contributions, unattributed extension entries, and installed modules that declare Runyth NPC Button as a dependency/recommendation.
+
+### Added
+
+- Diagnostic counts for unattributed Races, Roles, Naming styles, Habitats, and Group types, with an explicit explanation that these entries remain usable but cannot be color-grouped until their source module identifies itself.
+- Public `getUnattributedCatalogEntries()` and `getComplementaryCatalogModules()` diagnostics.
+- Public `attributeCatalogEntries(sourceModuleId, contributions, options)` helper so an existing complementary module can register its catalogs normally and then backfill source ownership in one call.
+
+### Clarified
+
+- Merely installing or enabling a complementary module does not make it color-addressable. The module must register catalog contributions through the extension API and associate those contributions with a source module.
+
 ## 0.4.0 - 2026-09-30
 
 ### Added
