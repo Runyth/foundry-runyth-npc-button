@@ -16,6 +16,9 @@ These functions remain available for extending dashboard catalogs:
 - `registerHabitat(id, data)` / `unregisterHabitat(id)`
 - `registerGroupType(id, data)` / `unregisterGroupType(id)`
 - `getRaces()` / `getRoles()` / `getNamingStyles()` / `getHabitats()` / `getGroupTypes()` / `getCatalogGroups()`
+- `getComplementaryCatalogModules()` — returns source-attributed complementary-module contribution counts.
+- `getUnattributedCatalogEntries()` — returns extension entries that are active but lack source-module ownership metadata.
+- `attributeCatalogEntries(sourceModuleId, contributions, options)` — backfills source-module ownership for already-registered entries.
 
 Catalog registrations may additionally provide a few optional metadata fields that the core module understands:
 
@@ -37,6 +40,17 @@ api?.registerRace("goblin", {
   portraitGuidance: "read unmistakably as a Goblin with a wiry frame, oversized ears, sharp features, and a goblin silhouette rather than a green human"
 });
 ```
+
+For a complementary module that already registers entries without `sourceModuleId`, patching every config object is not required. It can attribute the existing registrations once:
+
+```js
+api?.attributeCatalogEntries("orphan-black-npc-button", {
+  races: ["goblin", "hobgoblin"],
+  roles: ["slave", "day-labourer", "forced-labourer", "migrant-labourer"]
+});
+```
+
+This ownership metadata is what allows the core module to group entries by complementary module and apply the GM-configured per-module highlight color. Merely installing or enabling a module cannot provide that information reliably.
 
 ## Prompt pipeline API
 

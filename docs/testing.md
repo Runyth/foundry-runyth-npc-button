@@ -66,6 +66,7 @@ Automated coverage includes automatically materialized and explicitly reused gen
 39. Enable OS/browser reduced-motion preference and confirm all UI state remains understandable without transition timing.
 40. Repeat Create locally, Copy prompt, Import NPC, filter import/export, preview confirmation/cancel, and portrait-prompt copy after the visual overhaul. Confirm the cosmetic release has not changed action delivery or payload contracts.
 41. Run `npm run audit:ui` and confirm the stylesheet stays under the performance budget and all virtualization/animation invariants pass.
+42. Open Complementary module highlight colors with (a) no extensions, (b) unattributed extension entries, (c) a module that declares NPC Button as a dependency but registers no attributed entries, and (d) attributed contributions. Confirm the status text distinguishes all four cases and never claims there are no extensions when unattributed entries actually exist.
 
 ### v0.2.3 count/import regression coverage
 

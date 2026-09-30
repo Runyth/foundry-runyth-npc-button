@@ -1873,6 +1873,33 @@
   gap: 0.85rem;
 }
 
+.runyth-npc-button__integration-status {
+  background: color-mix(in srgb, var(--rnb-surface-0) 78%, transparent 22%);
+  border: 1px solid var(--rnb-border-soft);
+  border-radius: var(--rnb-radius-md);
+  padding: 0.75rem 0.85rem;
+}
+
+.runyth-npc-button__integration-status--warning {
+  border-color: color-mix(in srgb, var(--color-level-warning, #a76b19) 55%, var(--rnb-border-soft) 45%);
+}
+
+.runyth-npc-button__integration-status h2,
+.runyth-npc-button__integration-status p,
+.runyth-npc-button__integration-status ul {
+  margin: 0;
+}
+
+.runyth-npc-button__integration-status h2 {
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+
+.runyth-npc-button__integration-status p + p,
+.runyth-npc-button__integration-status p + ul {
+  margin-top: 0.4rem;
+}
+
 .runyth-npc-button__complementary-colors-grid {
   display: grid;
   gap: 0.75rem;

@@ -1,5 +1,5 @@
 import { MODULE_ID, SETTINGS } from "./constants.mjs";
-import { getComplementaryCatalogModules } from "./extensions/registry.mjs";
+import { getComplementaryCatalogModules, getUnattributedCatalogEntries } from "./extensions/registry.mjs";
 import { escapeAttribute } from "./utils/html.mjs";
 
 const BaseApplicationV2 = globalThis.foundry?.applications?.api?.ApplicationV2 ?? class {};
@@ -79,6 +79,46 @@ function configuredModuleTitle(moduleId, fallback = "") {
   return String(module?.title ?? fallback ?? moduleId).trim() || moduleId;
 }
 
+function collectionValues(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  if (value instanceof Set) return [...value];
+  if (value instanceof Map) return [...value.values()];
+  if (typeof value.values === "function") {
+    try { return [...value.values()]; } catch { /* fall through */ }
+  }
+  if (typeof value[Symbol.iterator] === "function" && typeof value !== "string") {
+    try { return [...value]; } catch { /* fall through */ }
+  }
+  if (typeof value === "object") return Object.values(value);
+  return [];
+}
+
+function relationshipEntries(module) {
+  const relationships = module?.relationships ?? module?.metadata?.relationships ?? module?.manifest?.relationships ?? {};
+  return [
+    ...collectionValues(relationships?.requires),
+    ...collectionValues(relationships?.recommends)
+  ];
+}
+
+function relationshipId(entry) {
+  if (typeof entry === "string") return entry;
+  return String(entry?.id ?? entry?.moduleId ?? entry?.module ?? "").trim();
+}
+
+export function getComplementaryDependencyCandidates() {
+  return collectionValues(globalThis.game?.modules)
+    .filter((module) => module?.id && module.id !== MODULE_ID)
+    .filter((module) => relationshipEntries(module).some((entry) => relationshipId(entry) === MODULE_ID))
+    .map((module) => ({
+      moduleId: module.id,
+      title: String(module.title ?? module.id),
+      active: Boolean(module.active ?? module.enabled)
+    }))
+    .sort((left, right) => left.title.localeCompare(right.title, undefined, { sensitivity: "base" }));
+}
+
 function modulesForConfiguration() {
   const registered = getComplementaryCatalogModules();
   const colors = loadComplementaryModuleColors();
@@ -95,6 +135,19 @@ function modulesForConfiguration() {
     });
   }
   return [...map.values()].sort((left, right) => left.title.localeCompare(right.title, undefined, { sensitivity: "base" }));
+}
+
+function unattributedSummary(entries) {
+  const labels = {
+    races: localize("complementaryColors.kinds.races", "Races"),
+    roles: localize("complementaryColors.kinds.roles", "Roles"),
+    namingStyles: localize("complementaryColors.kinds.namingStyles", "Naming styles"),
+    habitats: localize("complementaryColors.kinds.habitats", "Habitats"),
+    groupTypes: localize("complementaryColors.kinds.groupTypes", "Group types")
+  };
+  const counts = new Map();
+  for (const entry of entries) counts.set(entry.kind, (counts.get(entry.kind) ?? 0) + 1);
+  return [...counts.entries()].map(([kind, count]) => `${labels[kind] ?? kind}: ${count}`).join(" • ");
 }
 
 function contributionSummary(entry) {
@@ -157,11 +210,26 @@ export class ComplementaryModuleColorsForm extends BaseApplicationV2 {
 
   async _renderHTML() {
     const modules = modulesForConfiguration();
+    const registeredIds = new Set(modules.filter((entry) => entry.source === "registry").map((entry) => entry.moduleId));
+    const unattributed = getUnattributedCatalogEntries();
+    const dependencyCandidates = getComplementaryDependencyCandidates().filter((entry) => !registeredIds.has(entry.moduleId));
     const colors = loadComplementaryModuleColors();
     const template = document.createElement("template");
     template.innerHTML = `
       <div class="runyth-npc-button__complementary-colors-form">
         <p class="notes">${escapeAttribute(localize("complementaryColors.intro", "Set a highlight color for entries contributed by complementary modules. Items from the same module share one color across pickers and filter lists."))}</p>
+        ${unattributed.length ? `
+          <section class="runyth-npc-button__integration-status runyth-npc-button__integration-status--warning">
+            <h2>${escapeAttribute(localize("complementaryColors.unattributedTitle", "Catalog extensions detected without source-module metadata"))}</h2>
+            <p>${escapeAttribute(localize("complementaryColors.unattributedBody", "These entries are registered and usable, but NPC Button cannot color-group them because their registering module did not identify itself with sourceModuleId. This normally means the complementary module needs a compatibility patch."))}</p>
+            <p><strong>${escapeAttribute(unattributedSummary(unattributed))}</strong></p>
+          </section>` : ""}
+        ${dependencyCandidates.length ? `
+          <section class="runyth-npc-button__integration-status">
+            <h2>${escapeAttribute(localize("complementaryColors.dependenciesTitle", "Detected complementary-module dependencies"))}</h2>
+            <p>${escapeAttribute(localize("complementaryColors.dependenciesBody", "These installed modules declare Runyth NPC Button as a dependency or recommendation, but no color-attributed catalog entries from them are currently registered."))}</p>
+            <ul>${dependencyCandidates.map((entry) => `<li><strong>${escapeAttribute(entry.title)}</strong> <code>${escapeAttribute(entry.moduleId)}</code> — ${escapeAttribute(entry.active ? localize("complementaryColors.statusEnabled", "enabled") : localize("complementaryColors.statusDisabled", "disabled"))}</li>`).join("")}</ul>
+          </section>` : ""}
         ${modules.length
           ? `<div class="runyth-npc-button__complementary-colors-grid">
               ${modules.map((entry) => {
@@ -187,7 +255,9 @@ export class ComplementaryModuleColorsForm extends BaseApplicationV2 {
                 `;
               }).join("")}
             </div>`
-          : `<p>${escapeAttribute(localize("complementaryColors.empty", "No complementary module catalog entries are currently registered."))}</p>`}
+          : (!unattributed.length && !dependencyCandidates.length
+            ? `<section class="runyth-npc-button__integration-status"><h2>${escapeAttribute(localize("complementaryColors.emptyTitle", "No complementary catalog integration detected"))}</h2><p>${escapeAttribute(localize("complementaryColors.empty", "Installing or enabling a complementary module alone is not enough for color grouping. It must register catalog entries through the NPC Button extension API and identify their source module."))}</p></section>`
+            : "")}
         <footer class="sheet-footer flexrow">
           <button type="button" data-action="reset-all-module-colors"><i class="fa-solid fa-rotate-left"></i> ${escapeAttribute(localize("complementaryColors.resetAll", "Reset all to defaults"))}</button>
           <button type="submit"><i class="fa-solid fa-floppy-disk"></i> ${escapeAttribute(globalThis.game?.i18n?.localize?.("SETTINGS.Save") ?? "Save")}</button>
