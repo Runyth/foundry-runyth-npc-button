@@ -177,7 +177,13 @@
       "titleMode": "Title frequency",
       "nameTemplate": "Custom name template",
       "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
-      "nameTemplateHint": "Available tokens: {tokens}. Put optional text in [square brackets]; that whole block disappears when one of its tokens is empty."
+      "nameTemplateHint": "Available tokens: {tokens}. Put optional text in [square brackets]; that whole block disappears when one of its tokens is empty.",
+      "ageRange": "Age range",
+      "ageRangeHint": "Choose the life-stage range for the batch. Named ranges scale to each Race; Exact year range uses literal ages.",
+      "ageMin": "Minimum age",
+      "ageMax": "Maximum age",
+      "ageSpread": "Group age spread",
+      "ageSpreadHint": "Controls how ages are distributed inside the selected range without changing the Race-appropriate range itself."
     },
     "help": {
       "title": "NPC Button Help",
@@ -407,7 +413,45 @@
           "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
         }
       },
-      "nameTemplateTokens": "Template tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role}, and {race}. {index} is the one-based NPC number within the batch."
+      "nameTemplateTokens": "Template tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role}, and {race}. {index} is the one-based NPC number within the batch.",
+      "ageTitle": "Age range and group spread",
+      "ageBody": "Age is generated per NPC and stored with the Actor metadata and biography. Named ranges are Race-relative, so an Elf and a Human in the same Mature batch are both mature for their own Race instead of receiving the same human-year assumptions. Exact year range is the explicit literal override.",
+      "ageRangeMode": "Age range",
+      "ageRangeRule": "Rule",
+      "ageRangeExample": "Example",
+      "ageSpreadTitle": "Group age spread",
+      "ageRangeModes": {
+        "contextual": "Role and group context choose a plausible adult span; families naturally allow a broader generational range.",
+        "youngAdult": "Uses the younger part of each Race’s adult lifespan.",
+        "adult": "Uses the broad early-to-middle adult span for each Race.",
+        "mature": "Uses the mature middle-to-later adult span for each Race.",
+        "older": "Uses the older but normally active part of each Race’s lifespan.",
+        "mixedGenerations": "Uses a broad adult span so several generations can appear naturally.",
+        "exactRange": "Uses the literal minimum and maximum years entered by the user; Race-relative scaling is disabled."
+      },
+      "ageRangeExamples": {
+        "contextual": "A guard patrol trends toward working-age adults; a family can naturally contain several generations.",
+        "youngAdult": "Young Human adults and correspondingly young adult Elves/Dwarves.",
+        "adult": "A broad ordinary adult batch without pushing strongly young or old.",
+        "mature": "Established professionals, household heads, senior artisans, experienced officials.",
+        "older": "Older veterans, elders, senior retainers, long-serving specialists.",
+        "mixedGenerations": "Useful for families, villages, caravans, households, councils, and mixed civilian groups.",
+        "exactRange": "20–35 means every generated NPC is literally between 20 and 35 years old."
+      },
+      "ageSpreadModes": {
+        "natural": "Randomizes naturally through the selected range.",
+        "even": "Distributes the batch broadly across the whole range.",
+        "clustered": "Keeps most NPCs near the middle of the range, useful for peer groups.",
+        "younger": "Biases toward the younger end while retaining some older members.",
+        "older": "Biases toward the older end while retaining some younger members."
+      },
+      "ageSpreadExamples": {
+        "natural": "A normal mixed batch with no deliberate age pattern.",
+        "even": "Ten NPCs cover the range instead of clustering by chance.",
+        "clustered": "A same-generation work crew or cohort.",
+        "younger": "Trainees, new recruits, junior laborers, younger settlers.",
+        "older": "Veteran guards, established guild members, senior officials."
+      }
     },
     "notifications": {
       "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
@@ -789,6 +833,22 @@
       "statusEnabled": "enabled",
       "statusDisabled": "disabled",
       "emptyTitle": "No complementary catalog integration detected"
+    },
+    "ageRange": {
+      "contextual": "Contextual",
+      "youngAdult": "Young adults",
+      "adult": "Adults",
+      "mature": "Mature adults",
+      "older": "Older adults",
+      "mixedGenerations": "Mixed generations",
+      "exactRange": "Exact year range"
+    },
+    "ageSpread": {
+      "natural": "Natural/random",
+      "even": "Evenly spread",
+      "clustered": "Similar ages",
+      "younger": "Younger-leaning",
+      "older": "Older-leaning"
     }
   }
 }

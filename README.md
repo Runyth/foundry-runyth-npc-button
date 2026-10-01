@@ -111,6 +111,12 @@ Role/combat equipment is generated independently and is unchanged by the distrib
 
 Every NPC remains mechanically combatable, but carried combat gear is role-relative. **Weaponless** always removes weapons and armor. Higher readiness levels progressively add plausible weapons, armor, shields, or backups within strict occupational ceilings. A Jurist remains a lightly equipped professional even at maximum readiness, while Guards, Soldiers, Raiders, and similar roles scale to appropriate professional equipment. Local canonical combat equipment is resolved against D&D 5e item compendia when available.
 
+### Age ranges and batch spread
+
+Age is generated as a first-class NPC attribute. Named profiles—**Contextual**, **Young adults**, **Adults**, **Mature adults**, **Older adults**, and **Mixed generations**—scale to each Race's adult/lifespan profile instead of applying the same human-year range to every Race. **Exact year range** is the literal override when the user wants concrete minimum and maximum ages.
+
+The independent **Group age spread** control determines how the batch fills that range: natural/random, evenly spread, clustered around similar ages, younger-leaning, or older-leaning. Contextual family generation automatically permits a broader generational span than a typical professional peer group.
+
 ### Filter profiles
 
 Open **Game Settings → Configure Settings → Runyth NPC Button → Dashboard string filters**. Each filter category first presents a searchable, scrollable, virtualized multi-select list. All available entries are selected by default; simply deselect individual Roles, Races, Naming styles, Habitats, Group types, or Actor folders to remove them from the matching dashboard picker. The older allow/deny exact, contains, prefix, suffix, and regular-expression rules remain available under **Advanced string and regex rules**. The filter window can export/import a versioned JSON profile as a file, copy it to the clipboard, or import one from the clipboard.
@@ -173,6 +179,8 @@ Available methods:
 - catalog getters: `getRaces()`, `getRoles()`, `getNamingStyles()`, `getHabitats()`, `getGroupTypes()`
 
 Complementary modules may optionally include `sourceModuleId` on catalog registrations. When present, the entry is visually highlighted in pickers and filter catalogs using the configured color for that complementary module. Race registrations may also include `portraitGuidance` to strengthen portrait prompts for that race.
+
+Race registrations may additionally include `ageProfile: { adulthood, lifespan }`. Named age modes use that profile to convert life stages into Race-appropriate years; custom/unknown Races fall back safely when no profile is supplied.
 
 For modules that already register several entries without `sourceModuleId`, `attributeCatalogEntries(sourceModuleId, contributions, options)` can backfill ownership in one call after registration. `getUnattributedCatalogEntries()` exposes entries that are active but still lack ownership metadata.
 

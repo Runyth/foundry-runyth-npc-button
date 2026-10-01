@@ -25,6 +25,7 @@ Catalog registrations may additionally provide a few optional metadata fields th
 - `sourceModuleId: string` — marks the entry as contributed by a complementary module. The entry is then color-highlighted in dashboard pickers and filter catalogs. The GM can configure one highlight color per module in global settings.
 - `sourceModuleTitle: string` — optional human-readable override for the source-module badge.
 - `portraitGuidance: string` — for Race registrations, appends race-specific portrait guidance to the built-in single-image portrait prompt.
+- `ageProfile: { adulthood: number, lifespan: number }` — optional Race-specific age model used by named Age ranges. `adulthood` is the normal adult threshold in years and `lifespan` is the approximate upper lifespan used to scale life-stage bands.
 
 Example:
 

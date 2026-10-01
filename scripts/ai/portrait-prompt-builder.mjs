@@ -91,6 +91,7 @@ function buildPortraitContext(actor) {
   const role = roleFromActor(actor) || "NPC";
   const wealth = wealthFromActor(actor);
   const gender = cleanPart(actor?.flags?.[MODULE_ID]?.gender) || cleanPart(extractSection(biography, "Gender"));
+  const age = cleanPart(actor?.flags?.[MODULE_ID]?.age) || cleanPart(actor?.system?.details?.age) || cleanPart(extractSection(biography, "Age"));
   const appearance = cleanPart(extractSection(biography, "Appearance") || extractSection(biography, "First impression"));
   const tell = cleanPart(extractSection(biography, "Tell") || extractSection(biography, "Mannerism"));
   const quirk = cleanPart(extractSection(biography, "Quirk"));
@@ -102,6 +103,7 @@ function buildPortraitContext(actor) {
     role,
     wealth,
     gender,
+    age,
     appearance,
     tell,
     quirk,
@@ -116,6 +118,7 @@ function defaultPortraitComponents(context) {
       context.name,
       `adult ${context.race} ${context.role}`,
       context.gender,
+      context.age ? `${context.age} years old` : "",
       context.appearance,
       ...racePortraitGuidance(context.race),
       context.wealth ? `${String(context.wealth).toLowerCase()} attire` : "practical attire",

@@ -31,6 +31,7 @@ import { DEFAULT_OPTIONS, TIER_STYLES } from "../constants.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from "../extensions/registry.mjs";
 import { buildWealthBundle, formatCopperValue } from "./wealth.mjs";
 import { formatGeneratedName } from "./name-format.mjs";
+import { buildAgeAssignments } from "./age.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 const GENDER_TUPLE = Object.freeze(["male", "female"]);
@@ -525,6 +526,7 @@ function buildBiography(blueprint) {
     `<p><strong>Role:</strong> ${escapeHtml(blueprint.role)}${blueprint.roleVariant ? ` — ${escapeHtml(blueprint.roleVariant)}` : ""} (${escapeHtml(blueprint.tier)})</p>`,
     `<p><strong>Race:</strong> ${escapeHtml(blueprint.race)}</p>`,
     `<p><strong>Gender:</strong> ${escapeHtml(blueprint.gender === "female" ? "Female" : "Male")}</p>`,
+    `<p><strong>Age:</strong> ${escapeHtml(blueprint.age)}</p>`,
     `<p><strong>Wealth:</strong> ${escapeHtml(blueprint.wealth)}</p>`,
     `<p><strong>Wealth distribution:</strong> ${escapeHtml(blueprint.wealthDistribution)}</p>`,
     `<p><strong>Portable wealth:</strong> ${escapeHtml(formatCopperValue(blueprint.wealthBudgetCp))} total; ${escapeHtml(formatCopperValue(blueprint.wealthCashCp))} carried as coin.</p>`,
@@ -568,6 +570,16 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
   const hitDie = race.size === "sm" ? 6 : 8;
   const hp = buildHitPoints(role, tier, scores.con, hitDie);
   const gender = options.gender === "female" ? "female" : "male";
+  const age = options.age === undefined || options.age === null || options.age === ""
+    ? buildAgeAssignments(
+      options,
+      [{ species: options.species ?? "human", customSpecies: options.customSpecies ?? "" }],
+      [{ role: options.role ?? DEFAULT_OPTIONS.role, variant: options.roleVariant ?? "" }],
+      1,
+      random,
+      { id: options.groupType ?? DEFAULT_OPTIONS.groupType }
+    )[0]
+    : Math.max(1, Math.trunc(Number(options.age) || DEFAULT_OPTIONS.ageMin));
   const generatedParts = generatedNameParts(style, random, options.forcedFamilyName ?? "", gender, options.namingStyle ?? "");
   const generated = formatGeneratedName({
     ...generatedParts,
@@ -593,6 +605,7 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
     race: race.label,
     species: race.label,
     gender,
+    age,
     wealth: wealth.label,
     wealthDistribution: wealthDistribution.label,
     wealthBudgetCp: wealthBundle.budgetCp,
@@ -785,6 +798,7 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         weaponVariety: blueprint.weaponVariety,
         generationSeed: blueprint.generationSeed,
         gender: blueprint.gender,
+        age: blueprint.age,
         habitat: blueprint.habitat,
         groupType: blueprint.groupType,
         groupMemberRole: blueprint.groupMemberRole,
@@ -812,6 +826,7 @@ export function generateNpcBatch(options = {}) {
   const raceAssignments = buildRaceAssignments(options, count, random);
   const roleAssignments = buildRoleAssignments(options, count, random, groupType);
   const genderAssignments = buildGenderAssignments(options, count, random);
+  const ageAssignments = buildAgeAssignments(options, raceAssignments, roleAssignments, count, random, groupType);
   const sharedRumour = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_RUMOURS, random);
   const sharedSecret = groupType === GROUP_TYPES.independent ? "" : pick(GROUP_SECRETS, random);
   const blueprints = [];
@@ -828,6 +843,7 @@ export function generateNpcBatch(options = {}) {
         role: roleAssignment.role,
         roleVariant: roleAssignment.variant,
         gender: genderAssignments[index] ?? GENDER_TUPLE[0],
+        age: ageAssignments[index] ?? DEFAULT_OPTIONS.ageMin,
         generationSeed: baseSeed,
         forcedFamilyName,
         nameIndex: index + 1,

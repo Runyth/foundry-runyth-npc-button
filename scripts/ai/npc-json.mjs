@@ -187,6 +187,9 @@ function normalizeActor(source, index) {
   const creatureType = objectAt(details.type, `${path}.system.details.type`);
   const biography = objectAt(details.biography, `${path}.system.details.biography`);
   validateBiographySections(biography.value, `${path}.system.details.biography.value`);
+  const biographyText = String(biography.value ?? "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ");
+  const ageMatch = biographyText.match(/\bAge:\s*(\d{1,5})\b/i);
+  const age = ageMatch ? integer(ageMatch[1], `${path}.biography Age`, { min: 1, max: 10000 }) : null;
   const traits = objectAt(system.traits, `${path}.system.traits`);
   const size = String(traits.size ?? "").trim().toLowerCase();
   if (!VALID_SIZES.has(size)) fail(`${path}.system.traits.size must be one of: ${[...VALID_SIZES].join(", ")}.`);
@@ -233,7 +236,8 @@ function normalizeActor(source, index) {
     items: normalizeItems(actor.items, index),
     flags: {
       [MODULE_ID]: {
-        aiImported: true
+        aiImported: true,
+        ...(age === null ? {} : { age })
       }
     }
   };

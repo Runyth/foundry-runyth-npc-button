@@ -177,7 +177,13 @@
       "titleMode": "Titel-Häufigkeit",
       "nameTemplate": "Eigene Namensvorlage",
       "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
-      "nameTemplateHint": "Verfügbare Tokens: {tokens}. Optionalen Text in [eckige Klammern] setzen; der gesamte Block entfällt, wenn eines seiner Tokens leer ist."
+      "nameTemplateHint": "Verfügbare Tokens: {tokens}. Optionalen Text in [eckige Klammern] setzen; der gesamte Block entfällt, wenn eines seiner Tokens leer ist.",
+      "ageRange": "Altersbereich",
+      "ageRangeHint": "Wähle den Lebensphasen-Bereich für den Stapel. Benannte Bereiche skalieren je Rasse; Exakter Jahresbereich verwendet wörtliche Alterszahlen.",
+      "ageMin": "Mindestalter",
+      "ageMax": "Höchstalter",
+      "ageSpread": "Altersverteilung der Gruppe",
+      "ageSpreadHint": "Steuert, wie Alter innerhalb des gewählten Bereichs verteilt werden, ohne den rassenpassenden Bereich selbst zu verändern."
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -407,7 +413,45 @@
           "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
         }
       },
-      "nameTemplateTokens": "Vorlagen-Tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role} und {race}. {index} ist die einsbasierte NPC-Nummer im Stapel."
+      "nameTemplateTokens": "Vorlagen-Tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role} und {race}. {index} ist die einsbasierte NPC-Nummer im Stapel.",
+      "ageTitle": "Altersbereich und Gruppenverteilung",
+      "ageBody": "Das Alter wird pro NPC erzeugt und in Actor-Metadaten sowie Biografie gespeichert. Benannte Bereiche sind rassenrelativ, sodass Elf und Mensch in derselben reifen Gruppe jeweils für ihre eigene Rasse reif sind. Der exakte Jahresbereich ist die ausdrückliche wörtliche Ausnahme.",
+      "ageRangeMode": "Altersbereich",
+      "ageRangeRule": "Regel",
+      "ageRangeExample": "Beispiel",
+      "ageSpreadTitle": "Altersverteilung der Gruppe",
+      "ageRangeModes": {
+        "contextual": "Rolle und Gruppenkontext wählen einen plausiblen erwachsenen Bereich; Familien erlauben natürlich eine breitere Generationenspanne.",
+        "youngAdult": "Verwendet den jüngeren Teil der erwachsenen Lebensspanne jeder Rasse.",
+        "adult": "Verwendet die breite frühe bis mittlere Erwachsenenphase jeder Rasse.",
+        "mature": "Verwendet die reife mittlere bis spätere Erwachsenenphase jeder Rasse.",
+        "older": "Verwendet den älteren, normalerweise noch aktiven Teil der Lebensspanne jeder Rasse.",
+        "mixedGenerations": "Verwendet eine breite Erwachsenenspanne, damit mehrere Generationen natürlich auftreten können.",
+        "exactRange": "Verwendet die eingegebenen Mindest- und Höchstjahre wörtlich; rassenrelative Skalierung ist deaktiviert."
+      },
+      "ageRangeExamples": {
+        "contextual": "Eine Wachpatrouille tendiert zu arbeitsfähigen Erwachsenen; eine Familie kann mehrere Generationen enthalten.",
+        "youngAdult": "Junge menschliche Erwachsene und entsprechend junge erwachsene Elfen/Zwerge.",
+        "adult": "Eine breite normale Erwachsenengruppe ohne starke Tendenz zu jung oder alt.",
+        "mature": "Etablierte Fachleute, Haushaltsvorstände, erfahrene Handwerker und Amtsträger.",
+        "older": "Ältere Veteranen, Älteste, langjährige Gefolgsleute und Spezialisten.",
+        "mixedGenerations": "Nützlich für Familien, Dörfer, Karawanen, Haushalte, Räte und gemischte Zivilgruppen.",
+        "exactRange": "20–35 bedeutet, dass jeder erzeugte NPC wörtlich zwischen 20 und 35 Jahre alt ist."
+      },
+      "ageSpreadModes": {
+        "natural": "Verteilt natürlich zufällig im gewählten Bereich.",
+        "even": "Verteilt die Gruppe breit über den gesamten Bereich.",
+        "clustered": "Hält die meisten NPCs nahe der Mitte des Bereichs, gut für Gleichaltrigengruppen.",
+        "younger": "Gewichtet zum jüngeren Ende, behält aber einige ältere Mitglieder.",
+        "older": "Gewichtet zum älteren Ende, behält aber einige jüngere Mitglieder."
+      },
+      "ageSpreadExamples": {
+        "natural": "Normale gemischte Gruppe ohne absichtliches Altersmuster.",
+        "even": "Zehn NPCs decken den Bereich ab, statt zufällig zu verklumpen.",
+        "clustered": "Arbeitsgruppe oder Kohorte derselben Generation.",
+        "younger": "Auszubildende, neue Rekruten, junge Arbeiter oder Siedler.",
+        "older": "Veteranen, etablierte Gildenmitglieder und ältere Amtsträger."
+      }
     },
     "notifications": {
       "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
@@ -789,6 +833,22 @@
       "statusEnabled": "aktiviert",
       "statusDisabled": "deaktiviert",
       "emptyTitle": "Keine ergänzende Katalogintegration erkannt"
+    },
+    "ageRange": {
+      "contextual": "Kontextabhängig",
+      "youngAdult": "Junge Erwachsene",
+      "adult": "Erwachsene",
+      "mature": "Reife Erwachsene",
+      "older": "Ältere Erwachsene",
+      "mixedGenerations": "Gemischte Generationen",
+      "exactRange": "Exakter Jahresbereich"
+    },
+    "ageSpread": {
+      "natural": "Natürlich/Zufällig",
+      "even": "Gleichmäßig verteilt",
+      "clustered": "Ähnliche Alter",
+      "younger": "Jünger gewichtet",
+      "older": "Älter gewichtet"
     }
   }
 }

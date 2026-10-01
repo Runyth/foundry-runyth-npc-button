@@ -27,6 +27,10 @@ function buildDefaultAiPrompt(options = {}) {
   const roleMixed = ["balanced", "primary", "dominant", "weighted"].includes(clean(options.roleComposition, "groupPreset"));
   const roleVariants = list(options.roleVariants, "none supplied");
   const genderMode = clean(options.genderComposition, "random");
+  const ageRangeMode = clean(options.ageRange, "contextual");
+  const ageInstruction = ageRangeMode === "exactRange"
+    ? `literal ages from ${Math.max(1, Math.trunc(Number(options.ageMin) || 18))} through ${Math.max(1, Math.trunc(Number(options.ageMax) || 80))} years inclusive`
+    : `${clean(options.ageRangeLabel, "Contextual")} — ${clean(options.ageRangePrompt, "choose a plausible adult life stage for the Race and role")}`;
   const genderInstruction = genderMode === "exact"
     ? `exactly ${Math.max(0, Math.trunc(Number(options.genderExactMale) || 0))} male and ${Math.max(0, Math.trunc(Number(options.genderExactFemale) || 0))} female NPCs`
     : genderMode === "balanced"
@@ -45,7 +49,7 @@ function buildDefaultAiPrompt(options = {}) {
     "Every Actor must have type \"npc\". Do not include _id, folder, ownership, sort, _stats, effects, prototypeToken, or flags.",
     "Set img to \"icons/svg/mystery-man.svg\". The importer applies the chosen Foundry folder locally.",
     "Use HTML only inside system.details.biography.value and system.details.biography.public. Allowed tags are <p>, <strong>, <em>, <ul>, <li>, and <br>, with no attributes.",
-    "The private biography must be terse but immediately useful at the table and contain these labeled sections: Gender, Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.",
+    "The private biography must be terse but immediately useful at the table and contain these labeled sections: Gender, Age, Appearance, Speech, Motivation, Mannerism, Quirk, Rumours, Secrets, Relationships, and Adventure Hook.",
     "Quirk must be a small, playable behavior, habit, preference, superstition, or personal oddity. Avoid cartoonish gimmicks unless the requested group specifically calls for one.",
     "Rumours should be things other people might plausibly say or believe about the NPC; they may be true, false, or distorted. Secrets must contain information the NPC would not readily volunteer.",
     grouped
@@ -105,6 +109,9 @@ function buildDefaultAiPrompt(options = {}) {
     "Requested NPC profile:",
     `- Count: ${count}`,
     `- Gender mix: ${clean(options.genderCompositionLabel, "Randomized")} — ${genderInstruction}.`,
+    `- Age range: ${ageInstruction}.`,
+    `- Group age spread: ${clean(options.ageSpreadLabel, "Natural/random")} — ${clean(options.ageSpreadPrompt, "randomize naturally within the selected age range")}.`,
+    ageRangeMode === "exactRange" ? "- Exact age-range years are literal and override Race-relative life-stage scaling." : "- For non-human Races, interpret named age ranges relative to that Race's normal adult lifespan rather than applying human-year assumptions.",
     `- Role / primary role: ${clean(options.roleLabel, clean(options.role, "Guard"))}`,
     `- Role composition: ${clean(options.roleCompositionLabel, "Group-appropriate roles")} — ${clean(options.roleCompositionPrompt, "use a coherent role distribution")}`,
     clean(options.roleComposition, "") === "variants" ? `- Available primary-role variants: ${roleVariants}` : "",
@@ -164,7 +171,7 @@ function buildDefaultAiPrompt(options = {}) {
     "      \"cr\": 0.25,",
     "      \"type\": { \"value\": \"humanoid\", \"subtype\": \"Human\", \"swarm\": \"\", \"custom\": \"\" },",
     "      \"biography\": {",
-    "        \"value\": \"<p><strong>Gender:</strong> Male</p><p><strong>Appearance:</strong> ...</p><p><strong>Speech:</strong> ...</p><p><strong>Motivation:</strong> ...</p><p><strong>Mannerism:</strong> ...</p><p><strong>Quirk:</strong> ...</p><p><strong>Rumours:</strong> ...</p><p><strong>Secrets:</strong> ...</p><p><strong>Relationships:</strong> ...</p><p><strong>Adventure Hook:</strong> ...</p>\",",
+    "        \"value\": \"<p><strong>Gender:</strong> Male</p><p><strong>Age:</strong> 34</p><p><strong>Appearance:</strong> ...</p><p><strong>Speech:</strong> ...</p><p><strong>Motivation:</strong> ...</p><p><strong>Mannerism:</strong> ...</p><p><strong>Quirk:</strong> ...</p><p><strong>Rumours:</strong> ...</p><p><strong>Secrets:</strong> ...</p><p><strong>Relationships:</strong> ...</p><p><strong>Adventure Hook:</strong> ...</p>\",",
     "        \"public\": \"\"",
     "      }",
     "    },",

@@ -2,6 +2,7 @@ import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import { COMBAT_READINESS, GROUP_TYPES, HABITATS, NAME_STYLES, RACES, RACE_COMPOSITION_MODES, ROLE_COMPOSITION_MODES, WEALTH_DISTRIBUTIONS, WEAPON_VARIETY } from "../generator/data.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
+import { AGE_RANGE_MODES, AGE_SPREADS } from "../generator/age.mjs";
 
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
@@ -101,6 +102,12 @@ function helpContent() {
   const weaponRules = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyModes.${id}`)]));
   const weaponExamples = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyExamples.${id}`)]));
   const weaponRows = detailRows(WEAPON_VARIETY, weaponRules, weaponExamples);
+  const ageRangeRules = Object.fromEntries(Object.keys(AGE_RANGE_MODES).map((id) => [id, localize(`help.ageRangeModes.${id}`)]));
+  const ageRangeExamples = Object.fromEntries(Object.keys(AGE_RANGE_MODES).map((id) => [id, localize(`help.ageRangeExamples.${id}`)]));
+  const ageRangeRows = detailRows(AGE_RANGE_MODES, ageRangeRules, ageRangeExamples);
+  const ageSpreadRules = Object.fromEntries(Object.keys(AGE_SPREADS).map((id) => [id, localize(`help.ageSpreadModes.${id}`)]));
+  const ageSpreadExamples = Object.fromEntries(Object.keys(AGE_SPREADS).map((id) => [id, localize(`help.ageSpreadExamples.${id}`)]));
+  const ageSpreadRows = detailRows(AGE_SPREADS, ageSpreadRules, ageSpreadExamples);
   const wealthDistributionRules = Object.fromEntries(Object.keys(WEALTH_DISTRIBUTIONS).map((id) => [id, localize(`help.wealthDistributionModes.${id}`)]));
   const wealthDistributionExamples = Object.fromEntries(Object.keys(WEALTH_DISTRIBUTIONS).map((id) => [id, localize(`help.wealthDistributionExamples.${id}`)]));
   const wealthDistributionRows = detailRows(WEALTH_DISTRIBUTIONS, wealthDistributionRules, wealthDistributionExamples);
@@ -182,6 +189,13 @@ function helpContent() {
         ${helpTable([localize("help.mixMode"), localize("help.mixRule"), localize("help.mixExample")], roleMixRows)}
         <p>${escapeAttribute(localize("help.roleMixWeights"))}</p>
         <p class="runyth-npc-button__note">${escapeAttribute(localize("help.mixRounding"))}</p>
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.ageTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.ageBody"))}</p>
+        ${helpTable([localize("help.ageRangeMode"), localize("help.ageRangeRule"), localize("help.ageRangeExample")], ageRangeRows)}
+        <h3>${escapeAttribute(localize("help.ageSpreadTitle"))}</h3>
+        ${helpTable([localize("help.mode"), localize("help.effect"), localize("help.example")], ageSpreadRows)}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.wealthDistributionTitle"))}</h2>

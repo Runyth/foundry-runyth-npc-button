@@ -2,6 +2,25 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.2 - 2026-10-01
+
+### Added
+
+- First-class Age controls in Batch composition with Contextual, Young adults, Adults, Mature adults, Older adults, Mixed generations, and Exact year range modes.
+- Group age-spread controls: Natural/random, Evenly spread, Similar ages, Younger-leaning, and Older-leaning.
+- Literal minimum/maximum year inputs for Exact year range with safe normalization when the values are entered in reverse order.
+- Race-relative named age ranges so long-lived and short-lived Races are generated at equivalent life stages instead of receiving identical human-year assumptions.
+- Context-aware defaults: families naturally permit a broader generational span, while professional peer groups stay more concentrated in plausible adult ranges.
+- Generated age metadata in the NPC biography and module flags; the dnd5e NPC data model has no native age field, so the module does not write unsupported Actor-system data.
+- AI prompt instructions for age range and batch spread, including literal-year handling for exact ranges and Race-relative handling for named ranges.
+- Portrait prompts now include the generated NPC age when available.
+- Help reference tables explaining every age-range and group-spread mode with practical examples.
+- Regression coverage for exact ranges, Race-relative ages, family ranges, spread modes, Actor metadata, and AI prompt propagation.
+
+### Changed
+
+- Complementary Race registrations may optionally provide `ageProfile: { adulthood, lifespan }` to make named age ranges Race-idiomatic; unknown/custom Races safely fall back to the core human-like profile.
+
 ## 0.4.1 - 2026-09-30
 
 ### Fixed

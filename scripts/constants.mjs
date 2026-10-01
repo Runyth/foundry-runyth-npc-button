@@ -1,6 +1,6 @@
 export const MODULE_ID = "runyth-npc-button";
 export const MODULE_TITLE = "Runyth NPC Button";
-export const MODULE_VERSION = "0.4.1";
+export const MODULE_VERSION = "0.4.2";
 
 export const SETTINGS = Object.freeze({
   DEBUG: "debugLogging",
@@ -50,6 +50,10 @@ export const DEFAULT_OPTIONS = Object.freeze({
   genderComposition: "random",
   maleCount: 1,
   femaleCount: 0,
+  ageRange: "contextual",
+  ageSpread: "natural",
+  ageMin: 18,
+  ageMax: 80,
   groupBrief: "",
   customName: "",
   nameFormatPreset: "standard",
