@@ -49,6 +49,7 @@ import { openNpcHelp } from "./npc-help.mjs";
 import { openNpcImportPreview } from "./npc-import-preview.mjs";
 import { mountVirtualQuotaEditor, virtualQuotaEditorMarkup } from "./virtual-quota-editor.mjs";
 import { NAME_FORMAT_PRESETS, NICKNAME_MODES, TITLE_MODES, nameTemplateTokenSummary, resolveNameTemplate, validateNameTemplate } from "../generator/name-format.mjs";
+import { AGE_RANGE_MODES, AGE_SPREADS } from "../generator/age.mjs";
 
 
 const GENDER_COMPOSITION_MODES = Object.freeze({
@@ -586,6 +587,29 @@ function dashboardContent(options, tierStyle) {
         </div>
 
         <fieldset class="runyth-npc-button__field">
+          <legend>${escapeAttribute(localize("ui.ageRange"))}</legend>
+          <small>${escapeAttribute(localize("ui.ageRangeHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("ageRange", AGE_RANGE_MODES, options.ageRange ?? DEFAULT_OPTIONS.ageRange)}</div>
+        </fieldset>
+
+        <div class="runyth-npc-button__grid" data-age-exact-range${(options.ageRange ?? DEFAULT_OPTIONS.ageRange) === "exactRange" ? "" : " hidden"}>
+          <div class="runyth-npc-button__field">
+            <label for="runyth-npc-button-age-min">${escapeAttribute(localize("ui.ageMin"))}</label>
+            <input id="runyth-npc-button-age-min" type="number" name="ageMin" min="1" max="10000" step="1" inputmode="numeric" value="${escapeAttribute(options.ageMin ?? DEFAULT_OPTIONS.ageMin)}">
+          </div>
+          <div class="runyth-npc-button__field">
+            <label for="runyth-npc-button-age-max">${escapeAttribute(localize("ui.ageMax"))}</label>
+            <input id="runyth-npc-button-age-max" type="number" name="ageMax" min="1" max="10000" step="1" inputmode="numeric" value="${escapeAttribute(options.ageMax ?? DEFAULT_OPTIONS.ageMax)}">
+          </div>
+        </div>
+
+        <fieldset class="runyth-npc-button__field">
+          <legend>${escapeAttribute(localize("ui.ageSpread"))}</legend>
+          <small>${escapeAttribute(localize("ui.ageSpreadHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("ageSpread", AGE_SPREADS, options.ageSpread ?? DEFAULT_OPTIONS.ageSpread)}</div>
+        </fieldset>
+
+        <fieldset class="runyth-npc-button__field">
           <legend>${escapeAttribute(localize("ui.raceComposition"))}</legend>
           <small>${escapeAttribute(localize("ui.raceCompositionHint"))}</small>
           <div class="runyth-npc-button__choices runyth-npc-button__choices--composition">${choiceChips("raceComposition", Object.fromEntries(Object.entries(RACE_COMPOSITION_MODES).filter(([id]) => id !== "mixed")), raceComposition)}</div>
@@ -822,6 +846,9 @@ function readForm(form) {
   const groupRaces = normalizeGroupRaceIds({ species: race.species, customSpecies: race.customSpecies, groupRaces: rawGroupRaces });
   const rawGroupRoles = parseJsonArray(namedFormValue(form, "groupRoles", ""), [role]);
   const groupRoles = normalizeGroupRoleIds({ role, groupRoles: rawGroupRoles });
+  let ageMin = Math.max(1, Math.trunc(Number(namedFormValue(form, "ageMin", DEFAULT_OPTIONS.ageMin)) || DEFAULT_OPTIONS.ageMin));
+  let ageMax = Math.max(1, Math.trunc(Number(namedFormValue(form, "ageMax", DEFAULT_OPTIONS.ageMax)) || DEFAULT_OPTIONS.ageMax));
+  if (ageMin > ageMax) [ageMin, ageMax] = [ageMax, ageMin];
 
   return {
     count,
@@ -838,6 +865,10 @@ function readForm(form) {
     genderComposition: namedFormValue(form, "genderComposition", DEFAULT_OPTIONS.genderComposition),
     maleCount: Math.max(0, Math.trunc(Number(namedFormValue(form, "maleCount", DEFAULT_OPTIONS.maleCount)) || 0)),
     femaleCount: Math.max(0, Math.trunc(Number(namedFormValue(form, "femaleCount", DEFAULT_OPTIONS.femaleCount)) || 0)),
+    ageRange: namedFormValue(form, "ageRange", DEFAULT_OPTIONS.ageRange),
+    ageSpread: namedFormValue(form, "ageSpread", DEFAULT_OPTIONS.ageSpread),
+    ageMin,
+    ageMax,
     habitat: namedFormValue(form, "habitat", DEFAULT_OPTIONS.habitat),
     groupType: namedFormValue(form, "groupType", DEFAULT_OPTIONS.groupType),
     familyStructure: namedFormValue(form, "familyStructure", DEFAULT_OPTIONS.familyStructure),
@@ -922,6 +953,10 @@ function promptOptions(options) {
     genderCompositionLabel: configuredLabel(GENDER_COMPOSITION_MODES[options.genderComposition] ?? GENDER_COMPOSITION_MODES.random),
     genderExactMale: Math.max(0, Math.min(Number(options.count) || 1, Math.trunc(Number(options.maleCount) || 0))),
     genderExactFemale: Math.max(0, (Math.trunc(Number(options.count) || 1) - Math.max(0, Math.min(Number(options.count) || 1, Math.trunc(Number(options.maleCount) || 0))))),
+    ageRangeLabel: configuredLabel(AGE_RANGE_MODES[options.ageRange] ?? AGE_RANGE_MODES.contextual),
+    ageRangePrompt: (AGE_RANGE_MODES[options.ageRange] ?? AGE_RANGE_MODES.contextual).prompt,
+    ageSpreadLabel: configuredLabel(AGE_SPREADS[options.ageSpread] ?? AGE_SPREADS.natural),
+    ageSpreadPrompt: (AGE_SPREADS[options.ageSpread] ?? AGE_SPREADS.natural).prompt,
     roleCombatGuidance: combatProfile.guidance,
     tierLabel: options.tierStyle === TIER_STYLES.CR ? tierProfile.label : configuredLabel(TIERS[options.tier] ?? TIERS.trained),
     raceLabel: race,
@@ -1106,6 +1141,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       this.#updateRoleMixPreview(form);
     }, { signal });
     bindNamedControls(form, "genderComposition", "change", () => this.#syncGenderComposition(form, { initializeExact: true }), { signal });
+    bindNamedControls(form, "ageRange", "change", () => this.#syncAgeRange(form), { signal });
     bindNamedControls(form, "nameFormatPreset", "change", () => {
       const templateField = form.querySelector("[data-name-template-field]");
       templateField?.toggleAttribute("hidden", namedFormValue(form, "nameFormatPreset", DEFAULT_OPTIONS.nameFormatPreset) !== "custom");
@@ -1141,6 +1177,7 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
     this.#syncRaceComposition(form);
     this.#syncRoleComposition(form);
     this.#syncGenderComposition(form);
+    this.#syncAgeRange(form);
 
     bindDashboardActionButtons(form, {
       create: () => { void this.#createLocal(form); },
@@ -1378,6 +1415,12 @@ class NpcDashboardApplication extends foundry.applications.api.ApplicationV2 {
       }
     }
     this.#syncExactGenderCounts(form);
+  }
+
+  #syncAgeRange(form) {
+    const mode = namedFormValue(form, "ageRange", DEFAULT_OPTIONS.ageRange);
+    const exact = form.querySelector("[data-age-exact-range]");
+    if (exact) exact.hidden = mode !== "exactRange";
   }
 
   #syncExactGenderCounts(form, changed = "") {

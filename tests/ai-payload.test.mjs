@@ -245,7 +245,7 @@ test("AI prompt carries exact batch gender composition", () => {
   });
   assert.match(prompt, /Gender mix: Exact numbers/);
   assert.match(prompt, /exactly 8 male and 2 female NPCs/);
-  assert.match(prompt, /Gender, Appearance, Speech/);
+  assert.match(prompt, /Gender, Age, Appearance, Speech/);
 });
 
 test("AI prompt requires real currency and keeps wealth distribution value-neutral", () => {
