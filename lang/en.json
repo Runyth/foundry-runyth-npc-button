@@ -183,7 +183,9 @@
       "ageMin": "Minimum age",
       "ageMax": "Maximum age",
       "ageSpread": "Group age spread",
-      "ageSpreadHint": "Controls how ages are distributed inside the selected range without changing the Race-appropriate range itself."
+      "ageSpreadHint": "Controls how ages are distributed inside the selected range without changing the Race-appropriate range itself.",
+      "tokenDisposition": "Token disposition",
+      "tokenDispositionHint": "Sets the generated Actor prototype token disposition. Placed Tokens inherit it. Foundry default leaves disposition untouched so Foundry, dnd5e, or another module can supply its normal default."
     },
     "help": {
       "title": "NPC Button Help",
@@ -451,6 +453,23 @@
         "clustered": "A same-generation work crew or cohort.",
         "younger": "Trainees, new recruits, junior laborers, younger settlers.",
         "older": "Veteran guards, established guild members, senior officials."
+      },
+      "tokenDisposition": "Controls the generated Actor prototype token disposition; placed Tokens inherit the selected native Foundry disposition.",
+      "tokenDispositionTitle": "Token disposition / hostility",
+      "tokenDispositionBody": "Disposition is a Foundry Token property stored on the Actor prototype token. It controls ally/enemy presentation rather than changing NPC statistics or behavior. The module supports every native Foundry disposition plus a no-override default.",
+      "tokenDispositionModes": {
+        "default": "Do not write a disposition override. Foundry, dnd5e, or another module can provide its normal prototype-token default.",
+        "friendly": "Use Foundry Friendly disposition.",
+        "neutral": "Use Foundry Neutral disposition.",
+        "hostile": "Use Foundry Hostile disposition, the native enemy state.",
+        "secret": "Use Foundry Secret disposition for Tokens whose disposition should not be openly presented like the ordinary Friendly/Neutral/Hostile states."
+      },
+      "tokenDispositionExamples": {
+        "default": "Preserve the world/system default.",
+        "friendly": "Allied guard, companion, protected civilian.",
+        "neutral": "Bystander, merchant, undecided faction member.",
+        "hostile": "Enemy raider, monster, active attacker.",
+        "secret": "Hidden allegiance, uncertain threat, concealed faction intent."
       }
     },
     "notifications": {
@@ -849,6 +868,13 @@
       "clustered": "Similar ages",
       "younger": "Younger-leaning",
       "older": "Older-leaning"
+    },
+    "tokenDispositions": {
+      "default": "Foundry default",
+      "friendly": "Friendly",
+      "neutral": "Neutral",
+      "hostile": "Hostile (Enemy)",
+      "secret": "Secret"
     }
   }
 }

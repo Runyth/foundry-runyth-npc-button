@@ -32,6 +32,7 @@ import { getGroupTypes, getHabitats, getNamingStyles, getRaces, getRoles } from 
 import { buildWealthBundle, formatCopperValue } from "./wealth.mjs";
 import { formatGeneratedName } from "./name-format.mjs";
 import { buildAgeAssignments } from "./age.mjs";
+import { applyTokenDispositionToActorSource } from "../token-disposition.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 const GENDER_TUPLE = Object.freeze(["male", "female"]);
@@ -606,6 +607,7 @@ export function generateNpcBlueprint(options = {}, random = Math.random) {
     species: race.label,
     gender,
     age,
+    tokenDisposition: options.tokenDisposition ?? DEFAULT_OPTIONS.tokenDisposition,
     wealth: wealth.label,
     wealthDistribution: wealthDistribution.label,
     wealthBudgetCp: wealthBundle.budgetCp,
@@ -706,7 +708,7 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
     ABILITIES.map((ability) => [ability, { value: blueprint.abilities[ability] }])
   );
 
-  return {
+  const source = {
     name: blueprint.name,
     type: "npc",
     folder: folderId || null,
@@ -799,6 +801,7 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
         generationSeed: blueprint.generationSeed,
         gender: blueprint.gender,
         age: blueprint.age,
+        tokenDisposition: blueprint.tokenDisposition ?? DEFAULT_OPTIONS.tokenDisposition,
         habitat: blueprint.habitat,
         groupType: blueprint.groupType,
         groupMemberRole: blueprint.groupMemberRole,
@@ -810,6 +813,7 @@ export function buildActorSource(blueprint, { folderId = null } = {}) {
       }
     }
   };
+  return applyTokenDispositionToActorSource(source, blueprint.tokenDisposition ?? DEFAULT_OPTIONS.tokenDisposition);
 }
 
 export function generateNpcBatch(options = {}) {

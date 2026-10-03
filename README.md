@@ -111,6 +111,10 @@ Role/combat equipment is generated independently and is unchanged by the distrib
 
 Every NPC remains mechanically combatable, but carried combat gear is role-relative. **Weaponless** always removes weapons and armor. Higher readiness levels progressively add plausible weapons, armor, shields, or backups within strict occupational ceilings. A Jurist remains a lightly equipped professional even at maximum readiness, while Guards, Soldiers, Raiders, and similar roles scale to appropriate professional equipment. Local canonical combat equipment is resolved against D&D 5e item compendia when available.
 
+### Token disposition
+
+The dashboard can set the generated Actor's Foundry prototype-token disposition to **Friendly**, **Neutral**, **Hostile (Enemy)**, or **Secret**. The default **Foundry default** mode does not write an override, preserving the normal disposition supplied by Foundry, dnd5e, or another module. This applies to both locally generated NPCs and AI-imported NPCs created through the dashboard; Tokens subsequently placed from those Actors inherit the prototype-token disposition.
+
 ### Age ranges and batch spread
 
 Age is generated as a first-class NPC attribute. Named profiles—**Contextual**, **Young adults**, **Adults**, **Mature adults**, **Older adults**, and **Mixed generations**—scale to each Race's adult/lifespan profile instead of applying the same human-year range to every Race. **Exact year range** is the literal override when the user wants concrete minimum and maximum ages.
