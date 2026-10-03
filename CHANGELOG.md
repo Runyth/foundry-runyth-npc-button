@@ -2,6 +2,20 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.3 - 2026-10-03
+
+### Added
+
+- Dashboard Token disposition control for every native Foundry disposition: Friendly, Neutral, Hostile (Enemy), and Secret.
+- A Foundry default option that intentionally leaves prototype-token disposition untouched, preserving world/system/module defaults and maintaining backwards-compatible behavior unless the GM explicitly selects a disposition.
+- Prototype-token disposition application for both locally generated NPCs and AI-imported NPCs created through the dashboard.
+- Help reference table explaining disposition behavior and practical examples.
+- Regression coverage for native disposition constants, no-override behavior, prototype-token merging, and locally generated Actor sources.
+
+### Changed
+
+- Generated Actor metadata records the selected disposition mode while using Foundry's native `prototypeToken.disposition` field for the actual Token behavior.
+
 ## 0.4.2 - 2026-10-01
 
 ### Added

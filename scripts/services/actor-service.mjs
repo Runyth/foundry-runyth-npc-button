@@ -1,6 +1,7 @@
 import { MODULE_ID, SETTINGS } from "../constants.mjs";
 import { buildActorSource, generateNpcBatch } from "../generator/npc-generator.mjs";
 import { logger } from "../logger.mjs";
+import { applyTokenDispositionToActorSource } from "../token-disposition.mjs";
 import { resolveCanonicalItemsForActors } from "./item-resolver.mjs";
 
 export async function resolveNpcFolder(options) {
@@ -36,14 +37,15 @@ function ensureCanCreate() {
 }
 
 async function createSources(actorSources, options, { imported = false } = {}) {
+  const preparedSources = actorSources.map((source) => applyTokenDispositionToActorSource(source, options.tokenDisposition));
   const hookPrefix = imported ? "import" : "create";
-  Hooks.callAll(`${MODULE_ID}.pre${hookPrefix === "import" ? "Import" : "Create"}Batch`, actorSources, options);
+  Hooks.callAll(`${MODULE_ID}.pre${hookPrefix === "import" ? "Import" : "Create"}Batch`, preparedSources, options);
   logger.debug(imported ? "Importing NPC batch" : "Creating NPC batch", {
-    count: actorSources.length,
-    folderId: actorSources[0]?.folder ?? null
+    count: preparedSources.length,
+    folderId: preparedSources[0]?.folder ?? null
   });
 
-  const actors = await Actor.implementation.createDocuments(actorSources);
+  const actors = await Actor.implementation.createDocuments(preparedSources);
   for (const actor of actors) {
     Hooks.callAll(`${MODULE_ID}.${imported ? "imported" : "created"}`, actor, options);
   }

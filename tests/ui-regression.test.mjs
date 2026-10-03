@@ -228,3 +228,15 @@ test("all runtime clipboard write surfaces use the best-effort isolation path", 
     assert.doesNotMatch(source, /import\s*\{[^}]*\bwriteClipboardText\b[^}]*\}/);
   }
 });
+
+test("dashboard exposes native token disposition control and imports apply it before Actor creation", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const [dashboardSource, serviceSource] = await Promise.all([
+    readFile(new URL("../scripts/ui/npc-dashboard.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/services/actor-service.mjs", import.meta.url), "utf8")
+  ]);
+  assert.match(dashboardSource, /choiceChips\("tokenDisposition", TOKEN_DISPOSITION_MODES/);
+  assert.match(dashboardSource, /tokenDisposition:\s*namedFormValue\(form, "tokenDisposition"/);
+  assert.match(serviceSource, /applyTokenDispositionToActorSource/);
+  assert.match(serviceSource, /preparedSources = actorSources\.map/);
+});

@@ -50,6 +50,7 @@ import { openNpcImportPreview } from "./npc-import-preview.mjs";
 import { mountVirtualQuotaEditor, virtualQuotaEditorMarkup } from "./virtual-quota-editor.mjs";
 import { NAME_FORMAT_PRESETS, NICKNAME_MODES, TITLE_MODES, nameTemplateTokenSummary, resolveNameTemplate, validateNameTemplate } from "../generator/name-format.mjs";
 import { AGE_RANGE_MODES, AGE_SPREADS } from "../generator/age.mjs";
+import { TOKEN_DISPOSITION_MODES } from "../token-disposition.mjs";
 
 
 const GENDER_COMPOSITION_MODES = Object.freeze({
@@ -503,6 +504,12 @@ function dashboardContent(options, tierStyle) {
           <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("weaponVariety", WEAPON_VARIETY, options.weaponVariety ?? DEFAULT_OPTIONS.weaponVariety)}</div>
         </fieldset>
 
+        <fieldset class="runyth-npc-button__field runyth-npc-button__field--full">
+          <legend>${escapeAttribute(localize("ui.tokenDisposition"))}</legend>
+          <small>${escapeAttribute(localize("ui.tokenDispositionHint"))}</small>
+          <div class="runyth-npc-button__choices runyth-npc-button__choices--five">${choiceChips("tokenDisposition", TOKEN_DISPOSITION_MODES, options.tokenDisposition ?? DEFAULT_OPTIONS.tokenDisposition)}</div>
+        </fieldset>
+
         <div class="runyth-npc-button__grid">
           <div class="runyth-npc-button__field">
             <label for="runyth-npc-button-name">${escapeAttribute(localize("ui.customName"))}</label>
@@ -862,6 +869,7 @@ function readForm(form) {
     wealthDistribution: namedFormValue(form, "wealthDistribution", DEFAULT_OPTIONS.wealthDistribution),
     combatReadiness: namedFormValue(form, "combatReadiness", DEFAULT_OPTIONS.combatReadiness),
     weaponVariety: namedFormValue(form, "weaponVariety", DEFAULT_OPTIONS.weaponVariety),
+    tokenDisposition: namedFormValue(form, "tokenDisposition", DEFAULT_OPTIONS.tokenDisposition),
     genderComposition: namedFormValue(form, "genderComposition", DEFAULT_OPTIONS.genderComposition),
     maleCount: Math.max(0, Math.trunc(Number(namedFormValue(form, "maleCount", DEFAULT_OPTIONS.maleCount)) || 0)),
     femaleCount: Math.max(0, Math.trunc(Number(namedFormValue(form, "femaleCount", DEFAULT_OPTIONS.femaleCount)) || 0)),

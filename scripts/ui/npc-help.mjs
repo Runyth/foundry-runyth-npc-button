@@ -3,6 +3,7 @@ import { COMBAT_READINESS, GROUP_TYPES, HABITATS, NAME_STYLES, RACES, RACE_COMPO
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";
 import { escapeAttribute } from "../utils/html.mjs";
 import { AGE_RANGE_MODES, AGE_SPREADS } from "../generator/age.mjs";
+import { TOKEN_DISPOSITION_MODES } from "../token-disposition.mjs";
 
 function localize(key) {
   return game.i18n.localize(`${MODULE_ID}.${key}`);
@@ -78,6 +79,7 @@ function helpContent() {
     [localize("ui.race"), localize("help.race")],
     [localize("ui.wealth"), localize("help.wealth")],
     [localize("ui.wealthDistribution"), localize("help.wealthDistribution")],
+    [localize("ui.tokenDisposition"), localize("help.tokenDisposition")],
     [localize("ui.seed"), localize("help.seed")],
     [localize("ui.destinationFolder"), localize("help.destination")]
   ].map(([setting, behavior]) => `
@@ -102,6 +104,9 @@ function helpContent() {
   const weaponRules = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyModes.${id}`)]));
   const weaponExamples = Object.fromEntries(Object.keys(WEAPON_VARIETY).map((id) => [id, localize(`help.weaponVarietyExamples.${id}`)]));
   const weaponRows = detailRows(WEAPON_VARIETY, weaponRules, weaponExamples);
+  const dispositionRules = Object.fromEntries(Object.keys(TOKEN_DISPOSITION_MODES).map((id) => [id, localize(`help.tokenDispositionModes.${id}`)]));
+  const dispositionExamples = Object.fromEntries(Object.keys(TOKEN_DISPOSITION_MODES).map((id) => [id, localize(`help.tokenDispositionExamples.${id}`)]));
+  const dispositionRows = detailRows(TOKEN_DISPOSITION_MODES, dispositionRules, dispositionExamples);
   const ageRangeRules = Object.fromEntries(Object.keys(AGE_RANGE_MODES).map((id) => [id, localize(`help.ageRangeModes.${id}`)]));
   const ageRangeExamples = Object.fromEntries(Object.keys(AGE_RANGE_MODES).map((id) => [id, localize(`help.ageRangeExamples.${id}`)]));
   const ageRangeRows = detailRows(AGE_RANGE_MODES, ageRangeRules, ageRangeExamples);
@@ -211,6 +216,11 @@ function helpContent() {
         <h2>${escapeAttribute(localize("help.weaponVarietyTitle"))}</h2>
         <p>${escapeAttribute(localize("help.weaponVarietyBody"))}</p>
         ${helpTable([localize("help.mode"), localize("help.effect"), localize("help.example")], weaponRows)}
+      </section>
+      <section>
+        <h2>${escapeAttribute(localize("help.tokenDispositionTitle"))}</h2>
+        <p>${escapeAttribute(localize("help.tokenDispositionBody"))}</p>
+        ${helpTable([localize("help.mode"), localize("help.effect"), localize("help.example")], dispositionRows)}
       </section>
       <section>
         <h2>${escapeAttribute(localize("help.actorReviewTitle"))}</h2>

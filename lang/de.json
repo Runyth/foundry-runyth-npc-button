@@ -183,7 +183,9 @@
       "ageMin": "Mindestalter",
       "ageMax": "Höchstalter",
       "ageSpread": "Altersverteilung der Gruppe",
-      "ageSpreadHint": "Steuert, wie Alter innerhalb des gewählten Bereichs verteilt werden, ohne den rassenpassenden Bereich selbst zu verändern."
+      "ageSpreadHint": "Steuert, wie Alter innerhalb des gewählten Bereichs verteilt werden, ohne den rassenpassenden Bereich selbst zu verändern.",
+      "tokenDisposition": "Token-Gesinnung",
+      "tokenDispositionHint": "Setzt die Token-Gesinnung des Prototyp-Tokens des erzeugten Actors. Platzierte Tokens übernehmen sie. Foundry-Standard lässt den Wert unangetastet, damit Foundry, dnd5e oder ein anderes Modul den üblichen Standard setzen kann."
     },
     "help": {
       "title": "NPC Button Hilfe",
@@ -451,6 +453,23 @@
         "clustered": "Arbeitsgruppe oder Kohorte derselben Generation.",
         "younger": "Auszubildende, neue Rekruten, junge Arbeiter oder Siedler.",
         "older": "Veteranen, etablierte Gildenmitglieder und ältere Amtsträger."
+      },
+      "tokenDisposition": "Steuert die Token-Gesinnung des Prototyp-Tokens des erzeugten Actors; platzierte Tokens übernehmen die gewählte native Foundry-Gesinnung.",
+      "tokenDispositionTitle": "Token-Gesinnung / Feindseligkeit",
+      "tokenDispositionBody": "Die Gesinnung ist eine Foundry-Token-Eigenschaft, die am Prototyp-Token des Actors gespeichert wird. Sie steuert die Darstellung als Verbündeter oder Gegner, nicht Werte oder Verhalten des NPCs. Das Modul unterstützt jede native Foundry-Gesinnung plus einen Standard ohne Überschreibung.",
+      "tokenDispositionModes": {
+        "default": "Schreibt keine Gesinnungs-Überschreibung. Foundry, dnd5e oder ein anderes Modul kann seinen normalen Prototyp-Token-Standard setzen.",
+        "friendly": "Verwendet Foundrys Gesinnung Freundlich.",
+        "neutral": "Verwendet Foundrys Gesinnung Neutral.",
+        "hostile": "Verwendet Foundrys Gesinnung Feindlich, den nativen Gegnerzustand.",
+        "secret": "Verwendet Foundrys Gesinnung Geheim für Tokens, deren Gesinnung nicht wie die normalen Zustände Freundlich/Neutral/Feindlich offen dargestellt werden soll."
+      },
+      "tokenDispositionExamples": {
+        "default": "Welt-/Systemstandard beibehalten.",
+        "friendly": "Verbündete Wache, Begleiter, geschützter Zivilist.",
+        "neutral": "Unbeteiligter, Händler, unentschiedenes Fraktionsmitglied.",
+        "hostile": "Feindlicher Räuber, Monster, aktiver Angreifer.",
+        "secret": "Verborgene Loyalität, unklare Bedrohung, verdeckte Fraktionsabsicht."
       }
     },
     "notifications": {
@@ -849,6 +868,13 @@
       "clustered": "Ähnliche Alter",
       "younger": "Jünger gewichtet",
       "older": "Älter gewichtet"
+    },
+    "tokenDispositions": {
+      "default": "Foundry-Standard",
+      "friendly": "Freundlich",
+      "neutral": "Neutral",
+      "hostile": "Feindlich (Gegner)",
+      "secret": "Geheim"
     }
   }
 }
