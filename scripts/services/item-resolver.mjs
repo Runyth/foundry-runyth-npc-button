@@ -62,6 +62,12 @@ async function resolveCanonicalItem(item) {
     if (!document) return item;
 
     const source = stripEmbeddedIncompatibleFields(document.toObject());
+    // Existing equipment previously arrived unequipped, leaving actors with inert weapons.
+    // Armor uses the NPC's flat AC and is marked equipped solely for inventory clarity.
+    if (source.type === "weapon" || source.type === "equipment") {
+      source.system ??= {};
+      source.system.equipped = true;
+    }
     const quantity = Number(item.system?.quantity);
     if (Number.isFinite(quantity) && quantity > 0) {
       source.system ??= {};
