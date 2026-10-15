@@ -1,4 +1,5 @@
 import { MODULE_ID } from "../constants.mjs";
+import { appendNpcCombatData } from "./combat-schema.mjs";
 
 const ABILITIES = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
 const VALID_SIZES = new Set(["tiny", "sm", "med", "lg", "huge", "grg"]);
@@ -194,7 +195,7 @@ function normalizeActor(source, index) {
   const size = String(traits.size ?? "").trim().toLowerCase();
   if (!VALID_SIZES.has(size)) fail(`${path}.system.traits.size must be one of: ${[...VALID_SIZES].join(", ")}.`);
 
-  return {
+  return appendNpcCombatData({
     name: name.slice(0, 120),
     type: "npc",
     img: DEFAULT_ACTOR_IMAGE,
@@ -240,7 +241,7 @@ function normalizeActor(source, index) {
         ...(age === null ? {} : { age })
       }
     }
-  };
+  }, actor.combat, index);
 }
 
 /**

@@ -2,6 +2,21 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.4 - 2026-10-15
+
+### Added
+
+- Backward-compatible, allowlisted `combat` import schema for native dnd5e 5.3 Attack, Save, Heal and Utility activities, including typed damage, fixed hit bonuses, native area templates, activity uses, and rechargeable actions.
+- Import of saving-throw and skill proficiencies, damage resistances and vulnerabilities.
+- Grouped weapon activities (e.g. melee/thrown dagger, boar tusks/charge) under one equipped native weapon instead of nonfunctional loot entries.
+- Twelve-NPC Bree Bunch example with four homebrew boars; encounter regression tests verify attacks, typed formulas, action variety, equipment, resistance and vulnerability.
+- Import guide describing remaining GM-directed conditional effects and tactics.
+
+### Fixed
+
+- Canonical compendium weapons and equipment imported as unequipped on some actors are now explicitly equipped.
+- Natural weapon attacks are instantiated as native dnd5e weapon activities rather than loot-only descriptions.
+
 ## 0.4.3 - 2026-10-03
 
 ### Added
