@@ -1,3 +1,4 @@
+import { applySafeMidiEffects } from "./midi-schema.mjs";
 /**
  * Optional combat-activity extension for AI-imported NPCs.
  * Explicit schemas prevent AI JSON from injecting arbitrary Foundry document fields.
@@ -194,12 +195,10 @@ function buildCombatItem(raw, actorIndex, index) {
     });
     activity.effects = [{ _id: effectId, onSave: false }];
   }
-  if (act.buff === "attackAdvantage") {
-    // The duration/one-attack limit must be adjudicated by the GM, because the 5.3 API lacks a native
-    // "consume this applied effect after the next attack" option in an ordinary utility activity.
-    system.description.value += "<p>Effect: chosen allies gain Advantage on their next attack roll. GM applies Advantage on each affected roll.</p>";
+  if (act.buff === "attackAdvantage" && !act.midi) {
+    system.description.value += "<p>Effect: chosen allies gain Advantage on their next attack roll. Requires Midi-QoL/DAE effect configuration.</p>";
   }
-  return {
+  const item = {
     name: isWeapon && act.weapon ? str(act.weapon, `${path}.weapon`, 100) : name,
     type: itemType,
     img: isWeapon ? "icons/svg/sword.svg" : "icons/svg/book.svg",
@@ -207,6 +206,8 @@ function buildCombatItem(raw, actorIndex, index) {
     effects,
     flags: { "runyth-npc-button": { aiImported: true, combatActivity: true } }
   };
+  applySafeMidiEffects(act.midi, item, activity, actorIndex, index);
+  return item;
 }
 
 /** Apply only allowlisted combat capabilities; normal imports remain unchanged. */
@@ -229,6 +230,10 @@ export function appendNpcCombatData(source, combat, actorIndex) {
     const values = arr(input[inputKey] ?? [], `combat.${inputKey}`, 13);
     for (const damageType of values) enumValue(damageType, DAMAGE_TYPES, `combat.${inputKey}`);
     if (values.length) out.system.traits[traitKey] = { value: [...new Set(values)], bypasses: [], custom: "" };
+  }
+  if (input.relentlessOnce !== undefined) {
+    if (input.relentlessOnce !== true && input.relentlessOnce !== false) fail("combat.relentlessOnce", "expected boolean");
+    if (input.relentlessOnce) out.flags["runyth-npc-button"].relentlessOnce = true;
   }
   const actions = arr(input.actions ?? [], "combat.actions", 35);
   if (actions.length) {

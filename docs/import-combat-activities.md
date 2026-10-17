@@ -57,3 +57,17 @@ The extra schema is allowlisted and validated. Arbitrary untrusted Item/Actor so
 - D&D 5e 5.3.3 native attack data model: https://github.com/foundryvtt/dnd5e/blob/release-5.3.3/module/data/activity/attack-data.mjs
 - D&D 5e 5.3.3 weapon model: https://github.com/foundryvtt/dnd5e/blob/release-5.3.3/module/data/item/weapon.mjs
 - D&D 5e 5.3.3 actor traits: https://github.com/foundryvtt/dnd5e/blob/release-5.3.3/module/data/actor/templates/traits.mjs
+
+## v0.4.5 — Midi-QoL / DAE allowlisted activity effects
+
+The new `combat.actions[].midi` field permits declarative effect automation. Set `midi.target` to `self` or `creature`; set `midi.effects` to a list of effects with `name`, optional `statuses`, optional `changes`, optional `specialDuration`, optional `rounds`, and optional `onSave`. Only explicitly supported keys are accepted. Changes can use approved Midi-QoL Advantage and grants flags, native numeric movement modifiers, armor-class bonuses and weapon damage bonuses. The importer attaches these Active Effects by ID to the exact dnd5e Activity. DAE handles expiry such as `1Attack` and `1Hit` when active.
+
+Runyth NPC Button v0.4.5 includes a narrow built-in combat hook for `combat.relentlessOnce`. The hook intercepts **dnd5e.applyDamage** and leaves the creature at 1 HP once per combat when otherwise reduced to 0 by non-massive damage. The feature is consumed atomically and visually synchronized with its Item. It does **not** intercept direct Actor HP editing, damage from a system that bypasses `Actor5e.applyDamage`, massive damage, or some advanced simultaneous-damage effects. This is the only importer-owned combat automation hook; it is not a separate module.
+
+Import the revised `docs/examples/bree-bunch-midi-qol-12-npcs.json` for 12 NPCs: one Sachem, one Scout, two Builders, two Hunters, three Boars, one Sachem Boar and two Warriors. Set Count=12 and hostile disposition. The JSON equips weapons, imports attack and damage formulas, healing and saving-throw activities, and adds the supported Midi-QoL/DAE effects.
+
+**Unsupported automatic edge cases:** One-click Multiattack chaining, conditional reactions such as Hold Fast/Parry/Guard, terrain placement, moving Tokens, charge movement prerequisites, Hunter target-specific advantage, and scouting prerequisites still require GM decisions or separate hand-authored macros. The helper *Multiattack* Utility items are deliberately labeled informational to avoid double damage. The schema does **not** execute arbitrary imported JavaScript macros for security. In particular, neither installing Midi-QoL nor importing JSON automatically translates narrative descriptions into executable logic.
+
+**Recommended Foundry stack:** Foundry VTT 13, dnd5e 5.3.3, compatible Midi-QoL 13.x and DAE 13.x. Enable Midi's attack/target/save/damage/effect application workflow and test the NPC Item activity effects. Midi-QoL 13's configuration can change, so exact UI settings and live world behaviour are not verified by the static unit suite. A careful in-world smoke test is required.
+
+References: https://gitlab.com/tposney/midi-qol/-/blob/v13/FLAGS.md ; https://gitlab.com/tposney/midi-qol/-/blob/v13/MACROS.md ; https://github.com/foundryvtt/dnd5e/blob/release-5.3.3/module/documents/actor/actor.mjs

@@ -4,6 +4,7 @@ import { buildAiPrompt } from "./ai/prompt-builder.mjs";
 import { generateNpcBatch, generateNpcBlueprint } from "./generator/npc-generator.mjs";
 import { logger } from "./logger.mjs";
 import { registerSettings } from "./settings.mjs";
+import { registerRelentlessHooks } from "./services/relentless.mjs";
 import { createNpcActors } from "./services/actor-service.mjs";
 import { injectActorDirectoryButton } from "./ui/actor-directory.mjs";
 import { clearPromptExtensionRegistry, getPromptExtensions, registerPromptExtension, resolvePromptComponents, resolvePromptContext, unregisterPromptExtension } from "./extensions/prompt-api.mjs";
@@ -91,3 +92,4 @@ Hooks.once("ready", () => {
 
 
 registerPortraitPromptHooks(Hooks);
+registerRelentlessHooks(Hooks);

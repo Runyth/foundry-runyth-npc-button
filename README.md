@@ -35,6 +35,7 @@ Runyth NPC Button is a D&D 5e NPC and NPC-group generator for Foundry VTT. It su
   - **Import NPC** validates the copied JSON and creates Actors in the currently selected destination.
   - Manual paste is available when browser clipboard reading is unavailable.
 - Strict AI payload validation and HTML sanitization before any Actor is created.
+- v0.4.5: optional allowlisted Midi-QoL/DAE native activity effects (attack Advantage, conditional target Advantage, DAE expiry, debuffs and native statuses) plus a narrowly scoped Relentless once-per-combat HP interceptor. No unsafe JavaScript accepted in import JSON.
 - Portable world-level dashboard filter profiles: each major picker catalog has a scalable searchable multi-select list with all items included by default; deselect individual entries to exclude them. Advanced string/regex rules remain available, and profiles can be exported/imported as versioned JSON files or through the clipboard.
 - Modular English and German localization.
 - Optional concise debug logging, disabled by default.

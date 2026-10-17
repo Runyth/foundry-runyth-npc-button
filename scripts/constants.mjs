@@ -1,6 +1,6 @@
 export const MODULE_ID = "runyth-npc-button";
 export const MODULE_TITLE = "Runyth NPC Button";
-export const MODULE_VERSION = "0.4.4";
+export const MODULE_VERSION = "0.4.5";
 
 export const SETTINGS = Object.freeze({
   DEBUG: "debugLogging",

@@ -2,6 +2,20 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.5 - 2026-10-17
+
+### Added
+
+- Optional, allowlisted `combat.actions[].midi` effect definitions for native dnd5e activity effects, including Midi-QoL attack Advantage and target-granted Advantage, 2024 D&D5e AC/speed/damage modifiers, DAE `1Attack`/`1Hit` effect expiry, and native status conditions. Effects attach to the exact activity and survive AI JSON normalization.
+- Explicit `combat.relentlessOnce` passive flag for homebrew boars. In the existing NPC Button module, an isolated native dnd5e 5.3 `preApplyDamage` hook preserves 1 HP once after non-massive lethal damage, synchronizes the passive feature charge, and resets it when a new combat starts. It does not require a separate Bree automation module.
+- Updated twelve-NPC Bree Bunch example with configured Midi/DAE effects. Regression checks cover full roster, passive traits, attacks, and security allowlists.
+
+### Security / compatibility
+
+- Unknown Midi flags, arbitrary effect keys, script fragments and unknown durations are rejected rather than passed through to Foundry. Macro code is **not imported or executed**.
+- Original v0.4.4 JSON imports are backward-compatible. Midi-QoL and DAE remain optional; unsupported conditions and passive narrative abilities are never falsely marked fully automated.
+- Partial automation limitations remain for target-specific advantage, conditionally triggered reactions, multiattack sequencing, terrain/region placement, and items depending on exact movement/positioning: see import guide.
+
 ## 0.4.4 - 2026-10-15
 
 ### Added

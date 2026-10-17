@@ -1,0 +1,2607 @@
+[
+  {
+    "name": "Bree Sachem — Grannoc Hogfather",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 16
+        },
+        "dex": {
+          "value": 14
+        },
+        "con": {
+          "value": 14
+        },
+        "int": {
+          "value": 10
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 14
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 4,
+        "ep": 0,
+        "sp": 7,
+        "cp": 3
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 15
+        },
+        "hp": {
+          "value": 78,
+          "max": 78,
+          "formula": "12d8 + 24"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 3,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Male</p><p><strong>Age:</strong> 48</p><p><strong>Appearance:</strong> Heavyset human chieftain, grizzled beard, old facial scars, immense boar-head hood, dark fur mantle, battered trophies, worn red cloth.</p><p><strong>Speech:</strong> Low, calculating, threatening; seldom raises his voice except during commands.</p><p><strong>Motivation:</strong> Keep the Bree Bunch alive and rich while evading Imperial warrants.</p><p><strong>Mannerism:</strong> Surveys every fighter as if assigning a price to their life.</p><p><strong>Quirk:</strong> Polishes one old carved tusk whenever he makes a difficult decision.</p><p><strong>Rumours:</strong> Has sold out past employers when paid by their enemies.</p><p><strong>Secrets:</strong> Knows who supplied the camp; a waxed ledger is hidden in his bedding.</p><p><strong>Relationships:</strong> Commands both Warriors; the senior Builder tends his tent; the Hunter distrusts his reckless orders.</p><p><strong>Adventure Hook:</strong> His contract ledger identifies buyers, betrayals and a future commission involving the road to Velia.</p><p><strong>Encounter Role:</strong> Leader; command and melee pressure</p><p><strong>Combat Tactics:</strong> Round 2: enter from north shelter. Initially fights a Fighter. Use orders to reposition endangered Bree, never to grant extra attacks. Bloodied at 39 HP. At 20 HP consider withdrawal. At two subordinates standing, order retreat; prefer capture over killing defeated PCs.</p><p><strong>Challenge / attack:</strong> CR 3 (700 XP); proficiency bonus +2. Strength +3; melee weapon attacks +5.</p><p><strong>Boar Axe - Battleaxe:</strong> Make TWO attacks as Multiattack; each +5 to hit, reach 5 ft., 1d10+3 slashing if used two-handed (Versatile mode). The imported Battleaxe has its own normal attack activity; click twice for Multiattack.</p><p><strong>Boar’s Order - Bonus Action:</strong> One allied Bree within 30 ft. who hears him may immediately use its Reaction to move up to half Speed without provoking Opportunity Attacks. No extra attack.</p><p><strong>Bloodied Howl - Bonus Action, 1/encounter:</strong> At 39 HP or less, up to two allied Bree within 30 ft. may each use their Reaction to move 10 ft.; each adds 2 damage to its next successful weapon hit before the end of its next turn.</p><p><strong>Parry - Reaction:</strong> When hit with a melee attack while wielding the axe, +2 AC against that one attack, potentially causing it to miss.</p><p><strong>Morale:</strong> Offers surrender if at least two adventurers are incapacitated; tries to flee if heavily wounded or camp broken; captives preferred to execution.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Battleaxe",
+        "lookup": "Battleaxe",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "The ceremonial but fully functional two-handed boar axe; use Versatile 1d10+STR attack."
+      },
+      {
+        "name": "Handaxe",
+        "lookup": "Handaxe",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Compact backup axe."
+      },
+      {
+        "name": "Dagger",
+        "lookup": "Dagger",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Hidden belt knife."
+      },
+      {
+        "name": "Hide Armor",
+        "lookup": "Hide Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Patchwork pelt-and-leather protection, cosmetic; AC uses flat value."
+      },
+      {
+        "name": "Sachem’s boar-tusk trophies",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Old tusks with markings for former Bree victories."
+      },
+      {
+        "name": "Waxed contract ledger",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "List of commissioners and payments, concealed inside bedroll."
+      },
+      {
+        "name": "Brass wager token",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 45,
+        "description": "Personal keepsake and portable valuable."
+      },
+      {
+        "name": "Rope, 50 feet",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "For restraining or securing supplies."
+      }
+    ],
+    "combat": {
+      "savingThrows": [
+        "str",
+        "con",
+        "wis"
+      ],
+      "skills": {
+        "ath": 1,
+        "itm": 1,
+        "sur": 1
+      },
+      "actions": [
+        {
+          "name": "Boar Axe",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Melee attack +5, reach 5 ft.; two attacks when using Multiattack.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d10+3",
+            "type": "slashing"
+          },
+          "weapon": "Battleaxe",
+          "replaceInventory": "Battleaxe"
+        },
+        {
+          "name": "Handaxe",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Use this equipped backup melee weapon; use weapon activity for hit and typed damage.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d6+3",
+            "type": "slashing"
+          }
+        },
+        {
+          "name": "Dagger",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Backup dagger.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d4+3",
+            "type": "piercing"
+          }
+        },
+        {
+          "name": "Multiattack — Two Axe Swings",
+          "kind": "utility",
+          "activation": "action",
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+        },
+        {
+          "name": "Boar's Command",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Bonus Action, Recharge 5–6. Choose up to two allies within 30 ft; each gains Advantage on its next attack (DAE expires after 1Attack or 1 round). One may reposition 10 ft using its Reaction; movement remains GM-controlled.",
+          "uses": {
+            "max": 1,
+            "recharge": 5
+          },
+          "range": 30,
+          "targets": 2,
+          "buff": "attackAdvantage",
+          "midi": {
+            "target": "creature",
+            "effects": [
+              {
+                "name": "Boar’s Command — Next Attack Advantage",
+                "changes": [
+                  {
+                    "key": "flags.midi-qol.advantage.attack.all",
+                    "value": "1"
+                  }
+                ],
+                "specialDuration": [
+                  "1Attack"
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "Rally the Wounded",
+          "kind": "heal",
+          "activation": "bonus",
+          "healing": "1d6+3",
+          "description": "Select affected token(s) before activating. Choose up to three conscious allied Bree within 30 ft.; each heals 1d6+3. Roll Healing separately for each, or reuse healing roll for group at",
+          "targets": 3,
+          "range": 30,
+          "uses": {
+            "max": 1
+          }
+        },
+        {
+          "name": "Hold Fast!",
+          "kind": "utility",
+          "activation": "reaction",
+          "description": "Select affected token(s) before activating. When an allied Bree within 30 ft. is hit, Reaction: reduce damage of that one hit by the roll result (1d8+2). Call roll before applying damage.",
+          "uses": {
+            "max": 2
+          },
+          "roll": "1d8+2",
+          "range": 30
+        },
+        {
+          "name": "Bloodied Howl",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Use only at 39 HP or less. Up to two allies get +2 weapon damage on their next successful hit (Midi/DAE effect). Their 10-ft reaction movement still requires ordinary token movement. Each attack type is independently tracked.",
+          "uses": {
+            "max": 1
+          },
+          "range": 30,
+          "targets": 2,
+          "midi": {
+            "target": "creature",
+            "effects": [
+              {
+                "name": "Bloodied Howl — +2 Next Melee Hit",
+                "changes": [
+                  {
+                    "key": "system.bonuses.mwak.damage",
+                    "value": "2"
+                  }
+                ],
+                "specialDuration": [
+                  "1Hit"
+                ],
+                "rounds": 2
+              },
+              {
+                "name": "Bloodied Howl — +2 Next Ranged Hit",
+                "changes": [
+                  {
+                    "key": "system.bonuses.rwak.damage",
+                    "value": "2"
+                  }
+                ],
+                "specialDuration": [
+                  "1Hit"
+                ],
+                "rounds": 2
+              }
+            ]
+          }
+        },
+        {
+          "name": "Parry",
+          "kind": "utility",
+          "activation": "reaction",
+          "description": "Reaction when attacked in melee; +2 AC for up to one round. Requires reaction timing before Midi finalizes hit to retroactively change a hit. Not a guaranteed automatic reaction.",
+          "midi": {
+            "target": "self",
+            "effects": [
+              {
+                "name": "Parry — +2 AC",
+                "changes": [
+                  {
+                    "key": "system.attributes.ac.bonus",
+                    "value": "2"
+                  }
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Scout — Larka Ashknife",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 10
+        },
+        "dex": {
+          "value": 14
+        },
+        "con": {
+          "value": 10
+        },
+        "int": {
+          "value": 10
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 4,
+        "cp": 2
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 14
+        },
+        "hp": {
+          "value": 18,
+          "max": 18,
+          "formula": "4d8"
+        },
+        "movement": {
+          "walk": 35,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 0.5,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Female</p><p><strong>Age:</strong> 24</p><p><strong>Appearance:</strong> Lean human scout beneath a small boar-pelt hood, grey-brown camouflage, soft-soled boots and twin knives.</p><p><strong>Speech:</strong> Quick half-whispered jokes, quiet threats.</p><p><strong>Motivation:</strong> Prove she can operate independently of the Warriors.</p><p><strong>Mannerism:</strong> Never stops scanning exits.</p><p><strong>Quirk:</strong> Counts every opponent under her breath.</p><p><strong>Rumours:</strong> Is rumored to have slipped past an imperial patrol without being seen.</p><p><strong>Secrets:</strong> Has secretly marked a safe woodland route away from the camp.</p><p><strong>Relationships:</strong> Durn considers her his younger sister; the Sachem regards her as expendable.</p><p><strong>Adventure Hook:</strong> Her concealed escape route may let PCs withdraw or follow fugitives.</p><p><strong>Encounter Role:</strong> Two-knife mobile skirmisher</p><p><strong>Combat Tactics:</strong> Round 1 northwest. Strike isolated foes, then Disengage or Dash via bonus action; avoid staying in Fighter melee reach.</p><p><strong>Challenge / attack:</strong> CR 1/2 (100 XP); Multiattack: two Dagger attacks +4, 1d4+2 piercing each, melee 5 ft. or thrown 20/60 ft. Roll two separate weapon activities.</p><p><strong>Fleet-Footed - Bonus Action:</strong> Dash or Disengage.</p><p><strong>Hamstring Feint - Once per turn:</strong> If both daggers hit the same creature on her turn, reduce that target’s Speed by 10 ft. until the start of her next turn; non-stacking.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Dagger",
+        "lookup": "Dagger",
+        "quantity": 3,
+        "wealthValueCp": 0,
+        "description": "Two fighting knives and one throwing spare."
+      },
+      {
+        "name": "Leather Armor",
+        "lookup": "Leather Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Reinforced camouflage leather; flat AC 14."
+      },
+      {
+        "name": "Charcoal camouflage pot",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Grease and soot for face and equipment."
+      },
+      {
+        "name": "Trail marker cord",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Knotted guide line for the secret escape route."
+      },
+      {
+        "name": "Dried berries",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Portable scouting food."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "ste": 2,
+        "acr": 1,
+        "prc": 1
+      },
+      "actions": [
+        {
+          "name": "Dagger (Melee)",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Two dagger attacks per Multiattack action; this activity covers ONE attack.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d4+2",
+            "type": "piercing"
+          },
+          "weapon": "Dagger",
+          "replaceInventory": "Dagger",
+          "quantity": 3
+        },
+        {
+          "name": "Dagger (Thrown)",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Thrown dagger attack, range 20/60 ft.",
+          "attack": {
+            "toHit": 4,
+            "mode": "ranged",
+            "reach": 0,
+            "range": 20,
+            "longRange": 60
+          },
+          "damage": {
+            "formula": "1d4+2",
+            "type": "piercing"
+          },
+          "weapon": "Dagger",
+          "replaceInventory": "Dagger",
+          "quantity": 3
+        },
+        {
+          "name": "Multiattack — Two Daggers",
+          "kind": "utility",
+          "activation": "action",
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+        },
+        {
+          "name": "Fleet-Footed — Dash",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Bonus Action: grants an additional 35 ft walking speed for up to one round. This is a temporary movement modifier, not forced movement.",
+          "midi": {
+            "target": "self",
+            "effects": [
+              {
+                "name": "Fleet-Footed — Dash",
+                "changes": [
+                  {
+                    "key": "system.attributes.movement.walk",
+                    "value": "35"
+                  }
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "Fleet-Footed — Disengage",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Bonus Action. Grants a tracked Disengaging marker until next Scout turn. Core Foundry does not automatically adjudicate Opportunity Attacks."
+        },
+        {
+          "name": "Hamstring Feint",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive: when both daggers hit the same enemy on the same turn, reduce its Speed by 10 ft until the scout next turn. Requires correlation across two attacks, not representable as a simple unconditional on-hit effect."
+        },
+        {
+          "name": "Smoke Bomb",
+          "kind": "utility",
+          "activation": "action",
+          "description": "Select affected token(s) before activating. 1/encounter. Throw to a point within 20 ft.; create a lightly obscured 10-ft-radius cloud until end of scout next turn. Place a template;",
+          "uses": {
+            "max": 1
+          },
+          "range": 20,
+          "area": {
+            "type": "radius",
+            "size": 10
+          }
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Builder — Brannic Pegmaul",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 14
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 10
+        },
+        "int": {
+          "value": 12
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 3,
+        "cp": 5
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 23,
+          "max": 23,
+          "formula": "5d8"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 0.5,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Male</p><p><strong>Age:</strong> 42</p><p><strong>Appearance:</strong> Stocky human builder in hogskin cloak carrying a heavy framing hammer, hooked measuring pole, ropes and pegs.</p><p><strong>Speech:</strong> Dry impatient instructions, as though every listener is a clumsy apprentice.</p><p><strong>Motivation:</strong> Keep the tents secure and make the camp movable on short notice.</p><p><strong>Mannerism:</strong> Taps posts to listen for rotten timber.</p><p><strong>Quirk:</strong> Has a precise count of every metal nail in the camp.</p><p><strong>Rumours:</strong> Built a hidden collapsible canopy above the central work area.</p><p><strong>Secrets:</strong> Knows the Sachem intends to abandon one worker during the next retreat.</p><p><strong>Relationships:</strong> Senior Builder and reluctant mentor to Fenna; fears Haldric.</p><p><strong>Adventure Hook:</strong> Knows how to release the camp supports or reveal the supply cache.</p><p><strong>Encounter Role:</strong> Battlefield control / camp utility</p><p><strong>Combat Tactics:</strong> Round 1 near western work area. Use cover, poles and collapsing shelters to block movement. Does not pursue a heavily armed Fighter.</p><p><strong>Challenge / attack:</strong> CR 1/2 (100 XP); Construction Hammer +4, 1d8+2 bludgeoning, represented by canonical Warhammer; Hook Pole +4, 1d6+2 bludgeoning, represented by Quarterstaff used one-handed.</p><p><strong>Hook Pole:</strong> On hit with pole, Large or smaller target DC 12 Strength saving throw or pulled 5 ft. toward Builder. Weapon item cannot automate this effect.</p><p><strong>Drop the Rigging - Action, 1/encounter:</strong> Adjacent to support rope: collapse attached 10-ft. canopy. Under it DC 12 Dexterity save or fall Prone; collapsed area becomes Difficult Terrain.</p><p><strong>Smoke Tin - Action, 1/encounter:</strong> At a point within 20 ft., create 10-ft.-radius Lightly Obscured area lasting until end of Builder’s next turn. Smoke tin is a loot item, not an automated activity.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Warhammer",
+        "lookup": "Warhammer",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Heavy construction hammer; acts as functional bludgeoning weapon."
+      },
+      {
+        "name": "Quarterstaff",
+        "lookup": "Quarterstaff",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Long hook pole; use standard one-handed staff attack, then adjudicate pull effect."
+      },
+      {
+        "name": "Leather Armor",
+        "lookup": "Leather Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Durable reinforced workwear; flat AC 13."
+      },
+      {
+        "name": "Smoke tin",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "One-use smoking sawdust container."
+      },
+      {
+        "name": "Canvas ties",
+        "lookup": null,
+        "quantity": 10,
+        "wealthValueCp": 0,
+        "description": "Rope and lashings for tarps."
+      },
+      {
+        "name": "Iron pegs",
+        "lookup": null,
+        "quantity": 12,
+        "wealthValueCp": 0,
+        "description": "Tent stakes and heavy nails."
+      },
+      {
+        "name": "Tool roll",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Awls, hooks, nails, repair needles and clamps."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "ath": 1,
+        "sur": 1
+      },
+      "actions": [
+        {
+          "name": "Construction Hammer",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Builder hammer, +4 to hit, 1d8+2 bludgeoning.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d8+2",
+            "type": "bludgeoning"
+          },
+          "weapon": "Warhammer",
+          "replaceInventory": "Warhammer"
+        },
+        {
+          "name": "Hook Pole",
+          "kind": "attack",
+          "activation": "action",
+          "description": "10-ft hook-pole reach; on hit DC 12 STR save or pulled 5 ft. Use Hook Pole Pull save activity to resolve.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 10,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d6+2",
+            "type": "bludgeoning"
+          },
+          "weapon": "Quarterstaff",
+          "replaceInventory": "Quarterstaff"
+        },
+        {
+          "name": "Hook Pole — Pull",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+        },
+        {
+          "name": "Rig Tripwire",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 12
+          },
+          "description": "Select affected token(s) before activating. 2/encounter. Place visible 10-foot tripwire within reach across two anchors. First creature to cross must pass DC12 DEX or fall Prone and have Speed reduced to 0 for the turn. Tripwire is AC10, HP5; removable or avoidable.",
+          "area": {
+            "type": "line",
+            "size": 10
+          },
+          "uses": {
+            "max": 2
+          },
+          "condition": "prone",
+          "onSave": "none"
+        },
+        {
+          "name": "Collapse the Timber",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 12
+          },
+          "description": "Select affected token(s) before activating. Requires prepared timber pile or overhead rig; 10-ft cube, range 20 ft., 2d6 Bludgeoning damage on failure and Prone. Success half damage and no Prone; collapsed area becomes Difficult Terrain.",
+          "damage": {
+            "formula": "2d6",
+            "type": "bludgeoning"
+          },
+          "area": {
+            "type": "cube",
+            "size": 10
+          },
+          "uses": {
+            "max": 1,
+            "recharge": 5
+          },
+          "condition": "prone",
+          "range": 20
+        },
+        {
+          "name": "Smoke Tin",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Select affected token(s) before activating. 1/encounter. Throw a smoke tin up to 20 ft.; 10-ft radius lightly obscured until end of builder next turn.",
+          "uses": {
+            "max": 1
+          },
+          "range": 20,
+          "area": {
+            "type": "radius",
+            "size": 10
+          }
+        },
+        {
+          "name": "Drop the Rigging",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 12
+          },
+          "description": "Select affected token(s) before activating. 1/encounter while adjacent to support rope. Collapse 10-foot canopy; DC12 DEX or prone, no damage. Tent area becomes Difficult Terrain. Cover rope visible and cuttable.",
+          "area": {
+            "type": "cube",
+            "size": 10
+          },
+          "uses": {
+            "max": 1
+          },
+          "condition": "prone",
+          "onSave": "none"
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Builder — Fenna Coilhand",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 14
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 10
+        },
+        "int": {
+          "value": 12
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 2,
+        "cp": 9
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 23,
+          "max": 23,
+          "formula": "5d8"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 0.5,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Female</p><p><strong>Age:</strong> 27</p><p><strong>Appearance:</strong> Hardworking campwright in worn woodland leather, boar pelt cowl, carpenter’s hammer, wood shavings and lengths of rope.</p><p><strong>Speech:</strong> Sparse replies, cautious and sharp.</p><p><strong>Motivation:</strong> Finish the contracts without suffering punishment for camp damage.</p><p><strong>Mannerism:</strong> Absentmindedly coils loose rope while talking.</p><p><strong>Quirk:</strong> Names every useful hammer she owns.</p><p><strong>Rumours:</strong> Can reportedly dismantle a two-person tent in less than a minute.</p><p><strong>Secrets:</strong> Is considering slipping away during the next journey.</p><p><strong>Relationships:</strong> Under Brannic’s authority and regularly threatened by Haldric.</p><p><strong>Adventure Hook:</strong> Might help the adventurers if offered protection from the Bree.</p><p><strong>Encounter Role:</strong> Late battle utility / potential defector</p><p><strong>Combat Tactics:</strong> Round 3 from southern supplies. Guard escape route with pole and threatened canopy but withdraw when injured or outnumbered.</p><p><strong>Challenge / attack:</strong> CR 1/2 (100 XP); Construction Hammer +4, 1d8+2 bludgeoning = canonical Warhammer; Hook Pole +4, 1d6+2 bludgeoning = Quarterstaff one-handed.</p><p><strong>Hook Pole:</strong> On hit with pole, Large or smaller target DC 12 Strength save or moved 5 ft. toward Builder.</p><p><strong>Drop the Rigging - Action, 1/encounter:</strong> At a support rope collapse one 10-ft. canopy; creatures underneath DC 12 Dexterity save or Prone; difficult terrain afterward.</p><p><strong>Smoke Tin - Action, 1/encounter:</strong> One thrown tin within 20 ft. creates Lightly Obscured 10-ft.-radius smoke until end of next turn.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Warhammer",
+        "lookup": "Warhammer",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Heavy work hammer usable as a bludgeoning weapon."
+      },
+      {
+        "name": "Quarterstaff",
+        "lookup": "Quarterstaff",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Hooked work pole, mechanically quarterstaff."
+      },
+      {
+        "name": "Leather Armor",
+        "lookup": "Leather Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Work leather; flat AC 13."
+      },
+      {
+        "name": "Smoke tin",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Single-use smoking tin."
+      },
+      {
+        "name": "Repair cord",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Coiled rope for immediate repairs."
+      },
+      {
+        "name": "Hand tools",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Mallet head, nails, wedges, knife, awl and spare cord."
+      },
+      {
+        "name": "Camp inventory tally",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Supply quantities and shortfalls for the whole camp."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "ath": 1,
+        "sur": 1
+      },
+      "actions": [
+        {
+          "name": "Construction Hammer",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Builder hammer, +4 to hit, 1d8+2 bludgeoning.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d8+2",
+            "type": "bludgeoning"
+          },
+          "weapon": "Warhammer",
+          "replaceInventory": "Warhammer"
+        },
+        {
+          "name": "Hook Pole",
+          "kind": "attack",
+          "activation": "action",
+          "description": "10-ft hook-pole reach; on hit DC 12 STR save or pulled 5 ft. Use Hook Pole Pull save activity to resolve.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 10,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d6+2",
+            "type": "bludgeoning"
+          },
+          "weapon": "Quarterstaff",
+          "replaceInventory": "Quarterstaff"
+        },
+        {
+          "name": "Hook Pole — Pull",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+        },
+        {
+          "name": "Rig Tripwire",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 12
+          },
+          "description": "Select affected token(s) before activating. 2/encounter. Place visible 10-foot tripwire within reach across two anchors. First creature to cross must pass DC12 DEX or fall Prone and have Speed reduced to 0 for the turn. Tripwire is AC10, HP5; removable or avoidable.",
+          "area": {
+            "type": "line",
+            "size": 10
+          },
+          "uses": {
+            "max": 2
+          },
+          "condition": "prone",
+          "onSave": "none"
+        },
+        {
+          "name": "Collapse the Timber",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 12
+          },
+          "description": "Select affected token(s) before activating. Requires prepared timber pile or overhead rig; 10-ft cube, range 20 ft., 2d6 Bludgeoning damage on failure and Prone. Success half damage and no Prone; collapsed area becomes Difficult Terrain.",
+          "damage": {
+            "formula": "2d6",
+            "type": "bludgeoning"
+          },
+          "area": {
+            "type": "cube",
+            "size": 10
+          },
+          "uses": {
+            "max": 1,
+            "recharge": 5
+          },
+          "condition": "prone",
+          "range": 20
+        },
+        {
+          "name": "Smoke Tin",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Select affected token(s) before activating. 1/encounter. Throw a smoke tin up to 20 ft.; 10-ft radius lightly obscured until end of builder next turn.",
+          "uses": {
+            "max": 1
+          },
+          "range": 20,
+          "area": {
+            "type": "radius",
+            "size": 10
+          }
+        },
+        {
+          "name": "Drop the Rigging",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 12
+          },
+          "description": "Select affected token(s) before activating. 1/encounter while adjacent to support rope. Collapse 10-foot canopy; DC12 DEX or prone, no damage. Tent area becomes Difficult Terrain. Cover rope visible and cuttable.",
+          "area": {
+            "type": "cube",
+            "size": 10
+          },
+          "uses": {
+            "max": 1
+          },
+          "condition": "prone",
+          "onSave": "none"
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Hunter — Oskar Greyquill",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 12
+        },
+        "dex": {
+          "value": 14
+        },
+        "con": {
+          "value": 14
+        },
+        "int": {
+          "value": 10
+        },
+        "wis": {
+          "value": 14
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 6,
+        "cp": 2
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 14
+        },
+        "hp": {
+          "value": 33,
+          "max": 33,
+          "formula": "5d8 + 10"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Male</p><p><strong>Age:</strong> 38</p><p><strong>Appearance:</strong> Lean wilderness tracker beneath a boar pelt hood, longbow, arrows, large skinning blade and bundles of preserved food.</p><p><strong>Speech:</strong> Soft, pragmatic and laconic.</p><p><strong>Motivation:</strong> Feed the camp and prevent outsiders from tracing their travel routes.</p><p><strong>Mannerism:</strong> Checks wind direction before nearly any shot.</p><p><strong>Quirk:</strong> Counts bowstrings among his greatest possessions.</p><p><strong>Rumours:</strong> Rumored to know the tracks of every deer and smuggler between the ridge and Velia.</p><p><strong>Secrets:</strong> Maintains a concealed snare-line beyond the southern treeline.</p><p><strong>Relationships:</strong> Relies on the Scouts but fears the Sachem will provoke Imperial pursuers.</p><p><strong>Adventure Hook:</strong> May help the party track fleeing Bree in exchange for a safe release.</p><p><strong>Encounter Role:</strong> Ranged pressure / woodland control</p><p><strong>Combat Tactics:</strong> Round 1: behind northeastern trees. Shoot exposed targets, not unconscious targets. Withdraw if pushed into melee; use a hunting blade at close range.</p><p><strong>Challenge / attack:</strong> CR 1 (200 XP); Multiattack: TWO Longbow attacks, +4, range 150/600 ft., 1d8+2 piercing each. Click the weapon attack activity twice.</p><p><strong>Hunting Knife:</strong> +4 to hit, 1d6+2 piercing (mechanically uses canonical Shortsword, visually a longer hunting blade).</p><p><strong>Pinning Arrow - Once per turn:</strong> When Longbow hits, target Speed -10 ft. until start of Hunter’s next turn; non-stacking.</p><p><strong>Wilderness Camouflage:</strong> Advantage on Dexterity (Stealth) checks to Hide when natural foliage provides suitable concealment.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Longbow",
+        "lookup": "Longbow",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Reliable hunting bow; two attacks per multiattack turn."
+      },
+      {
+        "name": "Shortsword",
+        "lookup": "Shortsword",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Long-bladed hunting knife; mechanical 1d6+2 piercing."
+      },
+      {
+        "name": "Leather Armor",
+        "lookup": "Leather Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Weathered stalking leathers; flat AC 14."
+      },
+      {
+        "name": "Arrows",
+        "lookup": null,
+        "quantity": 30,
+        "wealthValueCp": 0,
+        "description": "Loose hunting arrows in quiver; lookup intentionally null because ammunition item name differs between system compendia."
+      },
+      {
+        "name": "Bowstring",
+        "lookup": null,
+        "quantity": 2,
+        "wealthValueCp": 0,
+        "description": "Spare bowstrings in oilcloth."
+      },
+      {
+        "name": "Fishing line and hook",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Fishing tackle used for camp food."
+      },
+      {
+        "name": "Deer jerky",
+        "lookup": null,
+        "quantity": 4,
+        "wealthValueCp": 0,
+        "description": "Preserved food provisions."
+      },
+      {
+        "name": "Small copper clasp",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 20,
+        "description": "Valuable taken from a traveler."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "prc": 1,
+        "sur": 2,
+        "ste": 1,
+        "nat": 1
+      },
+      "actions": [
+        {
+          "name": "Longbow",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Primary longbow attack; two shots per Multiattack.",
+          "attack": {
+            "toHit": 4,
+            "mode": "ranged",
+            "reach": 0,
+            "range": 150,
+            "longRange": 600
+          },
+          "damage": {
+            "formula": "1d8+2",
+            "type": "piercing"
+          },
+          "weapon": "Longbow",
+          "replaceInventory": "Longbow"
+        },
+        {
+          "name": "Pinning Arrow",
+          "kind": "attack",
+          "activation": "action",
+          "description": "On hit: target movement reduced by 10 ft for one round. Does not stack. Requires Midi-QoL auto apply Activity effects enabled.",
+          "attack": {
+            "toHit": 4,
+            "mode": "ranged",
+            "reach": 0,
+            "range": 150,
+            "longRange": 600
+          },
+          "damage": {
+            "formula": "1d8+2",
+            "type": "piercing"
+          },
+          "weapon": "Longbow",
+          "replaceInventory": "Longbow",
+          "midi": {
+            "target": "creature",
+            "effects": [
+              {
+                "name": "Pinning Arrow — Reduced Speed",
+                "changes": [
+                  {
+                    "key": "system.attributes.movement.walk",
+                    "value": "-10"
+                  }
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "Hunting Knife",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Shortsword-sized hunting knife, as in previous encounter.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d6+2",
+            "type": "piercing"
+          },
+          "weapon": "Shortsword",
+          "replaceInventory": "Shortsword"
+        },
+        {
+          "name": "Multiattack — Two Shots",
+          "kind": "utility",
+          "activation": "action",
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+        },
+        {
+          "name": "Mark Quarry",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Bonus Action: mark one visible creature within 90 ft. The Hunter gains Advantage on its next ranged attack ONLY against that marked creature. Target-specific advantage requires Midi item macro; deliberately NOT granting Advantage against unrelated targets.",
+          "uses": {
+            "max": 1
+          },
+          "range": 90,
+          "targets": 1
+        },
+        {
+          "name": "Wilderness Camouflage",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive. Automation automatically grants Advantage on Hunter Stealth skill rolls when the Foundry scene name indicates a Bree/forest/woodland environment. Otherwise normal hiding rules apply."
+        },
+        {
+          "name": "Covering Fire",
+          "kind": "utility",
+          "activation": "reaction",
+          "description": "Select affected token(s) before activating. Reaction when an allied Bree within 30 ft. is attacked by a creature the Hunter can see: fire one Longbow attack against attacker before its next movement; roll using the Longbow activity. 1/Encounter.",
+          "uses": {
+            "max": 1
+          }
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Hunter — Sella Thornwake",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 12
+        },
+        "dex": {
+          "value": 14
+        },
+        "con": {
+          "value": 14
+        },
+        "int": {
+          "value": 10
+        },
+        "wis": {
+          "value": 14
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 6,
+        "cp": 2
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 14
+        },
+        "hp": {
+          "value": 33,
+          "max": 33,
+          "formula": "5d8 + 10"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Female</p><p><strong>Age:</strong> 32</p><p><strong>Appearance:</strong> Wiry woodland trapper in a patched boar pelt hood, with a weathered longbow, hunting blade, fishing hooks, and bundles of preserved fish.</p><p><strong>Speech:</strong> Soft, pragmatic and laconic.</p><p><strong>Motivation:</strong> Feed the camp and prevent outsiders from tracing their travel routes.</p><p><strong>Mannerism:</strong> Uses short birdcalls to signal the other Hunter without shouting.</p><p><strong>Quirk:</strong> Collects antler fragments to make whistles.</p><p><strong>Rumours:</strong> Said to know every stream and trout spawning ground between Velia and the ridge.</p><p><strong>Secrets:</strong> Sets concealed fish baskets and snare-lines near the western stream.</p><p><strong>Relationships:</strong> Coordinates covering fire with Oskar; distrusts the Sachem but values the camp as her livelihood.</p><p><strong>Adventure Hook:</strong> Can lead an escorted group to a safe crossing if persuaded to surrender.</p><p><strong>Encounter Role:</strong> Ranged pressure / woodland control</p><p><strong>Combat Tactics:</strong> Round 2: starts at western hunting rack, then moves toward cover near the western treeline. Shoot exposed targets, not unconscious targets. Withdraw if pushed into melee; use a hunting blade at close range.</p><p><strong>Challenge / attack:</strong> CR 1 (200 XP); Multiattack: TWO Longbow attacks, +4, range 150/600 ft., 1d8+2 piercing each. Click the weapon attack activity twice.</p><p><strong>Hunting Knife:</strong> +4 to hit, 1d6+2 piercing (mechanically uses canonical Shortsword, visually a longer hunting blade).</p><p><strong>Pinning Arrow - Once per turn:</strong> When Longbow hits, target Speed -10 ft. until start of Hunter’s next turn; non-stacking.</p><p><strong>Wilderness Camouflage:</strong> Advantage on Dexterity (Stealth) checks to Hide when natural foliage provides suitable concealment.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Longbow",
+        "lookup": "Longbow",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Reliable hunting bow; two attacks per multiattack turn."
+      },
+      {
+        "name": "Shortsword",
+        "lookup": "Shortsword",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Long-bladed hunting knife; mechanical 1d6+2 piercing."
+      },
+      {
+        "name": "Leather Armor",
+        "lookup": "Leather Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Weathered stalking leathers; flat AC 14."
+      },
+      {
+        "name": "Arrows",
+        "lookup": null,
+        "quantity": 30,
+        "wealthValueCp": 0,
+        "description": "Loose hunting arrows in quiver; lookup intentionally null because ammunition item name differs between system compendia."
+      },
+      {
+        "name": "Bowstring",
+        "lookup": null,
+        "quantity": 2,
+        "wealthValueCp": 0,
+        "description": "Spare bowstrings in oilcloth."
+      },
+      {
+        "name": "Fishing line and hook",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Fishing tackle used for camp food."
+      },
+      {
+        "name": "Deer jerky",
+        "lookup": null,
+        "quantity": 4,
+        "wealthValueCp": 0,
+        "description": "Preserved food provisions."
+      },
+      {
+        "name": "Carved antler whistle",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 20,
+        "description": "Small hand-carved whistle used for communication while hunting."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "prc": 1,
+        "sur": 2,
+        "ste": 1,
+        "nat": 1
+      },
+      "actions": [
+        {
+          "name": "Longbow",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Primary longbow attack; two shots per Multiattack.",
+          "attack": {
+            "toHit": 4,
+            "mode": "ranged",
+            "reach": 0,
+            "range": 150,
+            "longRange": 600
+          },
+          "damage": {
+            "formula": "1d8+2",
+            "type": "piercing"
+          },
+          "weapon": "Longbow",
+          "replaceInventory": "Longbow"
+        },
+        {
+          "name": "Pinning Arrow",
+          "kind": "attack",
+          "activation": "action",
+          "description": "On hit: target movement reduced by 10 ft for one round. Does not stack. Requires Midi-QoL auto apply Activity effects enabled.",
+          "attack": {
+            "toHit": 4,
+            "mode": "ranged",
+            "reach": 0,
+            "range": 150,
+            "longRange": 600
+          },
+          "damage": {
+            "formula": "1d8+2",
+            "type": "piercing"
+          },
+          "weapon": "Longbow",
+          "replaceInventory": "Longbow",
+          "midi": {
+            "target": "creature",
+            "effects": [
+              {
+                "name": "Pinning Arrow — Reduced Speed",
+                "changes": [
+                  {
+                    "key": "system.attributes.movement.walk",
+                    "value": "-10"
+                  }
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "Hunting Knife",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Shortsword-sized hunting knife, as in previous encounter.",
+          "attack": {
+            "toHit": 4,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d6+2",
+            "type": "piercing"
+          },
+          "weapon": "Shortsword",
+          "replaceInventory": "Shortsword"
+        },
+        {
+          "name": "Multiattack — Two Shots",
+          "kind": "utility",
+          "activation": "action",
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+        },
+        {
+          "name": "Mark Quarry",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Bonus Action: mark one visible creature within 90 ft. The Hunter gains Advantage on its next ranged attack ONLY against that marked creature. Target-specific advantage requires Midi item macro; deliberately NOT granting Advantage against unrelated targets.",
+          "uses": {
+            "max": 1
+          },
+          "range": 90,
+          "targets": 1
+        },
+        {
+          "name": "Wilderness Camouflage",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive. Automation automatically grants Advantage on Hunter Stealth skill rolls when the Foundry scene name indicates a Bree/forest/woodland environment. Otherwise normal hiding rules apply."
+        },
+        {
+          "name": "Covering Fire",
+          "kind": "utility",
+          "activation": "reaction",
+          "description": "Select affected token(s) before activating. Reaction when an allied Bree within 30 ft. is attacked by a creature the Hunter can see: fire one Longbow attack against attacker before its next movement; roll using the Longbow activity. 1/Encounter.",
+          "uses": {
+            "max": 1
+          }
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Boar — Bristle",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 16
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 15
+        },
+        "int": {
+          "value": 2
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 5
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 0,
+        "cp": 1
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 26,
+          "max": 26,
+          "formula": "4d8+8"
+        },
+        "movement": {
+          "walk": 40,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "beast",
+          "subtype": "boar",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Appearance:</strong> A broad-shouldered, muscular wild boar with dense bristles, scarred hide and long sharpened tusks.</p><p><strong>Speech:</strong> Snorts, growls and harsh squeals; no language.</p><p><strong>Motivation:</strong> Defend its feeding ground, handler and familiar camp.</p><p><strong>Mannerism:</strong> Scrapes ground and lowers its head before charging.</p><p><strong>Quirk:</strong> Bristle responds to the Sachem’s hunting whistle.</p><p><strong>Rumours:</strong> The Bree keep fierce boars close to the woodland tents.</p><p><strong>Secrets:</strong> The animals can be distracted by food and are not suicidal.</p><p><strong>Relationships:</strong> Trained around the Bree handlers; especially protective of nearest one.</p><p><strong>Adventure Hook:</strong> Its tracks reveal the animal pen and concealed paths through the forest.</p><p><strong>Homebrew hide:</strong> Resistance to all Bludgeoning and Slashing, vulnerability to all Piercing including spear and javelin damage. These are not traits of a normal official boar.</p><p><strong>Boar actions:</strong> Use native Tusks, Goring Charge and Charge Knockdown Activities. Goring Charge requires 20-ft straight movement and the knockdown save is only after hit. Relentless keeps it at 1 HP once per encounter rather than being reduced to 0 if the damage is not overwhelming; GM judges trigger.</p>",
+          "public": "<p>A broad, bristly wild boar with long tusks, trained to defend its handlers.</p>"
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Bristle — rope-and-leather collar",
+        "description": "Rough handler collar, not a weapon",
+        "quantity": 1,
+        "wealthValueCp": 3
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "prc": 1
+      },
+      "resistances": [
+        "bludgeoning",
+        "slashing"
+      ],
+      "vulnerabilities": [
+        "piercing"
+      ],
+      "actions": [
+        {
+          "name": "Tusks",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Strong ordinary tusk attack, +5 to hit, 1d8+3 piercing; reach 5 ft.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d8+3",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Goring Charge",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Select affected token(s) before activating. Only after boar moved at least 20 ft straight toward target. +5 to hit; 2d8+3 piercing. On hit use Charge Knockdown save separately.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "2d8+3",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Charge Knockdown",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+        },
+        {
+          "name": "Relentless (Once)",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive. Relentless is intercepted by Runyth NPC Button v0.4.5 on dnd5e.applyDamage. A non-massive lethal hit at positive HP instead leaves the boar at 1 HP, spent until a new combat. Direct actor HP edits bypass this hook.",
+          "uses": {
+            "max": 1
+          }
+        },
+        {
+          "name": "Protect Handler",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Select affected token(s) before activating. Boar attacks enemies engaging adjacent Bree handler. If handler withdraws or is subdued, animal may stop fighting; it does not execute downed targets."
+        }
+      ],
+      "relentlessOnce": true
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Boar — Moss",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 16
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 15
+        },
+        "int": {
+          "value": 2
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 5
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 0,
+        "cp": 1
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 26,
+          "max": 26,
+          "formula": "4d8+8"
+        },
+        "movement": {
+          "walk": 40,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "beast",
+          "subtype": "boar",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Appearance:</strong> A broad-shouldered, muscular wild boar with dense bristles, scarred hide and long sharpened tusks.</p><p><strong>Speech:</strong> Snorts, growls and harsh squeals; no language.</p><p><strong>Motivation:</strong> Defend its feeding ground, handler and familiar camp.</p><p><strong>Mannerism:</strong> Scrapes ground and lowers its head before charging.</p><p><strong>Quirk:</strong> Moss responds to the Sachem’s hunting whistle.</p><p><strong>Rumours:</strong> The Bree keep fierce boars close to the woodland tents.</p><p><strong>Secrets:</strong> The animals can be distracted by food and are not suicidal.</p><p><strong>Relationships:</strong> Trained around the Bree handlers; especially protective of nearest one.</p><p><strong>Adventure Hook:</strong> Its tracks reveal the animal pen and concealed paths through the forest.</p><p><strong>Homebrew hide:</strong> Resistance to all Bludgeoning and Slashing, vulnerability to all Piercing including spear and javelin damage. These are not traits of a normal official boar.</p><p><strong>Boar actions:</strong> Use native Tusks, Goring Charge and Charge Knockdown Activities. Goring Charge requires 20-ft straight movement and the knockdown save is only after hit. Relentless keeps it at 1 HP once per encounter rather than being reduced to 0 if the damage is not overwhelming; GM judges trigger.</p>",
+          "public": "<p>A broad, bristly wild boar with long tusks, trained to defend its handlers.</p>"
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Moss — rope-and-leather collar",
+        "description": "Rough handler collar, not a weapon",
+        "quantity": 1,
+        "wealthValueCp": 3
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "prc": 1
+      },
+      "resistances": [
+        "bludgeoning",
+        "slashing"
+      ],
+      "vulnerabilities": [
+        "piercing"
+      ],
+      "actions": [
+        {
+          "name": "Tusks",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Strong ordinary tusk attack, +5 to hit, 1d8+3 piercing; reach 5 ft.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d8+3",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Goring Charge",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Select affected token(s) before activating. Only after boar moved at least 20 ft straight toward target. +5 to hit; 2d8+3 piercing. On hit use Charge Knockdown save separately.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "2d8+3",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Charge Knockdown",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+        },
+        {
+          "name": "Relentless (Once)",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive. Relentless is intercepted by Runyth NPC Button v0.4.5 on dnd5e.applyDamage. A non-massive lethal hit at positive HP instead leaves the boar at 1 HP, spent until a new combat. Direct actor HP edits bypass this hook.",
+          "uses": {
+            "max": 1
+          }
+        },
+        {
+          "name": "Protect Handler",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Select affected token(s) before activating. Boar attacks enemies engaging adjacent Bree handler. If handler withdraws or is subdued, animal may stop fighting; it does not execute downed targets."
+        }
+      ],
+      "relentlessOnce": true
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Boar — Grit",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 16
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 15
+        },
+        "int": {
+          "value": 2
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 5
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 0,
+        "cp": 1
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 26,
+          "max": 26,
+          "formula": "4d8+8"
+        },
+        "movement": {
+          "walk": 40,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "beast",
+          "subtype": "boar",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Appearance:</strong> A broad-shouldered, muscular wild boar with dense bristles, scarred hide and long sharpened tusks.</p><p><strong>Speech:</strong> Snorts, growls and harsh squeals; no language.</p><p><strong>Motivation:</strong> Defend its feeding ground, handler and familiar camp.</p><p><strong>Mannerism:</strong> Scrapes ground and lowers its head before charging.</p><p><strong>Quirk:</strong> Grit responds to the Sachem’s hunting whistle.</p><p><strong>Rumours:</strong> The Bree keep fierce boars close to the woodland tents.</p><p><strong>Secrets:</strong> The animals can be distracted by food and are not suicidal.</p><p><strong>Relationships:</strong> Trained around the Bree handlers; especially protective of nearest one.</p><p><strong>Adventure Hook:</strong> Its tracks reveal the animal pen and concealed paths through the forest.</p><p><strong>Homebrew hide:</strong> Resistance to all Bludgeoning and Slashing, vulnerability to all Piercing including spear and javelin damage. These are not traits of a normal official boar.</p><p><strong>Boar actions:</strong> Use native Tusks, Goring Charge and Charge Knockdown Activities. Goring Charge requires 20-ft straight movement and the knockdown save is only after hit. Relentless keeps it at 1 HP once per encounter rather than being reduced to 0 if the damage is not overwhelming; GM judges trigger.</p>",
+          "public": "<p>A broad, bristly wild boar with long tusks, trained to defend its handlers.</p>"
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Grit — rope-and-leather collar",
+        "description": "Rough handler collar, not a weapon",
+        "quantity": 1,
+        "wealthValueCp": 3
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "prc": 1
+      },
+      "resistances": [
+        "bludgeoning",
+        "slashing"
+      ],
+      "vulnerabilities": [
+        "piercing"
+      ],
+      "actions": [
+        {
+          "name": "Tusks",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Strong ordinary tusk attack, +5 to hit, 1d8+3 piercing; reach 5 ft.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d8+3",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Goring Charge",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Select affected token(s) before activating. Only after boar moved at least 20 ft straight toward target. +5 to hit; 2d8+3 piercing. On hit use Charge Knockdown save separately.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "2d8+3",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Charge Knockdown",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+        },
+        {
+          "name": "Relentless (Once)",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive. Relentless is intercepted by Runyth NPC Button v0.4.5 on dnd5e.applyDamage. A non-massive lethal hit at positive HP instead leaves the boar at 1 HP, spent until a new combat. Direct actor HP edits bypass this hook.",
+          "uses": {
+            "max": 1
+          }
+        },
+        {
+          "name": "Protect Handler",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Select affected token(s) before activating. Boar attacks enemies engaging adjacent Bree handler. If handler withdraws or is subdued, animal may stop fighting; it does not execute downed targets."
+        }
+      ],
+      "relentlessOnce": true
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Sachem Boar — Old Blacktusk",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 18
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 16
+        },
+        "int": {
+          "value": 2
+        },
+        "wis": {
+          "value": 12
+        },
+        "cha": {
+          "value": 5
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 0,
+        "cp": 1
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 14
+        },
+        "hp": {
+          "value": 48,
+          "max": 48,
+          "formula": "6d10+18"
+        },
+        "movement": {
+          "walk": 40,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 2,
+        "type": {
+          "value": "beast",
+          "subtype": "boar",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Appearance:</strong> An exceptionally large, muscular old wild boar with battered shoulders, a coarse dark mane, ancient scars, and massive ivory tusks. He is a real four-legged boar, not an anthropomorphic warrior.</p><p><strong>Speech:</strong> Deep grunts, teeth-grinding and explosive snorts; no language.</p><p><strong>Motivation:</strong> Guard Grannoc Hogfather and dominate the other boars.</p><p><strong>Mannerism:</strong> Scrapes the ground three times before charging.</p><p><strong>Quirk:</strong> Answers only to a low triple whistle from Grannoc.</p><p><strong>Rumours:</strong> The Bree fear Old Blacktusk almost as much as their Sachem.</p><p><strong>Secrets:</strong> The old animal can be diverted by food and powerful scents; when his master flees he may disengage.</p><p><strong>Relationships:</strong> Bonded to Grannoc and dominates Bristle, Moss and Grit.</p><p><strong>Adventure Hook:</strong> His huge hoofprints can be followed back toward the main camp, allowing the party to distinguish the chief animal from ordinary boars.</p><p><strong>Encounter Role:</strong> Elite bodyguard and area-disruption animal. CR 2 (450 XP).</p><p><strong>Natural Defense:</strong> Resistance to Bludgeoning and Slashing and Vulnerability to Piercing (including spears and javelins). All weapon types remain nonmagical; these defensive modifications are deliberate homebrew.</p><p><strong>Tusks:</strong> Native attack +6 to hit, 2d6+4 Piercing.</p><p><strong>Goring Charge:</strong> Native attack +6 to hit, 3d6+4 Piercing. Requires 20 feet straight-line movement; DC 14 STR save to resist Prone on hit.</p><p><strong>Trampling Rush:</strong> Recharge 5-6, 20-foot line, DC 14 DEX save; 2d6+4 Bludgeoning on failure, half on success. Failures fall Prone. This is an alternative action, not an additional attack. Movement and prone application require GM adjudication.</p><p><strong>Dominant Snort:</strong> Once per encounter, up to two other boars within 30 ft. may move 10 ft. without provoking opportunity attacks (GM moves tokens).</p><p><strong>Sachem Guard:</strong> Once per encounter reaction, when adjacent to Grannoc, may intercept one melee attack targeting him (GM retargets).</p><p><strong>Relentless:</strong> Once per encounter, if damage would reduce the boar to 0 HP without outright killing it, it remains at 1 HP (GM sets HP).</p><p><strong>Native Combat Import:</strong> Use Runyth NPC Button 0.4.4; all damage and save activities are native. GM adjudicates charge prerequisites, interception, movement, conditional Prone and Relentless.</p>",
+          "public": "<p>An enormous, battle-scarred wild boar with huge tusks. The Sachem keeps him close as his favored, fiercely protective animal.</p>"
+        }
+      },
+      "traits": {
+        "size": "lg"
+      }
+    },
+    "items": [
+      {
+        "name": "Old Blacktusk — braided leather collar",
+        "description": "Heavy braided collar with a carved boar-tusk emblem, fitted for a massive boar. A non-weapon trophy.",
+        "quantity": 1,
+        "wealthValueCp": 40
+      }
+    ],
+    "combat": {
+      "savingThrows": [
+        "str",
+        "con"
+      ],
+      "skills": {
+        "prc": 1,
+        "ath": 1
+      },
+      "resistances": [
+        "bludgeoning",
+        "slashing"
+      ],
+      "vulnerabilities": [
+        "piercing"
+      ],
+      "actions": [
+        {
+          "name": "Tusks",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Savage boar tusks. +6 to hit, reach 5 feet, 2d6+4 Piercing damage.",
+          "attack": {
+            "toHit": 6,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "2d6+4",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Goring Charge",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Select affected token(s) before activating. Requires 20 ft of movement straight toward target immediately before hit. +6 to hit, 3d6+4 Piercing. After a hit, click Charge Knockdown (DC 14 STR). Do not roll Tusks additionally.",
+          "attack": {
+            "toHit": 6,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "3d6+4",
+            "type": "piercing"
+          },
+          "weapon": "Tusks",
+          "natural": true
+        },
+        {
+          "name": "Charge Knockdown",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+        },
+        {
+          "name": "Trampling Rush",
+          "kind": "save",
+          "activation": "action",
+          "description": "Automated 20-foot line attack, DC 14 Dexterity save, 2d6+4 Bludgeoning damage (half on success) and Prone on failure. Aim by selecting a creature in the travel direction. The boar does not teleport; move it using normal scene movement.",
+          "save": {
+            "ability": "dex",
+            "dc": 14
+          },
+          "damage": {
+            "formula": "2d6+4",
+            "type": "bludgeoning"
+          },
+          "onSave": "half",
+          "area": {
+            "type": "line",
+            "size": 20
+          },
+          "condition": "prone",
+          "uses": {
+            "max": 1,
+            "recharge": 5
+          }
+        },
+        {
+          "name": "Dominant Snort",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Select affected token(s) before activating. Once per encounter. Choose up to two other Bree boars within 30 ft that can hear the snort. Each can immediately move up to 10 ft without opportunity attacks.",
+          "range": 30,
+          "targets": 2,
+          "uses": {
+            "max": 1
+          }
+        },
+        {
+          "name": "Sachem Guard",
+          "kind": "utility",
+          "activation": "reaction",
+          "description": "Select affected token(s) before activating. Once per encounter while adjacent to Grannoc: intercept a melee attack targeting Grannoc, changing the target to Old Blacktusk.",
+          "uses": {
+            "max": 1
+          }
+        },
+        {
+          "name": "Relentless (Once)",
+          "kind": "utility",
+          "activation": "none",
+          "description": "Passive. Relentless is intercepted by Runyth NPC Button v0.4.5 on dnd5e.applyDamage. A non-massive lethal hit at positive HP instead leaves the boar at 1 HP, spent until a new combat. Direct actor HP edits bypass this hook.",
+          "uses": {
+            "max": 1
+          }
+        }
+      ],
+      "relentlessOnce": true
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Warrior — Haldric Tusksplitter",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 16
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 14
+        },
+        "int": {
+          "value": 8
+        },
+        "wis": {
+          "value": 10
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 9,
+        "cp": 8
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 45,
+          "max": 45,
+          "formula": "7d8 + 14"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Male</p><p><strong>Age:</strong> 35</p><p><strong>Appearance:</strong> Broad muscular human beneath an enormous boar-head hood, bloodied fur straps, massive greataxe, scarred forearms.</p><p><strong>Speech:</strong> Growling demands and short insults.</p><p><strong>Motivation:</strong> Prove himself the most feared combatant and receive first share of spoils.</p><p><strong>Mannerism:</strong> Strikes his axe haft against the ground between threats.</p><p><strong>Quirk:</strong> Refuses to remove the boar skull, even while sleeping.</p><p><strong>Rumours:</strong> Is believed to have knocked down an armed caravan guard with one blow.</p><p><strong>Secrets:</strong> His left ankle was injured in a previous raid; he hides it.</p><p><strong>Relationships:</strong> Sachem favors him; he bullies Builder Fenna.</p><p><strong>Adventure Hook:</strong> May challenge a Fighter to single combat, allowing temporary negotiation or distraction.</p><p><strong>Encounter Role:</strong> Aggressive melee frontliner</p><p><strong>Combat Tactics:</strong> Round 1 near firepit: rush nearest obvious frontline combatant. Reckless Swing creates counterattack opening. Avoid targeting the same downed adventurer again.</p><p><strong>Challenge / attack:</strong> CR 1 (200 XP); Greataxe +5 to hit, reach 5 ft., 1d12+3 slashing. One attack per action.</p><p><strong>Feral Charge - Once per turn:</strong> If moved 15 ft. in a straight line toward a Medium or smaller foe immediately before hitting with greataxe: DC 13 Strength save or target falls Prone.</p><p><strong>Reckless Swing - 1/encounter:</strong> Before one greataxe attack gain Advantage on that attack; attacks against warrior have Advantage until its next turn; cannot use Feral Charge on that turn.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Greataxe",
+        "lookup": "Greataxe",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Battle-worn double-edged axe."
+      },
+      {
+        "name": "Handaxe",
+        "lookup": "Handaxe",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Backup axe."
+      },
+      {
+        "name": "Hide Armor",
+        "lookup": "Hide Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Scabbed animal hides; flat AC 13."
+      },
+      {
+        "name": "Meat ration",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Salted boar strips wrapped in leaves."
+      },
+      {
+        "name": "Knotted victory cord",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Two knots represent defeated mercenaries."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "ath": 1,
+        "itm": 1
+      },
+      "actions": [
+        {
+          "name": "Greataxe",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Ordinary melee axe attack.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d12+3",
+            "type": "slashing"
+          }
+        },
+        {
+          "name": "Brutal Sweep",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 13
+          },
+          "description": "Select affected token(s) before activating. 10-foot CONE from warrior. All creatures in cone save Dexterity; 2d6+3 slashing on failure or HALF on success. Recharge 5–6.",
+          "damage": {
+            "formula": "2d6+3",
+            "type": "slashing"
+          },
+          "area": {
+            "type": "cone",
+            "size": 10
+          },
+          "uses": {
+            "max": 1,
+            "recharge": 5
+          }
+        },
+        {
+          "name": "Boar's Rush — Knockback",
+          "kind": "save",
+          "activation": "bonus",
+          "save": {
+            "ability": "str",
+            "dc": 13
+          },
+          "description": "Select affected token(s) before activating. After charging 15 ft straight toward a creature, use BONUS action to force a STR DC 13 save; failure pushes 10 ft. and knocks Prone. No damage.",
+          "uses": {
+            "max": 1
+          },
+          "condition": "prone",
+          "onSave": "none"
+        },
+        {
+          "name": "Reckless Swing",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Once per encounter before attacking: self gains Advantage on its next attack; attacks targeting the Warrior gain Advantage for one round. Incompatible with Boar’s Rush. Midi + DAE linked effects.",
+          "uses": {
+            "max": 1
+          },
+          "midi": {
+            "target": "self",
+            "effects": [
+              {
+                "name": "Reckless Swing — Next Attack Advantage",
+                "changes": [
+                  {
+                    "key": "flags.midi-qol.advantage.attack.all",
+                    "value": "1"
+                  }
+                ],
+                "specialDuration": [
+                  "1Attack"
+                ],
+                "rounds": 1
+              },
+              {
+                "name": "Reckless Swing — Exposed",
+                "changes": [
+                  {
+                    "key": "flags.midi-qol.grants.advantage.attack.all",
+                    "value": "1"
+                  }
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "Handaxe",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Melee backup axe.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d6+3",
+            "type": "slashing"
+          }
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  },
+  {
+    "name": "Bree Warrior — Durn Fellhide",
+    "type": "npc",
+    "img": "icons/svg/mystery-man.svg",
+    "system": {
+      "abilities": {
+        "str": {
+          "value": 16
+        },
+        "dex": {
+          "value": 12
+        },
+        "con": {
+          "value": 14
+        },
+        "int": {
+          "value": 8
+        },
+        "wis": {
+          "value": 10
+        },
+        "cha": {
+          "value": 8
+        }
+      },
+      "currency": {
+        "pp": 0,
+        "gp": 0,
+        "ep": 0,
+        "sp": 5,
+        "cp": 6
+      },
+      "attributes": {
+        "ac": {
+          "calc": "flat",
+          "flat": 13
+        },
+        "hp": {
+          "value": 45,
+          "max": 45,
+          "formula": "7d8 + 14"
+        },
+        "movement": {
+          "walk": 30,
+          "units": "ft"
+        }
+      },
+      "details": {
+        "cr": 1,
+        "type": {
+          "value": "humanoid",
+          "subtype": "Human",
+          "swarm": "",
+          "custom": ""
+        },
+        "biography": {
+          "value": "<p><strong>Gender:</strong> Male</p><p><strong>Age:</strong> 29</p><p><strong>Appearance:</strong> Large feral human in a patched hog pelt with tusks, matted black hair and rough leather wrappings.</p><p><strong>Speech:</strong> Grunts and loud taunts, more impulsive than Haldric.</p><p><strong>Motivation:</strong> Win enough loot to leave the imperial frontier.</p><p><strong>Mannerism:</strong> Raises his weapon over his head before charging.</p><p><strong>Quirk:</strong> Collects wooden buttons from merchants he robs.</p><p><strong>Rumours:</strong> Was expelled from another band for assaulting fellow raiders.</p><p><strong>Secrets:</strong> Privately fears the Sachem, who knows his former identity.</p><p><strong>Relationships:</strong> Rival of Haldric and protective of Scout Larka.</p><p><strong>Adventure Hook:</strong> Could betray the Sachem if promised a credible escape.</p><p><strong>Encounter Role:</strong> Aggressive reinforcement frontliner</p><p><strong>Combat Tactics:</strong> Round 2 from east: attack nearest Fighter or visible threat. Favor obvious charges over efficient focus fire. Retreat if Sachem flees.</p><p><strong>Challenge / attack:</strong> CR 1 (200 XP); Greataxe +5 to hit, reach 5 ft., 1d12+3 slashing. One attack per action.</p><p><strong>Feral Charge - Once per turn:</strong> If moved 15 ft. in a straight line toward a Medium or smaller foe immediately before hitting with greataxe: DC 13 Strength save or Prone.</p><p><strong>Reckless Swing - 1/encounter:</strong> Before one greataxe attack gain Advantage; attacks against warrior gain Advantage until next turn; incompatible with Feral Charge on that turn.</p><p><strong>Native Combat Import:</strong> With Runyth NPC Button 0.4.4 encounter-activity import, use the listed native attack, save, heal and utility activities. Explicit conditional triggers and one-attack buffs are adjudicated by the GM.</p>",
+          "public": ""
+        }
+      },
+      "traits": {
+        "size": "med"
+      }
+    },
+    "items": [
+      {
+        "name": "Greataxe",
+        "lookup": "Greataxe",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Brutal cutting axe."
+      },
+      {
+        "name": "Javelin",
+        "lookup": "Javelin",
+        "quantity": 2,
+        "wealthValueCp": 0,
+        "description": "Spare thrown spears."
+      },
+      {
+        "name": "Hide Armor",
+        "lookup": "Hide Armor",
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Patchwork hide protection; flat AC 13."
+      },
+      {
+        "name": "Collected wooden buttons",
+        "lookup": null,
+        "quantity": 6,
+        "wealthValueCp": 0,
+        "description": "Mementos stolen from merchants."
+      },
+      {
+        "name": "Hemp cord",
+        "lookup": null,
+        "quantity": 1,
+        "wealthValueCp": 0,
+        "description": "Useful for binding equipment or captives."
+      }
+    ],
+    "combat": {
+      "savingThrows": [],
+      "skills": {
+        "ath": 1,
+        "itm": 1
+      },
+      "actions": [
+        {
+          "name": "Greataxe",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Ordinary melee axe attack.",
+          "attack": {
+            "toHit": 5,
+            "mode": "melee",
+            "reach": 5,
+            "range": 0,
+            "longRange": 0
+          },
+          "damage": {
+            "formula": "1d12+3",
+            "type": "slashing"
+          }
+        },
+        {
+          "name": "Brutal Sweep",
+          "kind": "save",
+          "activation": "action",
+          "save": {
+            "ability": "dex",
+            "dc": 13
+          },
+          "description": "Select affected token(s) before activating. 10-foot CONE from warrior. All creatures in cone save Dexterity; 2d6+3 slashing on failure or HALF on success. Recharge 5–6.",
+          "damage": {
+            "formula": "2d6+3",
+            "type": "slashing"
+          },
+          "area": {
+            "type": "cone",
+            "size": 10
+          },
+          "uses": {
+            "max": 1,
+            "recharge": 5
+          }
+        },
+        {
+          "name": "Boar's Rush — Knockback",
+          "kind": "save",
+          "activation": "bonus",
+          "save": {
+            "ability": "str",
+            "dc": 13
+          },
+          "description": "Select affected token(s) before activating. After charging 15 ft straight toward a creature, use BONUS action to force a STR DC 13 save; failure pushes 10 ft. and knocks Prone. No damage.",
+          "uses": {
+            "max": 1
+          },
+          "condition": "prone",
+          "onSave": "none"
+        },
+        {
+          "name": "Reckless Swing",
+          "kind": "utility",
+          "activation": "bonus",
+          "description": "Once per encounter before attacking: self gains Advantage on its next attack; attacks targeting the Warrior gain Advantage for one round. Incompatible with Boar’s Rush. Midi + DAE linked effects.",
+          "uses": {
+            "max": 1
+          },
+          "midi": {
+            "target": "self",
+            "effects": [
+              {
+                "name": "Reckless Swing — Next Attack Advantage",
+                "changes": [
+                  {
+                    "key": "flags.midi-qol.advantage.attack.all",
+                    "value": "1"
+                  }
+                ],
+                "specialDuration": [
+                  "1Attack"
+                ],
+                "rounds": 1
+              },
+              {
+                "name": "Reckless Swing — Exposed",
+                "changes": [
+                  {
+                    "key": "flags.midi-qol.grants.advantage.attack.all",
+                    "value": "1"
+                  }
+                ],
+                "rounds": 1
+              }
+            ]
+          }
+        },
+        {
+          "name": "Javelin",
+          "kind": "attack",
+          "activation": "action",
+          "description": "Thrown javelin using ranged attack when thrown.",
+          "attack": {
+            "toHit": 5,
+            "mode": "ranged",
+            "reach": 0,
+            "range": 30,
+            "longRange": 120
+          },
+          "damage": {
+            "formula": "1d6+3",
+            "type": "piercing"
+          },
+          "quantity": 2
+        }
+      ]
+    },
+    "encounterAutomation": {
+      "requires": "runyth-bree-bunch-automation",
+      "version": "0.1.0"
+    }
+  }
+]
