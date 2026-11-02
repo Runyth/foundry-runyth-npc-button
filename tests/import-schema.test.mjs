@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { parseAndNormalizeNpcJson } from "../scripts/ai/npc-json.mjs";
 import { interceptRelentless } from "../scripts/services/relentless.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const text = fs.readFileSync(path.join(root, "docs/examples/bree-bunch-midi-qol-12-npcs.json"), "utf8");
+const text = fs.readFileSync(path.join(root, "docs/examples/bree-bunch-native-activities-12-npcs.json"), "utf8");
 const payload = JSON.parse(text);
 const normalize = (p) => parseAndNormalizeNpcJson(JSON.stringify(p), { expectedCount: 12 });
 const actors = normalize(payload);
