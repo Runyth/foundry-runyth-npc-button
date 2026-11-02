@@ -228,10 +228,6 @@ See `docs/` for architecture, testing, release, and roadmap notes.
 - D&D Beyond Race/Species catalog: https://www.dndbeyond.com/species
 - D&D 2024 Basic Rules — Challenge Rating: https://www.dndbeyond.com/sources/dnd/br-2024/how-to-use-a-monster
 
-## License
-
-AGPL-3.0-or-later. See `LICENSE`.
-
 ### Reusable seeds, weapon variety, and import preview
 
 Local NPC generation always has a concrete reusable seed. When the Seed field is blank, NPC Button creates one automatically, returns it to the dashboard, and stores it on every generated Actor in both private biography and module flags.
