@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { MODULE_ID } from "../constants.mjs";
 import { GROUP_TYPES, HABITATS, NAME_STYLES, RACES, ROLES } from "../generator/data.mjs";
 

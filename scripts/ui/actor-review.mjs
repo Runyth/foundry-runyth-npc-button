@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 const MAX_OPEN_ACTORS = 10;
 const MAX_COLUMNS = 3;
 const MIN_SHEET_WIDTH = 420;

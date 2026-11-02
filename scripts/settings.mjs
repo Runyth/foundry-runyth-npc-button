@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "./constants.mjs";
 import { ComplementaryModuleColorsForm } from "./complementary-module-colors.mjs";
 import { FilterSettingsForm, defaultFilterConfiguration } from "./filters.mjs";

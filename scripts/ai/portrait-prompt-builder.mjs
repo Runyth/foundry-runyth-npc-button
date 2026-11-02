@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { MODULE_ID } from "../constants.mjs";
 import { composePrompt } from "../extensions/prompt-api.mjs";
 import { getRaces } from "../extensions/registry.mjs";

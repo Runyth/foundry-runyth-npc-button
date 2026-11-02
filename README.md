@@ -239,3 +239,20 @@ Local NPC generation always has a concrete reusable seed. When the Seed field is
 Weapon variety is separate from Combat readiness. It can constrain or bias generated combat gear toward melee or ranged weapons while preserving role realism; a noncombatant with no plausible weapon in a hard-only category remains weaponless.
 
 AI import can optionally open a preview editor before Actor creation. Names, biography, Race/subtype, CR, AC, HP, and walking speed can be adjusted quickly, and individual NPCs can be selected or deselected. Count mismatches automatically open preview by default instead of failing early; a GM world setting can allow arbitrary safe array lengths for external/manual JSON. The selected subset is revalidated before import, and maximum batch size is always enforced.
+
+## Licence
+
+Copyright © 2026  [Daniel Braniewski](https://brani.dev/)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
