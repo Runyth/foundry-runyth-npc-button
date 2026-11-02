@@ -2,6 +2,12 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.6 - 2026-11-02
+
+### Fixed and improved
+
+- The README licence chapter is the single `## Licence` block with the standard holder line; the obsolete per-release short `## License` stub was removed. Documentation-surface alignment only; no runtime behaviour, relationship, or dependency change.
+
 ## 0.4.5 - 2026-10-17
 
 - First publication as a Runyth module: `runyth-npc-button` / **Runyth NPC Button** with the publication standard in place — deterministic `-mod`, `-src`, and `-doc` archives with per-version checksums, byte-identical rebuild verification, standard quality and release pipelines, the full GNU AGPL-3.0-or-later licence with the standard source notice, the standard README licence chapter, and the manifest URL surfaces.
