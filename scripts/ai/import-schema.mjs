@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 /**
  * Explicitly allowlisted Midi-QoL/DAE native ActiveEffect import.
  * No macro/script text or arbitrary document paths are ever evaluated or copied.

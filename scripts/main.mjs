@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { MODULE_ID, MODULE_TITLE, MODULE_VERSION } from "./constants.mjs";
 import { buildPortraitPromptFromActor } from "./ai/portrait-prompt-builder.mjs";
 import { buildAiPrompt } from "./ai/prompt-builder.mjs";

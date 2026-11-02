@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 /**
  * One narrowly scoped rules exception not expressible as a native attack/save/heal/utility activity:
  * Relentless consumes its single use when an NPC would be reduced to 0 HP by non-massive damage.

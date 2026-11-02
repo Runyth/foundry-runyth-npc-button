@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 import { MODULE_ID, SETTINGS, TIER_STYLES } from "../constants.mjs";
 import { COMBAT_READINESS, GROUP_TYPES, HABITATS, NAME_STYLES, RACES, RACE_COMPOSITION_MODES, ROLE_COMPOSITION_MODES, WEALTH_DISTRIBUTIONS, WEAPON_VARIETY } from "../generator/data.mjs";
 import { getGroupTypes, getHabitats, getNamingStyles, getRaces } from "../extensions/registry.mjs";

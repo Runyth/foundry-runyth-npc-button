@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 const TEMPLATE_TOKEN_PATTERN = /\{([a-zA-Z][a-zA-Z0-9]*)\}/g;
 const OPTIONAL_SEGMENT_PATTERN = /\[([^\[\]]*)\]/g;
 
