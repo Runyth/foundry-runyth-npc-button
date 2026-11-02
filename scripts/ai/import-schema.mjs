@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Copyright (C) 2026 Daniel Braniewski. See the LICENSE file for rights and obligations.
 /**
- * Explicitly allowlisted Midi-QoL/DAE native ActiveEffect import.
+ * Explicitly allowlisted dnd5e-automation (Midi-class) native ActiveEffect import.
  * No macro/script text or arbitrary document paths are ever evaluated or copied.
- * Midi-QoL v13 and DAE v13 are optional: imported effects remain data when disabled.
+ * The referenced automation modules (v13) are optional: imported effects remain data when disabled.
  * @see https://gitlab.com/tposney/midi-qol/-/blob/v13/FLAGS.md
  * @see https://gitlab.com/tposney/midi-qol/-/blob/v13/README.md
  */

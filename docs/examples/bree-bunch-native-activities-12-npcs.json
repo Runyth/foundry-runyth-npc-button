@@ -190,7 +190,7 @@
           "name": "Multiattack — Two Axe Swings",
           "kind": "utility",
           "activation": "action",
-          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; the running dnd5e-automation layer resolves each roll and damage. This utility button is informational, not one-click automation."
         },
         {
           "name": "Boar's Command",
@@ -250,7 +250,7 @@
           "name": "Bloodied Howl",
           "kind": "utility",
           "activation": "bonus",
-          "description": "Use only at 39 HP or less. Up to two allies get +2 weapon damage on their next successful hit (Midi/DAE effect). Their 10-ft reaction movement still requires ordinary token movement. Each attack type is independently tracked.",
+          "description": "Use only at 39 HP or less. Up to two allies get +2 weapon damage on their next successful hit (automation-mode effect). Their 10-ft reaction movement still requires ordinary token movement. Each attack type is independently tracked.",
           "uses": {
             "max": 1
           },
@@ -292,7 +292,7 @@
           "name": "Parry",
           "kind": "utility",
           "activation": "reaction",
-          "description": "Reaction when attacked in melee; +2 AC for up to one round. Requires reaction timing before Midi finalizes hit to retroactively change a hit. Not a guaranteed automatic reaction.",
+          "description": "Reaction when attacked in melee; +2 AC for up to one round. Requires reaction timing before the automation layer finalizes hit to retroactively change a hit. Not a guaranteed automatic reaction.",
           "midi": {
             "target": "self",
             "effects": [
@@ -469,7 +469,7 @@
           "name": "Multiattack — Two Daggers",
           "kind": "utility",
           "activation": "action",
-          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; the running dnd5e-automation layer resolves each roll and damage. This utility button is informational, not one-click automation."
         },
         {
           "name": "Fleet-Footed — Dash",
@@ -689,7 +689,7 @@
           "name": "Hook Pole — Pull",
           "kind": "utility",
           "activation": "none",
-          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by the automation layer."
         },
         {
           "name": "Rig Tripwire",
@@ -938,7 +938,7 @@
           "name": "Hook Pole — Pull",
           "kind": "utility",
           "activation": "none",
-          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by the automation layer."
         },
         {
           "name": "Rig Tripwire",
@@ -1177,7 +1177,7 @@
           "name": "Pinning Arrow",
           "kind": "attack",
           "activation": "action",
-          "description": "On hit: target movement reduced by 10 ft for one round. Does not stack. Requires Midi-QoL auto apply Activity effects enabled.",
+          "description": "On hit: target movement reduced by 10 ft for one round. Does not stack. Requires the automation layer's auto application of Activity effects enabled.",
           "attack": {
             "toHit": 4,
             "mode": "ranged",
@@ -1230,13 +1230,13 @@
           "name": "Multiattack — Two Shots",
           "kind": "utility",
           "activation": "action",
-          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; the running dnd5e-automation layer resolves each roll and damage. This utility button is informational, not one-click automation."
         },
         {
           "name": "Mark Quarry",
           "kind": "utility",
           "activation": "bonus",
-          "description": "Bonus Action: mark one visible creature within 90 ft. The Hunter gains Advantage on its next ranged attack ONLY against that marked creature. Target-specific advantage requires Midi item macro; deliberately NOT granting Advantage against unrelated targets.",
+          "description": "Bonus Action: mark one visible creature within 90 ft. The Hunter gains Advantage on its next ranged attack ONLY against that marked creature. Target-specific advantage requires an automation item macro; deliberately NOT granting Advantage against unrelated targets.",
           "uses": {
             "max": 1
           },
@@ -1419,7 +1419,7 @@
           "name": "Pinning Arrow",
           "kind": "attack",
           "activation": "action",
-          "description": "On hit: target movement reduced by 10 ft for one round. Does not stack. Requires Midi-QoL auto apply Activity effects enabled.",
+          "description": "On hit: target movement reduced by 10 ft for one round. Does not stack. Requires the automation layer's auto application of Activity effects enabled.",
           "attack": {
             "toHit": 4,
             "mode": "ranged",
@@ -1472,13 +1472,13 @@
           "name": "Multiattack — Two Shots",
           "kind": "utility",
           "activation": "action",
-          "description": "Multiattack: make two separate attacks with the equipped primary weapon; Midi-QoL resolves each roll and damage. This utility button is informational, not one-click automation."
+          "description": "Multiattack: make two separate attacks with the equipped primary weapon; the running dnd5e-automation layer resolves each roll and damage. This utility button is informational, not one-click automation."
         },
         {
           "name": "Mark Quarry",
           "kind": "utility",
           "activation": "bonus",
-          "description": "Bonus Action: mark one visible creature within 90 ft. The Hunter gains Advantage on its next ranged attack ONLY against that marked creature. Target-specific advantage requires Midi item macro; deliberately NOT granting Advantage against unrelated targets.",
+          "description": "Bonus Action: mark one visible creature within 90 ft. The Hunter gains Advantage on its next ranged attack ONLY against that marked creature. Target-specific advantage requires an automation item macro; deliberately NOT granting Advantage against unrelated targets.",
           "uses": {
             "max": 1
           },
@@ -1634,7 +1634,7 @@
           "name": "Charge Knockdown",
           "kind": "utility",
           "activation": "none",
-          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by the automation layer."
         },
         {
           "name": "Relentless (Once)",
@@ -1786,7 +1786,7 @@
           "name": "Charge Knockdown",
           "kind": "utility",
           "activation": "none",
-          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by the automation layer."
         },
         {
           "name": "Relentless (Once)",
@@ -1938,7 +1938,7 @@
           "name": "Charge Knockdown",
           "kind": "utility",
           "activation": "none",
-          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by the automation layer."
         },
         {
           "name": "Relentless (Once)",
@@ -2094,7 +2094,7 @@
           "name": "Charge Knockdown",
           "kind": "utility",
           "activation": "none",
-          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by Midi-QoL."
+          "description": "Passive rider: additional prerequisite must be met; see text. Not automatically enforced by the automation layer."
         },
         {
           "name": "Trampling Rush",
@@ -2323,7 +2323,7 @@
           "name": "Reckless Swing",
           "kind": "utility",
           "activation": "bonus",
-          "description": "Once per encounter before attacking: self gains Advantage on its next attack; attacks targeting the Warrior gain Advantage for one round. Incompatible with Boar’s Rush. Midi + DAE linked effects.",
+          "description": "Once per encounter before attacking: self gains Advantage on its next attack; attacks targeting the Warrior gain Advantage for one round. Incompatible with Boar’s Rush. Automation + expiry linked effects.",
           "uses": {
             "max": 1
           },
@@ -2546,7 +2546,7 @@
           "name": "Reckless Swing",
           "kind": "utility",
           "activation": "bonus",
-          "description": "Once per encounter before attacking: self gains Advantage on its next attack; attacks targeting the Warrior gain Advantage for one round. Incompatible with Boar’s Rush. Midi + DAE linked effects.",
+          "description": "Once per encounter before attacking: self gains Advantage on its next attack; attacks targeting the Warrior gain Advantage for one round. Incompatible with Boar’s Rush. Automation + expiry linked effects.",
           "uses": {
             "max": 1
           },
