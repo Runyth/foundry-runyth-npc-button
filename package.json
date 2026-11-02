@@ -4,13 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test",
-    "validate": "node dev/validate.mjs",
-    "check": "npm run validate && npm run audit:ui && npm test",
-    "audit:ui": "node dev/ui-performance-audit.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "check": "node tools/check.mjs && npm test && npm run build && npm run verify:release",
+    "build": "node tools/build.mjs",
+    "verify:release": "node tools/verify-release.mjs",
+    "audit:ui": "node dev/ui-performance-audit.mjs",
+    "validate": "node dev/validate.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13.0 <27"
   },
   "license": "AGPL-3.0-or-later"
 }
