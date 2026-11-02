@@ -1,4 +1,4 @@
-import { applySafeMidiEffects } from "./midi-schema.mjs";
+import { applySafeMidiEffects } from "./import-schema.mjs";
 /**
  * Optional combat-activity extension for AI-imported NPCs.
  * Explicit schemas prevent AI JSON from injecting arbitrary Foundry document fields.

@@ -37,7 +37,7 @@ api?.registerRace("goblin", {
   group: "supplemental",
   size: "sm",
   speed: 30,
-  sourceModuleId: "orphan-black-companion",
+  sourceModuleId: "example-companion",
   portraitGuidance: "read unmistakably as a Goblin with a wiry frame, oversized ears, sharp features, and a goblin silhouette rather than a green human"
 });
 ```
@@ -45,7 +45,7 @@ api?.registerRace("goblin", {
 For a complementary module that already registers entries without `sourceModuleId`, patching every config object is not required. It can attribute the existing registrations once:
 
 ```js
-api?.attributeCatalogEntries("orphan-black-npc-button", {
+api?.attributeCatalogEntries("example-npc-companion", {
   races: ["goblin", "hobgoblin"],
   roles: ["slave", "day-labourer", "forced-labourer", "migrant-labourer"]
 });

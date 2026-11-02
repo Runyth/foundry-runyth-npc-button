@@ -60,20 +60,20 @@ test("extension metadata tracks complementary module ownership and aggregates co
     group: "supplemental",
     size: "med",
     speed: 30,
-    sourceModuleId: "orphan-black-companion"
+    sourceModuleId: "example-companion"
   });
   registerRace("goblin", {
     label: "Goblin",
     group: "supplemental",
     size: "sm",
     speed: 30,
-    sourceModuleId: "orphan-black-companion"
+    sourceModuleId: "example-companion"
   });
   const meta = getCatalogEntryMetadata("races", "hobgoblin");
-  assert.equal(meta.sourceModuleId, "orphan-black-companion");
+  assert.equal(meta.sourceModuleId, "example-companion");
   const modules = getComplementaryCatalogModules();
   assert.equal(modules.length, 1);
-  assert.equal(modules[0].moduleId, "orphan-black-companion");
+  assert.equal(modules[0].moduleId, "example-companion");
   assert.equal(modules[0].counts.races, 2);
   clearExtensionRegistry();
 });
@@ -85,13 +85,13 @@ test("unattributed extension entries are reported and can be attributed in one c
   const before = getUnattributedCatalogEntries();
   assert.deepEqual(before.map((entry) => `${entry.kind}:${entry.id}`).sort(), ["races:goblin", "roles:slave"]);
 
-  const count = attributeCatalogEntries("orphan-black-companion", {
+  const count = attributeCatalogEntries("example-companion", {
     races: ["goblin"],
     roles: ["slave"]
-  }, { sourceModuleTitle: "Orphan Black Companion" });
+  }, { sourceModuleTitle: "Example Companion Module" });
   assert.equal(count, 2);
   assert.equal(getUnattributedCatalogEntries().length, 0);
-  assert.equal(getCatalogEntryMetadata("races", "goblin").sourceModuleId, "orphan-black-companion");
+  assert.equal(getCatalogEntryMetadata("races", "goblin").sourceModuleId, "example-companion");
   assert.equal(getComplementaryCatalogModules()[0].totalEntries, 2);
   clearExtensionRegistry();
 });
@@ -100,9 +100,9 @@ test("complementary dependency candidates detect modules that declare NPC Button
   globalThis.game = {
     modules: new Map([
       ["runyth-npc-button", { id: "runyth-npc-button", title: "NPC Button", active: true }],
-      ["orphan-black-companion", {
-        id: "orphan-black-companion",
-        title: "Orphan Black Companion",
+      ["example-companion", {
+        id: "example-companion",
+        title: "Example Companion Module",
         active: true,
         relationships: { requires: [{ id: "runyth-npc-button" }] }
       }],
@@ -110,8 +110,8 @@ test("complementary dependency candidates detect modules that declare NPC Button
     ])
   };
   assert.deepEqual(getComplementaryDependencyCandidates(), [{
-    moduleId: "orphan-black-companion",
-    title: "Orphan Black Companion",
+    moduleId: "example-companion",
+    title: "Example Companion Module",
     active: true
   }]);
 });
@@ -303,10 +303,10 @@ test("filter catalogs expose complementary-module row accents and source labels"
   globalThis.game = {
     i18n: { localize: (key) => key },
     folders: [],
-    modules: new Map([["orphan-black-companion", { title: "Orphan Black Companion" }]]),
+    modules: new Map([["example-companion", { title: "Example Companion Module" }]]),
     settings: {
       get(_moduleId, setting) {
-        if (setting === "complementaryModuleColors") return '{"orphan-black-companion":"#3355aa"}';
+        if (setting === "complementaryModuleColors") return '{"example-companion":"#3355aa"}';
         return "";
       }
     }
@@ -317,10 +317,10 @@ test("filter catalogs expose complementary-module row accents and source labels"
     group: "supplemental",
     size: "sm",
     speed: 30,
-    sourceModuleId: "orphan-black-companion"
+    sourceModuleId: "example-companion"
   });
   const goblin = filterCatalogItems("races").find((entry) => entry.id === "goblin");
-  assert.equal(goblin.sourceModuleTitle, "Orphan Black Companion");
+  assert.equal(goblin.sourceModuleTitle, "Example Companion Module");
   assert.equal(goblin.accentColor, "#3355aa");
   clearExtensionRegistry();
 });
