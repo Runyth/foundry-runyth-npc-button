@@ -198,7 +198,7 @@ function buildCombatItem(raw, actorIndex, index) {
     activity.effects = [{ _id: effectId, onSave: false }];
   }
   if (act.buff === "attackAdvantage" && !act.midi) {
-    system.description.value += "<p>Effect: chosen allies gain Advantage on their next attack roll. Requires Midi-QoL/DAE effect configuration.</p>";
+    system.description.value += "<p>Effect: chosen allies gain Advantage on their next attack roll. Requires the automation-mode effect configuration.</p>";
   }
   const item = {
     name: isWeapon && act.weapon ? str(act.weapon, `${path}.weapon`, 100) : name,
