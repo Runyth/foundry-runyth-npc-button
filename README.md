@@ -236,6 +236,10 @@ Weapon variety is separate from Combat readiness. It can constrain or bias gener
 
 AI import can optionally open a preview editor before Actor creation. Names, biography, Race/subtype, CR, AC, HP, and walking speed can be adjusted quickly, and individual NPCs can be selected or deselected. Count mismatches automatically open preview by default instead of failing early; a GM world setting can allow arbitrary safe array lengths for external/manual JSON. The selected subset is revalidated before import, and maximum batch size is always enforced.
 
+## Content licence
+
+Generated NPC content and the bundled example data this module ships and generates (names, races, tags, example rosters) are **CC BY-SA 4.0**; material the GM authors with the module is licensed by the GM's own published work at the GM's discretion. The program source is **AGPL-3.0-or-later**; see the standard licence chapter below.
+
 ## Licence
 
 Copyright © 2026  [Daniel Braniewski](https://brani.dev/)

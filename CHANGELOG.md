@@ -2,6 +2,12 @@
 
 All notable changes are documented here. The project follows Semantic Versioning.
 
+## 0.4.7 - 2026-11-03
+
+### Fixed and improved
+
+- AGENTS.md conformance release: the manifest author carries the standard organisational URL, and the README states the CC BY-SA 4.0 content licence for generated and bundled example content. No runtime behaviour relationship or dependency change.
+
 ## 0.4.6 - 2026-11-02
 
 ### Fixed and improved
