@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.8 — 2026-11-04
+
+- The installable archive now ships every relative import the manifest entry needs, so the module's buttons and settings register on world load instead of silently failing.
+
 ## 0.4.7 — 2026-11-03
 
 - AGENTS.md conformance release: the manifest author carries the standard organisational URL, and the README states the CC BY-SA 4.0 content licence for generated and bundled example content. No runtime behaviour relationship or dependency change.
