@@ -11,7 +11,7 @@ import { build } from "./build.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const MODULE_ID = "runyth-npc-button";
-const VERSION = "0.4.7";
+const VERSION = "0.4.8";
 
 function fail(message) {
   process.stderr.write(`Verification failed: ${message}\n`);
