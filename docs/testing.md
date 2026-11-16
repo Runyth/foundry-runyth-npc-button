@@ -1,79 +1,18 @@
-# Testing
+# Testing and validation
 
-Run:
+`npm run check` executes the complete deterministic gate:
 
-```bash
-npm run check
-```
+1. formatting verification;
+2. manifest, package, path, import, and localization validation;
+3. deprecated/private/unsafe Foundry API audit;
+4. Node unit and regression tests;
+5. deterministic install and source builds;
+6. archive root, content, manifest, version, and checksum verification.
 
-This executes repository validation, the dedicated UI-performance audit, and Node's built-in unit tests.
+Shared tests live under `test/runyth/`. Module tests live elsewhere under
+`test/` and are never overwritten by template synchronization.
 
-## Automated coverage
-
-Tests cover wealth-distribution invariants (nonzero native currency, fixed total budget, item concentration), AI currency normalization, and dashboard render/binding regressions (single controls, RadioNodeList-style grouped controls, missing conditional fields, rerender listener cleanup, action-button delivery, and keyboard-style change events); role-composition primary-role invariance, exact quota examples, zero-weight exclusion, and live-preview contracts; best-effort clipboard behavior across focus/permission/API failures plus manual-copy fallback; ApplicationV2 filter form persistence; malformed/portable filter profiles; seeded reproducibility; ability/AC/HP bounds; role-relative combat loadouts and armor-derived AC; exact CR support; Actor-source structure; HTML escaping; the complete built-in 2024 Race catalog; the Forest Village default and broad habitat catalog; rich naming example sets; balanced, primary, and strong-majority mixed-Race quota allocation; balanced mixed-Role quotas; Role-variant distribution; family surname/quirk/relationship/secret behavior; advanced local cohesion/hierarchy/relationship/conflict effects and flags; AI root-shape/count enforcement; required biography sections including Quirk; mandatory non-empty inventory; sanitization; portable filter-profile round trips including item-level exclusions and extension entries; canonical item resolution and local-generation flag preservation; invented-item fallback; and fenced-JSON tolerance.
-
-Repository validation checks the manifest, referenced runtime files, version consistency, and selected deprecated/removed API patterns. The UI-performance audit additionally enforces the stylesheet size budget, reduced-motion support, absence of expensive animation/filter patterns, picker containment, bounded overscan virtualization, requestAnimationFrame-coalesced picker work, passive scroll listeners, and atomic visible-window replacement.
-
-## Foundry smoke-test checklist
-
-1. Enable the module in a Foundry VTT 13 world using a supported D&D 5e system version; confirm **NPC Button** is GM-only.
-2. Move/resize the dashboard, reopen it, and confirm its saved geometry is restored safely on-screen.
-3. Switch Configure Settings → **Tier style** between Named tiers and CR; verify all CR values 0, 1/8, 1/4, 1/2, and 1–30.
-4. Repeatedly open/search/scroll Role, Race, Naming style, Habitat, Group type, Tier/CR, Actor folder, and mixed-Race pickers. Confirm no close flicker or visible stalls.
-5. Test the folder picker against a deep/large Actor-folder tree and confirm hierarchy and virtualization remain responsive.
-6. Verify the Race picker contains Aasimar, Dragonborn, Dwarf, Elf, Gnome, Goliath, Halfling, Human, Orc, and Tiefling plus custom Race input.
-7. Verify **Forest Village** is the Habitat default; test representative desert, watery, coastal, island, mountain, underground, and custom habitats.
-8. Open Help and verify every naming style shows the expanded idiomatic example set and description.
-9. Copy AI prompts for each naming style and confirm the same style guidance/examples appear there.
-10. Generate independent NPCs locally with arbitrary Count and with the 1/3/5/10 shortcuts.
-11. Generate several Family Household sizes. Confirm shared surname behavior, differing household/member roles, quirks, relationships, shared rumours/secrets, and advanced family/group metadata.
-12. Generate representative Guard Patrol, Orc Raider Band, Caravan, Guild Work Crew, and another group archetype; verify member roles vary sensibly.
-13. For mixed groups, choose multiple Races and test Roughly equal, Primary race, Strong majority, and Custom weights. Confirm exact Count is preserved and the requested distribution is visibly respected.
-14. Exercise cohesion, hierarchy, relationship density, and internal conflict extremes and verify local biographies/flags change accordingly.
-15. Generate with a seed, delete the group, repeat it, and confirm deterministic output.
-16. With Actor review enabled, generate 1–3 Actors and confirm side-by-side placement; generate 4–10 and confirm stacked reuse; generate 11+ and verify only the first ten open.
-17. Copy a multi-NPC AI prompt and verify it includes habitat, group archetype, family/group controls, Race composition, naming examples, quirks, relationships, rumours, secrets, and inventory requirements.
-18. For Count 1, verify array-by-default behavior and the explicit single-object toggle contract.
-19. Import a valid AI group and verify parsed top-level NPC count, destination, canonical equipment resolution where available, and invented loot fallback.
-20. Remove the Quirk section or all inventory entries from a payload and confirm import is rejected before Actor creation.
-21. Attempt malformed JSON, wrong root shape, a Count mismatch, invalid numeric/item values, and unsafe HTML; confirm malformed/unsafe data is rejected while a structurally valid Count mismatch opens review preview instead of failing early.
-22. Block clipboard-read permission and verify manual-paste fallback.
-23. Switch Foundry between English and German and inspect the new group/habitat/mixed-Race UI.
-24. Enable/disable debug logging and confirm normal operation stays quiet when disabled.
-25. Open Dashboard string filters. Verify every current item is selected by default in each scalable list; deselect several Races/Roles/folders and confirm they disappear from the dashboard pickers. Re-select them, test Select all/Clear all, then configure advanced rules, export a JSON profile, change the filters, and import the file to verify item exclusions and advanced rules are restored. Repeat with Copy JSON / Import clipboard.
-26. Generate ten NPCs with three allowed Races and Strong primary-Race majority; verify the result is approximately 8/1/1 and preserves exact Count.
-27. Generate five Merchants with Role variants; verify five distinct merchant specializations are used before any repeats. Test balanced, primary-majority, strong-primary-majority, and weighted mixed Roles. Confirm the main Role is visibly identified as primary, Count 10 with Merchant/Artisan/Guard previews as 4/3/3, 7/2/1, and 8/1/1 for Balanced/Primary/Strong modes, and custom weights 10/20/30 preview as 2/3/5. Confirm weight 0 is enterable and excludes that Role when another positive weight exists.
-28. Exercise every Combat readiness level on civilians, artisans, scholars/Jurists, guards, soldiers, and Orc Raider groups. Weaponless must produce no weapon/armor; occupational ceilings must remain plausible at Highly Prepared; professional combatants must retain sensible minimum arms at Minimal.
-29. Confirm local generated canonical weapons/armor resolve to functional D&D 5e Items where the system compendium contains them, and that AC matches the generated armor/shield loadout.
-
-30. Open the NPC dashboard repeatedly, switch every Race composition and Role composition radio option, close/reopen, and confirm the dashboard never throws and Copy prompt/Create/Import remain functional.
-31. Set Race composition to Exact numbers, select many Races, search/scroll the virtualized quota editor, set exact quotas summing to Count, and verify local generation and the AI prompt preserve those exact counts.
-32. For Count 1, verify the AI prompt still requires a one-element JSON array and the importer rejects a lone root object.
-33. Trigger the same composition changes with keyboard navigation and verify dependent mixed-composition sections update exactly once per change.
-34. Open Dashboard string filters repeatedly, save changes, close without saving, reopen, import/export by file and clipboard, and verify no stale state or duplicate action firing.
-35. Test clipboard writing with Foundry clipboard permissions available, Foundry unfocused, permission denied, Clipboard API unavailable, and another window/tab holding focus. Verify Copy prompt never reports NPC generation failure because copying failed, the prepared AI prompt remains visible/selectable, portrait/filter copies open a manual-copy fallback, repeated attempts do not loop, and success is shown only after an actual write succeeds.
-
-## v0.1.7 regressions
-
-Automated coverage includes automatically materialized and explicitly reused generation seeds, seed persistence to biography/flags, melee/ranged hard weapon constraints, occupation-safe ranged-only fallback, ApplicationV2 Actor-sheet portrait hook registration, preview whitelisting, non-mutating preview edits, and rejection of invalid post-edit payloads.
-
-
-## v0.2 visual regression checklist
-
-36. Inspect the dashboard at wide, medium, and narrow widths. Confirm card spacing, choice wrapping, section accents, text truncation, sticky footer behavior, and no horizontal overflow.
-37. Open every hierarchical picker and multi-picker, rapidly search/clear/scroll, and confirm the redesigned surfaces do not change row height, virtualization behavior, keyboard focus, or outside-click closing.
-38. Open Help, filter settings, and import preview at their default sizes and after aggressive resizing. Confirm independent scrolling remains smooth, sticky toolbars/footers remain bounded to their windows, and no content is hidden behind action bars.
-39. Enable OS/browser reduced-motion preference and confirm all UI state remains understandable without transition timing.
-40. Repeat Create locally, Copy prompt, Import NPC, filter import/export, preview confirmation/cancel, and portrait-prompt copy after the visual overhaul. Confirm the cosmetic release has not changed action delivery or payload contracts.
-41. Run `npm run audit:ui` and confirm the stylesheet stays under the performance budget and all virtualization/animation invariants pass.
-42. Open Complementary module highlight colors with (a) no extensions, (b) unattributed extension entries, (c) a module that declares NPC Button as a dependency but registers no attributed entries, and (d) attributed contributions. Confirm the status text distinguishes all four cases and never claims there are no extensions when unattributed entries actually exist.
-
-### v0.2.3 count/import regression coverage
-
-Automated tests verify that NPC count is derived only from top-level Actor entries; an exact 20-entry array remains 20 regardless of nested arrays; a 21-versus-20 mismatch forces review by default; count-agnostic mode permits safe mismatches without forced preview; exceeding maximum batch size still forces review; and preview subset selection can reduce 21 entries to the first 20 without mutating or reordering the source payload. Manual QA should also confirm the automatic heads-up banner, per-NPC checkboxes, Select all/Clear all, live selected count, and final validation of only the selected subset.
-
-### v0.2.4 Help reference-table coverage
-
-- Open Help and verify Race composition and Role composition both use matching Mode / Distribution rule / Example tables.
-- Confirm the Count-10 Race examples match generator behavior: strong majority 8/1/1, primary majority 7/2/1, balanced 4/3/3, and weights 10/20/30 resolving to 2/3/5.
-- Verify Generation controls, Combat readiness, Weapon variety, Filter settings, Import preview, and AI workflow use the shared responsive table presentation without horizontal clipping; narrow windows should scroll the table itself rather than the whole application sideways.
+Static validation cannot prove browser rendering, permissions, socket behavior,
+Foundry document migrations, or independent GM/player state. Each interactive
+module must maintain a live Foundry acceptance checklist and record actual
+results without converting pending checks into passes.

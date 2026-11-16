@@ -1,880 +1,880 @@
 {
   "runyth-npc-button": {
-    "settings": {
-      "debug": {
-        "name": "Debug-Protokollierung",
-        "hint": "Schreibt knappe Diagnosemeldungen in die Browser-Konsole. Standardmäßig deaktiviert."
-      },
-      "defaultFolder": {
-        "name": "Standardordner für NSCs",
-        "hint": "Actor-Stammordner, der verwendet wird, wenn im Dashboard das konfigurierte Standardziel gewählt ist. Leer lassen für den Actors-Stamm."
-      },
-      "maxBatch": {
-        "name": "Maximale Stapelgröße",
-        "hint": "Maximale Anzahl an NSC-Actors, die eine Generierungs- oder Importaktion erstellen darf."
-      },
-      "tierStyle": {
-        "name": "Tier-Stil",
-        "hint": "Legt fest, ob NPC Button benannte Kompetenzstufen oder exakte D&D-5e-Challenge-Ratings verwendet. CR-Modus bietet jeden Standard-CR von 0 bis 30.",
-        "choices": {
-          "named": "Benannte Stufen",
-          "cr": "Challenge Rating (CR)"
-        }
-      },
-      "filters": {
-        "name": "Dashboard-String-Filter",
-        "hint": "Öffnet erweiterte Erlauben-/Verbieten-Filter für pickerbasierte Dashboard-Felder wie Rollen, Völker, Habitate, Gruppentypen, Namensstile und Actor-Ordner.",
-        "label": "Filter konfigurieren"
-      },
-      "filtersStorage": {
-        "name": "Speicher für Dashboard-String-Filter",
-        "hint": "Interner JSON-Speicher für erweiterte Dashboard-String-Filter."
-      },
-      "ignoreImportCountMismatch": {
-        "name": "Beliebige NSC-Importanzahl erlauben",
-        "hint": "Wenn aktiviert, dürfen importierte JSON-Arrays eine andere Anzahl an NSCs als der Dashboard-Wert Anzahl enthalten, ohne automatisch eine Prüfung zu erzwingen. Die konfigurierte maximale Stapelgröße und alle Actor-Validierungen gelten weiterhin."
-      },
-      "complementaryModuleColors": {
-        "name": "Hervorhebungsfarben für Ergänzungsmodule",
-        "hint": "Konfiguriere modulweise Farben für Katalogeinträge, die von Ergänzungsmodulen beigesteuert werden.",
-        "label": "Farben konfigurieren"
-      },
-      "complementaryModuleColorsStorage": {
-        "name": "Speicher für Hervorhebungsfarben von Ergänzungsmodulen",
-        "hint": "Interner Speicher für Hervorhebungsfarben von Ergänzungsmodulen."
-      }
+    "ageRange": {
+      "adult": "Erwachsene",
+      "contextual": "Kontextabhängig",
+      "exactRange": "Exakter Jahresbereich",
+      "mature": "Reife Erwachsene",
+      "mixedGenerations": "Gemischte Generationen",
+      "older": "Ältere Erwachsene",
+      "youngAdult": "Junge Erwachsene"
     },
-    "ui": {
-      "sidebarButton": "NPC Button",
-      "dialogTitle": "NPC Button",
-      "help": "Hilfe",
-      "generationTitle": "NSC-Erstellung",
-      "intro": "NSCs einmal konfigurieren und danach lokal erzeugen oder dieselbe Vorgabe für einen KI-generierten Foundry-Payload verwenden.",
-      "count": "Anzahl",
-      "countRange": "1–{max}",
-      "quickCounts": "Häufige Anzahlen",
-      "role": "Rolle",
-      "roleHint": "Die hierarchische Rollenliste durchsuchen oder durchblättern. Sie ist virtualisiert und bleibt auch bei sehr vielen Einträgen reaktionsschnell.",
-      "tier": "Stufe",
-      "tierHint": "Benannte Kompetenzstufe. Unter Einstellungen konfigurieren kann stattdessen exakte CR-Auswahl aktiviert werden.",
-      "challengeRating": "Challenge Rating",
-      "challengeRatingHint": "Jeden Standard-CR aus 0, 1/8, 1/4, 1/2 und 1 bis 30 wählen.",
-      "race": "Volk",
-      "raceHint": "Vorgegebene Völker durchsuchen. Für ein anderes Volk dessen Namen in die Suche schreiben und den benutzerdefinierten Eintrag wählen.",
-      "customRace": "Eigenes Volk",
-      "useCustomRace": "Diesen Text als eigenes Volk verwenden",
-      "namingStyle": "Namensstil",
-      "namingStyleHint": "Namenspaletten durchsuchen. Das Hilfefenster zeigt deutlich unterschiedliche Beispiele für jeden Stil.",
-      "wealth": "Wohlstand",
-      "wealthHint": "Beeinflusst KI-generiertes Geld, Qualität der Ausrüstung, persönlichen Besitz und Statusgegenstände.",
-      "customName": "Name oder Stapelpräfix",
-      "customNamePlaceholder": "Leer lassen für generierte Namen",
-      "seed": "Seed",
-      "seedPlaceholder": "Optionaler reproduzierbarer Seed für lokale Erstellung",
-      "seedHint": "Lokale Erstellung mit denselben Optionen und demselben Seed reproduziert dieselben Daten.",
-      "destination": "Ziel",
-      "destinationIntro": "Legt fest, wo lokal erzeugte oder KI-importierte Actors erstellt werden.",
-      "destinationFolder": "Actor-Ordner",
-      "destinationHint": "Die vollständige Actor-Ordnerhierarchie durchsuchen, Actors-Stamm oder Standardziel wählen oder einen neuen Stammordnernamen suchen und auswählen.",
-      "actorsRoot": "Actors-Stamm",
-      "configuredDefault": "Konfigurierter Standard",
-      "configuredDefaultNamed": "Konfigurierter Standard — {name}",
-      "configuredDefaultRoot": "Konfigurierter Standard — Actors-Stamm",
-      "destinationMissing": "Actor-Ordner fehlt",
-      "createRootFolder": "Neuen Actor-Stammordner mit diesem Namen erstellen oder wiederverwenden",
-      "searchOptions": "Optionen durchsuchen…",
-      "noMatchingOptions": "Keine passenden Optionen.",
-      "openLastActor": "Erstellte Actors zur Prüfung öffnen",
-      "openLastActorHint": "Öffnet bis zu 10 Actors. Bis zu drei sind nebeneinander sichtbar; weitere liegen dahinter, sodass beim Schließen des oberen Fensters das nächste erscheint.",
-      "aiTitle": "KI-Arbeitsablauf",
-      "aiIntro": "Einen ausführlichen strikten Prompt in eine beliebige KI-Konversation kopieren, deren JSON-Antwort kopieren und anschließend in das oben gewählte Ziel importieren.",
-      "copyPrompt": "Prompt kopieren",
-      "importNpc": "NSC importieren",
-      "manualPaste": "Zwischenablage-Fallback / manuelles Einfügen",
-      "manualPasteLabel": "KI-JSON-Payload",
-      "manualPastePlaceholder": "JSON-Antwort hier nur einfügen, wenn der Browser das Lesen der Zwischenablage blockiert.",
-      "createLocally": "Lokal erstellen",
-      "creating": "NSCs werden erstellt…",
-      "copyingPrompt": "KI-Prompt wird vorbereitet…",
-      "importing": "Gegenstände werden geprüft und NSCs importiert…",
-      "groupType": "Erstellungsmodus / Gruppentyp",
-      "groupTypeHint": "Unabhängige NSCs oder eine zusammenhängende Familie, Patrouille, Plünderergruppe, Besatzung, Karawane, Rat und weitere Gruppen erstellen.",
-      "habitat": "Lebensraum",
-      "habitatHint": "Umgebung und Siedlungskontext wählen, die Alltag, Besitz, Reisen und soziale Annahmen prägen. Jeder andere Lebensraum kann direkt eingetippt werden.",
-      "useCustomHabitat": "Diesen Text als eigenen Lebensraum verwenden",
-      "groupConfigurationTitle": "Gruppenzusammenstellung",
-      "groupConfigurationIntro": "Erweiterte Optionen für Beziehungen, interne Struktur, gemischte Völker und gemeinsamen Gruppenkontext.",
-      "suggestedGroupSizes": "Empfohlene Größen",
-      "suggestedGroupSizesHint": "Nur Schnellwahl; Anzahl bleibt frei editierbar.",
-      "familyStructure": "Familienstruktur",
-      "advancedGroupSettings": "Erweiterte Gruppeneinstellungen",
-      "groupCohesion": "Zusammenhalt",
-      "groupHierarchy": "Hierarchie",
-      "relationshipDensity": "Beziehungsdichte",
-      "internalConflict": "Interner Konflikt",
-      "raceComposition": "Volkszusammensetzung",
-      "raceCompositionHint": "Das Hauptfeld Volk gilt bei einer einheitlichen Gruppe für alle oder bei Mischung als primäres Volk.",
-      "possibleRaces": "Mögliche Völker",
-      "possibleRacesHint": "Beliebig viele erlaubte Völker durchsuchen und wählen. Eigene Völker können über die Suche hinzugefügt werden.",
-      "choosePossibleRaces": "Mögliche Völker wählen…",
-      "raceDistribution": "Verteilung der Völker",
-      "raceDistributionHint": "Steuert, wie stark das primäre Volk die erzeugte Gruppe dominiert.",
-      "raceWeights": "Eigene Gewichtung",
-      "raceWeightsHint": "Relative Gewichte; sie müssen nicht zusammen 100 ergeben.",
-      "groupBrief": "Zusätzliche Gruppenvorgabe",
-      "groupBriefPlaceholder": "Optional: lokale Fehde, Familienbetrieb, Auftraggeber, Krise, Tabu, Ziel, gemeinsames Vorhaben…",
-      "groupBriefHint": "Wird als gemeinsamer Kontext an den KI-Prompt übergeben. Auf Fakten beschränken, die mehrere NSCs betreffen sollen.",
-      "done": "Fertig",
-      "copyPortraitPrompt": "Porträt-Prompt kopieren",
-      "combatReadiness": "Kampfbereitschaft",
-      "combatReadinessHint": "Steuert, wie stark der NPC relativ zu seiner Rolle bewaffnet ist. Waffenlos bedeutet immer keine Waffen und keine Rüstung; höhere Stufen bleiben auf das beschränkt, was Beruf und Situation realistisch rechtfertigen.",
-      "compositionTitle": "Zusammensetzung des Stapels",
-      "compositionIntro": "Steuert die Verteilung von Volk und Rolle über beliebige Mehrfach-Erzeugungen, unabhängig davon, ob die NPCs eine bewusste Gruppe bilden.",
-      "roleComposition": "Rollenzusammensetzung",
-      "roleCompositionHint": "Die oben gewählte Hauptrolle ist immer die primäre Rolle. Gemischte Modi verteilen nur auf die möglichen Rollen und behalten die exakte Stapelgröße bei.",
-      "possibleRoles": "Mögliche Rollen",
-      "possibleRolesHint": "Rollen durchsuchen und auswählen, die in einer gemischten Gruppe vorkommen dürfen. Die Hauptrolle wird automatisch einbezogen und ist immer die primäre Rolle.",
-      "choosePossibleRoles": "Mögliche Rollen wählen…",
-      "roleWeights": "Benutzerdefinierte Rollengewichte",
-      "roleWeightsHint": "Relative nichtnegative Gewichte von 0 bis 1000, keine Prozente. Größere Zahlen erhalten mehr NPCs; 0 schließt die Rolle aus, sofern mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30 entspricht 1/2/3.",
-      "weaponVariety": "Waffenvielfalt",
-      "weaponVarietyHint": "Steuert, ob realistische rollenpassende Waffen Nahkampf, Fernkampf oder eine Mischung bevorzugen. Reine Modi erfinden niemals eine unplausible Waffe nur für die Kategorie.",
-      "previewImport": "Vor Import prüfen und bearbeiten",
-      "previewImportHint": "Öffnet eine schnelle Vorschau, in der NSCs an-/abgewählt und einfache Felder bearbeitet werden können, bevor finale Validierung und Actor-Erstellung erfolgen. Abweichende Anzahlen öffnen diese Vorschau automatisch, sofern die globale Einstellung für anzahlunabhängige Importe nicht aktiviert ist.",
-      "portraitPromptShort": "Porträt",
-      "genderComposition": "Geschlechterverteilung",
-      "genderCompositionHint": "Legt fest, wie männliche und weibliche NSC innerhalb des erzeugten Stapels verteilt werden.",
-      "maleCount": "Männlich",
-      "femaleCount": "Weiblich",
-      "primaryRoleNote": "Primäre Rolle: {role}. Das ist die oben im Hauptfeld Rolle gewählte Rolle.",
-      "roleMixPreview": "{count} NPCs → {distribution}",
-      "preparedPrompt": "Vorbereiteter KI-Prompt",
-      "preparedPromptHint": "Der erzeugte Prompt bleibt hier erhalten. Wenn der automatische Zwischenablagezugriff blockiert ist oder Foundry nicht fokussiert ist, kann der Text ausgewählt oder das Kopieren erneut versucht werden.",
-      "selectPrompt": "Prompt-Text auswählen",
-      "retryPromptCopy": "Erneut kopieren",
-      "raceExactCounts": "Exakte Völkerzahlen",
-      "raceExactCountsHint": "Lege die exakte Anzahl an NSC für jedes ausgewählte Volk fest. Die zugewiesene Summe muss Anzahl entsprechen.",
-      "searchSelectedRaces": "Ausgewählte Völker durchsuchen …",
-      "distributeEvenly": "Gleichmäßig verteilen",
-      "noSelectedRaces": "Keine Völker ausgewählt.",
-      "raceExactAssignedValid": "{assigned} von {target} zugewiesen. Die exakte Summe ist gültig.",
-      "raceExactAssignedInvalid": "{assigned} von {target} zugewiesen. Verbleibend: {remaining}. Zahlen anpassen oder gleichmäßig verteilen.",
-      "wealthDistribution": "Vermögensverteilung",
-      "wealthDistributionHint": "Bestimmt, wie das feste tragbare Vermögen zwischen echten Münzen und mitgeführten Wertgegenständen verteilt wird. Der Gesamtwert bleibt gleich.",
-      "customNameHint": "Bei Anzahl 1 wird dies zum Actor-Namen. Bei Anzahl größer als 1 wird daraus ein nummeriertes Stapelpräfix wie „Hafenwache 1“, „Hafenwache 2“. Leer lassen, um generierte Namen und die Formatierungsoptionen darunter zu verwenden.",
-      "nameFormattingTitle": "Namensformatierung",
-      "nameFormattingHint": "Gilt nur, wenn Name oder Stapelpräfix leer ist. Vorlagen ordnen generierte Namensteile an; feste Präfix-/Infix-/Suffix-/Ortsangaben erscheinen nur dort, wo die gewählte Vorlage sie referenziert.",
-      "nameFormatPreset": "Formatvorlage",
-      "namePrefix": "Festes Präfix",
-      "namePrefixPlaceholder": "z. B. Bruder, Alt, Haus",
-      "nameInfix": "Festes Infix",
-      "nameInfixPlaceholder": "z. B. van, de, ap",
-      "nameSuffix": "Festes Suffix",
-      "nameSuffixPlaceholder": "z. B. der Jüngere, III",
-      "nameLocation": "Fester Ort",
-      "nameLocationPlaceholder": "z. B. Velia, Schwarzwasser",
-      "nicknameMode": "Spitznamen-Häufigkeit",
-      "titleMode": "Titel-Häufigkeit",
-      "nameTemplate": "Eigene Namensvorlage",
-      "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
-      "nameTemplateHint": "Verfügbare Tokens: {tokens}. Optionalen Text in [eckige Klammern] setzen; der gesamte Block entfällt, wenn eines seiner Tokens leer ist.",
-      "ageRange": "Altersbereich",
-      "ageRangeHint": "Wähle den Lebensphasen-Bereich für den Stapel. Benannte Bereiche skalieren je Rasse; Exakter Jahresbereich verwendet wörtliche Alterszahlen.",
-      "ageMin": "Mindestalter",
-      "ageMax": "Höchstalter",
-      "ageSpread": "Altersverteilung der Gruppe",
-      "ageSpreadHint": "Steuert, wie Alter innerhalb des gewählten Bereichs verteilt werden, ohne den rassenpassenden Bereich selbst zu verändern.",
-      "tokenDisposition": "Token-Gesinnung",
-      "tokenDispositionHint": "Setzt die Token-Gesinnung des Prototyp-Tokens des erzeugten Actors. Platzierte Tokens übernehmen sie. Foundry-Standard lässt den Wert unangetastet, damit Foundry, dnd5e oder ein anderes Modul den üblichen Standard setzen kann."
+    "ageSpread": {
+      "clustered": "Ähnliche Alter",
+      "even": "Gleichmäßig verteilt",
+      "natural": "Natürlich/Zufällig",
+      "older": "Älter gewichtet",
+      "younger": "Jünger gewichtet"
     },
-    "help": {
-      "title": "NPC Button Hilfe",
-      "generationTitle": "Erstellungsoptionen",
-      "generationBody": "Das Dashboard verwendet dieselbe Vorgabe für deterministische lokale Erstellung und den KI-Prompt-Arbeitsablauf.",
-      "count": "Beliebige erlaubte Zahl direkt eingeben oder die häufigen Werte 1, 3, 5 und 10 verwenden.",
-      "role": "Bestimmt die praktische Funktion des NSCs und beeinflusst bei lokaler Erstellung Attribute und Robustheit. Außerdem steuert sie KI-Inventar und Charakterisierung stark.",
-      "tierStyleNamed": "Die Welt verwendet derzeit benannte Stufen. Ordinary bis Champion bilden grobe Kompetenzbereiche; unter Einstellungen konfigurieren kann auf exakte CR-Auswahl umgestellt werden.",
-      "tierStyleCr": "Die Welt verwendet derzeit CR-Stufen. Jeder Standard-CR von 0 bis 30 ist wählbar und der KI-Prompt fordert exakt diesen CR an.",
-      "race": "Der eingebaute Volkswähler enthält alle Standardvölker des Player’s Handbook 2024. Ein nicht vorhandener Name kann direkt als eigenes Volk gewählt werden; gemischte Gruppen können mehrere Standard- oder eigene Völker auswählen.",
-      "wealth": "Poor, Average, Well-Off oder Elite. Die KI skaliert damit mitgeführtes Geld, Ausrüstungsqualität, Komfortgegenstände und sichtbaren Status.",
-      "seed": "Lokale Generierung besitzt immer einen wiederverwendbaren Seed. Bleibt Seed leer, erzeugt das Modul automatisch einen, zeigt ihn im Dashboard an und speichert ihn in Biografie und Modul-Metadaten jedes erzeugten Actors.",
-      "destination": "Der Ordnerwähler erhält die Actor-Hierarchie. Er kann beliebige Unterordner, den Actors-Stamm, den konfigurierten Standard oder einen neu benannten Stammordner ansteuern.",
-      "pickersTitle": "Skalierbare Auswahlfelder",
-      "pickersBody": "Alle großen Kataloge verwenden durchsuchbare, scrollbar Pickers. Einträge aus Ergänzungsmodulen werden mit den pro Modul in den globalen Einstellungen konfigurierten Farben farblich hervorgehoben.",
-      "namingTitle": "Namensstile",
-      "namingBody": "Namensstile sind breite fiktionale Klangpaletten und keine historischen oder sprachwissenschaftlichen Aussagen. Jeder Stil enthält nun deutlich mehr kreative, idiomatische Beispiele; dieselben Beispiele und Stilhinweise werden als Klangreferenz in den kopierten KI-Prompt eingebettet.",
-      "character": "Charakter",
-      "examples": "Deutliche Beispiele",
-      "actorReviewTitle": "Actor-Prüfanordnung",
-      "actorReviewBody": "Bei aktivierter Prüfung werden höchstens die ersten 10 erstellten Actors geöffnet. Bis zu drei oberste Fenster stehen nebeneinander. Weitere Fenster verwenden dieselben Spaltenpositionen dahinter, sodass beim Schließen eines oberen Fensters der nächste Actor im Stapel sichtbar wird.",
-      "aiTitle": "KI-Arbeitsablauf",
-      "aiBody": "Das Modul ruft selbst keinen KI-Dienst auf. Es erzeugt einen strikten portablen Prompt mit Namensreferenzen, Lebensraum, Gruppenstruktur, Volksmischung, Wohlstand, Beziehungsdichte, Geheimnissen, Gerüchten, Eigenheiten und Inventaranforderungen und prüft anschließend Actor-Kern und Inventaranfragen vor dem Import.",
-      "aiStep1": "Anzahl, Gruppentyp, Lebensraum, Rolle, Tier oder CR, Volkszusammensetzung, Wohlstand, Namensstil und Ziel konfigurieren.",
-      "aiStep2": "Prompt kopieren anklicken und den Prompt in eine KI-Konversation einfügen.",
-      "aiStep3": "Die reine JSON-Antwort der KI in die Zwischenablage kopieren.",
-      "aiStep4": "Zu Foundry zurückkehren und NSC importieren anklicken. Das aktuelle Ziel wird lokal angewendet.",
-      "aiValidation": "Der Importer validiert JSON-Wurzelform und jeden Actor unabhängig von der angeforderten Anzahl. Eine Abweichung öffnet standardmäßig automatisch die Vorschau statt einen fatalen Fehler auszulösen; nur die ausgewählte Teilmenge wird unmittelbar vor der Erstellung erneut validiert. Kanonische Gegenstände werden über D&D-5e-Kompendien aufgelöst, erfundene Rollenspielgegenstände bleiben sichere Loot-Items.",
-      "groupType": "Unabhängige NSCs oder einen absichtlichen Gruppentyp wählen. Gruppenvorlagen variieren Aufgaben und weisen die KI an, gemeinsame Geschichte und nützliche interne Rollen statt Kopien desselben NSCs zu erstellen.",
-      "habitat": "Standard ist Forest Village. Der Lebensraum verändert erwartbaren Alltag, Besitz, Reisen, Arbeit, Gerüchte und sozialen Kontext.",
-      "standardRacesTitle": "Standardvölker 2024",
-      "standardRacesBody": "Der eingebaute Player’s-Handbook-2024-Katalog ist: {races}. Eigene Völker bleiben über denselben Wähler möglich.",
-      "habitatsTitle": "Lebensräume",
-      "habitatsBody": "Eingebaute Umgebungen decken gewöhnliche Siedlungen und spezialisierte Regionen ab, darunter {habitats}. Andere Lebensräume können frei eingegeben werden.",
-      "groupsTitle": "Familien und Gruppen",
-      "groupsBody": "Gruppenvorlagen umfassen {groups} sowie weitere Sicherheits-, Gesetzlosen-, Reise-, Arbeits-, Glaubens- und Gemeinschaftsstrukturen. Die Anzahl bleibt editierbar; jede Vorlage bietet sinnvolle Größen-Schnellwahl.",
-      "groupsAdvanced": "Erweiterte Einstellungen steuern Familienstruktur, Zusammenhalt, Hierarchie, Beziehungsdichte, internen Konflikt, erlaubte Völker, deren Verteilung, eigene Gewichte und eine optionale gemeinsame Gruppenvorgabe.",
-      "portraitPromptTitle": "Porträt-Prompts",
-      "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert. Nichtmenschliche Rassen werden dabei ausdrücklich rassen-idiomatisch beschrieben, damit sie klar als eigenes Volk erkennbar sind und nicht nur wie überwiegend menschliche Figuren mit kleinen Fantasy-Zusätzen wirken.",
-      "filterTitle": "Dashboard-Filtereinstellungen",
-      "filterBody": "Configure Settings bietet ein eigenes Filter-Menü. Jeder wichtige Dashboard-Katalog besitzt eine skalierbare, durchsuchbare Mehrfachauswahlliste, in der standardmäßig alle aktuellen Einträge enthalten sind; entferne Auswahlen, um Einträge auszublenden. Erweiterte String-/Regex-Erlauben- und Verbieten-Regeln bleiben verfügbar, und Filterprofile können als versionierte JSON-Dateien oder über die Zwischenablage exportiert/importiert werden.",
-      "compositionTitle": "Volks- und Rollenzusammensetzung",
-      "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert, mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Die Rollenzusammensetzung verwendet das Hauptfeld Rolle als primäre Rolle und wendet dann den gewählten Verteilungsmodus auf die erlaubten Rollen an.",
-      "combatReadinessTitle": "Kampfbereitschaft",
-      "combatReadinessBody": "Jeder NPC besitzt weiterhin kampffähige Werte. Die Einstellung steuert getragene Waffen und Rüstung. Waffenlos erzwingt keine davon; höhere Stufen bleiben streng rollenbezogen, sodass ein Gelehrter oder Jurist nicht plötzlich zum schwer bewaffneten Krieger wird, während Wachen, Soldaten und Plünderer natürlich skalieren.",
-      "weaponVarietyTitle": "Waffenvielfalt",
-      "weaponVarietyBody": "Nur Nahkampf, Nahkampf bevorzugt, Gemischt, Fernkampf bevorzugt und Nur Fernkampf gewichten oder beschränken getragene Waffen, ohne die Berufslogik zu überschreiben. Hat ein Jurist bei Nur Fernkampf keine plausible Fernkampfwaffe, ist keine Waffe das korrekte Ergebnis.",
-      "importPreviewTitle": "Importvorschau",
-      "importPreviewBody": "Die Vorschau bietet eine auswählbare Master-Liste und einen kompakten Editor. Standardmäßig sind alle NSCs ausgewählt; wähle unerwünschte Einträge ab, bearbeite einfache Felder und importiere anschließend nur die Auswahl. Weicht die eingelesene JSON-Anzahl auf oberster Ebene von der Dashboard-Anzahl ab, öffnet sich die Vorschau automatisch mit einem Hinweis, statt frühzeitig abzubrechen. GMs können Beliebige NSC-Importanzahl erlauben aktivieren, um diese automatische Prüfung für sichere externe/manuelle JSON-Arrays zu überspringen. Maximale Stapelgröße und Actor-Validierung gelten immer.",
-      "roleMixTitle": "Rollenzusammensetzung im Detail",
-      "roleMixBody": "Die im Bereich Erzeugung gewählte Hauptrolle ist immer die primäre Rolle. Bei gemischten Modi definiert Mögliche Rollen den erlaubten Pool; die primäre Rolle wird automatisch einbezogen, auch wenn sie nicht manuell gewählt wurde. Ganzzahlige Quoten ergeben immer exakt die gewünschte Anzahl.",
-      "roleMixWeights": "Eigene Gewichte sind relative Verhältnisse, keine Prozente. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt die Rolle aus, solange mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
-      "roleMixRounding": "Wenn ein Verhältnis nicht glatt in die Stapelgröße passt, verwendet das Modul proportionale Ganzzahlquoten und vergibt übrige NPCs nach den größten Nachkommaresten. Dadurch bleibt die exakte Anzahl erhalten und das gewünschte Verhältnis wird möglichst genau getroffen.",
-      "roleMixMode": "Modus",
-      "roleMixRule": "Verteilungsregel",
-      "roleMixExample": "Beispiel mit Anzahl 10",
-      "roleMixModes": {
-        "single": "Jeder NPC verwendet die primäre Rolle.",
-        "variants": "Jeder NPC behält die primäre Rolle; praktische Untertypen dieser Rolle werden möglichst gleichmäßig verteilt, bevor Wiederholungen beginnen.",
-        "groupPreset": "Der erste NPC verwendet die primäre Rolle; weitere NPCs folgen dem eingebauten Aufgabenzyklus des Gruppentyps. Unabhängige Stapel bleiben vollständig bei der primären Rolle.",
-        "balanced": "Alle erlaubten Rollen erhalten dasselbe Gewicht.",
-        "primary": "Die primäre Rolle zielt auf 70 %; die übrigen 30 % werden gleichmäßig auf die anderen erlaubten Rollen verteilt.",
-        "dominant": "Die primäre Rolle zielt auf 85 %; die übrigen 15 % werden gleichmäßig auf die anderen erlaubten Rollen verteilt.",
-        "weighted": "Jede erlaubte Rolle verwendet ihr eingegebenes relatives Gewicht."
-      },
-      "roleMixExamples": {
-        "single": "Primär Händler → 10 Händler.",
-        "variants": "Primär Händler → 10 Händler mit unterschiedlichen Händlerspezialisierungen vor Wiederholungen.",
-        "groupPreset": "Abhängig vom Gruppentyp; bei Unabhängigen NPCs mit primär Händler → 10 Händler.",
-        "balanced": "Händler + Handwerker + Wache → 4 Händler, 3 Handwerker, 3 Wachen.",
-        "primary": "Primär Händler + Handwerker + Wache → 7 Händler, 2 Handwerker, 1 Wache.",
-        "dominant": "Primär Händler + Handwerker + Wache → 8 Händler, 1 Handwerker, 1 Wache.",
-        "weighted": "Händler 10, Handwerker 20, Wache 30 → 2 Händler, 3 Handwerker, 5 Wachen."
-      },
-      "setting": "Einstellung",
-      "effect": "Wirkung",
-      "example": "Beispiel",
-      "mode": "Modus",
-      "level": "Stufe",
-      "situation": "Situation",
-      "behavior": "Verhalten",
-      "step": "Schritt",
-      "action": "Aktion",
-      "mixMode": "Modus",
-      "mixRule": "Verteilungsregel",
-      "mixExample": "Beispiel bei Anzahl 10",
-      "raceMixTitle": "Volkszusammensetzung im Detail",
-      "raceMixBody": "Das unter Erstellung gewählte Hauptvolk ist das primäre Volk. Bei gemischten Modi legt Mögliche Völker den erlaubten Pool fest; das primäre Volk wird automatisch einbezogen. Ganzzahlige Quoten ergeben immer exakt die angeforderte Anzahl.",
-      "raceMixWeights": "Benutzerdefinierte Volksgewichte sind relative Verhältnisse, keine Prozentwerte. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt das Volk aus, solange mindestens ein anderes Volk ein positives Gewicht besitzt. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
-      "mixRounding": "Geht ein Verhältnis nicht glatt in der Gruppengröße auf, verwendet das Modul proportionale Ganzzahlquoten und vergibt übrige NPCs an die größten Nachkommareste. Dadurch bleibt die exakte Anzahl erhalten und das gewünschte Verhältnis wird möglichst genau getroffen.",
-      "raceMixModes": {
-        "single": "Jeder NPC verwendet das primäre Volk.",
-        "dominant": "Das primäre Volk zielt auf 85 %; die restlichen 15 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
-        "primary": "Das primäre Volk zielt auf 70 %; die restlichen 30 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
-        "balanced": "Alle erlaubten Völker erhalten dasselbe Gewicht.",
-        "weighted": "Jedes erlaubte Volk verwendet sein eingetragenes relatives Gewicht.",
-        "mixed": "Legacy-Kompatibilitätsmodus; die gespeicherte Einstellung der Volksverteilung bestimmt die tatsächliche Mischung.",
-        "exact": "Verwendet die exakt eingegebene Ganzzahl für jedes ausgewählte Volk. Die Summe muss Anzahl entsprechen."
-      },
-      "raceMixExamples": {
-        "single": "Primär Human → 10 Human.",
-        "dominant": "Primär Human + Elf + Dwarf → 8 Human, 1 Elf, 1 Dwarf.",
-        "primary": "Primär Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
-        "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
-        "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf.",
-        "mixed": "Im aktuellen Dashboard nicht sichtbar; nur für ältere gespeicherte Konfigurationen erhalten.",
-        "exact": "Anzahl 10: Mensch 8, Elf 1, Zwerg 1 bedeutet exakt 8 / 1 / 1."
-      },
-      "combatReadinessModes": {
-        "weaponless": "Keine Waffen und keine Rüstung. Berufswerkzeuge bleiben gewöhnliche Werkzeuge.",
-        "minimal": "Nichtkämpfer bleiben praktisch unbewaffnet; eindeutig kämpferische Rollen erhalten mindestens eine einfache plausible Waffe.",
-        "standard": "Normale Ausrüstung der Rolle während gewöhnlicher Pflichten.",
-        "prepared": "Fügt glaubwürdige Ersatz- oder Schutzausrüstung hinzu, wenn die Rolle dies sinnvoll zulässt.",
-        "armed": "Maximale realistische Vorbereitung für genau diese Rolle; berufliche Obergrenzen gelten weiterhin."
-      },
-      "combatReadinessExamples": {
-        "weaponless": "Soldier → keine Waffe und keine Rüstung; Baker → nur Arbeitswerkzeuge.",
-        "minimal": "Guard → eine einfache Dienstwaffe; Scholar → normalerweise keine eigene Waffe.",
-        "standard": "Guard → praktische Waffe und übliche Schutzausrüstung für den Dienst.",
-        "prepared": "Scout → Hauptwaffe plus plausible Ersatzwaffe und leichte Schutzausrüstung.",
-        "armed": "Soldier → mehrere sinnvolle Kampfoptionen; Jurist → höchstens diskrete Selbstverteidigung."
-      },
-      "weaponVarietyModes": {
-        "meleeOnly": "Nur nahkampffähige Waffen zulassen.",
-        "meleePreferred": "Nahkampf stark bevorzugen; Fernkampf nur als plausible Ersatzoption.",
-        "mixed": "Natürliche Mischung verwenden, wenn die Rolle beide Kategorien realistisch unterstützt.",
-        "rangedPreferred": "Fernkampf stark bevorzugen; Nahkampf nur als plausible Ersatzoption.",
-        "rangedOnly": "Nur echte Fernkampfwaffen zulassen; für Rollen ohne realistische Option niemals eine erfinden."
-      },
-      "weaponVarietyExamples": {
-        "meleeOnly": "Scout → Shortsword/Dagger möglich, kein Shortbow.",
-        "meleePreferred": "Guard → Spear oder Longsword bevorzugt; Armbrust nur als sinnvolle Reserve.",
-        "mixed": "Soldier → Nah- und Fernkampfoptionen können gemeinsam vorkommen.",
-        "rangedPreferred": "Scout → Shortbow bevorzugt, Messer oder Shortsword nur als Reserve.",
-        "rangedOnly": "Jurist ohne plausible Fernkampfoption → waffenlos statt unpassend bewaffnet."
-      },
-      "importPreviewCases": {
-        "normal": {
-          "case": "Erwartete Anzahl stimmt",
-          "behavior": "Verwendet den konfigurierten Vorschau-Schalter. Ist die Vorschau aus, können validierte Actors direkt erstellt werden."
-        },
-        "mismatch": {
-          "case": "Zurückgegebene Anzahl weicht ab",
-          "behavior": "Die Vorschau öffnet automatisch mit Warnung. Alle NPCs sind zunächst ausgewählt; überzählige können vor dem Import abgewählt werden."
-        },
-        "arbitrary": {
-          "case": "Beliebige Importanzahl erlaubt",
-          "behavior": "Sichere externe oder manuelle Arrays dürfen ohne erzwungene Abweichungsvorschau fortfahren; normale Validierung bleibt aktiv."
-        },
-        "oversized": {
-          "case": "Maximale Stapelgröße überschritten",
-          "behavior": "Sicherheitsgrenzen bleiben aktiv; die Anzahl-Einstellung umgeht niemals die konfigurierte maximale Stapelgröße."
-        }
-      },
-      "aiStepLabel": "Schritt {step}",
-      "control": "Steuerung",
-      "filterControls": {
-        "items": {
-          "control": "Enthaltene Einträge",
-          "behavior": "Alle aktuellen Katalogeinträge sind zunächst enthalten. Einen Eintrag abwählen, um ihn im zugehörigen Dashboard-Wähler auszublenden; später über Erweiterungen hinzukommende Einträge bleiben standardmäßig enthalten, solange sie nicht ausdrücklich ausgeschlossen wurden."
-        },
-        "advanced": {
-          "control": "Erweiterte Regeln",
-          "behavior": "Optionale Exact-, Contains-, Prefix-, Suffix- und Regex-Regeln zum Zulassen oder Ausschließen verfeinern die Auswahl. Ausschlussregeln haben Vorrang."
-        },
-        "profiles": {
-          "control": "Filterprofile",
-          "behavior": "Die vollständige Filterkonfiguration als versioniertes JSON exportieren oder importieren, um eine fertig konfigurierte Einrichtung wiederzuverwenden oder zu übertragen."
-        }
-      },
-      "wealthDistribution": "Ändert nur die Aufteilung des festen tragbaren Vermögens zwischen Systemwährung und Wertgegenständen; der Gesamtwert bleibt unverändert.",
-      "wealthDistributionTitle": "Vermögensverteilung",
-      "wealthDistributionBody": "Jeder lokal erzeugte NSC trägt nun echte D&D-5e-Währung. Die Vermögensstufe setzt ein festes tragbares Vermögensbudget; diese Auswahl verteilt nur denselben Wert zwischen Münzen und tragbaren Wertgegenständen. Rollen-/Kampfausrüstung bleibt davon getrennt.",
-      "wealthDistributionModes": {
-        "itemsHeavy": "Etwa 20 % als Münzen; der Rest wird auf mehrere Wertgegenstände verteilt.",
-        "mixed": "Etwa die Hälfte als Münzen und die Hälfte als tragbare Wertgegenstände.",
-        "coinsHeavy": "Etwa 75 % als Münzen; nur ein kleiner Rest wird zu Wertgegenständen.",
-        "fewHighValue": "Eine moderate Münzreserve; der Gegenstandsanteil konzentriert sich auf ein oder zwei wertvolle Besitztümer.",
-        "manySmallValue": "Eine moderate Münzreserve; der Gegenstandsanteil verteilt sich auf mehrere kleinere Wertgegenstände."
-      },
-      "wealthDistributionExamples": {
-        "itemsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 1 GM in Münzen + 4 GM in Wertgegenständen.",
-        "mixed": "Durchschnittlich: 5 GM Gesamtwert → etwa 2,5 GM in Münzen + 2,5 GM in Wertgegenständen.",
-        "coinsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 3,75 GM in Münzen + 1,25 GM in Wertgegenständen.",
-        "fewHighValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + ein konzentrierter Wertgegenstand von 3,25 GM.",
-        "manySmallValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + mehrere Gegenstände mit zusammen 3,25 GM."
-      },
-      "nameFormattingTitle": "Namens- und Stapelpräfix-Formatierung",
-      "nameFormattingBody": "Name oder Stapelpräfix ist eine Überschreibung, kein zusätzliches Präfixfeld. Bei Anzahl 1 wird daraus der Actor-Name. Bei größerer Anzahl entstehen nummerierte Namen wie „Hafenwache 1“, „Hafenwache 2“ und die generierte Namensformatierung wird umgangen. Leer lassen, um Namen aus dem gewählten Namensstil und den Formatierungsoptionen zu erzeugen.",
-      "nameFormattingControl": "Steuerung",
-      "nameFormattingBehavior": "Wirkung",
-      "nameFormattingExample": "Beispiel",
-      "nameFormattingRows": {
-        "customName": {
-          "control": "Name oder Stapelpräfix",
-          "behavior": "Überschreibt generierte Namen vollständig. Anzahl 1 verwendet den Text als Namen; Stapel hängen eine fortlaufende Nummer an.",
-          "example": "Hafenwache + Anzahl 3 → Hafenwache 1, Hafenwache 2, Hafenwache 3."
-        },
-        "preset": {
-          "control": "Formatvorlage",
-          "behavior": "Bestimmt, wo generierter Vor- und Nachname sowie optionale Bestandteile stehen. Standard erhält das klassische Vorname-Nachname-Ergebnis.",
-          "example": "Formell kann Captain Elian Mercer ergeben; Ort kann Elian Mercer of Velia ergeben."
-        },
-        "affixes": {
-          "control": "Präfix / Infix / Suffix",
-          "behavior": "Wörtlicher fester Text vor, zwischen oder nach generierten Namensteilen. Ein Feld wirkt nur, wenn die aktive Vorlage sein Token verwendet.",
-          "example": "Präfix Haus + Infix van + Suffix der Jüngere → Haus Elian van Mercer der Jüngere."
-        },
-        "nickname": {
-          "control": "Spitznamen-Häufigkeit",
-          "behavior": "Nie, Manchmal oder Immer erzeugt einen kurzen Spitznamen, wenn die aktive Vorlage {nickname} enthält. Optionale Vorlagenblöcke verhindern leere Anführungszeichen.",
-          "example": "Elian „Crow“ Mercer."
-        },
-        "title": {
-          "control": "Titel-Häufigkeit",
-          "behavior": "Nie, Manchmal oder Immer fügt einen plausiblen Rollen-/Statustitel hinzu, wenn die Vorlage {title} enthält. Gibt es keinen sinnvollen Titel, bleibt das Token leer.",
-          "example": "Sergeant Bren Holt; Lady Mira Voss."
-        },
-        "location": {
-          "control": "Fester Ort",
-          "behavior": "Liefert wörtlichen Text für {location}; normalerweise zusammen mit der Vorlage Ort oder Vollständig.",
-          "example": "{first} {last} [of {location}] + Velia → Elian Mercer of Velia."
-        },
-        "template": {
-          "control": "Eigene Vorlage",
-          "behavior": "Platziert Komponenten exakt mit Tokens. Optionale [eckige-Klammer]-Blöcke entfallen, wenn ein enthaltenes Token leer ist. Wörtliche Wörter und Satzzeichen sind erlaubt.",
-          "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
-        }
-      },
-      "nameTemplateTokens": "Vorlagen-Tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role} und {race}. {index} ist die einsbasierte NPC-Nummer im Stapel.",
-      "ageTitle": "Altersbereich und Gruppenverteilung",
-      "ageBody": "Das Alter wird pro NPC erzeugt und in Actor-Metadaten sowie Biografie gespeichert. Benannte Bereiche sind rassenrelativ, sodass Elf und Mensch in derselben reifen Gruppe jeweils für ihre eigene Rasse reif sind. Der exakte Jahresbereich ist die ausdrückliche wörtliche Ausnahme.",
-      "ageRangeMode": "Altersbereich",
-      "ageRangeRule": "Regel",
-      "ageRangeExample": "Beispiel",
-      "ageSpreadTitle": "Altersverteilung der Gruppe",
-      "ageRangeModes": {
-        "contextual": "Rolle und Gruppenkontext wählen einen plausiblen erwachsenen Bereich; Familien erlauben natürlich eine breitere Generationenspanne.",
-        "youngAdult": "Verwendet den jüngeren Teil der erwachsenen Lebensspanne jeder Rasse.",
-        "adult": "Verwendet die breite frühe bis mittlere Erwachsenenphase jeder Rasse.",
-        "mature": "Verwendet die reife mittlere bis spätere Erwachsenenphase jeder Rasse.",
-        "older": "Verwendet den älteren, normalerweise noch aktiven Teil der Lebensspanne jeder Rasse.",
-        "mixedGenerations": "Verwendet eine breite Erwachsenenspanne, damit mehrere Generationen natürlich auftreten können.",
-        "exactRange": "Verwendet die eingegebenen Mindest- und Höchstjahre wörtlich; rassenrelative Skalierung ist deaktiviert."
-      },
-      "ageRangeExamples": {
-        "contextual": "Eine Wachpatrouille tendiert zu arbeitsfähigen Erwachsenen; eine Familie kann mehrere Generationen enthalten.",
-        "youngAdult": "Junge menschliche Erwachsene und entsprechend junge erwachsene Elfen/Zwerge.",
-        "adult": "Eine breite normale Erwachsenengruppe ohne starke Tendenz zu jung oder alt.",
-        "mature": "Etablierte Fachleute, Haushaltsvorstände, erfahrene Handwerker und Amtsträger.",
-        "older": "Ältere Veteranen, Älteste, langjährige Gefolgsleute und Spezialisten.",
-        "mixedGenerations": "Nützlich für Familien, Dörfer, Karawanen, Haushalte, Räte und gemischte Zivilgruppen.",
-        "exactRange": "20–35 bedeutet, dass jeder erzeugte NPC wörtlich zwischen 20 und 35 Jahre alt ist."
-      },
-      "ageSpreadModes": {
-        "natural": "Verteilt natürlich zufällig im gewählten Bereich.",
-        "even": "Verteilt die Gruppe breit über den gesamten Bereich.",
-        "clustered": "Hält die meisten NPCs nahe der Mitte des Bereichs, gut für Gleichaltrigengruppen.",
-        "younger": "Gewichtet zum jüngeren Ende, behält aber einige ältere Mitglieder.",
-        "older": "Gewichtet zum älteren Ende, behält aber einige jüngere Mitglieder."
-      },
-      "ageSpreadExamples": {
-        "natural": "Normale gemischte Gruppe ohne absichtliches Altersmuster.",
-        "even": "Zehn NPCs decken den Bereich ab, statt zufällig zu verklumpen.",
-        "clustered": "Arbeitsgruppe oder Kohorte derselben Generation.",
-        "younger": "Auszubildende, neue Rekruten, junge Arbeiter oder Siedler.",
-        "older": "Veteranen, etablierte Gildenmitglieder und ältere Amtsträger."
-      },
-      "tokenDisposition": "Steuert die Token-Gesinnung des Prototyp-Tokens des erzeugten Actors; platzierte Tokens übernehmen die gewählte native Foundry-Gesinnung.",
-      "tokenDispositionTitle": "Token-Gesinnung / Feindseligkeit",
-      "tokenDispositionBody": "Die Gesinnung ist eine Foundry-Token-Eigenschaft, die am Prototyp-Token des Actors gespeichert wird. Sie steuert die Darstellung als Verbündeter oder Gegner, nicht Werte oder Verhalten des NPCs. Das Modul unterstützt jede native Foundry-Gesinnung plus einen Standard ohne Überschreibung.",
-      "tokenDispositionModes": {
-        "default": "Schreibt keine Gesinnungs-Überschreibung. Foundry, dnd5e oder ein anderes Modul kann seinen normalen Prototyp-Token-Standard setzen.",
-        "friendly": "Verwendet Foundrys Gesinnung Freundlich.",
-        "neutral": "Verwendet Foundrys Gesinnung Neutral.",
-        "hostile": "Verwendet Foundrys Gesinnung Feindlich, den nativen Gegnerzustand.",
-        "secret": "Verwendet Foundrys Gesinnung Geheim für Tokens, deren Gesinnung nicht wie die normalen Zustände Freundlich/Neutral/Feindlich offen dargestellt werden soll."
-      },
-      "tokenDispositionExamples": {
-        "default": "Welt-/Systemstandard beibehalten.",
-        "friendly": "Verbündete Wache, Begleiter, geschützter Zivilist.",
-        "neutral": "Unbeteiligter, Händler, unentschiedenes Fraktionsmitglied.",
-        "hostile": "Feindlicher Räuber, Monster, aktiver Angreifer.",
-        "secret": "Verborgene Loyalität, unklare Bedrohung, verdeckte Fraktionsabsicht."
-      }
+    "combatReadiness": {
+      "armed": "Stark vorbereitet",
+      "minimal": "Minimal",
+      "prepared": "Vorbereitet",
+      "standard": "Standard",
+      "weaponless": "Waffenlos"
     },
-    "notifications": {
-      "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
-      "created": "{count} NSC-Actor(s) erstellt.",
-      "noneCreated": "Keine NSC-Actors wurden erstellt.",
-      "failed": "NSC-Erstellung fehlgeschlagen: {message}",
-      "promptCopied": "KI-NSC-Prompt wurde in die Zwischenablage kopiert.",
-      "imported": "{count} NSC-Actor(s) importiert.",
-      "noneImported": "Keine NSC-Actors wurden importiert.",
-      "importFailed": "NSC-Import fehlgeschlagen: {message}",
-      "portraitPromptCopied": "Porträt-Prompt in die Zwischenablage kopiert.",
-      "filtersSaved": "Dashboard-String-Filter gespeichert.",
-      "filtersExported": "Filterprofil exportiert.",
-      "filtersCopied": "JSON des Filterprofils in die Zwischenablage kopiert.",
-      "filtersImported": "Filterprofil importiert und angewendet.",
-      "filterImportFailed": "Import des Filterprofils fehlgeschlagen",
-      "filterProfileTooLarge": "Das Filterprofil ist zu groß zum Importieren.",
-      "importCancelled": "NPC-Importvorschau abgebrochen.",
-      "promptCopyManual": "KI-Prompt vorbereitet, aber automatischer Zwischenablagezugriff ist nicht verfügbar. Der Prompt bleibt unten zum manuellen Kopieren erhalten.",
-      "clipboardUnavailable": "Automatischer Zwischenablagezugriff ist nicht verfügbar. Der vorbereitete Inhalt bleibt zum manuellen Kopieren erhalten.",
-      "promptPrepareFailed": "Vorbereitung des KI-Prompts fehlgeschlagen: {message}",
-      "complementaryColorsSaved": "Hervorhebungsfarben der Ergänzungsmodule gespeichert."
+    "complementaryColors": {
+      "colorLabel": "Hervorhebungsfarbe",
+      "dependenciesBody": "Diese installierten Module deklarieren Runyth NPC Button als Abhängigkeit oder Empfehlung, aber von ihnen sind derzeit keine farblich zugeordneten Katalogeinträge registriert.",
+      "dependenciesTitle": "Erkannte Abhängigkeiten von Ergänzungsmodulen",
+      "empty": "Das reine Installieren oder Aktivieren eines Ergänzungsmoduls reicht für die Farbzuordnung nicht aus. Es muss Katalogeinträge über die NPC-Button-Erweiterungs-API registrieren und dabei sein Quellmodul angeben.",
+      "emptyTitle": "Keine ergänzende Katalogintegration erkannt",
+      "intro": "Lege eine Hervorhebungsfarbe für Einträge fest, die von Ergänzungsmodulen beigesteuert werden. Einträge desselben Moduls teilen sich dieselbe Farbe in Dashboard-Pickern und Filterlisten.",
+      "kinds": {
+        "groupTypes": "Gruppentypen",
+        "habitats": "Lebensräume",
+        "namingStyles": "Namensstile",
+        "races": "Rassen",
+        "roles": "Rollen"
+      },
+      "resetAll": "Alles auf Standard zurücksetzen",
+      "resetOne": "Zurücksetzen",
+      "savedOnly": "Nur gespeicherte Farbe; aktuell sind keine aktiven Beiträge registriert.",
+      "statusDisabled": "deaktiviert",
+      "statusEnabled": "aktiviert",
+      "title": "Hervorhebungsfarben für Ergänzungsmodule",
+      "unattributedBody": "Diese Einträge sind registriert und nutzbar, NPC Button kann sie jedoch nicht nach Farben gruppieren, weil das registrierende Modul sich nicht über sourceModuleId identifiziert hat. Das bedeutet normalerweise, dass das Ergänzungsmodul einen Kompatibilitäts-Patch benötigt.",
+      "unattributedTitle": "Katalogerweiterungen ohne Quellmodul-Metadaten erkannt"
     },
     "errors": {
-      "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
       "clipboardRead": "Lesen aus der Zwischenablage ist nicht verfügbar oder wurde vom Browser blockiert.",
+      "clipboardWrite": "Schreiben in die Zwischenablage ist in diesem Client nicht verfügbar.",
       "manualPasteFallback": "Den Bereich für manuelles Einfügen öffnen, das KI-JSON dort einfügen und NSC importieren erneut anklicken.",
       "portraitPromptUnavailable": "Dieser Actor enthält keine Generierungs-Metadaten von Runyth NPC Button.",
       "raceExactCountMismatch": "Die exakten Völkerzahlen weisen {assigned} NSC zu, Anzahl ist jedoch {target}. Passe zuerst die exakten Zahlen an."
     },
-    "roleGroups": {
-      "everyday": "Alltag & Handel",
-      "learned": "Gelehrte & Spezialisten",
-      "martial": "Kampf & Sicherheit",
-      "authority": "Autorität & Status"
+    "familyStructures": {
+      "blended": "Patchwork-Haushalt",
+      "extendedKin": "Erweiterte Verwandtschaft",
+      "household": "Ein Haushalt",
+      "multiGeneration": "Mehrgenerationen",
+      "siblings": "Geschwister / Cousins"
     },
-    "roles": {
-      "civilian": "Zivilist",
-      "artisan": "Handwerker",
-      "merchant": "Händler",
-      "acolyte": "Akolyth",
-      "scholar": "Gelehrter",
-      "specialist": "Spezialist",
-      "guard": "Wache",
-      "scout": "Späher",
-      "bruiser": "Schläger",
-      "soldier": "Soldat",
-      "leader": "Anführer",
-      "noble": "Adliger"
-    },
-    "tierGroups": {
-      "named": "Benannte Stufen",
-      "fractional": "Bruch-CR",
-      "cr1to10": "CR 1–10",
-      "cr11to20": "CR 11–20",
-      "cr21to30": "CR 21–30"
-    },
-    "tiers": {
-      "ordinary": "Gewöhnlich",
-      "trained": "Ausgebildet",
-      "veteran": "Veteran",
-      "elite": "Elite",
-      "champion": "Champion"
-    },
-    "raceGroups": {
-      "phb2024": "Player’s Handbook 2024",
-      "custom": "Eigene Völker"
-    },
-    "races": {
-      "human": "Mensch",
-      "elf": "Elf",
-      "dwarf": "Zwerg",
-      "halfling": "Halbling",
-      "orc": "Ork",
-      "custom": "Benutzerdefiniert",
-      "aasimar": "Aasimar",
-      "dragonborn": "Drachenblütiger",
-      "gnome": "Gnom",
-      "goliath": "Goliath",
-      "tiefling": "Tiefling"
-    },
-    "namingGroups": {
-      "regional": "Regionale Paletten"
-    },
-    "naming": {
-      "central": "Zentral",
-      "coastal": "Küste",
-      "highland": "Hochland",
-      "frontier": "Grenzland"
-    },
-    "namingDescriptions": {
-      "central": "Ausgewogene Stadt-und-Landstraßen-Namen mit zurückhaltenden Nachnamen; sesshaft und neutral im Klang.",
-      "coastal": "Offene Vokale und maritime Nachnamen mit Anklängen an Häfen, Fischerei und Seehandel.",
-      "highland": "Härtere Konsonanten und landschaftsbezogene Nachnamen mit Anklängen an Hochland, Steinorte und alte Linien.",
-      "frontier": "Kurze praktische Namen und Berufs- oder Siedlungsnachnamen mit Anklängen an Höfe, Gewerke, Randdörfer und neue Gemeinden."
-    },
-    "wealth": {
-      "poor": "Arm",
-      "average": "Durchschnittlich",
-      "wellOff": "Wohlhabend",
-      "elite": "Elite"
+    "filters": {
+      "actions": {
+        "copyJson": "JSON kopieren",
+        "exportFile": "JSON exportieren",
+        "importClipboard": "Zwischenablage importieren",
+        "importFile": "JSON importieren"
+      },
+      "advancedRules": "Erweiterte String- und Regex-Regeln",
+      "categories": {
+        "folders": "Actor-Ordner",
+        "groupTypes": "Gruppentypen",
+        "habitats": "Habitate",
+        "namingStyles": "Namensstile",
+        "races": "Völker",
+        "roles": "Rollen"
+      },
+      "fields": {
+        "caseSensitive": "Groß-/Kleinschreibung beachten",
+        "containsAllow": "Erlauben, wenn enthält",
+        "containsDeny": "Verbieten, wenn enthält",
+        "exactAllow": "Exakte Treffer erlauben",
+        "exactDeny": "Exakte Treffer verbieten",
+        "normalizeDiacritics": "Akzente / Diakritika normalisieren",
+        "prefixAllow": "Erlauben, wenn beginnt mit",
+        "prefixDeny": "Verbieten, wenn beginnt mit",
+        "regexAllow": "Regex erlauben",
+        "regexDeny": "Regex verbieten",
+        "suffixAllow": "Erlauben, wenn endet mit",
+        "suffixDeny": "Verbieten, wenn endet mit",
+        "trimWhitespace": "Umgebende Leerzeichen trimmen"
+      },
+      "intro": "Verwende die Auswahllisten für gewöhnliche Filterung. Standardmäßig sind alle aktuellen Einträge ausgewählt; entferne die Auswahl eines Eintrags, um ihn aus dem entsprechenden Dashboard-Picker auszublenden. Erweiterte Erlauben-/Verbieten-String- und Regex-Regeln bleiben unter jeder Liste verfügbar.",
+      "itemPicker": {
+        "clear": "Alle abwählen",
+        "hint": "Standardmäßig sind alle verfügbaren Einträge ausgewählt. Entferne einzelne Auswahlen, um sie aus dem Dashboard auszuschließen. Die Liste ist durchsuchbar, hierarchisch, scrollbar und für große Kataloge virtualisiert.",
+        "label": "Enthaltene Einträge",
+        "placeholder": "Keine Einträge ausgewählt",
+        "selectAll": "Alle auswählen"
+      },
+      "placeholders": {
+        "folders": "Legt fest, welche Actor-Ordner-Ziele im Ziel-Picker erscheinen.",
+        "groupTypes": "Erlaubt oder verbirgt bestimmte Gruppen-Archetypen wie Familien oder Wachpatrouillen.",
+        "habitats": "Beschränkt oder fokussiert die Umgebungs-Presets im Habitat-Picker.",
+        "namingStyles": "Legt fest, welche Namenspaletten im Dashboard ausgewählt werden dürfen.",
+        "races": "Filtert sichtbare Völker, einschließlich Erweiterungs-Völker und benutzerdefinierter Picker-Vorschläge.",
+        "roles": "Filtert sichtbare Rolleneinträge nach ID, Bezeichnung, Beschreibung oder Suchtext."
+      },
+      "title": "NPC-Button-String-Filter"
     },
     "folderGroups": {
       "destination": "Zieloptionen",
       "existing": "Bestehende Actor-Ordner"
     },
-    "habitatGroups": {
-      "settled": "Siedlungen",
-      "wild": "Wildnis",
-      "arid": "Trockengebiete",
-      "water": "Wasser & Küste",
-      "rugged": "Raues Hochland",
-      "cold": "Kalte Regionen",
-      "unusual": "Ungewöhnliche Regionen"
-    },
-    "habitats": {
-      "forestVillage": "Walddorf",
-      "farmingHamlet": "Bauernweiler",
-      "marketTown": "Marktstadt",
-      "cityDistrict": "Stadtviertel",
-      "deepForest": "Tiefer Wald",
-      "plains": "Offene Ebene / Steppe",
-      "jungle": "Dschungelregion",
-      "desertOasis": "Wüstenoase",
-      "desertRoute": "Wüsten-Karawanenroute",
-      "badlands": "Ödland",
-      "riverlands": "Flusslande",
-      "wetlands": "Sumpf / Feuchtgebiet",
-      "lakeside": "Seenregion",
-      "coast": "Küstenregion",
-      "portCity": "Hafenstadt",
-      "island": "Insel",
-      "foothills": "Bergvorland",
-      "mountains": "Bergregion",
-      "highPlateau": "Hochplateau",
-      "tundra": "Tundra / Hoher Norden",
-      "underground": "Unterirdische Siedlung",
-      "ruinedFrontier": "Ruinen-Grenzland"
-    },
-    "groupTypeGroups": {
-      "individual": "Einzelpersonen",
-      "household": "Haushalte & Familien",
-      "security": "Sicherheit & Kampf",
-      "outlaw": "Plünderer & Unterwelt",
-      "travelWork": "Reise & Arbeitsgruppen",
-      "community": "Gemeinschaft & Glaube"
-    },
-    "groupTypes": {
-      "independent": "Unabhängige NSCs",
-      "family": "Familienhaushalt",
-      "nobleHousehold": "Adelshaushalt",
-      "guardPatrol": "Wachpatrouille",
-      "watchShift": "Stadtwachschicht",
-      "militia": "Lokale Miliz",
-      "mercenaryBand": "Söldnertrupp",
-      "orcRaiders": "Ork-Plünderer",
-      "banditCrew": "Banditengruppe",
-      "criminalCell": "Verbrecherzelle",
-      "caravan": "Karawane",
-      "guildCrew": "Gilden-Arbeitsgruppe",
-      "shipCrew": "Schiffsbesatzung",
-      "huntingParty": "Jagdgruppe",
-      "expedition": "Expedition",
-      "templeHousehold": "Tempelhaushalt",
-      "villageCouncil": "Dorfrat",
-      "pilgrims": "Pilgergruppe",
-      "refugeeParty": "Flüchtlingsgruppe"
-    },
-    "familyStructures": {
-      "household": "Ein Haushalt",
-      "multiGeneration": "Mehrgenerationen",
-      "extendedKin": "Erweiterte Verwandtschaft",
-      "siblings": "Geschwister / Cousins",
-      "blended": "Patchwork-Haushalt"
+    "genderComposition": {
+      "balanced": "Ausgeglichen",
+      "exact": "Exakte Anzahl",
+      "mostlyFemale": "Überwiegend weiblich",
+      "mostlyMale": "Überwiegend männlich",
+      "random": "Zufällig"
     },
     "groupCohesion": {
       "close": "Eng verbunden",
+      "fractured": "Zerbrochen",
       "functional": "Funktional",
-      "strained": "Angespannt",
-      "fractured": "Zerbrochen"
+      "strained": "Angespannt"
     },
     "groupHierarchy": {
+      "clear": "Klare Befehlskette",
       "egalitarian": "Gleichberechtigt",
       "informal": "Informeller Anführer",
-      "clear": "Klare Befehlskette",
       "rigid": "Starre Hierarchie"
+    },
+    "groupTypeGroups": {
+      "community": "Gemeinschaft & Glaube",
+      "household": "Haushalte & Familien",
+      "individual": "Einzelpersonen",
+      "outlaw": "Plünderer & Unterwelt",
+      "security": "Sicherheit & Kampf",
+      "travelWork": "Reise & Arbeitsgruppen"
+    },
+    "groupTypes": {
+      "banditCrew": "Banditengruppe",
+      "caravan": "Karawane",
+      "criminalCell": "Verbrecherzelle",
+      "expedition": "Expedition",
+      "family": "Familienhaushalt",
+      "guardPatrol": "Wachpatrouille",
+      "guildCrew": "Gilden-Arbeitsgruppe",
+      "huntingParty": "Jagdgruppe",
+      "independent": "Unabhängige NSCs",
+      "mercenaryBand": "Söldnertrupp",
+      "militia": "Lokale Miliz",
+      "nobleHousehold": "Adelshaushalt",
+      "orcRaiders": "Ork-Plünderer",
+      "pilgrims": "Pilgergruppe",
+      "refugeeParty": "Flüchtlingsgruppe",
+      "shipCrew": "Schiffsbesatzung",
+      "templeHousehold": "Tempelhaushalt",
+      "villageCouncil": "Dorfrat",
+      "watchShift": "Stadtwachschicht"
+    },
+    "habitatGroups": {
+      "arid": "Trockengebiete",
+      "cold": "Kalte Regionen",
+      "rugged": "Raues Hochland",
+      "settled": "Siedlungen",
+      "unusual": "Ungewöhnliche Regionen",
+      "water": "Wasser & Küste",
+      "wild": "Wildnis"
+    },
+    "habitats": {
+      "badlands": "Ödland",
+      "cityDistrict": "Stadtviertel",
+      "coast": "Küstenregion",
+      "deepForest": "Tiefer Wald",
+      "desertOasis": "Wüstenoase",
+      "desertRoute": "Wüsten-Karawanenroute",
+      "farmingHamlet": "Bauernweiler",
+      "foothills": "Bergvorland",
+      "forestVillage": "Walddorf",
+      "highPlateau": "Hochplateau",
+      "island": "Insel",
+      "jungle": "Dschungelregion",
+      "lakeside": "Seenregion",
+      "marketTown": "Marktstadt",
+      "mountains": "Bergregion",
+      "plains": "Offene Ebene / Steppe",
+      "portCity": "Hafenstadt",
+      "riverlands": "Flusslande",
+      "ruinedFrontier": "Ruinen-Grenzland",
+      "tundra": "Tundra / Hoher Norden",
+      "underground": "Unterirdische Siedlung",
+      "wetlands": "Sumpf / Feuchtgebiet"
+    },
+    "help": {
+      "action": "Aktion",
+      "actorReviewBody": "Bei aktivierter Prüfung werden höchstens die ersten 10 erstellten Actors geöffnet. Bis zu drei oberste Fenster stehen nebeneinander. Weitere Fenster verwenden dieselben Spaltenpositionen dahinter, sodass beim Schließen eines oberen Fensters der nächste Actor im Stapel sichtbar wird.",
+      "actorReviewTitle": "Actor-Prüfanordnung",
+      "ageBody": "Das Alter wird pro NPC erzeugt und in Actor-Metadaten sowie Biografie gespeichert. Benannte Bereiche sind rassenrelativ, sodass Elf und Mensch in derselben reifen Gruppe jeweils für ihre eigene Rasse reif sind. Der exakte Jahresbereich ist die ausdrückliche wörtliche Ausnahme.",
+      "ageRangeExample": "Beispiel",
+      "ageRangeExamples": {
+        "adult": "Eine breite normale Erwachsenengruppe ohne starke Tendenz zu jung oder alt.",
+        "contextual": "Eine Wachpatrouille tendiert zu arbeitsfähigen Erwachsenen; eine Familie kann mehrere Generationen enthalten.",
+        "exactRange": "20–35 bedeutet, dass jeder erzeugte NPC wörtlich zwischen 20 und 35 Jahre alt ist.",
+        "mature": "Etablierte Fachleute, Haushaltsvorstände, erfahrene Handwerker und Amtsträger.",
+        "mixedGenerations": "Nützlich für Familien, Dörfer, Karawanen, Haushalte, Räte und gemischte Zivilgruppen.",
+        "older": "Ältere Veteranen, Älteste, langjährige Gefolgsleute und Spezialisten.",
+        "youngAdult": "Junge menschliche Erwachsene und entsprechend junge erwachsene Elfen/Zwerge."
+      },
+      "ageRangeMode": "Altersbereich",
+      "ageRangeModes": {
+        "adult": "Verwendet die breite frühe bis mittlere Erwachsenenphase jeder Rasse.",
+        "contextual": "Rolle und Gruppenkontext wählen einen plausiblen erwachsenen Bereich; Familien erlauben natürlich eine breitere Generationenspanne.",
+        "exactRange": "Verwendet die eingegebenen Mindest- und Höchstjahre wörtlich; rassenrelative Skalierung ist deaktiviert.",
+        "mature": "Verwendet die reife mittlere bis spätere Erwachsenenphase jeder Rasse.",
+        "mixedGenerations": "Verwendet eine breite Erwachsenenspanne, damit mehrere Generationen natürlich auftreten können.",
+        "older": "Verwendet den älteren, normalerweise noch aktiven Teil der Lebensspanne jeder Rasse.",
+        "youngAdult": "Verwendet den jüngeren Teil der erwachsenen Lebensspanne jeder Rasse."
+      },
+      "ageRangeRule": "Regel",
+      "ageSpreadExamples": {
+        "clustered": "Arbeitsgruppe oder Kohorte derselben Generation.",
+        "even": "Zehn NPCs decken den Bereich ab, statt zufällig zu verklumpen.",
+        "natural": "Normale gemischte Gruppe ohne absichtliches Altersmuster.",
+        "older": "Veteranen, etablierte Gildenmitglieder und ältere Amtsträger.",
+        "younger": "Auszubildende, neue Rekruten, junge Arbeiter oder Siedler."
+      },
+      "ageSpreadModes": {
+        "clustered": "Hält die meisten NPCs nahe der Mitte des Bereichs, gut für Gleichaltrigengruppen.",
+        "even": "Verteilt die Gruppe breit über den gesamten Bereich.",
+        "natural": "Verteilt natürlich zufällig im gewählten Bereich.",
+        "older": "Gewichtet zum älteren Ende, behält aber einige jüngere Mitglieder.",
+        "younger": "Gewichtet zum jüngeren Ende, behält aber einige ältere Mitglieder."
+      },
+      "ageSpreadTitle": "Altersverteilung der Gruppe",
+      "ageTitle": "Altersbereich und Gruppenverteilung",
+      "aiBody": "Das Modul ruft selbst keinen KI-Dienst auf. Es erzeugt einen strikten portablen Prompt mit Namensreferenzen, Lebensraum, Gruppenstruktur, Volksmischung, Wohlstand, Beziehungsdichte, Geheimnissen, Gerüchten, Eigenheiten und Inventaranforderungen und prüft anschließend Actor-Kern und Inventaranfragen vor dem Import.",
+      "aiStep1": "Anzahl, Gruppentyp, Lebensraum, Rolle, Tier oder CR, Volkszusammensetzung, Wohlstand, Namensstil und Ziel konfigurieren.",
+      "aiStep2": "Prompt kopieren anklicken und den Prompt in eine KI-Konversation einfügen.",
+      "aiStep3": "Die reine JSON-Antwort der KI in die Zwischenablage kopieren.",
+      "aiStep4": "Zu Foundry zurückkehren und NSC importieren anklicken. Das aktuelle Ziel wird lokal angewendet.",
+      "aiStepLabel": "Schritt {step}",
+      "aiTitle": "KI-Arbeitsablauf",
+      "aiValidation": "Der Importer validiert JSON-Wurzelform und jeden Actor unabhängig von der angeforderten Anzahl. Eine Abweichung öffnet standardmäßig automatisch die Vorschau statt einen fatalen Fehler auszulösen; nur die ausgewählte Teilmenge wird unmittelbar vor der Erstellung erneut validiert. Kanonische Gegenstände werden über D&D-5e-Kompendien aufgelöst, erfundene Rollenspielgegenstände bleiben sichere Loot-Items.",
+      "behavior": "Verhalten",
+      "character": "Charakter",
+      "combatReadinessBody": "Jeder NPC besitzt weiterhin kampffähige Werte. Die Einstellung steuert getragene Waffen und Rüstung. Waffenlos erzwingt keine davon; höhere Stufen bleiben streng rollenbezogen, sodass ein Gelehrter oder Jurist nicht plötzlich zum schwer bewaffneten Krieger wird, während Wachen, Soldaten und Plünderer natürlich skalieren.",
+      "combatReadinessExamples": {
+        "armed": "Soldier → mehrere sinnvolle Kampfoptionen; Jurist → höchstens diskrete Selbstverteidigung.",
+        "minimal": "Guard → eine einfache Dienstwaffe; Scholar → normalerweise keine eigene Waffe.",
+        "prepared": "Scout → Hauptwaffe plus plausible Ersatzwaffe und leichte Schutzausrüstung.",
+        "standard": "Guard → praktische Waffe und übliche Schutzausrüstung für den Dienst.",
+        "weaponless": "Soldier → keine Waffe und keine Rüstung; Baker → nur Arbeitswerkzeuge."
+      },
+      "combatReadinessModes": {
+        "armed": "Maximale realistische Vorbereitung für genau diese Rolle; berufliche Obergrenzen gelten weiterhin.",
+        "minimal": "Nichtkämpfer bleiben praktisch unbewaffnet; eindeutig kämpferische Rollen erhalten mindestens eine einfache plausible Waffe.",
+        "prepared": "Fügt glaubwürdige Ersatz- oder Schutzausrüstung hinzu, wenn die Rolle dies sinnvoll zulässt.",
+        "standard": "Normale Ausrüstung der Rolle während gewöhnlicher Pflichten.",
+        "weaponless": "Keine Waffen und keine Rüstung. Berufswerkzeuge bleiben gewöhnliche Werkzeuge."
+      },
+      "combatReadinessTitle": "Kampfbereitschaft",
+      "compositionBody": "Die Zusammensetzung funktioniert unabhängig von der Gruppenlore. Völker können einheitlich, stark hauptvolkdominiert, mehrheitlich, breit gemischt oder benutzerdefiniert gewichtet sein. Die Rollenzusammensetzung verwendet das Hauptfeld Rolle als primäre Rolle und wendet dann den gewählten Verteilungsmodus auf die erlaubten Rollen an.",
+      "compositionTitle": "Volks- und Rollenzusammensetzung",
+      "control": "Steuerung",
+      "count": "Beliebige erlaubte Zahl direkt eingeben oder die häufigen Werte 1, 3, 5 und 10 verwenden.",
+      "destination": "Der Ordnerwähler erhält die Actor-Hierarchie. Er kann beliebige Unterordner, den Actors-Stamm, den konfigurierten Standard oder einen neu benannten Stammordner ansteuern.",
+      "effect": "Wirkung",
+      "example": "Beispiel",
+      "examples": "Deutliche Beispiele",
+      "filterBody": "Configure Settings bietet ein eigenes Filter-Menü. Jeder wichtige Dashboard-Katalog besitzt eine skalierbare, durchsuchbare Mehrfachauswahlliste, in der standardmäßig alle aktuellen Einträge enthalten sind; entferne Auswahlen, um Einträge auszublenden. Erweiterte String-/Regex-Erlauben- und Verbieten-Regeln bleiben verfügbar, und Filterprofile können als versionierte JSON-Dateien oder über die Zwischenablage exportiert/importiert werden.",
+      "filterControls": {
+        "advanced": {
+          "behavior": "Optionale Exact-, Contains-, Prefix-, Suffix- und Regex-Regeln zum Zulassen oder Ausschließen verfeinern die Auswahl. Ausschlussregeln haben Vorrang.",
+          "control": "Erweiterte Regeln"
+        },
+        "items": {
+          "behavior": "Alle aktuellen Katalogeinträge sind zunächst enthalten. Einen Eintrag abwählen, um ihn im zugehörigen Dashboard-Wähler auszublenden; später über Erweiterungen hinzukommende Einträge bleiben standardmäßig enthalten, solange sie nicht ausdrücklich ausgeschlossen wurden.",
+          "control": "Enthaltene Einträge"
+        },
+        "profiles": {
+          "behavior": "Die vollständige Filterkonfiguration als versioniertes JSON exportieren oder importieren, um eine fertig konfigurierte Einrichtung wiederzuverwenden oder zu übertragen.",
+          "control": "Filterprofile"
+        }
+      },
+      "filterTitle": "Dashboard-Filtereinstellungen",
+      "generationBody": "Das Dashboard verwendet dieselbe Vorgabe für deterministische lokale Erstellung und den KI-Prompt-Arbeitsablauf.",
+      "generationTitle": "Erstellungsoptionen",
+      "groupType": "Unabhängige NSCs oder einen absichtlichen Gruppentyp wählen. Gruppenvorlagen variieren Aufgaben und weisen die KI an, gemeinsame Geschichte und nützliche interne Rollen statt Kopien desselben NSCs zu erstellen.",
+      "groupsAdvanced": "Erweiterte Einstellungen steuern Familienstruktur, Zusammenhalt, Hierarchie, Beziehungsdichte, internen Konflikt, erlaubte Völker, deren Verteilung, eigene Gewichte und eine optionale gemeinsame Gruppenvorgabe.",
+      "groupsBody": "Gruppenvorlagen umfassen {groups} sowie weitere Sicherheits-, Gesetzlosen-, Reise-, Arbeits-, Glaubens- und Gemeinschaftsstrukturen. Die Anzahl bleibt editierbar; jede Vorlage bietet sinnvolle Größen-Schnellwahl.",
+      "groupsTitle": "Familien und Gruppen",
+      "habitat": "Standard ist Forest Village. Der Lebensraum verändert erwartbaren Alltag, Besitz, Reisen, Arbeit, Gerüchte und sozialen Kontext.",
+      "habitatsBody": "Eingebaute Umgebungen decken gewöhnliche Siedlungen und spezialisierte Regionen ab, darunter {habitats}. Andere Lebensräume können frei eingegeben werden.",
+      "habitatsTitle": "Lebensräume",
+      "importPreviewBody": "Die Vorschau bietet eine auswählbare Master-Liste und einen kompakten Editor. Standardmäßig sind alle NSCs ausgewählt; wähle unerwünschte Einträge ab, bearbeite einfache Felder und importiere anschließend nur die Auswahl. Weicht die eingelesene JSON-Anzahl auf oberster Ebene von der Dashboard-Anzahl ab, öffnet sich die Vorschau automatisch mit einem Hinweis, statt frühzeitig abzubrechen. GMs können Beliebige NSC-Importanzahl erlauben aktivieren, um diese automatische Prüfung für sichere externe/manuelle JSON-Arrays zu überspringen. Maximale Stapelgröße und Actor-Validierung gelten immer.",
+      "importPreviewCases": {
+        "arbitrary": {
+          "behavior": "Sichere externe oder manuelle Arrays dürfen ohne erzwungene Abweichungsvorschau fortfahren; normale Validierung bleibt aktiv.",
+          "case": "Beliebige Importanzahl erlaubt"
+        },
+        "mismatch": {
+          "behavior": "Die Vorschau öffnet automatisch mit Warnung. Alle NPCs sind zunächst ausgewählt; überzählige können vor dem Import abgewählt werden.",
+          "case": "Zurückgegebene Anzahl weicht ab"
+        },
+        "normal": {
+          "behavior": "Verwendet den konfigurierten Vorschau-Schalter. Ist die Vorschau aus, können validierte Actors direkt erstellt werden.",
+          "case": "Erwartete Anzahl stimmt"
+        },
+        "oversized": {
+          "behavior": "Sicherheitsgrenzen bleiben aktiv; die Anzahl-Einstellung umgeht niemals die konfigurierte maximale Stapelgröße.",
+          "case": "Maximale Stapelgröße überschritten"
+        }
+      },
+      "importPreviewTitle": "Importvorschau",
+      "level": "Stufe",
+      "mixExample": "Beispiel bei Anzahl 10",
+      "mixMode": "Modus",
+      "mixRounding": "Geht ein Verhältnis nicht glatt in der Gruppengröße auf, verwendet das Modul proportionale Ganzzahlquoten und vergibt übrige NPCs an die größten Nachkommareste. Dadurch bleibt die exakte Anzahl erhalten und das gewünschte Verhältnis wird möglichst genau getroffen.",
+      "mixRule": "Verteilungsregel",
+      "mode": "Modus",
+      "nameFormattingBehavior": "Wirkung",
+      "nameFormattingBody": "Name oder Stapelpräfix ist eine Überschreibung, kein zusätzliches Präfixfeld. Bei Anzahl 1 wird daraus der Actor-Name. Bei größerer Anzahl entstehen nummerierte Namen wie „Hafenwache 1“, „Hafenwache 2“ und die generierte Namensformatierung wird umgangen. Leer lassen, um Namen aus dem gewählten Namensstil und den Formatierungsoptionen zu erzeugen.",
+      "nameFormattingControl": "Steuerung",
+      "nameFormattingExample": "Beispiel",
+      "nameFormattingRows": {
+        "affixes": {
+          "behavior": "Wörtlicher fester Text vor, zwischen oder nach generierten Namensteilen. Ein Feld wirkt nur, wenn die aktive Vorlage sein Token verwendet.",
+          "control": "Präfix / Infix / Suffix",
+          "example": "Präfix Haus + Infix van + Suffix der Jüngere → Haus Elian van Mercer der Jüngere."
+        },
+        "customName": {
+          "behavior": "Überschreibt generierte Namen vollständig. Anzahl 1 verwendet den Text als Namen; Stapel hängen eine fortlaufende Nummer an.",
+          "control": "Name oder Stapelpräfix",
+          "example": "Hafenwache + Anzahl 3 → Hafenwache 1, Hafenwache 2, Hafenwache 3."
+        },
+        "location": {
+          "behavior": "Liefert wörtlichen Text für {location}; normalerweise zusammen mit der Vorlage Ort oder Vollständig.",
+          "control": "Fester Ort",
+          "example": "{first} {last} [of {location}] + Velia → Elian Mercer of Velia."
+        },
+        "nickname": {
+          "behavior": "Nie, Manchmal oder Immer erzeugt einen kurzen Spitznamen, wenn die aktive Vorlage {nickname} enthält. Optionale Vorlagenblöcke verhindern leere Anführungszeichen.",
+          "control": "Spitznamen-Häufigkeit",
+          "example": "Elian „Crow“ Mercer."
+        },
+        "preset": {
+          "behavior": "Bestimmt, wo generierter Vor- und Nachname sowie optionale Bestandteile stehen. Standard erhält das klassische Vorname-Nachname-Ergebnis.",
+          "control": "Formatvorlage",
+          "example": "Formell kann Captain Elian Mercer ergeben; Ort kann Elian Mercer of Velia ergeben."
+        },
+        "template": {
+          "behavior": "Platziert Komponenten exakt mit Tokens. Optionale [eckige-Klammer]-Blöcke entfallen, wenn ein enthaltenes Token leer ist. Wörtliche Wörter und Satzzeichen sind erlaubt.",
+          "control": "Eigene Vorlage",
+          "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
+        },
+        "title": {
+          "behavior": "Nie, Manchmal oder Immer fügt einen plausiblen Rollen-/Statustitel hinzu, wenn die Vorlage {title} enthält. Gibt es keinen sinnvollen Titel, bleibt das Token leer.",
+          "control": "Titel-Häufigkeit",
+          "example": "Sergeant Bren Holt; Lady Mira Voss."
+        }
+      },
+      "nameFormattingTitle": "Namens- und Stapelpräfix-Formatierung",
+      "nameTemplateTokens": "Vorlagen-Tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role} und {race}. {index} ist die einsbasierte NPC-Nummer im Stapel.",
+      "namingBody": "Namensstile sind breite fiktionale Klangpaletten und keine historischen oder sprachwissenschaftlichen Aussagen. Jeder Stil enthält nun deutlich mehr kreative, idiomatische Beispiele; dieselben Beispiele und Stilhinweise werden als Klangreferenz in den kopierten KI-Prompt eingebettet.",
+      "namingTitle": "Namensstile",
+      "pickersBody": "Alle großen Kataloge verwenden durchsuchbare, scrollbar Pickers. Einträge aus Ergänzungsmodulen werden mit den pro Modul in den globalen Einstellungen konfigurierten Farben farblich hervorgehoben.",
+      "pickersTitle": "Skalierbare Auswahlfelder",
+      "portraitPromptBody": "Erzeugte oder KI-importierte NPC-Actor-Sheets enthalten einen Kopfzeilen-Button, der einen knappen Porträt-Prompt für genau ein Ganzkörperbild dieses NPCs im erwachsenen Anime-Stil kopiert. Nichtmenschliche Rassen werden dabei ausdrücklich rassen-idiomatisch beschrieben, damit sie klar als eigenes Volk erkennbar sind und nicht nur wie überwiegend menschliche Figuren mit kleinen Fantasy-Zusätzen wirken.",
+      "portraitPromptTitle": "Porträt-Prompts",
+      "race": "Der eingebaute Volkswähler enthält alle Standardvölker des Player’s Handbook 2024. Ein nicht vorhandener Name kann direkt als eigenes Volk gewählt werden; gemischte Gruppen können mehrere Standard- oder eigene Völker auswählen.",
+      "raceMixBody": "Das unter Erstellung gewählte Hauptvolk ist das primäre Volk. Bei gemischten Modi legt Mögliche Völker den erlaubten Pool fest; das primäre Volk wird automatisch einbezogen. Ganzzahlige Quoten ergeben immer exakt die angeforderte Anzahl.",
+      "raceMixExamples": {
+        "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
+        "dominant": "Primär Human + Elf + Dwarf → 8 Human, 1 Elf, 1 Dwarf.",
+        "exact": "Anzahl 10: Mensch 8, Elf 1, Zwerg 1 bedeutet exakt 8 / 1 / 1.",
+        "mixed": "Im aktuellen Dashboard nicht sichtbar; nur für ältere gespeicherte Konfigurationen erhalten.",
+        "primary": "Primär Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
+        "single": "Primär Human → 10 Human.",
+        "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf."
+      },
+      "raceMixModes": {
+        "balanced": "Alle erlaubten Völker erhalten dasselbe Gewicht.",
+        "dominant": "Das primäre Volk zielt auf 85 %; die restlichen 15 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
+        "exact": "Verwendet die exakt eingegebene Ganzzahl für jedes ausgewählte Volk. Die Summe muss Anzahl entsprechen.",
+        "mixed": "Legacy-Kompatibilitätsmodus; die gespeicherte Einstellung der Volksverteilung bestimmt die tatsächliche Mischung.",
+        "primary": "Das primäre Volk zielt auf 70 %; die restlichen 30 % werden gleichmäßig auf die anderen erlaubten Völker verteilt.",
+        "single": "Jeder NPC verwendet das primäre Volk.",
+        "weighted": "Jedes erlaubte Volk verwendet sein eingetragenes relatives Gewicht."
+      },
+      "raceMixTitle": "Volkszusammensetzung im Detail",
+      "raceMixWeights": "Benutzerdefinierte Volksgewichte sind relative Verhältnisse, keine Prozentwerte. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt das Volk aus, solange mindestens ein anderes Volk ein positives Gewicht besitzt. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
+      "role": "Bestimmt die praktische Funktion des NSCs und beeinflusst bei lokaler Erstellung Attribute und Robustheit. Außerdem steuert sie KI-Inventar und Charakterisierung stark.",
+      "roleMixBody": "Die im Bereich Erzeugung gewählte Hauptrolle ist immer die primäre Rolle. Bei gemischten Modi definiert Mögliche Rollen den erlaubten Pool; die primäre Rolle wird automatisch einbezogen, auch wenn sie nicht manuell gewählt wurde. Ganzzahlige Quoten ergeben immer exakt die gewünschte Anzahl.",
+      "roleMixExample": "Beispiel mit Anzahl 10",
+      "roleMixExamples": {
+        "balanced": "Händler + Handwerker + Wache → 4 Händler, 3 Handwerker, 3 Wachen.",
+        "dominant": "Primär Händler + Handwerker + Wache → 8 Händler, 1 Handwerker, 1 Wache.",
+        "groupPreset": "Abhängig vom Gruppentyp; bei Unabhängigen NPCs mit primär Händler → 10 Händler.",
+        "primary": "Primär Händler + Handwerker + Wache → 7 Händler, 2 Handwerker, 1 Wache.",
+        "single": "Primär Händler → 10 Händler.",
+        "variants": "Primär Händler → 10 Händler mit unterschiedlichen Händlerspezialisierungen vor Wiederholungen.",
+        "weighted": "Händler 10, Handwerker 20, Wache 30 → 2 Händler, 3 Handwerker, 5 Wachen."
+      },
+      "roleMixMode": "Modus",
+      "roleMixModes": {
+        "balanced": "Alle erlaubten Rollen erhalten dasselbe Gewicht.",
+        "dominant": "Die primäre Rolle zielt auf 85 %; die übrigen 15 % werden gleichmäßig auf die anderen erlaubten Rollen verteilt.",
+        "groupPreset": "Der erste NPC verwendet die primäre Rolle; weitere NPCs folgen dem eingebauten Aufgabenzyklus des Gruppentyps. Unabhängige Stapel bleiben vollständig bei der primären Rolle.",
+        "primary": "Die primäre Rolle zielt auf 70 %; die übrigen 30 % werden gleichmäßig auf die anderen erlaubten Rollen verteilt.",
+        "single": "Jeder NPC verwendet die primäre Rolle.",
+        "variants": "Jeder NPC behält die primäre Rolle; praktische Untertypen dieser Rolle werden möglichst gleichmäßig verteilt, bevor Wiederholungen beginnen.",
+        "weighted": "Jede erlaubte Rolle verwendet ihr eingegebenes relatives Gewicht."
+      },
+      "roleMixRounding": "Wenn ein Verhältnis nicht glatt in die Stapelgröße passt, verwendet das Modul proportionale Ganzzahlquoten und vergibt übrige NPCs nach den größten Nachkommaresten. Dadurch bleibt die exakte Anzahl erhalten und das gewünschte Verhältnis wird möglichst genau getroffen.",
+      "roleMixRule": "Verteilungsregel",
+      "roleMixTitle": "Rollenzusammensetzung im Detail",
+      "roleMixWeights": "Eigene Gewichte sind relative Verhältnisse, keine Prozente. Größere Zahlen bedeuten mehr NPCs. Gewicht 0 schließt die Rolle aus, solange mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30, 1/2/3 und 100/200/300 sind gleichwertig. Sind alle Gewichte 0, fällt das Modul sicher auf gleiche Gewichte zurück.",
+      "seed": "Lokale Generierung besitzt immer einen wiederverwendbaren Seed. Bleibt Seed leer, erzeugt das Modul automatisch einen, zeigt ihn im Dashboard an und speichert ihn in Biografie und Modul-Metadaten jedes erzeugten Actors.",
+      "setting": "Einstellung",
+      "situation": "Situation",
+      "standardRacesBody": "Der eingebaute Player’s-Handbook-2024-Katalog ist: {races}. Eigene Völker bleiben über denselben Wähler möglich.",
+      "standardRacesTitle": "Standardvölker 2024",
+      "step": "Schritt",
+      "tierStyleCr": "Die Welt verwendet derzeit CR-Stufen. Jeder Standard-CR von 0 bis 30 ist wählbar und der KI-Prompt fordert exakt diesen CR an.",
+      "tierStyleNamed": "Die Welt verwendet derzeit benannte Stufen. Ordinary bis Champion bilden grobe Kompetenzbereiche; unter Einstellungen konfigurieren kann auf exakte CR-Auswahl umgestellt werden.",
+      "title": "NPC Button Hilfe",
+      "tokenDisposition": "Steuert die Token-Gesinnung des Prototyp-Tokens des erzeugten Actors; platzierte Tokens übernehmen die gewählte native Foundry-Gesinnung.",
+      "tokenDispositionBody": "Die Gesinnung ist eine Foundry-Token-Eigenschaft, die am Prototyp-Token des Actors gespeichert wird. Sie steuert die Darstellung als Verbündeter oder Gegner, nicht Werte oder Verhalten des NPCs. Das Modul unterstützt jede native Foundry-Gesinnung plus einen Standard ohne Überschreibung.",
+      "tokenDispositionExamples": {
+        "default": "Welt-/Systemstandard beibehalten.",
+        "friendly": "Verbündete Wache, Begleiter, geschützter Zivilist.",
+        "hostile": "Feindlicher Räuber, Monster, aktiver Angreifer.",
+        "neutral": "Unbeteiligter, Händler, unentschiedenes Fraktionsmitglied.",
+        "secret": "Verborgene Loyalität, unklare Bedrohung, verdeckte Fraktionsabsicht."
+      },
+      "tokenDispositionModes": {
+        "default": "Schreibt keine Gesinnungs-Überschreibung. Foundry, dnd5e oder ein anderes Modul kann seinen normalen Prototyp-Token-Standard setzen.",
+        "friendly": "Verwendet Foundrys Gesinnung Freundlich.",
+        "hostile": "Verwendet Foundrys Gesinnung Feindlich, den nativen Gegnerzustand.",
+        "neutral": "Verwendet Foundrys Gesinnung Neutral.",
+        "secret": "Verwendet Foundrys Gesinnung Geheim für Tokens, deren Gesinnung nicht wie die normalen Zustände Freundlich/Neutral/Feindlich offen dargestellt werden soll."
+      },
+      "tokenDispositionTitle": "Token-Gesinnung / Feindseligkeit",
+      "wealth": "Poor, Average, Well-Off oder Elite. Die KI skaliert damit mitgeführtes Geld, Ausrüstungsqualität, Komfortgegenstände und sichtbaren Status.",
+      "wealthDistribution": "Ändert nur die Aufteilung des festen tragbaren Vermögens zwischen Systemwährung und Wertgegenständen; der Gesamtwert bleibt unverändert.",
+      "wealthDistributionBody": "Jeder lokal erzeugte NSC trägt nun echte D&D-5e-Währung. Die Vermögensstufe setzt ein festes tragbares Vermögensbudget; diese Auswahl verteilt nur denselben Wert zwischen Münzen und tragbaren Wertgegenständen. Rollen-/Kampfausrüstung bleibt davon getrennt.",
+      "wealthDistributionExamples": {
+        "coinsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 3,75 GM in Münzen + 1,25 GM in Wertgegenständen.",
+        "fewHighValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + ein konzentrierter Wertgegenstand von 3,25 GM.",
+        "itemsHeavy": "Durchschnittlich: 5 GM Gesamtwert → etwa 1 GM in Münzen + 4 GM in Wertgegenständen.",
+        "manySmallValue": "Durchschnittlich: 5 GM Gesamtwert → etwa 1,75 GM in Münzen + mehrere Gegenstände mit zusammen 3,25 GM.",
+        "mixed": "Durchschnittlich: 5 GM Gesamtwert → etwa 2,5 GM in Münzen + 2,5 GM in Wertgegenständen."
+      },
+      "wealthDistributionModes": {
+        "coinsHeavy": "Etwa 75 % als Münzen; nur ein kleiner Rest wird zu Wertgegenständen.",
+        "fewHighValue": "Eine moderate Münzreserve; der Gegenstandsanteil konzentriert sich auf ein oder zwei wertvolle Besitztümer.",
+        "itemsHeavy": "Etwa 20 % als Münzen; der Rest wird auf mehrere Wertgegenstände verteilt.",
+        "manySmallValue": "Eine moderate Münzreserve; der Gegenstandsanteil verteilt sich auf mehrere kleinere Wertgegenstände.",
+        "mixed": "Etwa die Hälfte als Münzen und die Hälfte als tragbare Wertgegenstände."
+      },
+      "wealthDistributionTitle": "Vermögensverteilung",
+      "weaponVarietyBody": "Nur Nahkampf, Nahkampf bevorzugt, Gemischt, Fernkampf bevorzugt und Nur Fernkampf gewichten oder beschränken getragene Waffen, ohne die Berufslogik zu überschreiben. Hat ein Jurist bei Nur Fernkampf keine plausible Fernkampfwaffe, ist keine Waffe das korrekte Ergebnis.",
+      "weaponVarietyExamples": {
+        "meleeOnly": "Scout → Shortsword/Dagger möglich, kein Shortbow.",
+        "meleePreferred": "Guard → Spear oder Longsword bevorzugt; Armbrust nur als sinnvolle Reserve.",
+        "mixed": "Soldier → Nah- und Fernkampfoptionen können gemeinsam vorkommen.",
+        "rangedOnly": "Jurist ohne plausible Fernkampfoption → waffenlos statt unpassend bewaffnet.",
+        "rangedPreferred": "Scout → Shortbow bevorzugt, Messer oder Shortsword nur als Reserve."
+      },
+      "weaponVarietyModes": {
+        "meleeOnly": "Nur nahkampffähige Waffen zulassen.",
+        "meleePreferred": "Nahkampf stark bevorzugen; Fernkampf nur als plausible Ersatzoption.",
+        "mixed": "Natürliche Mischung verwenden, wenn die Rolle beide Kategorien realistisch unterstützt.",
+        "rangedOnly": "Nur echte Fernkampfwaffen zulassen; für Rollen ohne realistische Option niemals eine erfinden.",
+        "rangedPreferred": "Fernkampf stark bevorzugen; Nahkampf nur als plausible Ersatzoption."
+      },
+      "weaponVarietyTitle": "Waffenvielfalt"
+    },
+    "internalConflict": {
+      "high": "Hoch",
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "none": "Minimal"
+    },
+    "manualCopy": {
+      "content": "Vorbereiteter Text",
+      "copied": "In die Zwischenablage kopiert.",
+      "filterProfile": "Filterprofil-JSON",
+      "hint": "Automatischer Zwischenablagezugriff war nicht verfügbar. Der vorbereitete Inhalt bleibt unten erhalten; für Strg+C auswählen oder den Browser-Zwischenablagezugriff erneut versuchen.",
+      "portraitPrompt": "Porträt-Prompt",
+      "retry": "Erneut kopieren",
+      "select": "Text auswählen",
+      "selected": "Text ausgewählt. Mit Strg+C kopieren.",
+      "title": "Manuell kopieren",
+      "unavailable": "Zwischenablagezugriff ist weiterhin nicht verfügbar. Der Text ist zum manuellen Kopieren ausgewählt."
+    },
+    "nameFormatPresets": {
+      "custom": "Eigene Vorlage",
+      "formal": "Formell",
+      "full": "Vollständig",
+      "location": "Ort",
+      "nickname": "Spitzname",
+      "standard": "Standard"
+    },
+    "naming": {
+      "central": "Zentral",
+      "coastal": "Küste",
+      "frontier": "Grenzland",
+      "highland": "Hochland"
+    },
+    "namingDescriptions": {
+      "central": "Ausgewogene Stadt-und-Landstraßen-Namen mit zurückhaltenden Nachnamen; sesshaft und neutral im Klang.",
+      "coastal": "Offene Vokale und maritime Nachnamen mit Anklängen an Häfen, Fischerei und Seehandel.",
+      "frontier": "Kurze praktische Namen und Berufs- oder Siedlungsnachnamen mit Anklängen an Höfe, Gewerke, Randdörfer und neue Gemeinden.",
+      "highland": "Härtere Konsonanten und landschaftsbezogene Nachnamen mit Anklängen an Hochland, Steinorte und alte Linien."
+    },
+    "namingGroups": {
+      "regional": "Regionale Paletten"
+    },
+    "nicknameModes": {
+      "always": "Immer",
+      "never": "Nie",
+      "sometimes": "Manchmal"
+    },
+    "notifications": {
+      "clipboardUnavailable": "Automatischer Zwischenablagezugriff ist nicht verfügbar. Der vorbereitete Inhalt bleibt zum manuellen Kopieren erhalten.",
+      "complementaryColorsSaved": "Hervorhebungsfarben der Ergänzungsmodule gespeichert.",
+      "created": "{count} NSC-Actor(s) erstellt.",
+      "failed": "NSC-Erstellung fehlgeschlagen: {message}",
+      "filterImportFailed": "Import des Filterprofils fehlgeschlagen",
+      "filterProfileTooLarge": "Das Filterprofil ist zu groß zum Importieren.",
+      "filtersCopied": "JSON des Filterprofils in die Zwischenablage kopiert.",
+      "filtersExported": "Filterprofil exportiert.",
+      "filtersImported": "Filterprofil importiert und angewendet.",
+      "filtersSaved": "Dashboard-String-Filter gespeichert.",
+      "gmOnly": "Nur ein Gamemaster kann mit Runyth NPC Button NSCs erstellen.",
+      "importCancelled": "NPC-Importvorschau abgebrochen.",
+      "importFailed": "NSC-Import fehlgeschlagen: {message}",
+      "imported": "{count} NSC-Actor(s) importiert.",
+      "noneCreated": "Keine NSC-Actors wurden erstellt.",
+      "noneImported": "Keine NSC-Actors wurden importiert.",
+      "portraitPromptCopied": "Porträt-Prompt in die Zwischenablage kopiert.",
+      "promptCopied": "KI-NSC-Prompt wurde in die Zwischenablage kopiert.",
+      "promptCopyManual": "KI-Prompt vorbereitet, aber automatischer Zwischenablagezugriff ist nicht verfügbar. Der Prompt bleibt unten zum manuellen Kopieren erhalten.",
+      "promptPrepareFailed": "Vorbereitung des KI-Prompts fehlgeschlagen: {message}"
+    },
+    "preview": {
+      "ac": "RK",
+      "autoOpenedNotice": "Vorschau automatisch geöffnet",
+      "biography": "Biografie-HTML",
+      "biographyHint": "Behalte die erforderlichen beschrifteten Biografie-Abschnitte bei. Nicht unterstütztes HTML wird beim finalen Import bereinigt.",
+      "cancel": "Abbrechen",
+      "clearAll": "Alle abwählen",
+      "confirm": "Validieren und importieren",
+      "countMismatchNotice": "Im Dashboard wurden {expected} NSCs angefordert, aber das eingelesene JSON auf oberster Ebene enthält {actual}. Prüfe den Stapel und wähle NSCs ab, die nicht importiert werden sollen.",
+      "cr": "CR",
+      "editorHint": "Bearbeite nur die einfachen, spielfertigen Felder. Die komplette Nutzlast wird vor dem Import erneut validiert.",
+      "hp": "TP",
+      "hpMax": "Max. TP",
+      "includeNpc": "Diesen NSC importieren",
+      "invalid": "Bearbeitete Nutzlast ist ungültig: {message}",
+      "maximumNotice": "Die Nutzlast überschreitet die konfigurierte maximale Stapelgröße von {max}. Wähle Einträge ab, bis die Auswahl innerhalb des Limits liegt.",
+      "name": "Name",
+      "npcHeading": "NPC {current} von {count}",
+      "npcList": "Zu importierende NPCs",
+      "race": "Volk / Subtyp",
+      "reviewNotice": "Importanzahl muss geprüft werden",
+      "selectAll": "Alle auswählen",
+      "selectAtLeastOne": "Wähle mindestens einen NSC zum Import aus.",
+      "selectedCount": "{selected} von {total} NSCs ausgewählt",
+      "speed": "Laufbewegung",
+      "title": "NPC-Importvorschau",
+      "unnamedNpc": "Unbenannter NPC {number}",
+      "valid": "Bearbeitete Nutzlast ist gültig.",
+      "validSelected": "{count} ausgewählte NSC(s) haben die finale Validierung bestanden."
+    },
+    "raceComposition": {
+      "balanced": "Breit gemischt",
+      "dominant": "Starke Mehrheit des Hauptvolks",
+      "exact": "Exakte Zahlen",
+      "mixed": "Gemischte Völker (Legacy)",
+      "primary": "Mehrheit des Hauptvolks",
+      "single": "Ein Volk",
+      "weighted": "Benutzerdefinierte Volksgewichte"
+    },
+    "raceDistribution": {
+      "balanced": "Etwa gleich",
+      "dominant": "Starke Mehrheit",
+      "primary": "Primäres Volk",
+      "weighted": "Eigene Gewichte"
+    },
+    "raceGroups": {
+      "custom": "Eigene Völker",
+      "phb2024": "Player’s Handbook 2024"
+    },
+    "races": {
+      "aasimar": "Aasimar",
+      "custom": "Benutzerdefiniert",
+      "dragonborn": "Drachenblütiger",
+      "dwarf": "Zwerg",
+      "elf": "Elf",
+      "gnome": "Gnom",
+      "goliath": "Goliath",
+      "halfling": "Halbling",
+      "human": "Mensch",
+      "orc": "Ork",
+      "tiefling": "Tiefling"
     },
     "relationshipDensity": {
       "light": "Leicht",
       "rich": "Reichhaltig",
       "tangled": "Verflochten"
     },
-    "internalConflict": {
-      "none": "Minimal",
-      "low": "Niedrig",
-      "medium": "Mittel",
-      "high": "Hoch"
-    },
-    "raceComposition": {
-      "single": "Ein Volk",
-      "mixed": "Gemischte Völker (Legacy)",
-      "dominant": "Starke Mehrheit des Hauptvolks",
-      "primary": "Mehrheit des Hauptvolks",
-      "balanced": "Breit gemischt",
-      "weighted": "Benutzerdefinierte Volksgewichte",
-      "exact": "Exakte Zahlen"
-    },
-    "raceDistribution": {
-      "balanced": "Etwa gleich",
-      "primary": "Primäres Volk",
-      "dominant": "Starke Mehrheit",
-      "weighted": "Eigene Gewichte"
-    },
-    "filters": {
-      "title": "NPC-Button-String-Filter",
-      "intro": "Verwende die Auswahllisten für gewöhnliche Filterung. Standardmäßig sind alle aktuellen Einträge ausgewählt; entferne die Auswahl eines Eintrags, um ihn aus dem entsprechenden Dashboard-Picker auszublenden. Erweiterte Erlauben-/Verbieten-String- und Regex-Regeln bleiben unter jeder Liste verfügbar.",
-      "categories": {
-        "roles": "Rollen",
-        "races": "Völker",
-        "namingStyles": "Namensstile",
-        "habitats": "Habitate",
-        "groupTypes": "Gruppentypen",
-        "folders": "Actor-Ordner"
-      },
-      "placeholders": {
-        "roles": "Filtert sichtbare Rolleneinträge nach ID, Bezeichnung, Beschreibung oder Suchtext.",
-        "races": "Filtert sichtbare Völker, einschließlich Erweiterungs-Völker und benutzerdefinierter Picker-Vorschläge.",
-        "namingStyles": "Legt fest, welche Namenspaletten im Dashboard ausgewählt werden dürfen.",
-        "habitats": "Beschränkt oder fokussiert die Umgebungs-Presets im Habitat-Picker.",
-        "groupTypes": "Erlaubt oder verbirgt bestimmte Gruppen-Archetypen wie Familien oder Wachpatrouillen.",
-        "folders": "Legt fest, welche Actor-Ordner-Ziele im Ziel-Picker erscheinen."
-      },
-      "fields": {
-        "exactAllow": "Exakte Treffer erlauben",
-        "exactDeny": "Exakte Treffer verbieten",
-        "containsAllow": "Erlauben, wenn enthält",
-        "containsDeny": "Verbieten, wenn enthält",
-        "prefixAllow": "Erlauben, wenn beginnt mit",
-        "prefixDeny": "Verbieten, wenn beginnt mit",
-        "suffixAllow": "Erlauben, wenn endet mit",
-        "suffixDeny": "Verbieten, wenn endet mit",
-        "regexAllow": "Regex erlauben",
-        "regexDeny": "Regex verbieten",
-        "caseSensitive": "Groß-/Kleinschreibung beachten",
-        "normalizeDiacritics": "Akzente / Diakritika normalisieren",
-        "trimWhitespace": "Umgebende Leerzeichen trimmen"
-      },
-      "actions": {
-        "exportFile": "JSON exportieren",
-        "copyJson": "JSON kopieren",
-        "importFile": "JSON importieren",
-        "importClipboard": "Zwischenablage importieren"
-      },
-      "itemPicker": {
-        "label": "Enthaltene Einträge",
-        "hint": "Standardmäßig sind alle verfügbaren Einträge ausgewählt. Entferne einzelne Auswahlen, um sie aus dem Dashboard auszuschließen. Die Liste ist durchsuchbar, hierarchisch, scrollbar und für große Kataloge virtualisiert.",
-        "placeholder": "Keine Einträge ausgewählt",
-        "selectAll": "Alle auswählen",
-        "clear": "Alle abwählen"
-      },
-      "advancedRules": "Erweiterte String- und Regex-Regeln"
-    },
-    "combatReadiness": {
-      "weaponless": "Waffenlos",
-      "minimal": "Minimal",
-      "standard": "Standard",
-      "prepared": "Vorbereitet",
-      "armed": "Stark vorbereitet"
-    },
     "roleComposition": {
+      "balanced": "Ausgewogen gemischte Rollen",
+      "dominant": "Starke Mehrheit der Hauptrolle",
+      "groupPreset": "Gruppengerechte Rollen",
+      "primary": "Mehrheit der Hauptrolle",
       "single": "Einzelne Rolle",
       "variants": "Rollenvarianten",
-      "groupPreset": "Gruppengerechte Rollen",
-      "balanced": "Ausgewogen gemischte Rollen",
-      "primary": "Mehrheit der Hauptrolle",
-      "dominant": "Starke Mehrheit der Hauptrolle",
       "weighted": "Benutzerdefinierte Rollengewichte"
     },
-    "preview": {
-      "title": "NPC-Importvorschau",
-      "npcHeading": "NPC {current} von {count}",
-      "editorHint": "Bearbeite nur die einfachen, spielfertigen Felder. Die komplette Nutzlast wird vor dem Import erneut validiert.",
-      "npcList": "Zu importierende NPCs",
-      "unnamedNpc": "Unbenannter NPC {number}",
-      "name": "Name",
-      "race": "Volk / Subtyp",
-      "cr": "CR",
-      "ac": "RK",
-      "hp": "TP",
-      "hpMax": "Max. TP",
-      "speed": "Laufbewegung",
-      "biography": "Biografie-HTML",
-      "biographyHint": "Behalte die erforderlichen beschrifteten Biografie-Abschnitte bei. Nicht unterstütztes HTML wird beim finalen Import bereinigt.",
-      "cancel": "Abbrechen",
-      "confirm": "Validieren und importieren",
-      "valid": "Bearbeitete Nutzlast ist gültig.",
-      "invalid": "Bearbeitete Nutzlast ist ungültig: {message}",
-      "autoOpenedNotice": "Vorschau automatisch geöffnet",
-      "reviewNotice": "Importanzahl muss geprüft werden",
-      "countMismatchNotice": "Im Dashboard wurden {expected} NSCs angefordert, aber das eingelesene JSON auf oberster Ebene enthält {actual}. Prüfe den Stapel und wähle NSCs ab, die nicht importiert werden sollen.",
-      "maximumNotice": "Die Nutzlast überschreitet die konfigurierte maximale Stapelgröße von {max}. Wähle Einträge ab, bis die Auswahl innerhalb des Limits liegt.",
-      "selectedCount": "{selected} von {total} NSCs ausgewählt",
-      "includeNpc": "Diesen NSC importieren",
-      "selectAll": "Alle auswählen",
-      "clearAll": "Alle abwählen",
-      "selectAtLeastOne": "Wähle mindestens einen NSC zum Import aus.",
-      "validSelected": "{count} ausgewählte NSC(s) haben die finale Validierung bestanden."
+    "roleGroups": {
+      "authority": "Autorität & Status",
+      "everyday": "Alltag & Handel",
+      "learned": "Gelehrte & Spezialisten",
+      "martial": "Kampf & Sicherheit"
+    },
+    "roles": {
+      "acolyte": "Akolyth",
+      "artisan": "Handwerker",
+      "bruiser": "Schläger",
+      "civilian": "Zivilist",
+      "guard": "Wache",
+      "leader": "Anführer",
+      "merchant": "Händler",
+      "noble": "Adliger",
+      "scholar": "Gelehrter",
+      "scout": "Späher",
+      "soldier": "Soldat",
+      "specialist": "Spezialist"
+    },
+    "settings": {
+      "complementaryModuleColors": {
+        "hint": "Konfiguriere modulweise Farben für Katalogeinträge, die von Ergänzungsmodulen beigesteuert werden.",
+        "label": "Farben konfigurieren",
+        "name": "Hervorhebungsfarben für Ergänzungsmodule"
+      },
+      "complementaryModuleColorsStorage": {
+        "hint": "Interner Speicher für Hervorhebungsfarben von Ergänzungsmodulen.",
+        "name": "Speicher für Hervorhebungsfarben von Ergänzungsmodulen"
+      },
+      "debug": {
+        "hint": "Schreibt knappe Diagnosemeldungen in die Browser-Konsole. Standardmäßig deaktiviert.",
+        "name": "Debug-Protokollierung"
+      },
+      "defaultFolder": {
+        "hint": "Actor-Stammordner, der verwendet wird, wenn im Dashboard das konfigurierte Standardziel gewählt ist. Leer lassen für den Actors-Stamm.",
+        "name": "Standardordner für NSCs"
+      },
+      "filters": {
+        "hint": "Öffnet erweiterte Erlauben-/Verbieten-Filter für pickerbasierte Dashboard-Felder wie Rollen, Völker, Habitate, Gruppentypen, Namensstile und Actor-Ordner.",
+        "label": "Filter konfigurieren",
+        "name": "Dashboard-String-Filter"
+      },
+      "filtersStorage": {
+        "hint": "Interner JSON-Speicher für erweiterte Dashboard-String-Filter.",
+        "name": "Speicher für Dashboard-String-Filter"
+      },
+      "ignoreImportCountMismatch": {
+        "hint": "Wenn aktiviert, dürfen importierte JSON-Arrays eine andere Anzahl an NSCs als der Dashboard-Wert Anzahl enthalten, ohne automatisch eine Prüfung zu erzwingen. Die konfigurierte maximale Stapelgröße und alle Actor-Validierungen gelten weiterhin.",
+        "name": "Beliebige NSC-Importanzahl erlauben"
+      },
+      "maxBatch": {
+        "hint": "Maximale Anzahl an NSC-Actors, die eine Generierungs- oder Importaktion erstellen darf.",
+        "name": "Maximale Stapelgröße"
+      },
+      "tierStyle": {
+        "choices": {
+          "cr": "Challenge Rating (CR)",
+          "named": "Benannte Stufen"
+        },
+        "hint": "Legt fest, ob NPC Button benannte Kompetenzstufen oder exakte D&D-5e-Challenge-Ratings verwendet. CR-Modus bietet jeden Standard-CR von 0 bis 30.",
+        "name": "Tier-Stil"
+      }
+    },
+    "tierGroups": {
+      "cr11to20": "CR 11–20",
+      "cr1to10": "CR 1–10",
+      "cr21to30": "CR 21–30",
+      "fractional": "Bruch-CR",
+      "named": "Benannte Stufen"
+    },
+    "tiers": {
+      "champion": "Champion",
+      "elite": "Elite",
+      "ordinary": "Gewöhnlich",
+      "trained": "Ausgebildet",
+      "veteran": "Veteran"
+    },
+    "titleModes": {
+      "always": "Immer",
+      "never": "Nie",
+      "sometimes": "Manchmal"
+    },
+    "tokenDispositions": {
+      "default": "Foundry-Standard",
+      "friendly": "Freundlich",
+      "hostile": "Feindlich (Gegner)",
+      "neutral": "Neutral",
+      "secret": "Geheim"
+    },
+    "ui": {
+      "actorsRoot": "Actors-Stamm",
+      "advancedGroupSettings": "Erweiterte Gruppeneinstellungen",
+      "ageMax": "Höchstalter",
+      "ageMin": "Mindestalter",
+      "ageRange": "Altersbereich",
+      "ageRangeHint": "Wähle den Lebensphasen-Bereich für den Stapel. Benannte Bereiche skalieren je Rasse; Exakter Jahresbereich verwendet wörtliche Alterszahlen.",
+      "ageSpread": "Altersverteilung der Gruppe",
+      "ageSpreadHint": "Steuert, wie Alter innerhalb des gewählten Bereichs verteilt werden, ohne den rassenpassenden Bereich selbst zu verändern.",
+      "aiIntro": "Einen ausführlichen strikten Prompt in eine beliebige KI-Konversation kopieren, deren JSON-Antwort kopieren und anschließend in das oben gewählte Ziel importieren.",
+      "aiTitle": "KI-Arbeitsablauf",
+      "challengeRating": "Challenge Rating",
+      "challengeRatingHint": "Jeden Standard-CR aus 0, 1/8, 1/4, 1/2 und 1 bis 30 wählen.",
+      "choosePossibleRaces": "Mögliche Völker wählen…",
+      "choosePossibleRoles": "Mögliche Rollen wählen…",
+      "combatReadiness": "Kampfbereitschaft",
+      "combatReadinessHint": "Steuert, wie stark der NPC relativ zu seiner Rolle bewaffnet ist. Waffenlos bedeutet immer keine Waffen und keine Rüstung; höhere Stufen bleiben auf das beschränkt, was Beruf und Situation realistisch rechtfertigen.",
+      "compositionIntro": "Steuert die Verteilung von Volk und Rolle über beliebige Mehrfach-Erzeugungen, unabhängig davon, ob die NPCs eine bewusste Gruppe bilden.",
+      "compositionTitle": "Zusammensetzung des Stapels",
+      "configuredDefault": "Konfigurierter Standard",
+      "configuredDefaultNamed": "Konfigurierter Standard — {name}",
+      "configuredDefaultRoot": "Konfigurierter Standard — Actors-Stamm",
+      "copyPortraitPrompt": "Porträt-Prompt kopieren",
+      "copyPrompt": "Prompt kopieren",
+      "copyingPrompt": "KI-Prompt wird vorbereitet…",
+      "count": "Anzahl",
+      "countRange": "1–{max}",
+      "createLocally": "Lokal erstellen",
+      "createRootFolder": "Neuen Actor-Stammordner mit diesem Namen erstellen oder wiederverwenden",
+      "creating": "NSCs werden erstellt…",
+      "customName": "Name oder Stapelpräfix",
+      "customNameHint": "Bei Anzahl 1 wird dies zum Actor-Namen. Bei Anzahl größer als 1 wird daraus ein nummeriertes Stapelpräfix wie „Hafenwache 1“, „Hafenwache 2“. Leer lassen, um generierte Namen und die Formatierungsoptionen darunter zu verwenden.",
+      "customNamePlaceholder": "Leer lassen für generierte Namen",
+      "customRace": "Eigenes Volk",
+      "destination": "Ziel",
+      "destinationFolder": "Actor-Ordner",
+      "destinationHint": "Die vollständige Actor-Ordnerhierarchie durchsuchen, Actors-Stamm oder Standardziel wählen oder einen neuen Stammordnernamen suchen und auswählen.",
+      "destinationIntro": "Legt fest, wo lokal erzeugte oder KI-importierte Actors erstellt werden.",
+      "destinationMissing": "Actor-Ordner fehlt",
+      "dialogTitle": "NPC Button",
+      "distributeEvenly": "Gleichmäßig verteilen",
+      "done": "Fertig",
+      "familyStructure": "Familienstruktur",
+      "femaleCount": "Weiblich",
+      "genderComposition": "Geschlechterverteilung",
+      "genderCompositionHint": "Legt fest, wie männliche und weibliche NSC innerhalb des erzeugten Stapels verteilt werden.",
+      "generationTitle": "NSC-Erstellung",
+      "groupBrief": "Zusätzliche Gruppenvorgabe",
+      "groupBriefHint": "Wird als gemeinsamer Kontext an den KI-Prompt übergeben. Auf Fakten beschränken, die mehrere NSCs betreffen sollen.",
+      "groupBriefPlaceholder": "Optional: lokale Fehde, Familienbetrieb, Auftraggeber, Krise, Tabu, Ziel, gemeinsames Vorhaben…",
+      "groupCohesion": "Zusammenhalt",
+      "groupConfigurationIntro": "Erweiterte Optionen für Beziehungen, interne Struktur, gemischte Völker und gemeinsamen Gruppenkontext.",
+      "groupConfigurationTitle": "Gruppenzusammenstellung",
+      "groupHierarchy": "Hierarchie",
+      "groupType": "Erstellungsmodus / Gruppentyp",
+      "groupTypeHint": "Unabhängige NSCs oder eine zusammenhängende Familie, Patrouille, Plünderergruppe, Besatzung, Karawane, Rat und weitere Gruppen erstellen.",
+      "habitat": "Lebensraum",
+      "habitatHint": "Umgebung und Siedlungskontext wählen, die Alltag, Besitz, Reisen und soziale Annahmen prägen. Jeder andere Lebensraum kann direkt eingetippt werden.",
+      "help": "Hilfe",
+      "importNpc": "NSC importieren",
+      "importing": "Gegenstände werden geprüft und NSCs importiert…",
+      "internalConflict": "Interner Konflikt",
+      "intro": "NSCs einmal konfigurieren und danach lokal erzeugen oder dieselbe Vorgabe für einen KI-generierten Foundry-Payload verwenden.",
+      "maleCount": "Männlich",
+      "manualPaste": "Zwischenablage-Fallback / manuelles Einfügen",
+      "manualPasteLabel": "KI-JSON-Payload",
+      "manualPastePlaceholder": "JSON-Antwort hier nur einfügen, wenn der Browser das Lesen der Zwischenablage blockiert.",
+      "nameFormatPreset": "Formatvorlage",
+      "nameFormattingHint": "Gilt nur, wenn Name oder Stapelpräfix leer ist. Vorlagen ordnen generierte Namensteile an; feste Präfix-/Infix-/Suffix-/Ortsangaben erscheinen nur dort, wo die gewählte Vorlage sie referenziert.",
+      "nameFormattingTitle": "Namensformatierung",
+      "nameInfix": "Festes Infix",
+      "nameInfixPlaceholder": "z. B. van, de, ap",
+      "nameLocation": "Fester Ort",
+      "nameLocationPlaceholder": "z. B. Velia, Schwarzwasser",
+      "namePrefix": "Festes Präfix",
+      "namePrefixPlaceholder": "z. B. Bruder, Alt, Haus",
+      "nameSuffix": "Festes Suffix",
+      "nameSuffixPlaceholder": "z. B. der Jüngere, III",
+      "nameTemplate": "Eigene Namensvorlage",
+      "nameTemplateHint": "Verfügbare Tokens: {tokens}. Optionalen Text in [eckige Klammern] setzen; der gesamte Block entfällt, wenn eines seiner Tokens leer ist.",
+      "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
+      "namingStyle": "Namensstil",
+      "namingStyleHint": "Namenspaletten durchsuchen. Das Hilfefenster zeigt deutlich unterschiedliche Beispiele für jeden Stil.",
+      "nicknameMode": "Spitznamen-Häufigkeit",
+      "noMatchingOptions": "Keine passenden Optionen.",
+      "noSelectedRaces": "Keine Völker ausgewählt.",
+      "openLastActor": "Erstellte Actors zur Prüfung öffnen",
+      "openLastActorHint": "Öffnet bis zu 10 Actors. Bis zu drei sind nebeneinander sichtbar; weitere liegen dahinter, sodass beim Schließen des oberen Fensters das nächste erscheint.",
+      "portraitPromptShort": "Porträt",
+      "possibleRaces": "Mögliche Völker",
+      "possibleRacesHint": "Beliebig viele erlaubte Völker durchsuchen und wählen. Eigene Völker können über die Suche hinzugefügt werden.",
+      "possibleRoles": "Mögliche Rollen",
+      "possibleRolesHint": "Rollen durchsuchen und auswählen, die in einer gemischten Gruppe vorkommen dürfen. Die Hauptrolle wird automatisch einbezogen und ist immer die primäre Rolle.",
+      "preparedPrompt": "Vorbereiteter KI-Prompt",
+      "preparedPromptHint": "Der erzeugte Prompt bleibt hier erhalten. Wenn der automatische Zwischenablagezugriff blockiert ist oder Foundry nicht fokussiert ist, kann der Text ausgewählt oder das Kopieren erneut versucht werden.",
+      "previewImport": "Vor Import prüfen und bearbeiten",
+      "previewImportHint": "Öffnet eine schnelle Vorschau, in der NSCs an-/abgewählt und einfache Felder bearbeitet werden können, bevor finale Validierung und Actor-Erstellung erfolgen. Abweichende Anzahlen öffnen diese Vorschau automatisch, sofern die globale Einstellung für anzahlunabhängige Importe nicht aktiviert ist.",
+      "primaryRoleNote": "Primäre Rolle: {role}. Das ist die oben im Hauptfeld Rolle gewählte Rolle.",
+      "quickCounts": "Häufige Anzahlen",
+      "race": "Volk",
+      "raceComposition": "Volkszusammensetzung",
+      "raceCompositionHint": "Das Hauptfeld Volk gilt bei einer einheitlichen Gruppe für alle oder bei Mischung als primäres Volk.",
+      "raceDistribution": "Verteilung der Völker",
+      "raceDistributionHint": "Steuert, wie stark das primäre Volk die erzeugte Gruppe dominiert.",
+      "raceExactAssignedInvalid": "{assigned} von {target} zugewiesen. Verbleibend: {remaining}. Zahlen anpassen oder gleichmäßig verteilen.",
+      "raceExactAssignedValid": "{assigned} von {target} zugewiesen. Die exakte Summe ist gültig.",
+      "raceExactCounts": "Exakte Völkerzahlen",
+      "raceExactCountsHint": "Lege die exakte Anzahl an NSC für jedes ausgewählte Volk fest. Die zugewiesene Summe muss Anzahl entsprechen.",
+      "raceHint": "Vorgegebene Völker durchsuchen. Für ein anderes Volk dessen Namen in die Suche schreiben und den benutzerdefinierten Eintrag wählen.",
+      "raceWeights": "Eigene Gewichtung",
+      "raceWeightsHint": "Relative Gewichte; sie müssen nicht zusammen 100 ergeben.",
+      "relationshipDensity": "Beziehungsdichte",
+      "retryPromptCopy": "Erneut kopieren",
+      "role": "Rolle",
+      "roleComposition": "Rollenzusammensetzung",
+      "roleCompositionHint": "Die oben gewählte Hauptrolle ist immer die primäre Rolle. Gemischte Modi verteilen nur auf die möglichen Rollen und behalten die exakte Stapelgröße bei.",
+      "roleHint": "Die hierarchische Rollenliste durchsuchen oder durchblättern. Sie ist virtualisiert und bleibt auch bei sehr vielen Einträgen reaktionsschnell.",
+      "roleMixPreview": "{count} NPCs → {distribution}",
+      "roleWeights": "Benutzerdefinierte Rollengewichte",
+      "roleWeightsHint": "Relative nichtnegative Gewichte von 0 bis 1000, keine Prozente. Größere Zahlen erhalten mehr NPCs; 0 schließt die Rolle aus, sofern mindestens eine andere Rolle ein positives Gewicht hat. 10/20/30 entspricht 1/2/3.",
+      "searchOptions": "Optionen durchsuchen…",
+      "searchSelectedRaces": "Ausgewählte Völker durchsuchen …",
+      "seed": "Seed",
+      "seedHint": "Lokale Erstellung mit denselben Optionen und demselben Seed reproduziert dieselben Daten.",
+      "seedPlaceholder": "Optionaler reproduzierbarer Seed für lokale Erstellung",
+      "selectPrompt": "Prompt-Text auswählen",
+      "sidebarButton": "NPC Button",
+      "suggestedGroupSizes": "Empfohlene Größen",
+      "suggestedGroupSizesHint": "Nur Schnellwahl; Anzahl bleibt frei editierbar.",
+      "tier": "Stufe",
+      "tierHint": "Benannte Kompetenzstufe. Unter Einstellungen konfigurieren kann stattdessen exakte CR-Auswahl aktiviert werden.",
+      "titleMode": "Titel-Häufigkeit",
+      "tokenDisposition": "Token-Gesinnung",
+      "tokenDispositionHint": "Setzt die Token-Gesinnung des Prototyp-Tokens des erzeugten Actors. Platzierte Tokens übernehmen sie. Foundry-Standard lässt den Wert unangetastet, damit Foundry, dnd5e oder ein anderes Modul den üblichen Standard setzen kann.",
+      "useCustomHabitat": "Diesen Text als eigenen Lebensraum verwenden",
+      "useCustomRace": "Diesen Text als eigenes Volk verwenden",
+      "wealth": "Wohlstand",
+      "wealthDistribution": "Vermögensverteilung",
+      "wealthDistributionHint": "Bestimmt, wie das feste tragbare Vermögen zwischen echten Münzen und mitgeführten Wertgegenständen verteilt wird. Der Gesamtwert bleibt gleich.",
+      "wealthHint": "Beeinflusst KI-generiertes Geld, Qualität der Ausrüstung, persönlichen Besitz und Statusgegenstände.",
+      "weaponVariety": "Waffenvielfalt",
+      "weaponVarietyHint": "Steuert, ob realistische rollenpassende Waffen Nahkampf, Fernkampf oder eine Mischung bevorzugen. Reine Modi erfinden niemals eine unplausible Waffe nur für die Kategorie."
+    },
+    "wealth": {
+      "average": "Durchschnittlich",
+      "elite": "Elite",
+      "poor": "Arm",
+      "wellOff": "Wohlhabend"
+    },
+    "wealthDistribution": {
+      "coinsHeavy": "Münzbetont",
+      "fewHighValue": "Wenige wertvolle Gegenstände",
+      "itemsHeavy": "Gegenstandsbetont",
+      "manySmallValue": "Viele kleinere Wertgegenstände",
+      "mixed": "Gemischt"
     },
     "weaponVariety": {
       "meleeOnly": "Nur Nahkampf",
       "meleePreferred": "Nahkampf bevorzugt",
       "mixed": "Gemischt",
-      "rangedPreferred": "Fernkampf bevorzugt",
-      "rangedOnly": "Nur Fernkampf"
-    },
-    "genderComposition": {
-      "random": "Zufällig",
-      "balanced": "Ausgeglichen",
-      "mostlyMale": "Überwiegend männlich",
-      "mostlyFemale": "Überwiegend weiblich",
-      "exact": "Exakte Anzahl"
-    },
-    "manualCopy": {
-      "title": "Manuell kopieren",
-      "content": "Vorbereiteter Text",
-      "hint": "Automatischer Zwischenablagezugriff war nicht verfügbar. Der vorbereitete Inhalt bleibt unten erhalten; für Strg+C auswählen oder den Browser-Zwischenablagezugriff erneut versuchen.",
-      "select": "Text auswählen",
-      "retry": "Erneut kopieren",
-      "selected": "Text ausgewählt. Mit Strg+C kopieren.",
-      "copied": "In die Zwischenablage kopiert.",
-      "unavailable": "Zwischenablagezugriff ist weiterhin nicht verfügbar. Der Text ist zum manuellen Kopieren ausgewählt.",
-      "portraitPrompt": "Porträt-Prompt",
-      "filterProfile": "Filterprofil-JSON"
-    },
-    "wealthDistribution": {
-      "itemsHeavy": "Gegenstandsbetont",
-      "mixed": "Gemischt",
-      "coinsHeavy": "Münzbetont",
-      "fewHighValue": "Wenige wertvolle Gegenstände",
-      "manySmallValue": "Viele kleinere Wertgegenstände"
-    },
-    "nameFormatPresets": {
-      "standard": "Standard",
-      "nickname": "Spitzname",
-      "formal": "Formell",
-      "location": "Ort",
-      "full": "Vollständig",
-      "custom": "Eigene Vorlage"
-    },
-    "nicknameModes": {
-      "never": "Nie",
-      "sometimes": "Manchmal",
-      "always": "Immer"
-    },
-    "titleModes": {
-      "never": "Nie",
-      "sometimes": "Manchmal",
-      "always": "Immer"
-    },
-    "complementaryColors": {
-      "title": "Hervorhebungsfarben für Ergänzungsmodule",
-      "intro": "Lege eine Hervorhebungsfarbe für Einträge fest, die von Ergänzungsmodulen beigesteuert werden. Einträge desselben Moduls teilen sich dieselbe Farbe in Dashboard-Pickern und Filterlisten.",
-      "empty": "Das reine Installieren oder Aktivieren eines Ergänzungsmoduls reicht für die Farbzuordnung nicht aus. Es muss Katalogeinträge über die NPC-Button-Erweiterungs-API registrieren und dabei sein Quellmodul angeben.",
-      "colorLabel": "Hervorhebungsfarbe",
-      "resetOne": "Zurücksetzen",
-      "resetAll": "Alles auf Standard zurücksetzen",
-      "savedOnly": "Nur gespeicherte Farbe; aktuell sind keine aktiven Beiträge registriert.",
-      "kinds": {
-        "races": "Rassen",
-        "roles": "Rollen",
-        "namingStyles": "Namensstile",
-        "habitats": "Lebensräume",
-        "groupTypes": "Gruppentypen"
-      },
-      "unattributedTitle": "Katalogerweiterungen ohne Quellmodul-Metadaten erkannt",
-      "unattributedBody": "Diese Einträge sind registriert und nutzbar, NPC Button kann sie jedoch nicht nach Farben gruppieren, weil das registrierende Modul sich nicht über sourceModuleId identifiziert hat. Das bedeutet normalerweise, dass das Ergänzungsmodul einen Kompatibilitäts-Patch benötigt.",
-      "dependenciesTitle": "Erkannte Abhängigkeiten von Ergänzungsmodulen",
-      "dependenciesBody": "Diese installierten Module deklarieren Runyth NPC Button als Abhängigkeit oder Empfehlung, aber von ihnen sind derzeit keine farblich zugeordneten Katalogeinträge registriert.",
-      "statusEnabled": "aktiviert",
-      "statusDisabled": "deaktiviert",
-      "emptyTitle": "Keine ergänzende Katalogintegration erkannt"
-    },
-    "ageRange": {
-      "contextual": "Kontextabhängig",
-      "youngAdult": "Junge Erwachsene",
-      "adult": "Erwachsene",
-      "mature": "Reife Erwachsene",
-      "older": "Ältere Erwachsene",
-      "mixedGenerations": "Gemischte Generationen",
-      "exactRange": "Exakter Jahresbereich"
-    },
-    "ageSpread": {
-      "natural": "Natürlich/Zufällig",
-      "even": "Gleichmäßig verteilt",
-      "clustered": "Ähnliche Alter",
-      "younger": "Jünger gewichtet",
-      "older": "Älter gewichtet"
-    },
-    "tokenDispositions": {
-      "default": "Foundry-Standard",
-      "friendly": "Freundlich",
-      "neutral": "Neutral",
-      "hostile": "Feindlich (Gegner)",
-      "secret": "Geheim"
+      "rangedOnly": "Nur Fernkampf",
+      "rangedPreferred": "Fernkampf bevorzugt"
     }
   }
 }

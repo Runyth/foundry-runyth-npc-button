@@ -1,880 +1,880 @@
 {
   "runyth-npc-button": {
-    "settings": {
-      "debug": {
-        "name": "Debug logging",
-        "hint": "Write concise diagnostic messages to the browser console. Disabled by default."
-      },
-      "defaultFolder": {
-        "name": "Default NPC folder",
-        "hint": "Root Actor folder used when the dashboard is set to the configured default destination. Leave empty to use the Actors root."
-      },
-      "maxBatch": {
-        "name": "Maximum batch size",
-        "hint": "Maximum number of NPC Actors that one generation or import action may create."
-      },
-      "tierStyle": {
-        "name": "Tier style",
-        "hint": "Choose whether NPC Button uses its named competence tiers or exact D&D 5e Challenge Ratings. CR mode exposes every standard CR from 0 through 30.",
-        "choices": {
-          "named": "Named tiers",
-          "cr": "Challenge Rating (CR)"
-        }
-      },
-      "filters": {
-        "name": "Dashboard string filters",
-        "hint": "Open advanced allow/deny filters for picker-driven dashboard fields such as Roles, Races, Habitats, Group types, Naming styles, and Actor folders.",
-        "label": "Configure filters"
-      },
-      "filtersStorage": {
-        "name": "Dashboard string filters storage",
-        "hint": "Internal JSON storage for advanced dashboard string filters."
-      },
-      "ignoreImportCountMismatch": {
-        "name": "Allow arbitrary NPC import counts",
-        "hint": "When enabled, imported JSON arrays may contain a different number of NPCs than the dashboard Count without forcing review. The configured maximum batch size and all Actor validation still apply."
-      },
-      "complementaryModuleColors": {
-        "name": "Complementary module highlight colors",
-        "hint": "Configure per-module colors for catalog entries contributed by complementary modules.",
-        "label": "Configure colors"
-      },
-      "complementaryModuleColorsStorage": {
-        "name": "Complementary module highlight colors storage",
-        "hint": "Internal storage for complementary module highlight colors."
-      }
+    "ageRange": {
+      "adult": "Adults",
+      "contextual": "Contextual",
+      "exactRange": "Exact year range",
+      "mature": "Mature adults",
+      "mixedGenerations": "Mixed generations",
+      "older": "Older adults",
+      "youngAdult": "Young adults"
     },
-    "ui": {
-      "sidebarButton": "NPC Button",
-      "dialogTitle": "NPC Button",
-      "help": "Help",
-      "generationTitle": "NPC generation",
-      "intro": "Configure NPCs once, then create them locally or use the same intent for an AI-generated Foundry payload.",
-      "count": "Count",
-      "countRange": "1–{max}",
-      "quickCounts": "Common counts",
-      "role": "Role",
-      "roleHint": "Search or browse the hierarchical role catalog. The picker is virtualized so it stays responsive as the catalog grows.",
-      "tier": "Tier",
-      "tierHint": "Named competence tier. Change Tier style in Configure Settings to use exact CR values instead.",
-      "challengeRating": "Challenge Rating",
-      "challengeRatingHint": "Choose any standard D&D 5e CR from 0, 1/8, 1/4, 1/2, and 1 through 30.",
-      "race": "Race",
-      "raceHint": "Search or browse preset races. To use any other race, type its name into the picker search and select the custom entry.",
-      "customRace": "Custom race",
-      "useCustomRace": "Use this text as a custom Race",
-      "namingStyle": "Naming style",
-      "namingStyleHint": "Search or browse naming palettes. The Help window shows clearly distinct examples for each style.",
-      "wealth": "Wealth",
-      "wealthHint": "Influences AI-generated money, equipment quality, personal possessions, and status items.",
-      "customName": "Name or batch prefix",
-      "customNamePlaceholder": "Leave blank for generated names",
-      "seed": "Seed",
-      "seedPlaceholder": "Optional reproducible seed for local generation",
-      "seedHint": "Local generation with the same options and seed reproduces the same generated data.",
-      "destination": "Destination",
-      "destinationIntro": "Choose where locally generated or AI-imported Actors are created.",
-      "destinationFolder": "Actor folder",
-      "destinationHint": "Browse the full Actor-folder hierarchy, choose the Actors root or configured default, or type a new root-folder name into search and select it.",
-      "actorsRoot": "Actors root",
-      "configuredDefault": "Configured default",
-      "configuredDefaultNamed": "Configured default — {name}",
-      "configuredDefaultRoot": "Configured default — Actors root",
-      "destinationMissing": "Missing Actor folder",
-      "createRootFolder": "Create or reuse a new root Actor folder with this name",
-      "searchOptions": "Search options…",
-      "noMatchingOptions": "No matching options.",
-      "openLastActor": "Open created Actors for review",
-      "openLastActorHint": "Opens up to 10 Actors. Up to three are visible side-by-side; later Actors are stacked behind them so closing a top sheet reveals the next one.",
-      "aiTitle": "AI workflow",
-      "aiIntro": "Copy a detailed strict prompt into any AI conversation, copy its JSON reply, then import that reply into the destination above.",
-      "copyPrompt": "Copy prompt",
-      "importNpc": "Import NPC",
-      "manualPaste": "Clipboard fallback / manual paste",
-      "manualPasteLabel": "AI JSON payload",
-      "manualPastePlaceholder": "Paste the JSON reply here only if your browser blocks clipboard reading.",
-      "createLocally": "Create locally",
-      "creating": "Creating NPCs…",
-      "copyingPrompt": "Preparing AI prompt…",
-      "importing": "Validating items and importing NPCs…",
-      "groupType": "Generation mode / group type",
-      "groupTypeHint": "Create independent NPCs or a coherent family, patrol, raider band, crew, caravan, council, and other group archetypes.",
-      "habitat": "Habitat",
-      "habitatHint": "Choose the environment and settlement context that shapes daily life, possessions, travel, and social assumptions. Type any other habitat to use it directly.",
-      "useCustomHabitat": "Use this text as a custom habitat",
-      "groupConfigurationTitle": "Group composition",
-      "groupConfigurationIntro": "Advanced controls for relationships, internal structure, race mixing, and shared group context.",
-      "suggestedGroupSizes": "Suggested sizes",
-      "suggestedGroupSizesHint": "Shortcuts only; Count remains fully editable.",
-      "familyStructure": "Family structure",
-      "advancedGroupSettings": "Advanced group settings",
-      "groupCohesion": "Cohesion",
-      "groupHierarchy": "Hierarchy",
-      "relationshipDensity": "Relationship lore",
-      "internalConflict": "Internal conflict",
-      "raceComposition": "Race composition",
-      "raceCompositionHint": "Use the main Race field for a single-race group or as the primary race when mixing several races.",
-      "possibleRaces": "Possible races",
-      "possibleRacesHint": "Search and select any number of allowed races. Custom races can be added by typing them into the search.",
-      "choosePossibleRaces": "Choose possible races…",
-      "raceDistribution": "Race distribution",
-      "raceDistributionHint": "Controls how strongly the primary Race dominates the generated group.",
-      "raceWeights": "Custom race weights",
-      "raceWeightsHint": "Relative weights; they do not need to add up to 100.",
-      "groupBrief": "Additional group brief",
-      "groupBriefPlaceholder": "Optional: local feud, family business, employer, current crisis, taboo, destination, shared objective…",
-      "groupBriefHint": "Passed into the AI prompt as additional context. Keep it focused on facts that should affect multiple NPCs.",
-      "done": "Done",
-      "copyPortraitPrompt": "Copy portrait prompt",
-      "combatReadiness": "Combat readiness",
-      "combatReadinessHint": "Controls how heavily armed the NPC is relative to the Role. Weaponless always means no weapons or armor; higher levels remain constrained by what the occupation and situation can realistically justify.",
-      "compositionTitle": "Batch composition",
-      "compositionIntro": "Control how Race and Role are distributed across any multi-NPC batch, whether or not the NPCs form an intentional group.",
-      "roleComposition": "Role composition",
-      "roleCompositionHint": "The main Role selected above is always the primary Role. Mixed modes distribute only among Possible roles while preserving the exact batch Count.",
-      "possibleRoles": "Possible roles",
-      "possibleRolesHint": "Search and select the Roles allowed in a mixed-role batch. The main Role is automatically included and is always the primary Role.",
-      "choosePossibleRoles": "Choose possible roles…",
-      "roleWeights": "Custom role weights",
-      "roleWeightsHint": "Relative non-negative weights from 0 to 1000, not percentages. Higher numbers receive more NPCs; 0 excludes that Role when another Role has a positive weight. 10/20/30 is the same ratio as 1/2/3.",
-      "weaponVariety": "Weapon variety",
-      "weaponVarietyHint": "Controls whether realistic role-appropriate weapons favor melee, ranged, or a mix. Hard-only modes never invent an implausible weapon just to satisfy the category.",
-      "previewImport": "Preview and edit before import",
-      "previewImportHint": "Open a fast preview where NPCs can be selected/deselected and simple fields edited before final validation and Actor creation. Count mismatches open this preview automatically unless the global count-agnostic import setting is enabled.",
-      "portraitPromptShort": "Portrait",
-      "genderComposition": "Gender mix",
-      "genderCompositionHint": "Choose how male and female NPCs are distributed across the generated batch.",
-      "maleCount": "Male count",
-      "femaleCount": "Female count",
-      "primaryRoleNote": "Primary Role: {role}. This is the Role selected in the main Role field above.",
-      "roleMixPreview": "{count} NPCs → {distribution}",
-      "preparedPrompt": "Prepared AI prompt",
-      "preparedPromptHint": "The generated prompt is kept here. If automatic clipboard access is blocked or Foundry is not focused, select the text or retry copying manually.",
-      "selectPrompt": "Select prompt text",
-      "retryPromptCopy": "Copy again",
-      "raceExactCounts": "Exact Race numbers",
-      "raceExactCountsHint": "Set the exact number of NPCs for every selected Race. The assigned total must equal Count.",
-      "searchSelectedRaces": "Search selected Races…",
-      "distributeEvenly": "Distribute evenly",
-      "noSelectedRaces": "No Races are selected.",
-      "raceExactAssignedValid": "Assigned {assigned} of {target}. Exact total is valid.",
-      "raceExactAssignedInvalid": "Assigned {assigned} of {target}. Remaining: {remaining}. Adjust counts or distribute evenly.",
-      "wealthDistribution": "Wealth distribution",
-      "wealthDistributionHint": "Controls how the fixed portable-wealth budget is split between actual coins and carried valuables. The total value does not change.",
-      "customNameHint": "If Count is 1, this becomes the Actor name. If Count is greater than 1, it becomes a numbered batch prefix such as “Harbor Watch 1”, “Harbor Watch 2”. Leave blank to use generated names and the formatting controls below.",
-      "nameFormattingTitle": "Name formatting",
-      "nameFormattingHint": "Applies only when Name or batch prefix is blank. Presets arrange generated name parts; fixed prefix/infix/suffix/location text is inserted only where the chosen template references it.",
-      "nameFormatPreset": "Format preset",
-      "namePrefix": "Fixed prefix",
-      "namePrefixPlaceholder": "e.g. Brother, Old, House",
-      "nameInfix": "Fixed infix",
-      "nameInfixPlaceholder": "e.g. van, de, ap",
-      "nameSuffix": "Fixed suffix",
-      "nameSuffixPlaceholder": "e.g. the Younger, III",
-      "nameLocation": "Fixed location",
-      "nameLocationPlaceholder": "e.g. Velia, Blackwater",
-      "nicknameMode": "Nickname frequency",
-      "titleMode": "Title frequency",
-      "nameTemplate": "Custom name template",
-      "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
-      "nameTemplateHint": "Available tokens: {tokens}. Put optional text in [square brackets]; that whole block disappears when one of its tokens is empty.",
-      "ageRange": "Age range",
-      "ageRangeHint": "Choose the life-stage range for the batch. Named ranges scale to each Race; Exact year range uses literal ages.",
-      "ageMin": "Minimum age",
-      "ageMax": "Maximum age",
-      "ageSpread": "Group age spread",
-      "ageSpreadHint": "Controls how ages are distributed inside the selected range without changing the Race-appropriate range itself.",
-      "tokenDisposition": "Token disposition",
-      "tokenDispositionHint": "Sets the generated Actor prototype token disposition. Placed Tokens inherit it. Foundry default leaves disposition untouched so Foundry, dnd5e, or another module can supply its normal default."
+    "ageSpread": {
+      "clustered": "Similar ages",
+      "even": "Evenly spread",
+      "natural": "Natural/random",
+      "older": "Older-leaning",
+      "younger": "Younger-leaning"
     },
-    "help": {
-      "title": "NPC Button Help",
-      "generationTitle": "Generation controls",
-      "generationBody": "The dashboard uses the same intent for deterministic local generation and the AI prompt workflow.",
-      "count": "Type any allowed number directly, or use the common 1, 3, 5, and 10 shortcuts.",
-      "role": "Defines the NPC's practical function and biases local ability scores and durability. It also strongly guides AI inventory and characterization.",
-      "tierStyleNamed": "The world currently uses named tiers. Ordinary through Champion provide broad competence bands; Configure Settings can switch the world to exact CR selection.",
-      "tierStyleCr": "The world currently uses CR tiers. Every standard D&D 5e CR from 0 through 30 is selectable and the AI prompt requests that exact CR.",
-      "race": "The built-in Race picker contains all standard 2024 Player’s Handbook races. Typing a non-preset name offers it directly as a custom Race; mixed groups can select several preset or custom races.",
-      "wealth": "Poor, Average, Well-Off, or Elite. The AI uses this to scale carried money, equipment quality, comfort items, and visible status.",
-      "seed": "Local generation always has a reusable seed. If you leave Seed blank, the module creates one automatically, shows it back in the dashboard, and records it in every generated Actor biography and module metadata.",
-      "destination": "The folder picker preserves the Actor hierarchy. It can target any nested folder, the Actors root, the configured default, or a newly named root folder.",
-      "pickersTitle": "Scalable pickers",
-      "pickersBody": "All large catalogs use searchable, scrollable pickers. Entries contributed by complementary modules are color-highlighted with the per-module colors configured in global settings.",
-      "namingTitle": "Naming styles",
-      "namingBody": "Naming styles are broad fictional tonal palettes rather than historical or linguistic claims. Each style now includes a larger set of creative idiomatic examples; the same examples and style guidance are embedded into the copied AI prompt as tonal references rather than a finite name list.",
-      "character": "Character",
-      "examples": "Distinct examples",
-      "actorReviewTitle": "Actor review layout",
-      "actorReviewBody": "When review opening is enabled, the module opens at most the first 10 created Actors. Up to three top sheets are arranged side-by-side. Additional sheets reuse those column positions behind the first row, so closing a top sheet exposes the next Actor in that stack.",
-      "aiTitle": "AI workflow",
-      "aiBody": "The module does not call an AI service itself. It creates a strict portable prompt carrying naming references, habitat, group structure, race mixture, wealth, relationship density, secrets, rumours, quirks, and inventory requirements; then it validates the returned Actor core and inventory requests before import.",
-      "aiStep1": "Configure Count, Group type, Habitat, Role, Tier or CR, Race composition, Wealth, Naming style, and Destination.",
-      "aiStep2": "Click Copy prompt and paste the prompt into an AI conversation.",
-      "aiStep3": "Copy the AI's JSON-only reply to your clipboard.",
-      "aiStep4": "Return to Foundry and click Import NPC. The current destination is applied locally.",
-      "aiValidation": "The importer validates the JSON root shape and every Actor independently from the requested Count. A count mismatch triggers automatic preview by default rather than a fatal error; only the selected subset is revalidated immediately before creation. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items.",
-      "groupType": "Choose independent NPCs or an intentional group archetype. Group presets vary responsibilities and tell the AI to create shared history and useful internal roles instead of copies of one NPC.",
-      "habitat": "Defaults to Forest Village. Habitat changes the expected daily life, possessions, travel assumptions, work, rumors, and social context.",
-      "standardRacesTitle": "Standard 2024 races",
-      "standardRacesBody": "The built-in Player’s Handbook 2024 catalog is: {races}. Custom races remain available through the same picker.",
-      "habitatsTitle": "Habitats",
-      "habitatsBody": "Built-in environments cover ordinary settlements and more specialized regions, including {habitats}. Any other habitat can be typed as a custom entry.",
-      "groupsTitle": "Families and groups",
-      "groupsBody": "Group presets include {groups}, plus further security, outlaw, travel, work, faith, and community structures. Count stays editable, while each preset exposes sensible size shortcuts.",
-      "groupsAdvanced": "Advanced settings control family structure, cohesion, hierarchy, relationship density, internal conflict, allowed races, race distribution, custom weights, and an optional shared group brief.",
-      "portraitPromptTitle": "Portrait prompts",
-      "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC. Non-human races are explicitly described as race-idiomatic so they read clearly as their own people instead of mostly human figures with minor fantasy add-ons.",
-      "filterTitle": "Dashboard filter settings",
-      "filterBody": "Configure Settings provides a dedicated filter menu. Each major dashboard catalog has a scalable searchable multi-select list with every current item included by default; deselect entries to hide them. Advanced allow/deny string and regex rules remain available, and filter profiles can be exported/imported as versioned JSON files or through the clipboard.",
-      "compositionTitle": "Race and Role composition",
-      "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Role composition uses the main Role field as the primary Role and then applies the selected distribution mode to the allowed Roles.",
-      "combatReadinessTitle": "Combat readiness",
-      "combatReadinessBody": "Every NPC still has combat-capable statistics. The readiness setting controls carried weapons and armor. Weaponless forces none; higher settings are strictly role-relative, so a scholar or jurist never turns into a heavily armed warrior while guards, soldiers, and raiders scale naturally.",
-      "weaponVarietyTitle": "Weapon variety",
-      "weaponVarietyBody": "Melee only, Melee preference, Mixed, Ranged preference, and Ranged only bias or constrain carried weapons without overriding occupational realism. If a ranged-only jurist has no plausible ranged weapon, the correct result is no weapon rather than an absurd loadout.",
-      "importPreviewTitle": "Import preview",
-      "importPreviewBody": "Preview provides a selectable master list plus a compact editor. Every NPC starts selected; deselect any entry you do not want, edit simple fields, then import only the selected subset. If the parsed top-level JSON count differs from the dashboard Count, preview opens automatically with a warning so the discrepancy can be reviewed instead of failing early. GMs can enable Allow arbitrary NPC import counts to skip this automatic review for safe external/manual JSON arrays. Maximum batch size and Actor validation always remain enforced.",
-      "roleMixTitle": "Role composition in detail",
-      "roleMixBody": "The main Role selected in Generation is always the primary Role. For mixed modes, Possible roles defines the allowed pool; the primary Role is automatically included even if it was not manually selected. Integer quotas always add up to the requested Count.",
-      "roleMixWeights": "Custom weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Role as long as at least one other Role has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
-      "roleMixRounding": "When a proportion does not divide evenly into the batch size, the module uses proportional integer quotas and assigns leftover NPCs to the largest fractional remainders. This preserves the exact batch Count and stays as close as possible to the requested ratio.",
-      "roleMixMode": "Mode",
-      "roleMixRule": "Distribution rule",
-      "roleMixExample": "Example with Count 10",
-      "roleMixModes": {
-        "single": "Every NPC uses the primary Role.",
-        "variants": "Every NPC keeps the primary Role, but practical subtypes of that Role are spread as evenly as possible before repeating.",
-        "groupPreset": "The first NPC uses the primary Role; remaining NPCs follow the selected group archetype’s built-in responsibility cycle. Independent batches remain the primary Role throughout.",
-        "balanced": "All allowed Roles receive equal weight.",
-        "primary": "The primary Role targets 70%; the remaining 30% is split evenly across the other allowed Roles.",
-        "dominant": "The primary Role targets 85%; the remaining 15% is split evenly across the other allowed Roles.",
-        "weighted": "Each allowed Role uses its entered relative weight."
-      },
-      "roleMixExamples": {
-        "single": "Primary Merchant → 10 Merchant.",
-        "variants": "Primary Merchant → 10 Merchants with distinct merchant specializations before reuse.",
-        "groupPreset": "Depends on Group type; for Independent NPCs with primary Merchant → 10 Merchant.",
-        "balanced": "Merchant + Artisan + Guard → 4 Merchant, 3 Artisan, 3 Guard.",
-        "primary": "Primary Merchant + Artisan + Guard → 7 Merchant, 2 Artisan, 1 Guard.",
-        "dominant": "Primary Merchant + Artisan + Guard → 8 Merchant, 1 Artisan, 1 Guard.",
-        "weighted": "Merchant 10, Artisan 20, Guard 30 → 2 Merchant, 3 Artisan, 5 Guard."
-      },
-      "setting": "Setting",
-      "effect": "Effect",
-      "example": "Example",
-      "mode": "Mode",
-      "level": "Level",
-      "situation": "Situation",
-      "behavior": "Behavior",
-      "step": "Step",
-      "action": "Action",
-      "mixMode": "Mode",
-      "mixRule": "Distribution rule",
-      "mixExample": "Example with Count 10",
-      "raceMixTitle": "Race composition in detail",
-      "raceMixBody": "The main Race selected in Generation is the primary Race. For mixed modes, Possible races defines the allowed pool; the primary Race is automatically included. Integer quotas always add up to the requested Count.",
-      "raceMixWeights": "Custom Race weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Race as long as at least one other Race has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
-      "mixRounding": "When a proportion does not divide evenly into the batch size, the module uses proportional integer quotas and assigns leftover NPCs to the largest fractional remainders. This preserves the exact batch Count and stays as close as possible to the requested ratio.",
-      "raceMixModes": {
-        "single": "Every NPC uses the primary Race.",
-        "dominant": "The primary Race targets 85%; the remaining 15% is split evenly across the other allowed Races.",
-        "primary": "The primary Race targets 70%; the remaining 30% is split evenly across the other allowed Races.",
-        "balanced": "All allowed Races receive equal weight.",
-        "weighted": "Each allowed Race uses its entered relative weight.",
-        "mixed": "Legacy compatibility mode; the saved Race distribution setting determines the effective mix.",
-        "exact": "Uses the exact integer count entered for every selected Race. Counts must sum to Count."
-      },
-      "raceMixExamples": {
-        "single": "Primary Human → 10 Human.",
-        "dominant": "Primary Human + Elf + Dwarf → 8 Human, 1 Elf, 1 Dwarf.",
-        "primary": "Primary Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
-        "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
-        "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf.",
-        "mixed": "Not shown in the current dashboard; retained only for older saved configurations.",
-        "exact": "Count 10: Human 8, Elf 1, Dwarf 1 means exactly 8 / 1 / 1."
-      },
-      "combatReadinessModes": {
-        "weaponless": "No weapons or armor. Occupational tools remain ordinary tools.",
-        "minimal": "Noncombatants stay effectively unarmed; inherently martial Roles receive at least one simple, plausible weapon.",
-        "standard": "Normal equipment for the Role during ordinary duties.",
-        "prepared": "Adds believable backup or protective gear when the Role supports it.",
-        "armed": "Maximum realistic preparedness for that exact Role; occupational ceilings still apply."
-      },
-      "combatReadinessExamples": {
-        "weaponless": "Soldier → no weapon and no armor; Baker → work tools only.",
-        "minimal": "Guard → one simple duty weapon; Scholar → normally no dedicated weapon.",
-        "standard": "Guard → practical weapon and ordinary duty protection.",
-        "prepared": "Scout → primary weapon plus plausible backup and light protection.",
-        "armed": "Soldier → several sensible combat options; Jurist → at most discreet self-defense gear."
-      },
-      "weaponVarietyModes": {
-        "meleeOnly": "Allow melee-capable weapons only.",
-        "meleePreferred": "Strongly favor melee; a ranged backup is allowed only when plausible.",
-        "mixed": "Use a natural mix when the Role realistically supports both categories.",
-        "rangedPreferred": "Strongly favor ranged; a melee backup is allowed only when plausible.",
-        "rangedOnly": "Allow dedicated ranged weapons only; never invent one for a Role that has no realistic option."
-      },
-      "weaponVarietyExamples": {
-        "meleeOnly": "Scout → Shortsword/Dagger options, no Shortbow.",
-        "meleePreferred": "Guard → Spear or Longsword favored; crossbow only as a sensible backup.",
-        "mixed": "Soldier → melee and ranged options may both appear.",
-        "rangedPreferred": "Scout → Shortbow favored with a knife or Shortsword only as backup.",
-        "rangedOnly": "Jurist with no plausible ranged option → weaponless rather than implausibly armed."
-      },
-      "importPreviewCases": {
-        "normal": {
-          "case": "Expected count matches",
-          "behavior": "Uses the configured preview toggle. If preview is off, validated Actors can proceed directly to creation."
-        },
-        "mismatch": {
-          "case": "Returned count differs",
-          "behavior": "Preview opens automatically with a warning. Every NPC is initially selected, so extras can be deselected before import."
-        },
-        "arbitrary": {
-          "case": "Arbitrary-count setting enabled",
-          "behavior": "Safe external/manual arrays may proceed without forced mismatch preview; normal validation still applies."
-        },
-        "oversized": {
-          "case": "Maximum batch exceeded",
-          "behavior": "Safety limits remain enforced; the count setting never bypasses the configured maximum batch size."
-        }
-      },
-      "aiStepLabel": "Step {step}",
-      "control": "Control",
-      "filterControls": {
-        "items": {
-          "control": "Included items",
-          "behavior": "All current catalog items start included. Deselect an item to hide it from the matching dashboard picker; extension-added items remain included by default unless explicitly excluded."
-        },
-        "advanced": {
-          "control": "Advanced rules",
-          "behavior": "Optional exact, contains, prefix, suffix, and regular-expression allow/deny rules refine the item selection. Deny rules take precedence."
-        },
-        "profiles": {
-          "control": "Filter profiles",
-          "behavior": "Export or import the complete filter configuration as versioned JSON so a ready-configured setup can be reused or transferred."
-        }
-      },
-      "wealthDistribution": "Changes only the split of the fixed portable-wealth budget between system currency and valuables; it never changes the total budget.",
-      "wealthDistributionTitle": "Wealth distribution",
-      "wealthDistributionBody": "Every locally generated NPC now carries real D&D 5e currency. Wealth sets a fixed portable-wealth budget; this control only redistributes that same value between coins and portable valuables. Role/combat equipment remains separate.",
-      "wealthDistributionModes": {
-        "itemsHeavy": "About 20% as coins; the rest becomes several valuables.",
-        "mixed": "About half as coins and half as portable valuables.",
-        "coinsHeavy": "About 75% as coins; only a small remainder becomes valuables.",
-        "fewHighValue": "A modest coin reserve with the item share concentrated into one or two valuable possessions.",
-        "manySmallValue": "A modest coin reserve with the item share spread across several lower-value possessions."
-      },
-      "wealthDistributionExamples": {
-        "itemsHeavy": "Average wealth: 5 gp-equivalent total → about 1 gp in coins + 4 gp in valuables.",
-        "mixed": "Average wealth: 5 gp-equivalent total → about 2.5 gp in coins + 2.5 gp in valuables.",
-        "coinsHeavy": "Average wealth: 5 gp-equivalent total → about 3.75 gp in coins + 1.25 gp in valuables.",
-        "fewHighValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + one concentrated 3.25 gp valuable.",
-        "manySmallValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + several items totaling 3.25 gp."
-      },
-      "nameFormattingTitle": "Name and batch-prefix formatting",
-      "nameFormattingBody": "Name or batch prefix is an override, not an extra prefix field. With Count 1 it becomes the Actor name. With a larger Count it produces numbered names such as “Harbor Watch 1”, “Harbor Watch 2”, and bypasses generated-name formatting. Leave it blank to generate names from the selected Naming style and the formatting controls.",
-      "nameFormattingControl": "Control",
-      "nameFormattingBehavior": "What it does",
-      "nameFormattingExample": "Example",
-      "nameFormattingRows": {
-        "customName": {
-          "control": "Name or batch prefix",
-          "behavior": "Overrides generated names completely. Count 1 uses the entered text as the name; batches append a sequential number.",
-          "example": "Harbor Watch + Count 3 → Harbor Watch 1, Harbor Watch 2, Harbor Watch 3."
-        },
-        "preset": {
-          "control": "Format preset",
-          "behavior": "Chooses where generated first/last names and optional components are arranged. Standard preserves the classic first-name + surname result.",
-          "example": "Formal can produce Captain Elian Mercer; Location can produce Elian Mercer of Velia."
-        },
-        "affixes": {
-          "control": "Prefix / infix / suffix",
-          "behavior": "Literal fixed text that can be placed before, between, or after generated name parts. A field has no effect if the active template does not reference its token.",
-          "example": "Prefix House + infix van + suffix the Younger → House Elian van Mercer the Younger."
-        },
-        "nickname": {
-          "control": "Nickname frequency",
-          "behavior": "Never, Sometimes, or Always generates a short nickname when the active template contains {nickname}. Optional template blocks prevent empty quotation marks.",
-          "example": "Elian “Crow” Mercer."
-        },
-        "title": {
-          "control": "Title frequency",
-          "behavior": "Never, Sometimes, or Always adds a plausible role/status title when the template contains {title}. If no sensible title exists, the token stays empty.",
-          "example": "Sergeant Bren Holt; Lady Mira Voss."
-        },
-        "location": {
-          "control": "Fixed location",
-          "behavior": "Provides literal text for {location}; usually paired with the Location or Full preset.",
-          "example": "{first} {last} [of {location}] + Velia → Elian Mercer of Velia."
-        },
-        "template": {
-          "control": "Custom template",
-          "behavior": "Places components exactly with tokens. Optional [square-bracket] blocks disappear when any token inside is empty. Literal words and punctuation are allowed.",
-          "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
-        }
-      },
-      "nameTemplateTokens": "Template tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role}, and {race}. {index} is the one-based NPC number within the batch.",
-      "ageTitle": "Age range and group spread",
-      "ageBody": "Age is generated per NPC and stored with the Actor metadata and biography. Named ranges are Race-relative, so an Elf and a Human in the same Mature batch are both mature for their own Race instead of receiving the same human-year assumptions. Exact year range is the explicit literal override.",
-      "ageRangeMode": "Age range",
-      "ageRangeRule": "Rule",
-      "ageRangeExample": "Example",
-      "ageSpreadTitle": "Group age spread",
-      "ageRangeModes": {
-        "contextual": "Role and group context choose a plausible adult span; families naturally allow a broader generational range.",
-        "youngAdult": "Uses the younger part of each Race’s adult lifespan.",
-        "adult": "Uses the broad early-to-middle adult span for each Race.",
-        "mature": "Uses the mature middle-to-later adult span for each Race.",
-        "older": "Uses the older but normally active part of each Race’s lifespan.",
-        "mixedGenerations": "Uses a broad adult span so several generations can appear naturally.",
-        "exactRange": "Uses the literal minimum and maximum years entered by the user; Race-relative scaling is disabled."
-      },
-      "ageRangeExamples": {
-        "contextual": "A guard patrol trends toward working-age adults; a family can naturally contain several generations.",
-        "youngAdult": "Young Human adults and correspondingly young adult Elves/Dwarves.",
-        "adult": "A broad ordinary adult batch without pushing strongly young or old.",
-        "mature": "Established professionals, household heads, senior artisans, experienced officials.",
-        "older": "Older veterans, elders, senior retainers, long-serving specialists.",
-        "mixedGenerations": "Useful for families, villages, caravans, households, councils, and mixed civilian groups.",
-        "exactRange": "20–35 means every generated NPC is literally between 20 and 35 years old."
-      },
-      "ageSpreadModes": {
-        "natural": "Randomizes naturally through the selected range.",
-        "even": "Distributes the batch broadly across the whole range.",
-        "clustered": "Keeps most NPCs near the middle of the range, useful for peer groups.",
-        "younger": "Biases toward the younger end while retaining some older members.",
-        "older": "Biases toward the older end while retaining some younger members."
-      },
-      "ageSpreadExamples": {
-        "natural": "A normal mixed batch with no deliberate age pattern.",
-        "even": "Ten NPCs cover the range instead of clustering by chance.",
-        "clustered": "A same-generation work crew or cohort.",
-        "younger": "Trainees, new recruits, junior laborers, younger settlers.",
-        "older": "Veteran guards, established guild members, senior officials."
-      },
-      "tokenDisposition": "Controls the generated Actor prototype token disposition; placed Tokens inherit the selected native Foundry disposition.",
-      "tokenDispositionTitle": "Token disposition / hostility",
-      "tokenDispositionBody": "Disposition is a Foundry Token property stored on the Actor prototype token. It controls ally/enemy presentation rather than changing NPC statistics or behavior. The module supports every native Foundry disposition plus a no-override default.",
-      "tokenDispositionModes": {
-        "default": "Do not write a disposition override. Foundry, dnd5e, or another module can provide its normal prototype-token default.",
-        "friendly": "Use Foundry Friendly disposition.",
-        "neutral": "Use Foundry Neutral disposition.",
-        "hostile": "Use Foundry Hostile disposition, the native enemy state.",
-        "secret": "Use Foundry Secret disposition for Tokens whose disposition should not be openly presented like the ordinary Friendly/Neutral/Hostile states."
-      },
-      "tokenDispositionExamples": {
-        "default": "Preserve the world/system default.",
-        "friendly": "Allied guard, companion, protected civilian.",
-        "neutral": "Bystander, merchant, undecided faction member.",
-        "hostile": "Enemy raider, monster, active attacker.",
-        "secret": "Hidden allegiance, uncertain threat, concealed faction intent."
-      }
+    "combatReadiness": {
+      "armed": "Highly Prepared",
+      "minimal": "Minimal",
+      "prepared": "Prepared",
+      "standard": "Standard",
+      "weaponless": "Weaponless"
     },
-    "notifications": {
-      "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
-      "created": "Created {count} NPC Actor(s).",
-      "noneCreated": "No NPC Actors were created.",
-      "failed": "NPC generation failed: {message}",
-      "promptCopied": "AI NPC prompt copied to the clipboard.",
-      "imported": "Imported {count} NPC Actor(s).",
-      "noneImported": "No NPC Actors were imported.",
-      "importFailed": "NPC import failed: {message}",
-      "portraitPromptCopied": "Portrait prompt copied to the clipboard.",
-      "filtersSaved": "Dashboard string filters saved.",
-      "filtersExported": "Filter profile exported.",
-      "filtersCopied": "Filter profile JSON copied to the clipboard.",
-      "filtersImported": "Filter profile imported and applied.",
-      "filterImportFailed": "Filter profile import failed",
-      "filterProfileTooLarge": "Filter profile is too large to import.",
-      "importCancelled": "NPC import preview cancelled.",
-      "promptCopyManual": "AI prompt prepared, but automatic clipboard access is unavailable. The prompt is preserved below for manual copying.",
-      "clipboardUnavailable": "Automatic clipboard access is unavailable. The prepared content remains available for manual copying.",
-      "promptPrepareFailed": "AI prompt preparation failed: {message}",
-      "complementaryColorsSaved": "Complementary module highlight colors saved."
+    "complementaryColors": {
+      "colorLabel": "Highlight color",
+      "dependenciesBody": "These installed modules declare Runyth NPC Button as a dependency or recommendation, but no color-attributed catalog entries from them are currently registered.",
+      "dependenciesTitle": "Detected complementary-module dependencies",
+      "empty": "Installing or enabling a complementary module alone is not enough for color grouping. It must register catalog entries through the NPC Button extension API and identify their source module.",
+      "emptyTitle": "No complementary catalog integration detected",
+      "intro": "Set a highlight color for entries contributed by complementary modules. Entries from the same module share one color across dashboard pickers and filter lists.",
+      "kinds": {
+        "groupTypes": "Group types",
+        "habitats": "Habitats",
+        "namingStyles": "Naming styles",
+        "races": "Races",
+        "roles": "Roles"
+      },
+      "resetAll": "Reset all to defaults",
+      "resetOne": "Reset",
+      "savedOnly": "Saved color only; no active contributions are currently registered.",
+      "statusDisabled": "disabled",
+      "statusEnabled": "enabled",
+      "title": "Complementary module highlight colors",
+      "unattributedBody": "These entries are registered and usable, but NPC Button cannot color-group them because their registering module did not identify itself with sourceModuleId. This normally means the complementary module needs a compatibility patch.",
+      "unattributedTitle": "Catalog extensions detected without source-module metadata"
     },
     "errors": {
-      "clipboardWrite": "Clipboard writing is not available in this client.",
       "clipboardRead": "Clipboard reading is not available or was blocked by the browser.",
+      "clipboardWrite": "Clipboard writing is not available in this client.",
       "manualPasteFallback": "Open the manual-paste section, paste the AI JSON there, and click Import NPC again.",
       "portraitPromptUnavailable": "This Actor does not contain Runyth NPC Button generation metadata.",
       "raceExactCountMismatch": "Exact Race counts assign {assigned} NPCs, but Count is {target}. Adjust the exact counts first."
     },
-    "roleGroups": {
-      "everyday": "Everyday & commerce",
-      "learned": "Learned & specialist",
-      "martial": "Martial & security",
-      "authority": "Authority & status"
+    "familyStructures": {
+      "blended": "Blended household",
+      "extendedKin": "Extended kin",
+      "household": "Single household",
+      "multiGeneration": "Multi-generational",
+      "siblings": "Siblings / cousins"
     },
-    "roles": {
-      "civilian": "Civilian",
-      "artisan": "Artisan",
-      "merchant": "Merchant",
-      "acolyte": "Acolyte",
-      "scholar": "Scholar",
-      "specialist": "Specialist",
-      "guard": "Guard",
-      "scout": "Scout",
-      "bruiser": "Bruiser",
-      "soldier": "Soldier",
-      "leader": "Leader",
-      "noble": "Noble"
-    },
-    "tierGroups": {
-      "named": "Named tiers",
-      "fractional": "Fractional CR",
-      "cr1to10": "CR 1–10",
-      "cr11to20": "CR 11–20",
-      "cr21to30": "CR 21–30"
-    },
-    "tiers": {
-      "ordinary": "Ordinary",
-      "trained": "Trained",
-      "veteran": "Veteran",
-      "elite": "Elite",
-      "champion": "Champion"
-    },
-    "raceGroups": {
-      "phb2024": "Player’s Handbook 2024",
-      "custom": "Custom races"
-    },
-    "races": {
-      "human": "Human",
-      "elf": "Elf",
-      "dwarf": "Dwarf",
-      "halfling": "Halfling",
-      "orc": "Orc",
-      "custom": "Custom",
-      "aasimar": "Aasimar",
-      "dragonborn": "Dragonborn",
-      "gnome": "Gnome",
-      "goliath": "Goliath",
-      "tiefling": "Tiefling"
-    },
-    "namingGroups": {
-      "regional": "Regional palettes"
-    },
-    "naming": {
-      "central": "Central",
-      "coastal": "Coastal",
-      "highland": "Highland",
-      "frontier": "Frontier"
-    },
-    "namingDescriptions": {
-      "central": "Balanced town-and-road names with restrained surnames; broadly settled and neutral in tone.",
-      "coastal": "Open-vowel given names and maritime surnames suggesting ports, fishing communities, and sea trade.",
-      "highland": "Harder consonants and landscape-heavy surnames suggesting uplands, stone settlements, and old local lineages.",
-      "frontier": "Short practical names and occupational or settlement surnames suggesting farms, trades, border villages, and new communities."
-    },
-    "wealth": {
-      "poor": "Poor",
-      "average": "Average",
-      "wellOff": "Well-Off",
-      "elite": "Elite"
+    "filters": {
+      "actions": {
+        "copyJson": "Copy JSON",
+        "exportFile": "Export JSON",
+        "importClipboard": "Import clipboard",
+        "importFile": "Import JSON"
+      },
+      "advancedRules": "Advanced string and regex rules",
+      "categories": {
+        "folders": "Actor folders",
+        "groupTypes": "Group types",
+        "habitats": "Habitats",
+        "namingStyles": "Naming styles",
+        "races": "Races",
+        "roles": "Roles"
+      },
+      "fields": {
+        "caseSensitive": "Case-sensitive matching",
+        "containsAllow": "Allow if contains",
+        "containsDeny": "Deny if contains",
+        "exactAllow": "Allow exact matches",
+        "exactDeny": "Deny exact matches",
+        "normalizeDiacritics": "Normalize accents / diacritics",
+        "prefixAllow": "Allow if starts with",
+        "prefixDeny": "Deny if starts with",
+        "regexAllow": "Allow regex",
+        "regexDeny": "Deny regex",
+        "suffixAllow": "Allow if ends with",
+        "suffixDeny": "Deny if ends with",
+        "trimWhitespace": "Trim surrounding whitespace"
+      },
+      "intro": "Use the selected-item lists for ordinary filtering. Every current item is selected by default; deselect an item to hide it from the corresponding dashboard picker. Advanced allow/deny string and regex rules remain available below each list.",
+      "itemPicker": {
+        "clear": "Clear all",
+        "hint": "All available items are selected by default. Deselect individual entries to exclude them from the dashboard. The list is searchable, hierarchical, scrollable, and virtualized for large catalogs.",
+        "label": "Included items",
+        "placeholder": "No items selected",
+        "selectAll": "Select all"
+      },
+      "placeholders": {
+        "folders": "Curate which Actor-folder targets appear in the destination picker.",
+        "groupTypes": "Allow or hide specific group archetypes such as families or guard patrols.",
+        "habitats": "Restrict or focus the environment presets shown in the habitat picker.",
+        "namingStyles": "Curate which naming palettes may be selected in the dashboard.",
+        "races": "Filter visible race entries, including extension races and custom picker suggestions.",
+        "roles": "Filter visible role entries by id, label, description, or search text."
+      },
+      "title": "NPC Button string filters"
     },
     "folderGroups": {
       "destination": "Destination choices",
       "existing": "Existing Actor folders"
     },
-    "habitatGroups": {
-      "settled": "Settlements",
-      "wild": "Wild regions",
-      "arid": "Arid regions",
-      "water": "Water & coast",
-      "rugged": "Rugged highlands",
-      "cold": "Cold regions",
-      "unusual": "Unusual regions"
-    },
-    "habitats": {
-      "forestVillage": "Forest Village",
-      "farmingHamlet": "Farming Hamlet",
-      "marketTown": "Market Town",
-      "cityDistrict": "City District",
-      "deepForest": "Deep Forest",
-      "plains": "Open Plains / Steppe",
-      "jungle": "Jungle Region",
-      "desertOasis": "Desert Oasis",
-      "desertRoute": "Desert Caravan Route",
-      "badlands": "Badlands",
-      "riverlands": "Riverlands",
-      "wetlands": "Marsh / Wetlands",
-      "lakeside": "Lakeside Region",
-      "coast": "Coastal Region",
-      "portCity": "Port City",
-      "island": "Island",
-      "foothills": "Mountain Foothills",
-      "mountains": "Mountain Region",
-      "highPlateau": "High Plateau",
-      "tundra": "Tundra / Far North",
-      "underground": "Underground Settlement",
-      "ruinedFrontier": "Ruined Frontier"
-    },
-    "groupTypeGroups": {
-      "individual": "Individuals",
-      "household": "Households & families",
-      "security": "Security & martial",
-      "outlaw": "Raiders & underworld",
-      "travelWork": "Travel & work crews",
-      "community": "Community & faith"
-    },
-    "groupTypes": {
-      "independent": "Independent NPCs",
-      "family": "Family Household",
-      "nobleHousehold": "Noble Household",
-      "guardPatrol": "Guard Patrol",
-      "watchShift": "Town Watch Shift",
-      "militia": "Local Militia",
-      "mercenaryBand": "Mercenary Band",
-      "orcRaiders": "Orc Raider Band",
-      "banditCrew": "Bandit Crew",
-      "criminalCell": "Criminal Cell",
-      "caravan": "Caravan",
-      "guildCrew": "Guild Work Crew",
-      "shipCrew": "Ship Crew",
-      "huntingParty": "Hunting Party",
-      "expedition": "Expedition Team",
-      "templeHousehold": "Temple Household",
-      "villageCouncil": "Village Council",
-      "pilgrims": "Pilgrim Company",
-      "refugeeParty": "Refugee Party"
-    },
-    "familyStructures": {
-      "household": "Single household",
-      "multiGeneration": "Multi-generational",
-      "extendedKin": "Extended kin",
-      "siblings": "Siblings / cousins",
-      "blended": "Blended household"
+    "genderComposition": {
+      "balanced": "Balanced",
+      "exact": "Exact numbers",
+      "mostlyFemale": "Mostly female",
+      "mostlyMale": "Mostly male",
+      "random": "Randomized"
     },
     "groupCohesion": {
       "close": "Close-knit",
+      "fractured": "Fractured",
       "functional": "Functional",
-      "strained": "Strained",
-      "fractured": "Fractured"
+      "strained": "Strained"
     },
     "groupHierarchy": {
+      "clear": "Clear chain",
       "egalitarian": "Egalitarian",
       "informal": "Informal leader",
-      "clear": "Clear chain",
       "rigid": "Rigid hierarchy"
+    },
+    "groupTypeGroups": {
+      "community": "Community & faith",
+      "household": "Households & families",
+      "individual": "Individuals",
+      "outlaw": "Raiders & underworld",
+      "security": "Security & martial",
+      "travelWork": "Travel & work crews"
+    },
+    "groupTypes": {
+      "banditCrew": "Bandit Crew",
+      "caravan": "Caravan",
+      "criminalCell": "Criminal Cell",
+      "expedition": "Expedition Team",
+      "family": "Family Household",
+      "guardPatrol": "Guard Patrol",
+      "guildCrew": "Guild Work Crew",
+      "huntingParty": "Hunting Party",
+      "independent": "Independent NPCs",
+      "mercenaryBand": "Mercenary Band",
+      "militia": "Local Militia",
+      "nobleHousehold": "Noble Household",
+      "orcRaiders": "Orc Raider Band",
+      "pilgrims": "Pilgrim Company",
+      "refugeeParty": "Refugee Party",
+      "shipCrew": "Ship Crew",
+      "templeHousehold": "Temple Household",
+      "villageCouncil": "Village Council",
+      "watchShift": "Town Watch Shift"
+    },
+    "habitatGroups": {
+      "arid": "Arid regions",
+      "cold": "Cold regions",
+      "rugged": "Rugged highlands",
+      "settled": "Settlements",
+      "unusual": "Unusual regions",
+      "water": "Water & coast",
+      "wild": "Wild regions"
+    },
+    "habitats": {
+      "badlands": "Badlands",
+      "cityDistrict": "City District",
+      "coast": "Coastal Region",
+      "deepForest": "Deep Forest",
+      "desertOasis": "Desert Oasis",
+      "desertRoute": "Desert Caravan Route",
+      "farmingHamlet": "Farming Hamlet",
+      "foothills": "Mountain Foothills",
+      "forestVillage": "Forest Village",
+      "highPlateau": "High Plateau",
+      "island": "Island",
+      "jungle": "Jungle Region",
+      "lakeside": "Lakeside Region",
+      "marketTown": "Market Town",
+      "mountains": "Mountain Region",
+      "plains": "Open Plains / Steppe",
+      "portCity": "Port City",
+      "riverlands": "Riverlands",
+      "ruinedFrontier": "Ruined Frontier",
+      "tundra": "Tundra / Far North",
+      "underground": "Underground Settlement",
+      "wetlands": "Marsh / Wetlands"
+    },
+    "help": {
+      "action": "Action",
+      "actorReviewBody": "When review opening is enabled, the module opens at most the first 10 created Actors. Up to three top sheets are arranged side-by-side. Additional sheets reuse those column positions behind the first row, so closing a top sheet exposes the next Actor in that stack.",
+      "actorReviewTitle": "Actor review layout",
+      "ageBody": "Age is generated per NPC and stored with the Actor metadata and biography. Named ranges are Race-relative, so an Elf and a Human in the same Mature batch are both mature for their own Race instead of receiving the same human-year assumptions. Exact year range is the explicit literal override.",
+      "ageRangeExample": "Example",
+      "ageRangeExamples": {
+        "adult": "A broad ordinary adult batch without pushing strongly young or old.",
+        "contextual": "A guard patrol trends toward working-age adults; a family can naturally contain several generations.",
+        "exactRange": "20–35 means every generated NPC is literally between 20 and 35 years old.",
+        "mature": "Established professionals, household heads, senior artisans, experienced officials.",
+        "mixedGenerations": "Useful for families, villages, caravans, households, councils, and mixed civilian groups.",
+        "older": "Older veterans, elders, senior retainers, long-serving specialists.",
+        "youngAdult": "Young Human adults and correspondingly young adult Elves/Dwarves."
+      },
+      "ageRangeMode": "Age range",
+      "ageRangeModes": {
+        "adult": "Uses the broad early-to-middle adult span for each Race.",
+        "contextual": "Role and group context choose a plausible adult span; families naturally allow a broader generational range.",
+        "exactRange": "Uses the literal minimum and maximum years entered by the user; Race-relative scaling is disabled.",
+        "mature": "Uses the mature middle-to-later adult span for each Race.",
+        "mixedGenerations": "Uses a broad adult span so several generations can appear naturally.",
+        "older": "Uses the older but normally active part of each Race’s lifespan.",
+        "youngAdult": "Uses the younger part of each Race’s adult lifespan."
+      },
+      "ageRangeRule": "Rule",
+      "ageSpreadExamples": {
+        "clustered": "A same-generation work crew or cohort.",
+        "even": "Ten NPCs cover the range instead of clustering by chance.",
+        "natural": "A normal mixed batch with no deliberate age pattern.",
+        "older": "Veteran guards, established guild members, senior officials.",
+        "younger": "Trainees, new recruits, junior laborers, younger settlers."
+      },
+      "ageSpreadModes": {
+        "clustered": "Keeps most NPCs near the middle of the range, useful for peer groups.",
+        "even": "Distributes the batch broadly across the whole range.",
+        "natural": "Randomizes naturally through the selected range.",
+        "older": "Biases toward the older end while retaining some younger members.",
+        "younger": "Biases toward the younger end while retaining some older members."
+      },
+      "ageSpreadTitle": "Group age spread",
+      "ageTitle": "Age range and group spread",
+      "aiBody": "The module does not call an AI service itself. It creates a strict portable prompt carrying naming references, habitat, group structure, race mixture, wealth, relationship density, secrets, rumours, quirks, and inventory requirements; then it validates the returned Actor core and inventory requests before import.",
+      "aiStep1": "Configure Count, Group type, Habitat, Role, Tier or CR, Race composition, Wealth, Naming style, and Destination.",
+      "aiStep2": "Click Copy prompt and paste the prompt into an AI conversation.",
+      "aiStep3": "Copy the AI's JSON-only reply to your clipboard.",
+      "aiStep4": "Return to Foundry and click Import NPC. The current destination is applied locally.",
+      "aiStepLabel": "Step {step}",
+      "aiTitle": "AI workflow",
+      "aiValidation": "The importer validates the JSON root shape and every Actor independently from the requested Count. A count mismatch triggers automatic preview by default rather than a fatal error; only the selected subset is revalidated immediately before creation. Canonical item lookups are resolved against D&D 5e equipment packs, while invented roleplay possessions remain safe loot Items.",
+      "behavior": "Behavior",
+      "character": "Character",
+      "combatReadinessBody": "Every NPC still has combat-capable statistics. The readiness setting controls carried weapons and armor. Weaponless forces none; higher settings are strictly role-relative, so a scholar or jurist never turns into a heavily armed warrior while guards, soldiers, and raiders scale naturally.",
+      "combatReadinessExamples": {
+        "armed": "Soldier → several sensible combat options; Jurist → at most discreet self-defense gear.",
+        "minimal": "Guard → one simple duty weapon; Scholar → normally no dedicated weapon.",
+        "prepared": "Scout → primary weapon plus plausible backup and light protection.",
+        "standard": "Guard → practical weapon and ordinary duty protection.",
+        "weaponless": "Soldier → no weapon and no armor; Baker → work tools only."
+      },
+      "combatReadinessModes": {
+        "armed": "Maximum realistic preparedness for that exact Role; occupational ceilings still apply.",
+        "minimal": "Noncombatants stay effectively unarmed; inherently martial Roles receive at least one simple, plausible weapon.",
+        "prepared": "Adds believable backup or protective gear when the Role supports it.",
+        "standard": "Normal equipment for the Role during ordinary duties.",
+        "weaponless": "No weapons or armor. Occupational tools remain ordinary tools."
+      },
+      "combatReadinessTitle": "Combat readiness",
+      "compositionBody": "Composition works independently of group lore. Race can be single, strongly primary (for example roughly 8/1/1 in a ten-person three-Race batch), primary-majority, broadly mixed, or custom-weighted. Role composition uses the main Role field as the primary Role and then applies the selected distribution mode to the allowed Roles.",
+      "compositionTitle": "Race and Role composition",
+      "control": "Control",
+      "count": "Type any allowed number directly, or use the common 1, 3, 5, and 10 shortcuts.",
+      "destination": "The folder picker preserves the Actor hierarchy. It can target any nested folder, the Actors root, the configured default, or a newly named root folder.",
+      "effect": "Effect",
+      "example": "Example",
+      "examples": "Distinct examples",
+      "filterBody": "Configure Settings provides a dedicated filter menu. Each major dashboard catalog has a scalable searchable multi-select list with every current item included by default; deselect entries to hide them. Advanced allow/deny string and regex rules remain available, and filter profiles can be exported/imported as versioned JSON files or through the clipboard.",
+      "filterControls": {
+        "advanced": {
+          "behavior": "Optional exact, contains, prefix, suffix, and regular-expression allow/deny rules refine the item selection. Deny rules take precedence.",
+          "control": "Advanced rules"
+        },
+        "items": {
+          "behavior": "All current catalog items start included. Deselect an item to hide it from the matching dashboard picker; extension-added items remain included by default unless explicitly excluded.",
+          "control": "Included items"
+        },
+        "profiles": {
+          "behavior": "Export or import the complete filter configuration as versioned JSON so a ready-configured setup can be reused or transferred.",
+          "control": "Filter profiles"
+        }
+      },
+      "filterTitle": "Dashboard filter settings",
+      "generationBody": "The dashboard uses the same intent for deterministic local generation and the AI prompt workflow.",
+      "generationTitle": "Generation controls",
+      "groupType": "Choose independent NPCs or an intentional group archetype. Group presets vary responsibilities and tell the AI to create shared history and useful internal roles instead of copies of one NPC.",
+      "groupsAdvanced": "Advanced settings control family structure, cohesion, hierarchy, relationship density, internal conflict, allowed races, race distribution, custom weights, and an optional shared group brief.",
+      "groupsBody": "Group presets include {groups}, plus further security, outlaw, travel, work, faith, and community structures. Count stays editable, while each preset exposes sensible size shortcuts.",
+      "groupsTitle": "Families and groups",
+      "habitat": "Defaults to Forest Village. Habitat changes the expected daily life, possessions, travel assumptions, work, rumors, and social context.",
+      "habitatsBody": "Built-in environments cover ordinary settlements and more specialized regions, including {habitats}. Any other habitat can be typed as a custom entry.",
+      "habitatsTitle": "Habitats",
+      "importPreviewBody": "Preview provides a selectable master list plus a compact editor. Every NPC starts selected; deselect any entry you do not want, edit simple fields, then import only the selected subset. If the parsed top-level JSON count differs from the dashboard Count, preview opens automatically with a warning so the discrepancy can be reviewed instead of failing early. GMs can enable Allow arbitrary NPC import counts to skip this automatic review for safe external/manual JSON arrays. Maximum batch size and Actor validation always remain enforced.",
+      "importPreviewCases": {
+        "arbitrary": {
+          "behavior": "Safe external/manual arrays may proceed without forced mismatch preview; normal validation still applies.",
+          "case": "Arbitrary-count setting enabled"
+        },
+        "mismatch": {
+          "behavior": "Preview opens automatically with a warning. Every NPC is initially selected, so extras can be deselected before import.",
+          "case": "Returned count differs"
+        },
+        "normal": {
+          "behavior": "Uses the configured preview toggle. If preview is off, validated Actors can proceed directly to creation.",
+          "case": "Expected count matches"
+        },
+        "oversized": {
+          "behavior": "Safety limits remain enforced; the count setting never bypasses the configured maximum batch size.",
+          "case": "Maximum batch exceeded"
+        }
+      },
+      "importPreviewTitle": "Import preview",
+      "level": "Level",
+      "mixExample": "Example with Count 10",
+      "mixMode": "Mode",
+      "mixRounding": "When a proportion does not divide evenly into the batch size, the module uses proportional integer quotas and assigns leftover NPCs to the largest fractional remainders. This preserves the exact batch Count and stays as close as possible to the requested ratio.",
+      "mixRule": "Distribution rule",
+      "mode": "Mode",
+      "nameFormattingBehavior": "What it does",
+      "nameFormattingBody": "Name or batch prefix is an override, not an extra prefix field. With Count 1 it becomes the Actor name. With a larger Count it produces numbered names such as “Harbor Watch 1”, “Harbor Watch 2”, and bypasses generated-name formatting. Leave it blank to generate names from the selected Naming style and the formatting controls.",
+      "nameFormattingControl": "Control",
+      "nameFormattingExample": "Example",
+      "nameFormattingRows": {
+        "affixes": {
+          "behavior": "Literal fixed text that can be placed before, between, or after generated name parts. A field has no effect if the active template does not reference its token.",
+          "control": "Prefix / infix / suffix",
+          "example": "Prefix House + infix van + suffix the Younger → House Elian van Mercer the Younger."
+        },
+        "customName": {
+          "behavior": "Overrides generated names completely. Count 1 uses the entered text as the name; batches append a sequential number.",
+          "control": "Name or batch prefix",
+          "example": "Harbor Watch + Count 3 → Harbor Watch 1, Harbor Watch 2, Harbor Watch 3."
+        },
+        "location": {
+          "behavior": "Provides literal text for {location}; usually paired with the Location or Full preset.",
+          "control": "Fixed location",
+          "example": "{first} {last} [of {location}] + Velia → Elian Mercer of Velia."
+        },
+        "nickname": {
+          "behavior": "Never, Sometimes, or Always generates a short nickname when the active template contains {nickname}. Optional template blocks prevent empty quotation marks.",
+          "control": "Nickname frequency",
+          "example": "Elian “Crow” Mercer."
+        },
+        "preset": {
+          "behavior": "Chooses where generated first/last names and optional components are arranged. Standard preserves the classic first-name + surname result.",
+          "control": "Format preset",
+          "example": "Formal can produce Captain Elian Mercer; Location can produce Elian Mercer of Velia."
+        },
+        "template": {
+          "behavior": "Places components exactly with tokens. Optional [square-bracket] blocks disappear when any token inside is empty. Literal words and punctuation are allowed.",
+          "control": "Custom template",
+          "example": "{title} {first} [“{nickname}”] {last}[, Warden of {location}]"
+        },
+        "title": {
+          "behavior": "Never, Sometimes, or Always adds a plausible role/status title when the template contains {title}. If no sensible title exists, the token stays empty.",
+          "control": "Title frequency",
+          "example": "Sergeant Bren Holt; Lady Mira Voss."
+        }
+      },
+      "nameFormattingTitle": "Name and batch-prefix formatting",
+      "nameTemplateTokens": "Template tokens: {prefix}, {title}, {first}, {nickname}, {infix}, {last}, {location}, {suffix}, {index}, {role}, and {race}. {index} is the one-based NPC number within the batch.",
+      "namingBody": "Naming styles are broad fictional tonal palettes rather than historical or linguistic claims. Each style now includes a larger set of creative idiomatic examples; the same examples and style guidance are embedded into the copied AI prompt as tonal references rather than a finite name list.",
+      "namingTitle": "Naming styles",
+      "pickersBody": "All large catalogs use searchable, scrollable pickers. Entries contributed by complementary modules are color-highlighted with the per-module colors configured in global settings.",
+      "pickersTitle": "Scalable pickers",
+      "portraitPromptBody": "Generated or AI-imported NPC Actor sheets include a header button that copies a concise portrait prompt for exactly one full-body adult-anime image of that NPC. Non-human races are explicitly described as race-idiomatic so they read clearly as their own people instead of mostly human figures with minor fantasy add-ons.",
+      "portraitPromptTitle": "Portrait prompts",
+      "race": "The built-in Race picker contains all standard 2024 Player’s Handbook races. Typing a non-preset name offers it directly as a custom Race; mixed groups can select several preset or custom races.",
+      "raceMixBody": "The main Race selected in Generation is the primary Race. For mixed modes, Possible races defines the allowed pool; the primary Race is automatically included. Integer quotas always add up to the requested Count.",
+      "raceMixExamples": {
+        "balanced": "Human + Elf + Dwarf → 4 Human, 3 Elf, 3 Dwarf.",
+        "dominant": "Primary Human + Elf + Dwarf → 8 Human, 1 Elf, 1 Dwarf.",
+        "exact": "Count 10: Human 8, Elf 1, Dwarf 1 means exactly 8 / 1 / 1.",
+        "mixed": "Not shown in the current dashboard; retained only for older saved configurations.",
+        "primary": "Primary Human + Elf + Dwarf → 7 Human, 2 Elf, 1 Dwarf.",
+        "single": "Primary Human → 10 Human.",
+        "weighted": "Human 10, Elf 20, Dwarf 30 → 2 Human, 3 Elf, 5 Dwarf."
+      },
+      "raceMixModes": {
+        "balanced": "All allowed Races receive equal weight.",
+        "dominant": "The primary Race targets 85%; the remaining 15% is split evenly across the other allowed Races.",
+        "exact": "Uses the exact integer count entered for every selected Race. Counts must sum to Count.",
+        "mixed": "Legacy compatibility mode; the saved Race distribution setting determines the effective mix.",
+        "primary": "The primary Race targets 70%; the remaining 30% is split evenly across the other allowed Races.",
+        "single": "Every NPC uses the primary Race.",
+        "weighted": "Each allowed Race uses its entered relative weight."
+      },
+      "raceMixTitle": "Race composition in detail",
+      "raceMixWeights": "Custom Race weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Race as long as at least one other Race has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
+      "role": "Defines the NPC's practical function and biases local ability scores and durability. It also strongly guides AI inventory and characterization.",
+      "roleMixBody": "The main Role selected in Generation is always the primary Role. For mixed modes, Possible roles defines the allowed pool; the primary Role is automatically included even if it was not manually selected. Integer quotas always add up to the requested Count.",
+      "roleMixExample": "Example with Count 10",
+      "roleMixExamples": {
+        "balanced": "Merchant + Artisan + Guard → 4 Merchant, 3 Artisan, 3 Guard.",
+        "dominant": "Primary Merchant + Artisan + Guard → 8 Merchant, 1 Artisan, 1 Guard.",
+        "groupPreset": "Depends on Group type; for Independent NPCs with primary Merchant → 10 Merchant.",
+        "primary": "Primary Merchant + Artisan + Guard → 7 Merchant, 2 Artisan, 1 Guard.",
+        "single": "Primary Merchant → 10 Merchant.",
+        "variants": "Primary Merchant → 10 Merchants with distinct merchant specializations before reuse.",
+        "weighted": "Merchant 10, Artisan 20, Guard 30 → 2 Merchant, 3 Artisan, 5 Guard."
+      },
+      "roleMixMode": "Mode",
+      "roleMixModes": {
+        "balanced": "All allowed Roles receive equal weight.",
+        "dominant": "The primary Role targets 85%; the remaining 15% is split evenly across the other allowed Roles.",
+        "groupPreset": "The first NPC uses the primary Role; remaining NPCs follow the selected group archetype’s built-in responsibility cycle. Independent batches remain the primary Role throughout.",
+        "primary": "The primary Role targets 70%; the remaining 30% is split evenly across the other allowed Roles.",
+        "single": "Every NPC uses the primary Role.",
+        "variants": "Every NPC keeps the primary Role, but practical subtypes of that Role are spread as evenly as possible before repeating.",
+        "weighted": "Each allowed Role uses its entered relative weight."
+      },
+      "roleMixRounding": "When a proportion does not divide evenly into the batch size, the module uses proportional integer quotas and assigns leftover NPCs to the largest fractional remainders. This preserves the exact batch Count and stays as close as possible to the requested ratio.",
+      "roleMixRule": "Distribution rule",
+      "roleMixTitle": "Role composition in detail",
+      "roleMixWeights": "Custom weights are relative ratios, not percentages. Larger numbers mean more NPCs. A weight of 0 excludes that Role as long as at least one other Role has a positive weight. 10/20/30, 1/2/3, and 100/200/300 are equivalent. If every weight is 0, the module safely falls back to equal weights.",
+      "seed": "Local generation always has a reusable seed. If you leave Seed blank, the module creates one automatically, shows it back in the dashboard, and records it in every generated Actor biography and module metadata.",
+      "setting": "Setting",
+      "situation": "Situation",
+      "standardRacesBody": "The built-in Player’s Handbook 2024 catalog is: {races}. Custom races remain available through the same picker.",
+      "standardRacesTitle": "Standard 2024 races",
+      "step": "Step",
+      "tierStyleCr": "The world currently uses CR tiers. Every standard D&D 5e CR from 0 through 30 is selectable and the AI prompt requests that exact CR.",
+      "tierStyleNamed": "The world currently uses named tiers. Ordinary through Champion provide broad competence bands; Configure Settings can switch the world to exact CR selection.",
+      "title": "NPC Button Help",
+      "tokenDisposition": "Controls the generated Actor prototype token disposition; placed Tokens inherit the selected native Foundry disposition.",
+      "tokenDispositionBody": "Disposition is a Foundry Token property stored on the Actor prototype token. It controls ally/enemy presentation rather than changing NPC statistics or behavior. The module supports every native Foundry disposition plus a no-override default.",
+      "tokenDispositionExamples": {
+        "default": "Preserve the world/system default.",
+        "friendly": "Allied guard, companion, protected civilian.",
+        "hostile": "Enemy raider, monster, active attacker.",
+        "neutral": "Bystander, merchant, undecided faction member.",
+        "secret": "Hidden allegiance, uncertain threat, concealed faction intent."
+      },
+      "tokenDispositionModes": {
+        "default": "Do not write a disposition override. Foundry, dnd5e, or another module can provide its normal prototype-token default.",
+        "friendly": "Use Foundry Friendly disposition.",
+        "hostile": "Use Foundry Hostile disposition, the native enemy state.",
+        "neutral": "Use Foundry Neutral disposition.",
+        "secret": "Use Foundry Secret disposition for Tokens whose disposition should not be openly presented like the ordinary Friendly/Neutral/Hostile states."
+      },
+      "tokenDispositionTitle": "Token disposition / hostility",
+      "wealth": "Poor, Average, Well-Off, or Elite. The AI uses this to scale carried money, equipment quality, comfort items, and visible status.",
+      "wealthDistribution": "Changes only the split of the fixed portable-wealth budget between system currency and valuables; it never changes the total budget.",
+      "wealthDistributionBody": "Every locally generated NPC now carries real D&D 5e currency. Wealth sets a fixed portable-wealth budget; this control only redistributes that same value between coins and portable valuables. Role/combat equipment remains separate.",
+      "wealthDistributionExamples": {
+        "coinsHeavy": "Average wealth: 5 gp-equivalent total → about 3.75 gp in coins + 1.25 gp in valuables.",
+        "fewHighValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + one concentrated 3.25 gp valuable.",
+        "itemsHeavy": "Average wealth: 5 gp-equivalent total → about 1 gp in coins + 4 gp in valuables.",
+        "manySmallValue": "Average wealth: 5 gp-equivalent total → about 1.75 gp in coins + several items totaling 3.25 gp.",
+        "mixed": "Average wealth: 5 gp-equivalent total → about 2.5 gp in coins + 2.5 gp in valuables."
+      },
+      "wealthDistributionModes": {
+        "coinsHeavy": "About 75% as coins; only a small remainder becomes valuables.",
+        "fewHighValue": "A modest coin reserve with the item share concentrated into one or two valuable possessions.",
+        "itemsHeavy": "About 20% as coins; the rest becomes several valuables.",
+        "manySmallValue": "A modest coin reserve with the item share spread across several lower-value possessions.",
+        "mixed": "About half as coins and half as portable valuables."
+      },
+      "wealthDistributionTitle": "Wealth distribution",
+      "weaponVarietyBody": "Melee only, Melee preference, Mixed, Ranged preference, and Ranged only bias or constrain carried weapons without overriding occupational realism. If a ranged-only jurist has no plausible ranged weapon, the correct result is no weapon rather than an absurd loadout.",
+      "weaponVarietyExamples": {
+        "meleeOnly": "Scout → Shortsword/Dagger options, no Shortbow.",
+        "meleePreferred": "Guard → Spear or Longsword favored; crossbow only as a sensible backup.",
+        "mixed": "Soldier → melee and ranged options may both appear.",
+        "rangedOnly": "Jurist with no plausible ranged option → weaponless rather than implausibly armed.",
+        "rangedPreferred": "Scout → Shortbow favored with a knife or Shortsword only as backup."
+      },
+      "weaponVarietyModes": {
+        "meleeOnly": "Allow melee-capable weapons only.",
+        "meleePreferred": "Strongly favor melee; a ranged backup is allowed only when plausible.",
+        "mixed": "Use a natural mix when the Role realistically supports both categories.",
+        "rangedOnly": "Allow dedicated ranged weapons only; never invent one for a Role that has no realistic option.",
+        "rangedPreferred": "Strongly favor ranged; a melee backup is allowed only when plausible."
+      },
+      "weaponVarietyTitle": "Weapon variety"
+    },
+    "internalConflict": {
+      "high": "High",
+      "low": "Low",
+      "medium": "Moderate",
+      "none": "Minimal"
+    },
+    "manualCopy": {
+      "content": "Prepared text",
+      "copied": "Copied to the clipboard.",
+      "filterProfile": "Filter profile JSON",
+      "hint": "Automatic clipboard access was unavailable. The prepared content is preserved below; select it for Ctrl+C or retry the browser clipboard action.",
+      "portraitPrompt": "Portrait prompt",
+      "retry": "Copy again",
+      "select": "Select text",
+      "selected": "Text selected. Press Ctrl+C to copy it.",
+      "title": "Manual copy",
+      "unavailable": "Clipboard access is still unavailable. The text is selected for manual copying."
+    },
+    "nameFormatPresets": {
+      "custom": "Custom template",
+      "formal": "Formal",
+      "full": "Full",
+      "location": "Location",
+      "nickname": "Nickname",
+      "standard": "Standard"
+    },
+    "naming": {
+      "central": "Central",
+      "coastal": "Coastal",
+      "frontier": "Frontier",
+      "highland": "Highland"
+    },
+    "namingDescriptions": {
+      "central": "Balanced town-and-road names with restrained surnames; broadly settled and neutral in tone.",
+      "coastal": "Open-vowel given names and maritime surnames suggesting ports, fishing communities, and sea trade.",
+      "frontier": "Short practical names and occupational or settlement surnames suggesting farms, trades, border villages, and new communities.",
+      "highland": "Harder consonants and landscape-heavy surnames suggesting uplands, stone settlements, and old local lineages."
+    },
+    "namingGroups": {
+      "regional": "Regional palettes"
+    },
+    "nicknameModes": {
+      "always": "Always",
+      "never": "Never",
+      "sometimes": "Sometimes"
+    },
+    "notifications": {
+      "clipboardUnavailable": "Automatic clipboard access is unavailable. The prepared content remains available for manual copying.",
+      "complementaryColorsSaved": "Complementary module highlight colors saved.",
+      "created": "Created {count} NPC Actor(s).",
+      "failed": "NPC generation failed: {message}",
+      "filterImportFailed": "Filter profile import failed",
+      "filterProfileTooLarge": "Filter profile is too large to import.",
+      "filtersCopied": "Filter profile JSON copied to the clipboard.",
+      "filtersExported": "Filter profile exported.",
+      "filtersImported": "Filter profile imported and applied.",
+      "filtersSaved": "Dashboard string filters saved.",
+      "gmOnly": "Only a Game Master can create NPCs with Runyth NPC Button.",
+      "importCancelled": "NPC import preview cancelled.",
+      "importFailed": "NPC import failed: {message}",
+      "imported": "Imported {count} NPC Actor(s).",
+      "noneCreated": "No NPC Actors were created.",
+      "noneImported": "No NPC Actors were imported.",
+      "portraitPromptCopied": "Portrait prompt copied to the clipboard.",
+      "promptCopied": "AI NPC prompt copied to the clipboard.",
+      "promptCopyManual": "AI prompt prepared, but automatic clipboard access is unavailable. The prompt is preserved below for manual copying.",
+      "promptPrepareFailed": "AI prompt preparation failed: {message}"
+    },
+    "preview": {
+      "ac": "AC",
+      "autoOpenedNotice": "Preview opened automatically",
+      "biography": "Biography HTML",
+      "biographyHint": "Keep the required labeled biography sections. Unsupported HTML is sanitized during final import.",
+      "cancel": "Cancel",
+      "clearAll": "Clear all",
+      "confirm": "Validate and import",
+      "countMismatchNotice": "The dashboard requested {expected} NPCs, but the parsed top-level JSON contains {actual}. Review the batch and deselect any NPCs you do not want to import.",
+      "cr": "CR",
+      "editorHint": "Edit only the simple table-facing fields you need. The complete payload is validated again before import.",
+      "hp": "HP",
+      "hpMax": "Max HP",
+      "includeNpc": "Include this NPC in the import",
+      "invalid": "Edited payload is invalid: {message}",
+      "maximumNotice": "The payload exceeds the configured maximum batch size of {max}. Deselect entries until the selected batch is within the limit.",
+      "name": "Name",
+      "npcHeading": "NPC {current} of {count}",
+      "npcList": "NPCs to import",
+      "race": "Race / subtype",
+      "reviewNotice": "Import count needs review",
+      "selectAll": "Select all",
+      "selectAtLeastOne": "Select at least one NPC to import.",
+      "selectedCount": "{selected} of {total} NPCs selected",
+      "speed": "Walk speed",
+      "title": "NPC import preview",
+      "unnamedNpc": "Unnamed NPC {number}",
+      "valid": "Edited payload is valid.",
+      "validSelected": "{count} selected NPC(s) passed final validation."
+    },
+    "raceComposition": {
+      "balanced": "Broadly mixed",
+      "dominant": "Strong primary-race majority",
+      "exact": "Exact numbers",
+      "mixed": "Mixed races (legacy)",
+      "primary": "Primary-race majority",
+      "single": "Single race",
+      "weighted": "Custom race weights"
+    },
+    "raceDistribution": {
+      "balanced": "Roughly equal",
+      "dominant": "Strong majority",
+      "primary": "Primary race",
+      "weighted": "Custom weights"
+    },
+    "raceGroups": {
+      "custom": "Custom races",
+      "phb2024": "Player’s Handbook 2024"
+    },
+    "races": {
+      "aasimar": "Aasimar",
+      "custom": "Custom",
+      "dragonborn": "Dragonborn",
+      "dwarf": "Dwarf",
+      "elf": "Elf",
+      "gnome": "Gnome",
+      "goliath": "Goliath",
+      "halfling": "Halfling",
+      "human": "Human",
+      "orc": "Orc",
+      "tiefling": "Tiefling"
     },
     "relationshipDensity": {
       "light": "Light",
       "rich": "Rich",
       "tangled": "Tangled"
     },
-    "internalConflict": {
-      "none": "Minimal",
-      "low": "Low",
-      "medium": "Moderate",
-      "high": "High"
-    },
-    "raceComposition": {
-      "single": "Single race",
-      "mixed": "Mixed races (legacy)",
-      "dominant": "Strong primary-race majority",
-      "primary": "Primary-race majority",
-      "balanced": "Broadly mixed",
-      "weighted": "Custom race weights",
-      "exact": "Exact numbers"
-    },
-    "raceDistribution": {
-      "balanced": "Roughly equal",
-      "primary": "Primary race",
-      "dominant": "Strong majority",
-      "weighted": "Custom weights"
-    },
-    "filters": {
-      "title": "NPC Button string filters",
-      "intro": "Use the selected-item lists for ordinary filtering. Every current item is selected by default; deselect an item to hide it from the corresponding dashboard picker. Advanced allow/deny string and regex rules remain available below each list.",
-      "categories": {
-        "roles": "Roles",
-        "races": "Races",
-        "namingStyles": "Naming styles",
-        "habitats": "Habitats",
-        "groupTypes": "Group types",
-        "folders": "Actor folders"
-      },
-      "placeholders": {
-        "roles": "Filter visible role entries by id, label, description, or search text.",
-        "races": "Filter visible race entries, including extension races and custom picker suggestions.",
-        "namingStyles": "Curate which naming palettes may be selected in the dashboard.",
-        "habitats": "Restrict or focus the environment presets shown in the habitat picker.",
-        "groupTypes": "Allow or hide specific group archetypes such as families or guard patrols.",
-        "folders": "Curate which Actor-folder targets appear in the destination picker."
-      },
-      "fields": {
-        "exactAllow": "Allow exact matches",
-        "exactDeny": "Deny exact matches",
-        "containsAllow": "Allow if contains",
-        "containsDeny": "Deny if contains",
-        "prefixAllow": "Allow if starts with",
-        "prefixDeny": "Deny if starts with",
-        "suffixAllow": "Allow if ends with",
-        "suffixDeny": "Deny if ends with",
-        "regexAllow": "Allow regex",
-        "regexDeny": "Deny regex",
-        "caseSensitive": "Case-sensitive matching",
-        "normalizeDiacritics": "Normalize accents / diacritics",
-        "trimWhitespace": "Trim surrounding whitespace"
-      },
-      "actions": {
-        "exportFile": "Export JSON",
-        "copyJson": "Copy JSON",
-        "importFile": "Import JSON",
-        "importClipboard": "Import clipboard"
-      },
-      "itemPicker": {
-        "label": "Included items",
-        "hint": "All available items are selected by default. Deselect individual entries to exclude them from the dashboard. The list is searchable, hierarchical, scrollable, and virtualized for large catalogs.",
-        "placeholder": "No items selected",
-        "selectAll": "Select all",
-        "clear": "Clear all"
-      },
-      "advancedRules": "Advanced string and regex rules"
-    },
-    "combatReadiness": {
-      "weaponless": "Weaponless",
-      "minimal": "Minimal",
-      "standard": "Standard",
-      "prepared": "Prepared",
-      "armed": "Highly Prepared"
-    },
     "roleComposition": {
+      "balanced": "Balanced mixed roles",
+      "dominant": "Strong primary-role majority",
+      "groupPreset": "Group-appropriate roles",
+      "primary": "Primary-role majority",
       "single": "Single role",
       "variants": "Role variants",
-      "groupPreset": "Group-appropriate roles",
-      "balanced": "Balanced mixed roles",
-      "primary": "Primary-role majority",
-      "dominant": "Strong primary-role majority",
       "weighted": "Custom role weights"
     },
-    "preview": {
-      "title": "NPC import preview",
-      "npcHeading": "NPC {current} of {count}",
-      "editorHint": "Edit only the simple table-facing fields you need. The complete payload is validated again before import.",
-      "npcList": "NPCs to import",
-      "unnamedNpc": "Unnamed NPC {number}",
-      "name": "Name",
-      "race": "Race / subtype",
-      "cr": "CR",
-      "ac": "AC",
-      "hp": "HP",
-      "hpMax": "Max HP",
-      "speed": "Walk speed",
-      "biography": "Biography HTML",
-      "biographyHint": "Keep the required labeled biography sections. Unsupported HTML is sanitized during final import.",
-      "cancel": "Cancel",
-      "confirm": "Validate and import",
-      "valid": "Edited payload is valid.",
-      "invalid": "Edited payload is invalid: {message}",
-      "autoOpenedNotice": "Preview opened automatically",
-      "reviewNotice": "Import count needs review",
-      "countMismatchNotice": "The dashboard requested {expected} NPCs, but the parsed top-level JSON contains {actual}. Review the batch and deselect any NPCs you do not want to import.",
-      "maximumNotice": "The payload exceeds the configured maximum batch size of {max}. Deselect entries until the selected batch is within the limit.",
-      "selectedCount": "{selected} of {total} NPCs selected",
-      "includeNpc": "Include this NPC in the import",
-      "selectAll": "Select all",
-      "clearAll": "Clear all",
-      "selectAtLeastOne": "Select at least one NPC to import.",
-      "validSelected": "{count} selected NPC(s) passed final validation."
+    "roleGroups": {
+      "authority": "Authority & status",
+      "everyday": "Everyday & commerce",
+      "learned": "Learned & specialist",
+      "martial": "Martial & security"
+    },
+    "roles": {
+      "acolyte": "Acolyte",
+      "artisan": "Artisan",
+      "bruiser": "Bruiser",
+      "civilian": "Civilian",
+      "guard": "Guard",
+      "leader": "Leader",
+      "merchant": "Merchant",
+      "noble": "Noble",
+      "scholar": "Scholar",
+      "scout": "Scout",
+      "soldier": "Soldier",
+      "specialist": "Specialist"
+    },
+    "settings": {
+      "complementaryModuleColors": {
+        "hint": "Configure per-module colors for catalog entries contributed by complementary modules.",
+        "label": "Configure colors",
+        "name": "Complementary module highlight colors"
+      },
+      "complementaryModuleColorsStorage": {
+        "hint": "Internal storage for complementary module highlight colors.",
+        "name": "Complementary module highlight colors storage"
+      },
+      "debug": {
+        "hint": "Write concise diagnostic messages to the browser console. Disabled by default.",
+        "name": "Debug logging"
+      },
+      "defaultFolder": {
+        "hint": "Root Actor folder used when the dashboard is set to the configured default destination. Leave empty to use the Actors root.",
+        "name": "Default NPC folder"
+      },
+      "filters": {
+        "hint": "Open advanced allow/deny filters for picker-driven dashboard fields such as Roles, Races, Habitats, Group types, Naming styles, and Actor folders.",
+        "label": "Configure filters",
+        "name": "Dashboard string filters"
+      },
+      "filtersStorage": {
+        "hint": "Internal JSON storage for advanced dashboard string filters.",
+        "name": "Dashboard string filters storage"
+      },
+      "ignoreImportCountMismatch": {
+        "hint": "When enabled, imported JSON arrays may contain a different number of NPCs than the dashboard Count without forcing review. The configured maximum batch size and all Actor validation still apply.",
+        "name": "Allow arbitrary NPC import counts"
+      },
+      "maxBatch": {
+        "hint": "Maximum number of NPC Actors that one generation or import action may create.",
+        "name": "Maximum batch size"
+      },
+      "tierStyle": {
+        "choices": {
+          "cr": "Challenge Rating (CR)",
+          "named": "Named tiers"
+        },
+        "hint": "Choose whether NPC Button uses its named competence tiers or exact D&D 5e Challenge Ratings. CR mode exposes every standard CR from 0 through 30.",
+        "name": "Tier style"
+      }
+    },
+    "tierGroups": {
+      "cr11to20": "CR 11–20",
+      "cr1to10": "CR 1–10",
+      "cr21to30": "CR 21–30",
+      "fractional": "Fractional CR",
+      "named": "Named tiers"
+    },
+    "tiers": {
+      "champion": "Champion",
+      "elite": "Elite",
+      "ordinary": "Ordinary",
+      "trained": "Trained",
+      "veteran": "Veteran"
+    },
+    "titleModes": {
+      "always": "Always",
+      "never": "Never",
+      "sometimes": "Sometimes"
+    },
+    "tokenDispositions": {
+      "default": "Foundry default",
+      "friendly": "Friendly",
+      "hostile": "Hostile (Enemy)",
+      "neutral": "Neutral",
+      "secret": "Secret"
+    },
+    "ui": {
+      "actorsRoot": "Actors root",
+      "advancedGroupSettings": "Advanced group settings",
+      "ageMax": "Maximum age",
+      "ageMin": "Minimum age",
+      "ageRange": "Age range",
+      "ageRangeHint": "Choose the life-stage range for the batch. Named ranges scale to each Race; Exact year range uses literal ages.",
+      "ageSpread": "Group age spread",
+      "ageSpreadHint": "Controls how ages are distributed inside the selected range without changing the Race-appropriate range itself.",
+      "aiIntro": "Copy a detailed strict prompt into any AI conversation, copy its JSON reply, then import that reply into the destination above.",
+      "aiTitle": "AI workflow",
+      "challengeRating": "Challenge Rating",
+      "challengeRatingHint": "Choose any standard D&D 5e CR from 0, 1/8, 1/4, 1/2, and 1 through 30.",
+      "choosePossibleRaces": "Choose possible races…",
+      "choosePossibleRoles": "Choose possible roles…",
+      "combatReadiness": "Combat readiness",
+      "combatReadinessHint": "Controls how heavily armed the NPC is relative to the Role. Weaponless always means no weapons or armor; higher levels remain constrained by what the occupation and situation can realistically justify.",
+      "compositionIntro": "Control how Race and Role are distributed across any multi-NPC batch, whether or not the NPCs form an intentional group.",
+      "compositionTitle": "Batch composition",
+      "configuredDefault": "Configured default",
+      "configuredDefaultNamed": "Configured default — {name}",
+      "configuredDefaultRoot": "Configured default — Actors root",
+      "copyPortraitPrompt": "Copy portrait prompt",
+      "copyPrompt": "Copy prompt",
+      "copyingPrompt": "Preparing AI prompt…",
+      "count": "Count",
+      "countRange": "1–{max}",
+      "createLocally": "Create locally",
+      "createRootFolder": "Create or reuse a new root Actor folder with this name",
+      "creating": "Creating NPCs…",
+      "customName": "Name or batch prefix",
+      "customNameHint": "If Count is 1, this becomes the Actor name. If Count is greater than 1, it becomes a numbered batch prefix such as “Harbor Watch 1”, “Harbor Watch 2”. Leave blank to use generated names and the formatting controls below.",
+      "customNamePlaceholder": "Leave blank for generated names",
+      "customRace": "Custom race",
+      "destination": "Destination",
+      "destinationFolder": "Actor folder",
+      "destinationHint": "Browse the full Actor-folder hierarchy, choose the Actors root or configured default, or type a new root-folder name into search and select it.",
+      "destinationIntro": "Choose where locally generated or AI-imported Actors are created.",
+      "destinationMissing": "Missing Actor folder",
+      "dialogTitle": "NPC Button",
+      "distributeEvenly": "Distribute evenly",
+      "done": "Done",
+      "familyStructure": "Family structure",
+      "femaleCount": "Female count",
+      "genderComposition": "Gender mix",
+      "genderCompositionHint": "Choose how male and female NPCs are distributed across the generated batch.",
+      "generationTitle": "NPC generation",
+      "groupBrief": "Additional group brief",
+      "groupBriefHint": "Passed into the AI prompt as additional context. Keep it focused on facts that should affect multiple NPCs.",
+      "groupBriefPlaceholder": "Optional: local feud, family business, employer, current crisis, taboo, destination, shared objective…",
+      "groupCohesion": "Cohesion",
+      "groupConfigurationIntro": "Advanced controls for relationships, internal structure, race mixing, and shared group context.",
+      "groupConfigurationTitle": "Group composition",
+      "groupHierarchy": "Hierarchy",
+      "groupType": "Generation mode / group type",
+      "groupTypeHint": "Create independent NPCs or a coherent family, patrol, raider band, crew, caravan, council, and other group archetypes.",
+      "habitat": "Habitat",
+      "habitatHint": "Choose the environment and settlement context that shapes daily life, possessions, travel, and social assumptions. Type any other habitat to use it directly.",
+      "help": "Help",
+      "importNpc": "Import NPC",
+      "importing": "Validating items and importing NPCs…",
+      "internalConflict": "Internal conflict",
+      "intro": "Configure NPCs once, then create them locally or use the same intent for an AI-generated Foundry payload.",
+      "maleCount": "Male count",
+      "manualPaste": "Clipboard fallback / manual paste",
+      "manualPasteLabel": "AI JSON payload",
+      "manualPastePlaceholder": "Paste the JSON reply here only if your browser blocks clipboard reading.",
+      "nameFormatPreset": "Format preset",
+      "nameFormattingHint": "Applies only when Name or batch prefix is blank. Presets arrange generated name parts; fixed prefix/infix/suffix/location text is inserted only where the chosen template references it.",
+      "nameFormattingTitle": "Name formatting",
+      "nameInfix": "Fixed infix",
+      "nameInfixPlaceholder": "e.g. van, de, ap",
+      "nameLocation": "Fixed location",
+      "nameLocationPlaceholder": "e.g. Velia, Blackwater",
+      "namePrefix": "Fixed prefix",
+      "namePrefixPlaceholder": "e.g. Brother, Old, House",
+      "nameSuffix": "Fixed suffix",
+      "nameSuffixPlaceholder": "e.g. the Younger, III",
+      "nameTemplate": "Custom name template",
+      "nameTemplateHint": "Available tokens: {tokens}. Put optional text in [square brackets]; that whole block disappears when one of its tokens is empty.",
+      "nameTemplatePlaceholder": "{title} {first} [\"{nickname}\"] {last} [of {location}]",
+      "namingStyle": "Naming style",
+      "namingStyleHint": "Search or browse naming palettes. The Help window shows clearly distinct examples for each style.",
+      "nicknameMode": "Nickname frequency",
+      "noMatchingOptions": "No matching options.",
+      "noSelectedRaces": "No Races are selected.",
+      "openLastActor": "Open created Actors for review",
+      "openLastActorHint": "Opens up to 10 Actors. Up to three are visible side-by-side; later Actors are stacked behind them so closing a top sheet reveals the next one.",
+      "portraitPromptShort": "Portrait",
+      "possibleRaces": "Possible races",
+      "possibleRacesHint": "Search and select any number of allowed races. Custom races can be added by typing them into the search.",
+      "possibleRoles": "Possible roles",
+      "possibleRolesHint": "Search and select the Roles allowed in a mixed-role batch. The main Role is automatically included and is always the primary Role.",
+      "preparedPrompt": "Prepared AI prompt",
+      "preparedPromptHint": "The generated prompt is kept here. If automatic clipboard access is blocked or Foundry is not focused, select the text or retry copying manually.",
+      "previewImport": "Preview and edit before import",
+      "previewImportHint": "Open a fast preview where NPCs can be selected/deselected and simple fields edited before final validation and Actor creation. Count mismatches open this preview automatically unless the global count-agnostic import setting is enabled.",
+      "primaryRoleNote": "Primary Role: {role}. This is the Role selected in the main Role field above.",
+      "quickCounts": "Common counts",
+      "race": "Race",
+      "raceComposition": "Race composition",
+      "raceCompositionHint": "Use the main Race field for a single-race group or as the primary race when mixing several races.",
+      "raceDistribution": "Race distribution",
+      "raceDistributionHint": "Controls how strongly the primary Race dominates the generated group.",
+      "raceExactAssignedInvalid": "Assigned {assigned} of {target}. Remaining: {remaining}. Adjust counts or distribute evenly.",
+      "raceExactAssignedValid": "Assigned {assigned} of {target}. Exact total is valid.",
+      "raceExactCounts": "Exact Race numbers",
+      "raceExactCountsHint": "Set the exact number of NPCs for every selected Race. The assigned total must equal Count.",
+      "raceHint": "Search or browse preset races. To use any other race, type its name into the picker search and select the custom entry.",
+      "raceWeights": "Custom race weights",
+      "raceWeightsHint": "Relative weights; they do not need to add up to 100.",
+      "relationshipDensity": "Relationship lore",
+      "retryPromptCopy": "Copy again",
+      "role": "Role",
+      "roleComposition": "Role composition",
+      "roleCompositionHint": "The main Role selected above is always the primary Role. Mixed modes distribute only among Possible roles while preserving the exact batch Count.",
+      "roleHint": "Search or browse the hierarchical role catalog. The picker is virtualized so it stays responsive as the catalog grows.",
+      "roleMixPreview": "{count} NPCs → {distribution}",
+      "roleWeights": "Custom role weights",
+      "roleWeightsHint": "Relative non-negative weights from 0 to 1000, not percentages. Higher numbers receive more NPCs; 0 excludes that Role when another Role has a positive weight. 10/20/30 is the same ratio as 1/2/3.",
+      "searchOptions": "Search options…",
+      "searchSelectedRaces": "Search selected Races…",
+      "seed": "Seed",
+      "seedHint": "Local generation with the same options and seed reproduces the same generated data.",
+      "seedPlaceholder": "Optional reproducible seed for local generation",
+      "selectPrompt": "Select prompt text",
+      "sidebarButton": "NPC Button",
+      "suggestedGroupSizes": "Suggested sizes",
+      "suggestedGroupSizesHint": "Shortcuts only; Count remains fully editable.",
+      "tier": "Tier",
+      "tierHint": "Named competence tier. Change Tier style in Configure Settings to use exact CR values instead.",
+      "titleMode": "Title frequency",
+      "tokenDisposition": "Token disposition",
+      "tokenDispositionHint": "Sets the generated Actor prototype token disposition. Placed Tokens inherit it. Foundry default leaves disposition untouched so Foundry, dnd5e, or another module can supply its normal default.",
+      "useCustomHabitat": "Use this text as a custom habitat",
+      "useCustomRace": "Use this text as a custom Race",
+      "wealth": "Wealth",
+      "wealthDistribution": "Wealth distribution",
+      "wealthDistributionHint": "Controls how the fixed portable-wealth budget is split between actual coins and carried valuables. The total value does not change.",
+      "wealthHint": "Influences AI-generated money, equipment quality, personal possessions, and status items.",
+      "weaponVariety": "Weapon variety",
+      "weaponVarietyHint": "Controls whether realistic role-appropriate weapons favor melee, ranged, or a mix. Hard-only modes never invent an implausible weapon just to satisfy the category."
+    },
+    "wealth": {
+      "average": "Average",
+      "elite": "Elite",
+      "poor": "Poor",
+      "wellOff": "Well-Off"
+    },
+    "wealthDistribution": {
+      "coinsHeavy": "Coin-heavy",
+      "fewHighValue": "Few high-value items",
+      "itemsHeavy": "Item-heavy",
+      "manySmallValue": "Many small-value items",
+      "mixed": "Mixed"
     },
     "weaponVariety": {
       "meleeOnly": "Melee only",
       "meleePreferred": "Melee preference",
       "mixed": "Mixed",
-      "rangedPreferred": "Ranged preference",
-      "rangedOnly": "Ranged only"
-    },
-    "genderComposition": {
-      "random": "Randomized",
-      "balanced": "Balanced",
-      "mostlyMale": "Mostly male",
-      "mostlyFemale": "Mostly female",
-      "exact": "Exact numbers"
-    },
-    "manualCopy": {
-      "title": "Manual copy",
-      "content": "Prepared text",
-      "hint": "Automatic clipboard access was unavailable. The prepared content is preserved below; select it for Ctrl+C or retry the browser clipboard action.",
-      "select": "Select text",
-      "retry": "Copy again",
-      "selected": "Text selected. Press Ctrl+C to copy it.",
-      "copied": "Copied to the clipboard.",
-      "unavailable": "Clipboard access is still unavailable. The text is selected for manual copying.",
-      "portraitPrompt": "Portrait prompt",
-      "filterProfile": "Filter profile JSON"
-    },
-    "wealthDistribution": {
-      "itemsHeavy": "Item-heavy",
-      "mixed": "Mixed",
-      "coinsHeavy": "Coin-heavy",
-      "fewHighValue": "Few high-value items",
-      "manySmallValue": "Many small-value items"
-    },
-    "nameFormatPresets": {
-      "standard": "Standard",
-      "nickname": "Nickname",
-      "formal": "Formal",
-      "location": "Location",
-      "full": "Full",
-      "custom": "Custom template"
-    },
-    "nicknameModes": {
-      "never": "Never",
-      "sometimes": "Sometimes",
-      "always": "Always"
-    },
-    "titleModes": {
-      "never": "Never",
-      "sometimes": "Sometimes",
-      "always": "Always"
-    },
-    "complementaryColors": {
-      "title": "Complementary module highlight colors",
-      "intro": "Set a highlight color for entries contributed by complementary modules. Entries from the same module share one color across dashboard pickers and filter lists.",
-      "empty": "Installing or enabling a complementary module alone is not enough for color grouping. It must register catalog entries through the NPC Button extension API and identify their source module.",
-      "colorLabel": "Highlight color",
-      "resetOne": "Reset",
-      "resetAll": "Reset all to defaults",
-      "savedOnly": "Saved color only; no active contributions are currently registered.",
-      "kinds": {
-        "races": "Races",
-        "roles": "Roles",
-        "namingStyles": "Naming styles",
-        "habitats": "Habitats",
-        "groupTypes": "Group types"
-      },
-      "unattributedTitle": "Catalog extensions detected without source-module metadata",
-      "unattributedBody": "These entries are registered and usable, but NPC Button cannot color-group them because their registering module did not identify itself with sourceModuleId. This normally means the complementary module needs a compatibility patch.",
-      "dependenciesTitle": "Detected complementary-module dependencies",
-      "dependenciesBody": "These installed modules declare Runyth NPC Button as a dependency or recommendation, but no color-attributed catalog entries from them are currently registered.",
-      "statusEnabled": "enabled",
-      "statusDisabled": "disabled",
-      "emptyTitle": "No complementary catalog integration detected"
-    },
-    "ageRange": {
-      "contextual": "Contextual",
-      "youngAdult": "Young adults",
-      "adult": "Adults",
-      "mature": "Mature adults",
-      "older": "Older adults",
-      "mixedGenerations": "Mixed generations",
-      "exactRange": "Exact year range"
-    },
-    "ageSpread": {
-      "natural": "Natural/random",
-      "even": "Evenly spread",
-      "clustered": "Similar ages",
-      "younger": "Younger-leaning",
-      "older": "Older-leaning"
-    },
-    "tokenDispositions": {
-      "default": "Foundry default",
-      "friendly": "Friendly",
-      "neutral": "Neutral",
-      "hostile": "Hostile (Enemy)",
-      "secret": "Secret"
+      "rangedOnly": "Ranged only",
+      "rangedPreferred": "Ranged preference"
     }
   }
 }
